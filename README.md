@@ -1,51 +1,76 @@
 [![Buy Me A Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20A%20Coffee-yellow.svg)](https://www.buymeacoffee.com/deivao)
 
-# FindDropdown package - [[ver em português](https://github.com/davidsdearaujo/find_dropdown/blob/master/README-PT.md)]
+# DropdownSearch package
 
-Simple and robust FindDropdown with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
+Simple and robust DropdownSearch with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
 
-![](https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_4.png?raw=true)
+![](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/Screenshot_4.png?raw=true)
 
-<img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%" /> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%" /> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%" />
 
 ## ATTENTION
 If you use rxdart in your project in a version lower than 0.23.x, use version `0.1.7+1` of this package. Otherwise, you can use the most current version!
 
 ## packages.yaml
 ```yaml
-find_dropdown: <lastest version>
+searchable_dropdown: <lastest version>
 ```
 
 ## Import
 ```dart
-import 'package:find_dropdown/find_dropdown.dart';
+import 'package:searchable_dropdown/searchableDropdown.dart';
 ```
 
 ## Simple implementation
 
 ```dart
-FindDropdown(
-  items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+DropdownSearch(
+  items: ["Brasil", "Itália", "Estados Undos", "Canadá"],
   label: "País",
-  onChanged: (String item) => print(item),
+  onChanged: print,
   selectedItem: "Brasil",
 );
 ```
 
+## customize showed field (itemAsString)
+```dart
+DropdownSearch<UserModel>(
+  label: "Nome",
+  onFind: (String filter) => getData(filter),
+  itemAsString: UserModel.userAsStringByName,
+  searchBoxDecoration: InputDecoration(
+    hintText: "Search",
+    border: OutlineInputBorder(),
+  ),
+  onChanged: (UserModel data) => print(data),
+),
+
+DropdownSearch<UserModel>(
+  label: "Nome",
+  onFind: (String filter) => getData(filter),
+  itemAsString: UserModel.userAsStringById,
+  searchBoxDecoration: InputDecoration(
+    hintText: "Search",
+    border: OutlineInputBorder(),
+  ),
+  onChanged: (UserModel data) => print(data),
+),
+```
+
 ## Validation
 ```dart
-FindDropdown(
-  items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
-  label: "País",
-  onChanged: (String item) => print(item),
-  selectedItem: "Brasil",
+DropdownSearch(
+  items: ["Brazil", "France", "Tunisia", "Canada"],
+  label: "Country",
+  onChanged: print,
+  selectedItem: "Tunisia",
   validate: (String item) {
     if (item == null)
       return "Required field";
-    else if (item == "Brasil")
+    else if (item == "Brazil")
       return "Invalid item";
     else
-      return null; //return null to "no error"
+      return null;
   },
 );
 ```
@@ -53,7 +78,7 @@ FindDropdown(
 
 ## Endpoint implementation (using [Dio package](https://pub.dev/packages/dio))
 ```dart
-FindDropdown<UserModel>(
+DropdownSearch<UserModel>(
   label: "Nome",
   onFind: (String filter) async {
     var response = await Dio().get(
@@ -69,15 +94,15 @@ FindDropdown<UserModel>(
 );
 ```
 ## Layout customization
-You can customize the layout of the FindDropdown and its items. [EXAMPLE](https://github.com/davidsdearaujo/find_dropdown/tree/master/example#custom-layout-endpoint-example)
+You can customize the layout of the DropdownSearch and its items. [EXAMPLE](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example#custom-layout-endpoint-example)
 
-To **customize the FindDropdown**, we have the `dropdownBuilder` property, which takes a function with the parameters:
+To **customize the DropdownSearch**, we have the `dropdownBuilder` property, which takes a function with the parameters:
 - `BuildContext context`: current context;
-- `T item`: Current item, where **T** is the type passed in the FindDropdown constructor.
+- `T item`: Current item, where **T** is the type passed in the DropdownSearch constructor.
 
 To **customize the items**, we have the `dropdownItemBuilder` property, which takes a function with the parameters:
 - `BuildContext context`: current context;
-- `T item`: Current item, where **T** is the type passed in the FindDropdown constructor.
+- `T item`: Current item, where **T** is the type passed in the DropdownSearch constructor.
 - `bool isSelected`: Boolean that tells you if the current item is selected.
 
 # Attention
@@ -92,6 +117,17 @@ class UserModel {
 
   UserModel({this.id, this.createdAt, this.name, this.avatar});
 
+  //this method will prevent the override of toString and make the same model useful for different cases
+    static String userAsStringByName(UserModel userModel){
+      return '#${userModel.id} ${userModel.name}';
+    }
+
+    //this method will prevent the override of toString
+    static String userAsStringById(UserModel userModel){
+      return '#${userModel.id} ${userModel.id}';
+    }
+
+
   @override
   String toString() => name;
 
@@ -104,4 +140,4 @@ class UserModel {
 }
 ```
 
-# [View more Examples](https://github.com/davidsdearaujo/find_dropdown/tree/master/example)
+# [View more Examples](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example)

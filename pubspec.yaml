@@ -1,19 +1,17 @@
-name: searchable_dropdown
+name: dropdown_search
 description: Simple and robust Searchable Dropdown with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
-version: 0.0.1
+version: 0.1.0
 author: SalimDev <salimlachdef@gmail.com>
-homepage: https://flutterando.com.br/
-git: https://github.com/davidsdearaujo/find_dropdown
-repository: https://github.com/davidsdearaujo/find_dropdown
+homepage: https://github.com/salim-lachdhaf
+git: https://github.com/salim-lachdhaf/searchable_dropdown
+repository: https://github.com/salim-lachdhaf/searchable_dropdown
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   rxdart: ">=0.23.0 <0.24.0"
-  # select_dialog:
-  #   git:
-  #     url: https://github.com/davidsdearaujo/select_dialog.git
+
   flutter:
     sdk: flutter
 

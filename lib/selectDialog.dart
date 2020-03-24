@@ -1,10 +1,8 @@
-library select_dialog;
-
 import 'package:flutter/material.dart';
-import 'select_bloc.dart';
+import 'selectBloc.dart';
 
-typedef Widget SelectOneItemBuilderType<T>(BuildContext context, T item,
-    bool isSelected);
+typedef Widget SelectOneItemBuilderType<T>(
+    BuildContext context, T item, bool isSelected);
 
 class SelectDialog<T> extends StatefulWidget {
   final T selectedValue;
@@ -17,33 +15,36 @@ class SelectDialog<T> extends StatefulWidget {
   final Color backgroundColor;
   final TextStyle titleStyle;
   final String Function(T item) itemAsString;
+  final String hintText;
 
-  const SelectDialog({
-    Key key,
-    this.itemsList,
-    this.showSearchBox,
-    this.onChange,
-    this.selectedValue,
-    this.onFind,
-    this.itemBuilder,
-    this.searchBoxDecoration,
-    this.backgroundColor = Colors.white,
-    this.titleStyle,
-    this.itemAsString
-  }) : super(key: key);
+  const SelectDialog(
+      {Key key,
+      this.itemsList,
+      this.showSearchBox,
+      this.onChange,
+      this.selectedValue,
+      this.onFind,
+      this.itemBuilder,
+      this.searchBoxDecoration,
+      this.backgroundColor = Colors.white,
+      this.titleStyle,
+      this.hintText,
+      this.itemAsString})
+      : super(key: key);
 
   static Future<T> showModal<T>(BuildContext context,
       {List<T> items,
-        String label,
-        T selectedValue,
-        bool showSearchBox,
-        Future<List<T>> Function(String text) onFind,
-        String Function(T item) itemAsString,
-        SelectOneItemBuilderType<T> itemBuilder,
-        void Function(T) onChange,
-        InputDecoration searchBoxDecoration,
-        Color backgroundColor,
-        TextStyle titleStyle}) {
+      String label,
+      T selectedValue,
+      bool showSearchBox,
+      Future<List<T>> Function(String text) onFind,
+      String Function(T item) itemAsString,
+      SelectOneItemBuilderType<T> itemBuilder,
+      void Function(T) onChange,
+      InputDecoration searchBoxDecoration,
+      Color backgroundColor,
+      String hintText,
+      TextStyle titleStyle}) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -63,6 +64,7 @@ class SelectDialog<T> extends StatefulWidget {
               itemBuilder: itemBuilder,
               searchBoxDecoration: searchBoxDecoration,
               backgroundColor: backgroundColor,
+              hintText: hintText,
               titleStyle: titleStyle),
         );
       },
@@ -78,9 +80,11 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   SelectOneBloc<T> bloc;
   void Function(T) onChange;
 
-  _SelectDialogState(List<T> itemsList,
-      this.onChange,
-      Future<List<T>> Function(String text) onFind,) {
+  _SelectDialogState(
+    List<T> itemsList,
+    this.onChange,
+    Future<List<T>> Function(String text) onFind,
+  ) {
     bloc = SelectOneBloc(itemsList, onFind);
   }
 
@@ -93,14 +97,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width * .9,
-      height: MediaQuery
-          .of(context)
-          .size
-          .height * .7,
+      width: MediaQuery.of(context).size.width * .9,
+      height: MediaQuery.of(context).size.height * .7,
       child: Column(
         children: <Widget>[
           if (widget.showSearchBox ?? true)
@@ -110,7 +108,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                 onChanged: bloc.onTextChanged,
                 decoration: widget.searchBoxDecoration ??
                     InputDecoration(
-                      hintText: "Procurar",
+                      hintText: widget.hintText,
                       contentPadding: const EdgeInsets.all(2.0),
                     ),
               ),
@@ -121,7 +119,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                 stream: bloc.filteredListOut,
                 builder: (context, snapshot) {
                   if (snapshot.hasError)
-                    return Center(child: Text("Oops"));
+                    return Center(
+                        child: Text("erreur: ${snapshot?.error.toString()}"));
                   else if (!snapshot.hasData)
                     return Center(child: CircularProgressIndicator());
                   else if (snapshot.data.isEmpty)
@@ -141,7 +140,9 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                         );
                       else
                         return ListTile(
-                          title: Text(widget.itemAsString !=null ? widget.itemAsString(item): item.toString()),
+                          title: Text(widget.itemAsString != null
+                              ? widget.itemAsString(item)
+                              : item.toString()),
                           selected: item == widget.selectedValue,
                           onTap: () {
                             onChange(item);

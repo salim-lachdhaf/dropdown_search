@@ -19,7 +19,7 @@ environment:
 dependencies:
   rxdart: ^0.23.1
   dio: ^3.0.1
-  find_dropdown:
+  dropdown_search:
     path: ../
   flutter:
     sdk: flutter

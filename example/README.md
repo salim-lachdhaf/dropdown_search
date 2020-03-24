@@ -1,38 +1,38 @@
 ## Simple Example
 ```dart
-FindDropdown(
-  items: ["Brasil", "Itália", "Estados Undos", "Canadá"],
-  label: "País",
+DropdownSearch(
+  items: ["Brazil", "France", "Tunisia", "Canada"],
+  label: "Country",
   onChanged: print,
-  selectedItem: "Brasil",
+  selectedItem: "Tunisia",
 ),
 ```
 
-<img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%"/> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_1.png?raw=true" width="49.5%"/>
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%"/> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_1.png?raw=true" width="49.5%"/>
 
 ## Validation Example
 ```dart
-FindDropdown(
-  items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
-  label: "País",
+DropdownSearch(
+  items: ["Brazil", "France", "Tunisia", "Canada"],
+  label: "Country",
   onChanged: print,
-  selectedItem: "Brasil",
+  selectedItem: "Tunisia",
   validate: (String item) {
     if (item == null)
       return "Required field";
-    else if (item == "Brasil")
+    else if (item == "Brazil")
       return "Invalid item";
     else
       return null;
   },
 ),
 ```
-![](https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_5.png?raw=true)
+![](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/Screenshot_5.png?raw=true)
 
 ## Online Endpoint Example
 ```dart
-FindDropdown<UserModel>(
-  label: "Nome",
+DropdownSearch<UserModel>(
+  label: "Name",
   onChanged: (UserModel data) {
     print(data);
   },
@@ -46,11 +46,11 @@ FindDropdown<UserModel>(
   },
 );
 ```
-<img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/GIF_Endpoint.gif?raw=true" width="49.5%"/> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_2.png?raw=true" width="49.5%"/>
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/GIF_Endpoint.gif?raw=true" width="49.5%"/> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_2.png?raw=true" width="49.5%"/>
 
 ## Custom Layout Endpoint Example
 ```dart
-FindDropdown<UserModel>(
+DropdownSearch<UserModel>(
   label: "Personagem",
   onFind: (String filter) async {
     var response = await Dio().get(
@@ -105,7 +105,7 @@ FindDropdown<UserModel>(
   },
 );
 ```
-<img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%"/> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_3.png?raw=true" width="49.5%"/>
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%"/> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_3.png?raw=true" width="49.5%"/>
 
 ## Getting Started
 

@@ -71,13 +71,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.9"
-  find_dropdown:
+  dropdown_search:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.1.8"
+    version: "0.1.0"
   flutter:
     dependency: "direct main"
     description: flutter

@@ -1,34 +1,33 @@
-library find_dropdown;
+library dropdown_search;
 
-import 'package:find_dropdown/select_dialog.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
+import 'dropdownSearchBbloc.dart';
+import 'selectDialog.dart';
 
-import 'find_dropdown_bloc.dart';
-
-typedef Future<List<T>> FindDropdownFindType<T>(String text);
-typedef void FindDropdownChangedType<T>(T selectedItem);
-typedef Widget FindDropdownBuilderType<T>(
+typedef Future<List<T>> DropdownSearchFindType<T>(String text);
+typedef void DropdownSearchChangedType<T>(T selectedItem);
+typedef Widget DropdownSearchBuilderType<T>(
     BuildContext context, T selectedItem, String itemAsString);
-typedef String FindDropdownValidationType<T>(T selectedItem);
-typedef Widget FindDropdownItemBuilderType<T>(
+typedef String DropdownSearchValidationType<T>(T selectedItem);
+typedef Widget DropdownSearchItemBuilderType<T>(
   BuildContext context,
   T item,
   bool isSelected,
 );
 
-class FindDropdown<T> extends StatefulWidget {
+class DropdownSearch<T> extends StatefulWidget {
   final String label;
   final bool showSearchBox;
   final bool showClearButton;
   final TextStyle labelStyle;
   final List<T> items;
   final T selectedItem;
-  final FindDropdownFindType<T> onFind;
-  final FindDropdownChangedType<T> onChanged;
-  final FindDropdownBuilderType<T> dropdownBuilder;
-  final FindDropdownItemBuilderType<T> dropdownItemBuilder;
-  final FindDropdownValidationType<T> validate;
+  final DropdownSearchFindType<T> onFind;
+  final DropdownSearchChangedType<T> onChanged;
+  final DropdownSearchBuilderType<T> dropdownBuilder;
+  final DropdownSearchItemBuilderType<T> dropdownItemBuilder;
+  final DropdownSearchValidationType<T> validate;
   final InputDecoration searchBoxDecoration;
   final Color backgroundColor;
   final String dialogTitle;
@@ -36,7 +35,7 @@ class FindDropdown<T> extends StatefulWidget {
   final double dropdownBuilderHeight;
   final String Function(T item) itemAsString;
 
-  const FindDropdown(
+  const DropdownSearch(
       {Key key,
       @required this.onChanged,
       this.label,
@@ -59,16 +58,16 @@ class FindDropdown<T> extends StatefulWidget {
         super(key: key);
 
   @override
-  _FindDropdownState<T> createState() => _FindDropdownState<T>();
+  _DropdownSearchState<T> createState() => _DropdownSearchState<T>();
 }
 
-class _FindDropdownState<T> extends State<FindDropdown<T>> {
-  FindDropdownBloc<T> bloc;
+class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
+  DropdownSearchBloc<T> bloc;
 
   @override
   void initState() {
     super.initState();
-    bloc = FindDropdownBloc<T>(
+    bloc = DropdownSearchBloc<T>(
       seedValue: widget.selectedItem,
       validate: widget.validate,
     );
@@ -103,8 +102,7 @@ class _FindDropdownState<T> extends State<FindDropdown<T>> {
                   onTap: () {
                     SelectDialog.showModal(
                       context,
-                      //todo uncomment this line after updating selectDialogLibrary
-                      //itemAsString: widget.itemAsString,
+                      itemAsString: widget.itemAsString,
                       items: widget.items,
                       label: widget.dialogTitle == null
                           ? widget.label

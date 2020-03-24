@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:find_dropdown/find_dropdown.dart';
+import 'package:dropdown_search/dropdownSearch.dart';
 
 import 'user_model.dart';
 
@@ -28,12 +28,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("FindDropdown Example")),
+      appBar: AppBar(title: Text("DropdownSearch Example")),
       body: Padding(
         padding: const EdgeInsets.all(25),
         child: Column(
           children: <Widget>[
-            FindDropdown(
+            DropdownSearch(
               items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
               label: "País",
               onChanged: print,
@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   return null;
               },
             ),
-            FindDropdown<UserModel>(
+            DropdownSearch<UserModel>(
               label: "Nome",
               onFind: (String filter) => getData(filter),
               itemAsString: UserModel.userAsString,
@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (UserModel data) => print(data),
             ),
 
-            FindDropdown<UserModel>(
+            DropdownSearch<UserModel>(
               label: "Label",
               dialogTitle: "Title dialog",
               dropdownBuilderHeight: 70,
@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
 
 
-            FindDropdown<UserModel>(
+            DropdownSearch<UserModel>(
               label: "Personagem",
               onFind: (String filter) => getData(filter),
               onChanged: (UserModel data) {
@@ -125,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
 
-            FindDropdown<UserModel>(
+            DropdownSearch<UserModel>(
               label: "Person with clear option",
               showClearButton: true,
               onFind: (String filter) => getData(filter),

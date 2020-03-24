@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-class FindDropdownBloc<T> {
+class DropdownSearchBloc<T> {
   final textController = TextEditingController();
   final selected$ = BehaviorSubject<T>();
   final _validateMessage$ = BehaviorSubject<String>();
 
   Stream<String> get validateMessageOut => _validateMessage$;
 
-  FindDropdownBloc({
+  DropdownSearchBloc({
     T seedValue,
     String Function(T selected) validate,
   }) {
