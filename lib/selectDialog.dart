@@ -173,9 +173,10 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     if (widget.onFind != null && widget.isFilterOnline) {
       List<T> onlineItems = await widget.onFind(filter);
       if (onlineItems != null && onlineItems.isNotEmpty) {
-        //remove already existant occurance on the list
-        _items.removeWhere((i) => onlineItems.contains(i));
-
+        //Remove all old data
+        _items.clear();
+        //add offline items
+        if (widget.itemsList != null) _items.addAll(widget.itemsList);
         //add new online items to list
         _items.addAll(onlineItems);
       }
