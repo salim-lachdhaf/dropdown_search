@@ -23,7 +23,7 @@ class DropdownSearch<T> extends StatelessWidget {
   final bool showClearButton;
   final TextStyle labelStyle;
   final List<T> items;
-  final T selectedItem;
+  T selectedItem;
   final DropdownSearchFindType<T> onFind;
   final DropdownSearchChangedType<T> onChanged;
   final DropdownSearchBuilderType<T> dropdownBuilder;
@@ -102,6 +102,7 @@ class DropdownSearch<T> extends StatelessWidget {
                       backgroundColor: backgroundColor,
                       titleStyle: dialogTitleStyle,
                       onChange: (item) {
+                        selectedItem  = item; //fix widget rebuild issue
                         selectedItemNotifier.value = item;
                         if (validate != null) {
                           validateMessageNotifier.value = validate(item);
