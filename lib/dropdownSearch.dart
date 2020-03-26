@@ -16,7 +16,7 @@ typedef Widget DropdownSearchItemBuilderType<T>(
   bool isSelected,
 );
 
-class DropdownSearch<T> extends StatefulWidget {
+class DropdownSearch<T> extends StatelessWidget {
   final String label;
   final bool showSearchBox;
   final bool isFilteredOnline;
@@ -36,7 +36,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final double dropdownBuilderHeight;
   final String Function(T item) itemAsString;
 
-  const DropdownSearch(
+  DropdownSearch(
       {Key key,
       @required this.onChanged,
       this.label,
@@ -59,77 +59,60 @@ class DropdownSearch<T> extends StatefulWidget {
       : assert(onChanged != null),
         super(key: key);
 
-  @override
-  _DropdownSearchState<T> createState() => _DropdownSearchState<T>();
-}
-
-class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
-  ValueNotifier<T> selectedItem = ValueNotifier(null);
-  StreamController<String> validateMessage = StreamController();
-
-  @override
-  void initState() {
-    super.initState();
-    selectedItem.value = widget.selectedItem;
-    if (widget.validate != null) {
-      validateMessage.add(widget.validate(widget.selectedItem));
-    }
-  }
-
-  @override
-  void dispose() {
-    validateMessage.close();
-    super.dispose();
-  }
+  ValueNotifier<T> selectedItemNotifier = ValueNotifier(null);
+  ValueNotifier<String> validateMessageNotifier = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
+    selectedItemNotifier.value = selectedItem;
+    if (validate != null) {
+      validateMessageNotifier.value = validate(selectedItem);
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        if (widget.label != null)
+        if (label != null)
           Text(
-            widget.label,
-            style: widget.labelStyle ?? Theme.of(context).textTheme.subhead,
+            label,
+            style: labelStyle ?? Theme.of(context).textTheme.subhead,
           ),
-        if (widget.label != null) SizedBox(height: 5),
+        if (label != null) SizedBox(height: 5),
         Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ValueListenableBuilder(
-              valueListenable: selectedItem,
+              valueListenable: selectedItemNotifier,
               builder: (context, data, wt) {
                 return GestureDetector(
                   onTap: () {
                     SelectDialog.showModal<T>(
                       context,
-                      isFilteredOnline: widget.isFilteredOnline,
-                      itemAsString: widget.itemAsString,
-                      items: widget.items,
-                      label: widget.dialogTitle == null
-                          ? widget.label
-                          : widget.dialogTitle,
-                      onFind: widget.onFind,
-                      showSearchBox: widget.showSearchBox,
-                      itemBuilder: widget.dropdownItemBuilder,
+                      isFilteredOnline: isFilteredOnline,
+                      itemAsString: itemAsString,
+                      items: items,
+                      label: dialogTitle == null ? label : dialogTitle,
+                      onFind: onFind,
+                      showSearchBox: showSearchBox,
+                      itemBuilder: dropdownItemBuilder,
                       selectedValue: data,
-                      searchBoxDecoration: widget.searchBoxDecoration,
-                      backgroundColor: widget.backgroundColor,
-                      titleStyle: widget.dialogTitleStyle,
+                      searchBoxDecoration: searchBoxDecoration,
+                      backgroundColor: backgroundColor,
+                      titleStyle: dialogTitleStyle,
                       onChange: (item) {
-                        selectedItem.value = item;
-                        if (widget.validate != null) {
-                          validateMessage.add(widget.validate(item));
+                        selectedItemNotifier.value = item;
+                        if (validate != null) {
+                          validateMessageNotifier.value = validate(item);
                         }
-                        widget.onChanged(item);
+                        onChanged(item);
                       },
                     );
                   },
-                  child: (widget.dropdownBuilder != null)
+                  child: (dropdownBuilder != null)
                       ? Stack(children: <Widget>[
-                          widget.dropdownBuilder(context, data,
+                          dropdownBuilder(context, data,
                               _manageSelectedItemDesignation(data)),
                           Positioned.fill(
                               right: 5,
@@ -140,7 +123,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                         ])
                       : Container(
                           padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
-                          height: widget.dropdownBuilderHeight,
+                          height: dropdownBuilderHeight,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(
@@ -162,18 +145,18 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 );
               },
             ),
-            if (widget.validate != null)
-              StreamBuilder<String>(
-                stream: validateMessage.stream,
-                builder: (context, snapshot) {
+            if (validate != null)
+              ValueListenableBuilder(
+                valueListenable: validateMessageNotifier,
+                builder: (context, msg, w) {
                   return ConstrainedBox(
                     constraints: BoxConstraints(minHeight: 15),
                     child: Padding(
                       padding: const EdgeInsets.all(5),
                       child: Text(
-                        snapshot.data ?? "",
+                        msg ?? "",
                         style: Theme.of(context).textTheme.body1.copyWith(
-                            color: snapshot.hasData
+                            color: msg != null
                                 ? Theme.of(context).errorColor
                                 : Colors.transparent),
                       ),
@@ -190,10 +173,10 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   String _manageSelectedItemDesignation(data) {
     if (data == null) {
       return "";
-    } else if (widget.itemAsString == null) {
+    } else if (itemAsString == null) {
       return data.toString();
     } else {
-      return widget.itemAsString(data);
+      return itemAsString(data);
     }
   }
 
@@ -201,11 +184,11 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        if (data != null && widget.showClearButton)
+        if (data != null && showClearButton)
           GestureDetector(
             onTap: () {
-              selectedItem.value = null;
-              widget.onChanged(null);
+              selectedItemNotifier.value = null;
+              onChanged(null);
             },
             child: Padding(
               padding: const EdgeInsets.only(right: 0),
@@ -216,7 +199,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
               ),
             ),
           ),
-        if (data == null || !widget.showClearButton)
+        if (data == null || !showClearButton)
           Icon(
             Icons.arrow_drop_down,
             size: 25,
