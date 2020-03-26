@@ -51,6 +51,21 @@ class _MyHomePageState extends State<MyHomePage> {
                   return null;
               },
             ),
+            DropdownSearch(
+              items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
+              label: "País",
+              onChanged: print,
+              selectedItem: "Brasil",
+              showSearchBox: false,
+              validate: (String item) {
+                if (item == null)
+                  return "Required field";
+                else if (item == "Brasil")
+                  return "Invalid item";
+                else
+                  return null;
+              },
+            ),
             DropdownSearch<UserModel>(
               label: "Nome",
               onFind: (String filter) => getData(filter),

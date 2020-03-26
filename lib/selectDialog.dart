@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'selectBloc.dart';
+import 'dart:async';
 
 typedef Widget SelectOneItemBuilderType<T>(
     BuildContext context, T item, bool isSelected);
@@ -72,25 +72,21 @@ class SelectDialog<T> extends StatefulWidget {
   }
 
   @override
-  _SelectDialogState<T> createState() =>
-      _SelectDialogState<T>(itemsList, onChange, onFind);
+  _SelectDialogState<T> createState() => _SelectDialogState<T>();
 }
 
 class _SelectDialogState<T> extends State<SelectDialog<T>> {
-  SelectOneBloc<T> bloc;
-  void Function(T) onChange;
+  StreamController<List<T>> itemsStream = StreamController();
 
-  _SelectDialogState(
-    List<T> itemsList,
-    this.onChange,
-    Future<List<T>> Function(String text) onFind,
-  ) {
-    bloc = SelectOneBloc(itemsList, onFind);
+  @override
+  void initState() {
+    super.initState();
+    itemsStream.add(widget.itemsList);
   }
 
   @override
   void dispose() {
-    bloc.dispose();
+    itemsStream.close();
     super.dispose();
   }
 
@@ -105,7 +101,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                onChanged: bloc.onTextChanged,
+                onChanged: _onTextChanged,
                 decoration: widget.searchBoxDecoration ??
                     InputDecoration(
                       hintText: widget.hintText,
@@ -116,7 +112,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
           Expanded(
             child: Scrollbar(
               child: StreamBuilder<List<T>>(
-                stream: bloc.filteredListOut,
+                stream: itemsStream.stream,
                 builder: (context, snapshot) {
                   if (snapshot.hasError)
                     return Center(
@@ -134,7 +130,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                           child: widget.itemBuilder(
                               context, item, item == widget.selectedValue),
                           onTap: () {
-                            onChange(item);
+                            widget.onChange(item);
                             Navigator.pop(context);
                           },
                         );
@@ -145,7 +141,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                               : item.toString()),
                           selected: item == widget.selectedValue,
                           onTap: () {
-                            onChange(item);
+                            widget.onChange(item);
                             Navigator.pop(context);
                           },
                         );
@@ -158,5 +154,11 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         ],
       ),
     );
+  }
+
+  void _onTextChanged(String filter) {
+    if (widget.itemsList == null || widget.itemsList.isEmpty) return;
+    itemsStream.add(widget.itemsList.where(
+        (i) => i.toString().toLowerCase().contains(filter.toLowerCase())));
   }
 }

@@ -2,8 +2,8 @@ library dropdown_search;
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
-import 'dropdownSearchBbloc.dart';
 import 'selectDialog.dart';
+import 'dart:async';
 
 typedef Future<List<T>> DropdownSearchFindType<T>(String text);
 typedef void DropdownSearchChangedType<T>(T selectedItem);
@@ -62,20 +62,22 @@ class DropdownSearch<T> extends StatefulWidget {
 }
 
 class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
-  DropdownSearchBloc<T> bloc;
+  StreamController<T> selectedItem = StreamController();
+  StreamController<String> validateMessage = StreamController();
 
   @override
   void initState() {
     super.initState();
-    bloc = DropdownSearchBloc<T>(
-      seedValue: widget.selectedItem,
-      validate: widget.validate,
-    );
+    selectedItem.add(widget.selectedItem);
+    if (widget.validate != null) {
+      validateMessage.add(widget.validate(widget.selectedItem));
+    }
   }
 
   @override
   void dispose() {
-    bloc.dispose();
+    selectedItem.close();
+    validateMessage.close();
     super.dispose();
   }
 
@@ -96,7 +98,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             StreamBuilder<T>(
-              stream: bloc.selected$,
+              stream: selectedItem.stream,
               builder: (context, snapshot) {
                 return GestureDetector(
                   onTap: () {
@@ -115,7 +117,10 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                       backgroundColor: widget.backgroundColor,
                       titleStyle: widget.dialogTitleStyle,
                       onChange: (item) {
-                        bloc.selected$.add(item);
+                        selectedItem.add(item);
+                        if (widget.validate != null) {
+                          validateMessage.add(widget.validate(item));
+                        }
                         widget.onChanged(item);
                       },
                     );
@@ -157,7 +162,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
             ),
             if (widget.validate != null)
               StreamBuilder<String>(
-                stream: bloc.validateMessageOut,
+                stream: validateMessage.stream,
                 builder: (context, snapshot) {
                   return ConstrainedBox(
                     constraints: BoxConstraints(minHeight: 15),
@@ -197,7 +202,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         if (snapshot.data != null && widget.showClearButton)
           GestureDetector(
             onTap: () {
-              bloc.selected$.add(null);
+              selectedItem.add(null);
               widget.onChanged(null);
             },
             child: Padding(
