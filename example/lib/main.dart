@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Divider(),
             DropdownSearch<UserModel>(
-              label: "Nome",
+              label: "filtre name with custom function ItemAsString",
               onFind: (String filter) => getData(filter),
               itemAsString: UserModel.userAsString,
               searchBoxDecoration: InputDecoration(
@@ -162,8 +162,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Divider(),
             DropdownSearch<UserModel>(
-              isFilteredOnline: false,
-              label: "Person with clear option",
+              isFilteredOnline: true,
+              label: "Person with clear option with filter online",
               showClearButton: true,
               onFind: (String filter) => getData(filter),
               onChanged: (UserModel data) {

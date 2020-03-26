@@ -181,9 +181,15 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
       }
     }
 
-    itemsStream.add(_items
-        .where((i) => i.toString().toLowerCase().contains(filter.toLowerCase()))
-        .toList());
+    itemsStream.add(_items.where((i) {
+      if (widget.itemAsString != null) {
+        return (widget.itemAsString(i))
+                ?.toLowerCase()
+                ?.contains(filter.toLowerCase()) ??
+            List();
+      }
+      return i.toString().toLowerCase().contains(filter.toLowerCase());
+    }).toList());
   }
 }
 
