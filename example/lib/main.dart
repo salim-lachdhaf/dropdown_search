@@ -31,17 +31,17 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(title: Text("DropdownSearch Example")),
       body: Padding(
         padding: const EdgeInsets.all(25),
-        child: Column(
+        child: ListView(
           children: <Widget>[
             DropdownSearch(
               items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
-              label: "País",
+              label: "country with custom colors",
               onChanged: print,
               selectedItem: "Brasil",
               showSearchBox: false,
               labelStyle: TextStyle(color: Colors.redAccent),
               backgroundColor: Colors.redAccent,
-              dialogTitleStyle:TextStyle(color: Colors.greenAccent),
+              dialogTitleStyle: TextStyle(color: Colors.greenAccent),
               validate: (String item) {
                 if (item == null)
                   return "Required field";
@@ -51,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   return null;
               },
             ),
+            Divider(),
             DropdownSearch(
               items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
               label: "País",
@@ -66,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   return null;
               },
             ),
+            Divider(),
             DropdownSearch<UserModel>(
               label: "Nome",
               onFind: (String filter) => getData(filter),
@@ -76,7 +78,26 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               onChanged: (UserModel data) => print(data),
             ),
-
+            Divider(),
+            DropdownSearch<UserModel>(
+              items: [
+                UserModel(name: "name", id: "999"),
+                UserModel(name: "name2", id: "0101")
+              ],
+              onFind: (String filter) => getData(filter),
+              label: "Online and offline together",
+              onChanged: print,
+              showSearchBox: true,
+              validate: (UserModel item) {
+                if (item == null)
+                  return "Required field";
+                else if (item.name.contains("Leo"))
+                  return "Invalid item";
+                else
+                  return null;
+              },
+            ),
+            Divider(),
             DropdownSearch<UserModel>(
               label: "Label",
               dialogTitle: "Title dialog",
@@ -88,15 +109,15 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               onChanged: (UserModel data) => print(data),
             ),
-
-
+            Divider(),
             DropdownSearch<UserModel>(
               label: "Personagem",
               onFind: (String filter) => getData(filter),
               onChanged: (UserModel data) {
                 print(data);
               },
-              dropdownBuilder: (BuildContext context, UserModel item, String itemDesignation) {
+              dropdownBuilder: (BuildContext context, UserModel item,
+                  String itemDesignation) {
                 return Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Theme.of(context).dividerColor),
@@ -105,16 +126,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   child: (item?.avatar == null)
                       ? ListTile(
-                    leading: CircleAvatar(),
-                    title: Text("No item selected"),
-                  )
+                          leading: CircleAvatar(),
+                          title: Text("No item selected"),
+                        )
                       : ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(item.avatar),
-                    ),
-                    title: Text(item.name),
-                    subtitle: Text(item.createdAt.toString()),
-                  ),
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(item.avatar),
+                          ),
+                          title: Text(item.name),
+                          subtitle: Text(item.createdAt.toString()),
+                        ),
                 );
               },
               dropdownItemBuilder:
@@ -123,11 +144,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   decoration: !isSelected
                       ? null
                       : BoxDecoration(
-                    border:
-                    Border.all(color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.white,
-                  ),
+                          border:
+                              Border.all(color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
                   child: ListTile(
                     selected: isSelected,
                     title: Text(item.name),
@@ -139,15 +160,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
             ),
-
+            Divider(),
             DropdownSearch<UserModel>(
+              isFilteredOnline: false,
               label: "Person with clear option",
               showClearButton: true,
               onFind: (String filter) => getData(filter),
               onChanged: (UserModel data) {
                 print(data);
               },
-              dropdownBuilder: (BuildContext context, UserModel item, String itemDesignation) {
+              dropdownBuilder: (BuildContext context, UserModel item,
+                  String itemDesignation) {
                 return Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Theme.of(context).dividerColor),
@@ -156,16 +179,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   child: (item?.avatar == null)
                       ? ListTile(
-                    leading: CircleAvatar(),
-                    title: Text("No item selected"),
-                  )
+                          leading: CircleAvatar(),
+                          title: Text("No item selected"),
+                        )
                       : ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(item.avatar),
-                    ),
-                    title: Text(item.name),
-                    subtitle: Text(item.createdAt.toString()),
-                  ),
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(item.avatar),
+                          ),
+                          title: Text(item.name),
+                          subtitle: Text(item.createdAt.toString()),
+                        ),
                 );
               },
               dropdownItemBuilder:
@@ -174,11 +197,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   decoration: !isSelected
                       ? null
                       : BoxDecoration(
-                    border:
-                    Border.all(color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.white,
-                  ),
+                          border:
+                              Border.all(color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
                   child: ListTile(
                     selected: isSelected,
                     title: Text(item.name),

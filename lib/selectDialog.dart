@@ -8,6 +8,7 @@ class SelectDialog<T> extends StatefulWidget {
   final T selectedValue;
   final List<T> itemsList;
   final bool showSearchBox;
+  final bool isFilterOnline;
   final void Function(T) onChange;
   final Future<List<T>> Function(String text) onFind;
   final SelectOneItemBuilderType<T> itemBuilder;
@@ -21,6 +22,7 @@ class SelectDialog<T> extends StatefulWidget {
       {Key key,
       this.itemsList,
       this.showSearchBox,
+      this.isFilterOnline,
       this.onChange,
       this.selectedValue,
       this.onFind,
@@ -35,6 +37,7 @@ class SelectDialog<T> extends StatefulWidget {
   static Future<T> showModal<T>(BuildContext context,
       {List<T> items,
       String label,
+      bool isFilteredOnline = false,
       T selectedValue,
       bool showSearchBox,
       Future<List<T>> Function(String text) onFind,
@@ -57,6 +60,7 @@ class SelectDialog<T> extends StatefulWidget {
           content: SelectDialog<T>(
               itemAsString: itemAsString,
               selectedValue: selectedValue,
+              isFilterOnline: isFilteredOnline,
               itemsList: items,
               onChange: onChange,
               onFind: onFind,
@@ -77,11 +81,18 @@ class SelectDialog<T> extends StatefulWidget {
 
 class _SelectDialogState<T> extends State<SelectDialog<T>> {
   StreamController<List<T>> itemsStream = StreamController();
+  final List<T> _items = List();
+  final _debouncer = Debouncer();
 
   @override
   void initState() {
     super.initState();
-    itemsStream.add(widget.itemsList);
+    Future.delayed(Duration.zero, () async {
+      if (widget.onFind != null) _items.addAll(await widget.onFind(""));
+      if (widget.itemsList != null) _items.addAll(widget.itemsList);
+
+      itemsStream.add(_items);
+    });
   }
 
   @override
@@ -101,7 +112,9 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                onChanged: _onTextChanged,
+                onChanged: (f) => _debouncer(() {
+                  _onTextChanged(f);
+                }),
                 decoration: widget.searchBoxDecoration ??
                     InputDecoration(
                       hintText: widget.hintText,
@@ -156,9 +169,32 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     );
   }
 
-  void _onTextChanged(String filter) {
-    if (widget.itemsList == null || widget.itemsList.isEmpty) return;
-    itemsStream.add(widget.itemsList.where(
-        (i) => i.toString().toLowerCase().contains(filter.toLowerCase())));
+  void _onTextChanged(String filter) async {
+    if (widget.onFind != null && widget.isFilterOnline) {
+      List<T> onlineItems = await widget.onFind(filter);
+      if (onlineItems != null && onlineItems.isNotEmpty) {
+        //remove already existant occurance on the list
+        _items.removeWhere((i) => onlineItems.contains(i));
+
+        //add new online items to list
+        _items.addAll(onlineItems);
+      }
+    }
+
+    itemsStream.add(_items
+        .where((i) => i.toString().toLowerCase().contains(filter.toLowerCase()))
+        .toList());
+  }
+}
+
+class Debouncer {
+  final Duration delay;
+  Timer _timer;
+
+  Debouncer({this.delay = const Duration(milliseconds: 500)});
+
+  call(Function action) {
+    _timer?.cancel();
+    _timer = Timer(delay, action);
   }
 }

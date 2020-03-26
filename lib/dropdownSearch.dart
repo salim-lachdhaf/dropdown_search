@@ -19,6 +19,7 @@ typedef Widget DropdownSearchItemBuilderType<T>(
 class DropdownSearch<T> extends StatefulWidget {
   final String label;
   final bool showSearchBox;
+  final bool isFilteredOnline;
   final bool showClearButton;
   final TextStyle labelStyle;
   final List<T> items;
@@ -39,6 +40,7 @@ class DropdownSearch<T> extends StatefulWidget {
       {Key key,
       @required this.onChanged,
       this.label,
+      this.isFilteredOnline = false,
       this.dialogTitle,
       this.labelStyle,
       this.items,
@@ -104,6 +106,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                   onTap: () {
                     SelectDialog.showModal(
                       context,
+                      isFilteredOnline: widget.isFilteredOnline,
                       itemAsString: widget.itemAsString,
                       items: widget.items,
                       label: widget.dialogTitle == null
