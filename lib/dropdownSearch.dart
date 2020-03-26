@@ -64,13 +64,13 @@ class DropdownSearch<T> extends StatefulWidget {
 }
 
 class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
-  StreamController<T> selectedItem = StreamController();
+  ValueNotifier<T> selectedItem = ValueNotifier(null);
   StreamController<String> validateMessage = StreamController();
 
   @override
   void initState() {
     super.initState();
-    selectedItem.add(widget.selectedItem);
+    selectedItem.value = widget.selectedItem;
     if (widget.validate != null) {
       validateMessage.add(widget.validate(widget.selectedItem));
     }
@@ -78,7 +78,6 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   @override
   void dispose() {
-    selectedItem.close();
     validateMessage.close();
     super.dispose();
   }
@@ -99,12 +98,12 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            StreamBuilder<T>(
-              stream: selectedItem.stream,
-              builder: (context, snapshot) {
+            ValueListenableBuilder(
+              valueListenable: selectedItem,
+              builder: (context, data, wt) {
                 return GestureDetector(
                   onTap: () {
-                    SelectDialog.showModal(
+                    SelectDialog.showModal<T>(
                       context,
                       isFilteredOnline: widget.isFilteredOnline,
                       itemAsString: widget.itemAsString,
@@ -115,12 +114,12 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                       onFind: widget.onFind,
                       showSearchBox: widget.showSearchBox,
                       itemBuilder: widget.dropdownItemBuilder,
-                      selectedValue: snapshot.data,
+                      selectedValue: data,
                       searchBoxDecoration: widget.searchBoxDecoration,
                       backgroundColor: widget.backgroundColor,
                       titleStyle: widget.dialogTitleStyle,
                       onChange: (item) {
-                        selectedItem.add(item);
+                        selectedItem.value = item;
                         if (widget.validate != null) {
                           validateMessage.add(widget.validate(item));
                         }
@@ -130,13 +129,13 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                   },
                   child: (widget.dropdownBuilder != null)
                       ? Stack(children: <Widget>[
-                          widget.dropdownBuilder(context, snapshot.data,
-                              _manageSelectedItemDesignation(snapshot)),
+                          widget.dropdownBuilder(context, data,
+                              _manageSelectedItemDesignation(data)),
                           Positioned.fill(
                               right: 5,
                               child: Align(
                                 alignment: Alignment.centerRight,
-                                child: _manageTrailingIcon(snapshot),
+                                child: _manageTrailingIcon(data),
                               ))
                         ])
                       : Container(
@@ -153,10 +152,10 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text(_manageSelectedItemDesignation(snapshot)),
+                              Text(_manageSelectedItemDesignation(data)),
                               Align(
                                   alignment: Alignment.centerRight,
-                                  child: _manageTrailingIcon(snapshot)),
+                                  child: _manageTrailingIcon(data)),
                             ],
                           ),
                         ),
@@ -188,24 +187,24 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
     );
   }
 
-  String _manageSelectedItemDesignation(snapshot) {
-    if (snapshot.data == null) {
+  String _manageSelectedItemDesignation(data) {
+    if (data == null) {
       return "";
     } else if (widget.itemAsString == null) {
-      return snapshot.data.toString();
+      return data.toString();
     } else {
-      return widget.itemAsString(snapshot.data);
+      return widget.itemAsString(data);
     }
   }
 
-  Widget _manageTrailingIcon(snapshot) {
+  Widget _manageTrailingIcon(data) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        if (snapshot.data != null && widget.showClearButton)
+        if (data != null && widget.showClearButton)
           GestureDetector(
             onTap: () {
-              selectedItem.add(null);
+              selectedItem.value = null;
               widget.onChanged(null);
             },
             child: Padding(
@@ -217,7 +216,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
               ),
             ),
           ),
-        if (snapshot.data == null || !widget.showClearButton)
+        if (data == null || !widget.showClearButton)
           Icon(
             Icons.arrow_drop_down,
             size: 25,

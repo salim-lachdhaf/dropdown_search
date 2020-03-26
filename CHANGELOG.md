@@ -1,3 +1,6 @@
+## [0.1.4] - 2020.03.29
+* Replace Stream by valueNotifier
+
 ## [0.1.3] - 2020.03.28
 * possibility to load filter online once
 
