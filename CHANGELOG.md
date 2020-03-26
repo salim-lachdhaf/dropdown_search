@@ -1,3 +1,6 @@
+## [0.1.3] - 2020.03.28
+* possibility to load filter online once
+
 ## [0.1.2] - 2020.03.27
 * improve performance
 
