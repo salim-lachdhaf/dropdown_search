@@ -4,9 +4,9 @@
 
 Simple and robust DropdownSearch with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
 
-![](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/Screenshot_4.png?raw=true)
+![](https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_4.png?raw=true)
 
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%" /> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%" /> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%" />
 
 ## ATTENTION
 If you use rxdart in your project in a version lower than 0.23.x, use version `0.1.7+1` of this package. Otherwise, you can use the most current version!

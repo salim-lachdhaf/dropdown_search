@@ -8,7 +8,7 @@ DropdownSearch(
 ),
 ```
 
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%"/> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_1.png?raw=true" width="49.5%"/>
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%"/> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_1.png?raw=true" width="49.5%"/>
 
 ## Validation Example
 ```dart
@@ -27,7 +27,7 @@ DropdownSearch(
   },
 ),
 ```
-![](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/Screenshot_5.png?raw=true)
+![](https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_5.png?raw=true)
 
 ## Online Endpoint Example
 ```dart
@@ -46,7 +46,7 @@ DropdownSearch<UserModel>(
   },
 );
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/GIF_Endpoint.gif?raw=true" width="49.5%"/> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_2.png?raw=true" width="49.5%"/>
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Endpoint.gif?raw=true" width="49.5%"/> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_2.png?raw=true" width="49.5%"/>
 
 ## Custom Layout Endpoint Example
 ```dart
@@ -105,7 +105,7 @@ DropdownSearch<UserModel>(
   },
 );
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%"/> <img src="https://github.com/davidsdearaujo/find_dropdown/blob/master/screenshots/Screenshot_3.png?raw=true" width="49.5%"/>
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%"/> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_3.png?raw=true" width="49.5%"/>
 
 ## Getting Started
 
