@@ -8,8 +8,6 @@ Simple and robust DropdownSearch with item search feature, making it possible to
 
 <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%" /> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%" />
 
-## ATTENTION
-If you use rxdart in your project in a version lower than 0.23.x, use version `0.1.7+1` of this package. Otherwise, you can use the most current version!
 
 ## packages.yaml
 ```yaml
@@ -25,17 +23,17 @@ import 'package:dropdown_search/dropdownSearch.dart';
 
 ```dart
 DropdownSearch(
-  items: ["Brasil", "Itália", "Estados Undos", "Canadá"],
+  items: ["Brazil", "Italia", "Tunisia", "Canada"],
   label: "País",
   onChanged: print,
-  selectedItem: "Brasil",
+  selectedItem: "Brazil",
 );
 ```
 
 ## customize showed field (itemAsString)
 ```dart
 DropdownSearch<UserModel>(
-  label: "Nome",
+  label: "Name",
   onFind: (String filter) => getData(filter),
   itemAsString: UserModel.userAsStringByName,
   searchBoxDecoration: InputDecoration(
@@ -46,9 +44,40 @@ DropdownSearch<UserModel>(
 ),
 
 DropdownSearch<UserModel>(
-  label: "Nome",
+  label: "Name",
   onFind: (String filter) => getData(filter),
   itemAsString: UserModel.userAsStringById,
+  searchBoxDecoration: InputDecoration(
+    hintText: "Search",
+    border: OutlineInputBorder(),
+  ),
+  onChanged: (UserModel data) => print(data),
+),
+```
+
+## customize Filter Function
+```dart
+DropdownSearch<UserModel>(
+  label: "Name",
+  filterFn: UserModel.userFilterByCreationDate,
+  onFind: (String filter) => getData(filter),
+  itemAsString: UserModel.userAsStringByName,
+  searchBoxDecoration: InputDecoration(
+    hintText: "Search",
+    border: OutlineInputBorder(),
+  ),
+  onChanged: (UserModel data) => print(data),
+),
+```
+
+## customize Search Mode
+```dart
+DropdownSearch<UserModel>(
+  mode: Mode.BOTTOM_SHEET,
+  label: "Name",
+  maxHeight: 350,
+  onFind: (String filter) => getData(filter),
+  itemAsString: UserModel.userAsStringByName,
   searchBoxDecoration: InputDecoration(
     hintText: "Search",
     border: OutlineInputBorder(),
@@ -96,17 +125,34 @@ DropdownSearch<UserModel>(
 ## Layout customization
 You can customize the layout of the DropdownSearch and its items. [EXAMPLE](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example#custom-layout-endpoint-example)
 
-To **customize the DropdownSearch**, we have the `dropdownBuilder` property, which takes a function with the parameters:
-- `BuildContext context`: current context;
-- `T item`: Current item, where **T** is the type passed in the DropdownSearch constructor.
+|  Properties |   Description|
+| ------------ | ------------ |
+|`label`|DropDownSearch label|
+|`showSearchBox`|show/hide the search box|
+|`isFilteredOnline`|true if the filter on items is applied onlie (via API)|
+|`showClearButton`| show/hide clear selected item|
+|`labelStyle`| text style for the DropdownSearch label|
+|`items`| offline items list|
+|`selectedItem`| selected item|
+|`onFind`|function that returns item from API|
+|`onChanged`|called when a new item is selected|
+|`dropdownBuilder`|to customize list of items UI|
+|`dropdownItemBuilder`|to customize selected item|
+|`validate`|function to apply the validation formula|
+|`searchBoxDecoration`|decoration for the search box|
+|`backgroundColor`|background color for the dialog/menu/bottomSheet|
+|`dialogTitle`|the title for dialog/menu/bottomSheet|
+|`dialogTitleStyle`|text style for the dialog title|
+|`dropdownItemBuilderHeight`|the height of the selected item UI|
+|`itemAsString`|customize the fields the be shown|
+|`filterFn`|custom filter function|
+|`enabled`|enable/disable dropdownSearch|
+|`mode`| MENU / DIALOG/ BOTTOM_SHEET|
+|`maxHeight`| the max height for dialog/bottomSheet/Menu|
 
-To **customize the items**, we have the `dropdownItemBuilder` property, which takes a function with the parameters:
-- `BuildContext context`: current context;
-- `T item`: Current item, where **T** is the type passed in the DropdownSearch constructor.
-- `bool isSelected`: Boolean that tells you if the current item is selected.
 
 # Attention
-To use a template as an item type, you need to implement **toString**, **equals** and **hashcode**, as shown below:
+To use a template as an item type, and you don't want to use a custom fonction ***itemAsString*** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
 
 ```dart
 class UserModel {
@@ -127,6 +173,10 @@ class UserModel {
       return '#${userModel.id} ${userModel.id}';
     }
 
+//this method will prevent the override of toString
+  static bool userFilterByCreationDate(UserModel userModel, String filter){
+    return userModel?.createdAt?.toString()?.contains(filter);
+  }
 
   @override
   String toString() => name;
