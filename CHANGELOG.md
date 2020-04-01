@@ -1,3 +1,6 @@
+## [0.2.0] - 2020.04.01
+* Update README.md
+
 ## [0.1.9] - 2020.04.01
 * Update README.md
 
