@@ -1,16 +1,92 @@
-## Simple Example
+[![Buy Me A Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20A%20Coffee-yellow.svg)](https://www.buymeacoffee.com/SalimDev)
+
+# DropdownSearch package
+
+Simple and robust DropdownSearch with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
+
+![](https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_4.png?raw=true)
+
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%" /> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%" />
+
+
+## packages.yaml
+```yaml
+dropdown_search: <lastest version>
+```
+
+## Import
+```dart
+import 'package:dropdown_search/dropdownSearch.dart';
+```
+
+## Simple implementation
+
 ```dart
 DropdownSearch(
-  items: ["Brazil", "France", "Tunisia", "Canada"],
-  label: "Country",
+  items: ["Brazil", "Italia", "Tunisia", "Canada"],
+  label: "País",
   onChanged: print,
-  selectedItem: "Tunisia",
+  selectedItem: "Brazil",
+);
+```
+
+## customize showed field (itemAsString)
+```dart
+DropdownSearch<UserModel>(
+  label: "Name",
+  onFind: (String filter) => getData(filter),
+  itemAsString: UserModel.userAsStringByName,
+  searchBoxDecoration: InputDecoration(
+    hintText: "Search",
+    border: OutlineInputBorder(),
+  ),
+  onChanged: (UserModel data) => print(data),
+),
+
+DropdownSearch<UserModel>(
+  label: "Name",
+  onFind: (String filter) => getData(filter),
+  itemAsString: UserModel.userAsStringById,
+  searchBoxDecoration: InputDecoration(
+    hintText: "Search",
+    border: OutlineInputBorder(),
+  ),
+  onChanged: (UserModel data) => print(data),
 ),
 ```
 
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%"/> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_1.png?raw=true" width="49.5%"/>
+## customize Filter Function
+```dart
+DropdownSearch<UserModel>(
+  label: "Name",
+  filterFn: UserModel.userFilterByCreationDate,
+  onFind: (String filter) => getData(filter),
+  itemAsString: UserModel.userAsStringByName,
+  searchBoxDecoration: InputDecoration(
+    hintText: "Search",
+    border: OutlineInputBorder(),
+  ),
+  onChanged: (UserModel data) => print(data),
+),
+```
 
-## Validation Example
+## customize Search Mode
+```dart
+DropdownSearch<UserModel>(
+  mode: Mode.BOTTOM_SHEET,
+  label: "Name",
+  maxHeight: 350,
+  onFind: (String filter) => getData(filter),
+  itemAsString: UserModel.userAsStringByName,
+  searchBoxDecoration: InputDecoration(
+    hintText: "Search",
+    border: OutlineInputBorder(),
+  ),
+  onChanged: (UserModel data) => print(data),
+),
+```
+
+## Validation
 ```dart
 DropdownSearch(
   items: ["Brazil", "France", "Tunisia", "Canada"],
@@ -25,33 +101,14 @@ DropdownSearch(
     else
       return null;
   },
-),
-```
-![](https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_5.png?raw=true)
-
-## Online Endpoint Example
-```dart
-DropdownSearch<UserModel>(
-  label: "Name",
-  onChanged: (UserModel data) {
-    print(data);
-  },
-  onFind: (String filter) async {
-    var response = await Dio().get(
-        "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
-        queryParameters: {"filter": filter},
-    );
-    var models = UserModel.fromJsonList(response.data);
-    return models;
-  },
 );
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Endpoint.gif?raw=true" width="49.5%"/> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_2.png?raw=true" width="49.5%"/>
 
-## Custom Layout Endpoint Example
+
+## Endpoint implementation (using [Dio package](https://pub.dev/packages/dio))
 ```dart
 DropdownSearch<UserModel>(
-  label: "Personagem",
+  label: "Nome",
   onFind: (String filter) async {
     var response = await Dio().get(
         "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
@@ -63,59 +120,74 @@ DropdownSearch<UserModel>(
   onChanged: (UserModel data) {
     print(data);
   },
-  dropdownBuilder: (BuildContext context, UserModel item) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).dividerColor),
-        borderRadius: BorderRadius.circular(5),
-        color: Colors.white,
-      ),
-      child: (item?.avatar == null)
-          ? ListTile(
-              leading: CircleAvatar(),
-              title: Text("No item selected"),
-            )
-          : ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(item.avatar),
-              ),
-              title: Text(item.name),
-              subtitle: Text(item.createdAt.toString()),
-            ),
-    );
-  },
-  dropdownItemBuilder:  (BuildContext context, UserModel item, bool isSelected) {
-    return Container(
-      decoration: !isSelected
-          ? null
-          : BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor),
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white,
-            ),
-      child: ListTile(
-        selected: isSelected,
-        title: Text(item.name),
-        subtitle: Text(item.createdAt.toString()),
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(item.avatar),
-        ),
-      ),
-    );
-  },
 );
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%"/> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_3.png?raw=true" width="49.5%"/>
+## Layout customization
+You can customize the layout of the DropdownSearch and its items. [EXAMPLE](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example#custom-layout-endpoint-example)
 
-## Getting Started
+|  Properties |   Description|
+| ------------ | ------------ |
+|`label`|DropDownSearch label|
+|`showSearchBox`|show/hide the search box|
+|`isFilteredOnline`|true if the filter on items is applied onlie (via API)|
+|`showClearButton`| show/hide clear selected item|
+|`labelStyle`| text style for the DropdownSearch label|
+|`items`| offline items list|
+|`selectedItem`| selected item|
+|`onFind`|function that returns item from API|
+|`onChanged`|called when a new item is selected|
+|`dropdownBuilder`|to customize list of items UI|
+|`dropdownItemBuilder`|to customize selected item|
+|`validate`|function to apply the validation formula|
+|`searchBoxDecoration`|decoration for the search box|
+|`backgroundColor`|background color for the dialog/menu/bottomSheet|
+|`dialogTitle`|the title for dialog/menu/bottomSheet|
+|`dialogTitleStyle`|text style for the dialog title|
+|`dropdownItemBuilderHeight`|the height of the selected item UI|
+|`itemAsString`|customize the fields the be shown|
+|`filterFn`|custom filter function|
+|`enabled`|enable/disable dropdownSearch|
+|`mode`| MENU / DIALOG/ BOTTOM_SHEET|
+|`maxHeight`| the max height for dialog/bottomSheet/Menu|
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+# Attention
+To use a template as an item type, and you don't want to use a custom fonction ***itemAsString*** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+```dart
+class UserModel {
+  final String id;
+  final DateTime createdAt;
+  final String name;
+  final String avatar;
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  UserModel({this.id, this.createdAt, this.name, this.avatar});
+
+  //this method will prevent the override of toString and make the same model useful for different cases
+    static String userAsStringByName(UserModel userModel){
+      return '#${userModel.id} ${userModel.name}';
+    }
+
+    //this method will prevent the override of toString
+    static String userAsStringById(UserModel userModel){
+      return '#${userModel.id} ${userModel.id}';
+    }
+
+//this method will prevent the override of toString
+  static bool userFilterByCreationDate(UserModel userModel, String filter){
+    return userModel?.createdAt?.toString()?.contains(filter);
+  }
+
+  @override
+  String toString() => name;
+
+  @override
+  operator ==(o) => o is UserModel && o.id == id;
+
+  @override
+  int get hashCode => id.hashCode^name.hashCode^createdAt.hashCode;
+
+}
+```
+
+# [View more Examples](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example)
