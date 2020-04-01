@@ -30,6 +30,11 @@ class UserModel {
     return '#${userModel.id} ${userModel.name}';
   }
 
+  //this method will prevent the override of toString
+  static bool userFilterByCreationDate(UserModel userModel, String filter){
+    return userModel?.createdAt?.toString()?.contains(filter);
+  }
+
 
   @override
   String toString() => name;

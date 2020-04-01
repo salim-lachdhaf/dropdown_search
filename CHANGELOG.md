@@ -1,3 +1,10 @@
+## [0.1.8] - 2020.04.01
+* Add catch error
+* Add Feature : Filter Function as parameter
+* Add Feature : enable/disable
+* Add Feature : add three mode : Menu, BottomSheet and Dialog
+* Add Feature : manageable height
+
 ## [0.1.7] - 2020.03.29
 * Bug fix
 

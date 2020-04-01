@@ -13,12 +13,12 @@ If you use rxdart in your project in a version lower than 0.23.x, use version `0
 
 ## packages.yaml
 ```yaml
-searchable_dropdown: <lastest version>
+dropdown_search: <lastest version>
 ```
 
 ## Import
 ```dart
-import 'package:searchable_dropdown/searchableDropdown.dart';
+import 'package:dropdown_search/dropdownSearch.dart';
 ```
 
 ## Simple implementation

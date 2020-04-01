@@ -33,26 +33,59 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(25),
         child: ListView(
           children: <Widget>[
-            DropdownSearch(
-              items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
-              label: "country with custom colors",
-              onChanged: print,
-              selectedItem: "Brasil",
-              showSearchBox: false,
-              labelStyle: TextStyle(color: Colors.redAccent),
-              backgroundColor: Colors.redAccent,
-              dialogTitleStyle: TextStyle(color: Colors.greenAccent),
-              validate: (String item) {
-                if (item == null)
-                  return "Required field";
-                else if (item == "Brasil")
-                  return "Invalid item";
-                else
-                  return null;
-              },
+            Padding(
+              padding: EdgeInsets.all(16),
             ),
+//Menu Mode with no searchBox
+            DropdownSearch<String>(
+                maxHeight: 200,
+                mode: Mode.MENU,
+                items: ["Brasil", "Itália", "Estados Unidos"],
+                label: "country with custom colors",
+                onChanged: print,
+                selectedItem: "Brasil",
+                showSearchBox: false,
+                labelStyle: TextStyle(color: Colors.redAccent),
+                backgroundColor: Colors.redAccent,
+                dialogTitleStyle: TextStyle(color: Colors.greenAccent)),
             Divider(),
-            DropdownSearch(
+//Menu Mode with searchBox
+            DropdownSearch<String>(
+                maxHeight: 200,
+                mode: Mode.MENU,
+                items: ["Brasil", "Itália", "Estados Unidos"],
+                label: "country with custom colors",
+                onChanged: print,
+                selectedItem: "Brasil",
+                showSearchBox: true,
+                labelStyle: TextStyle(color: Colors.redAccent),
+                backgroundColor: Colors.redAccent,
+                dialogTitleStyle: TextStyle(color: Colors.greenAccent)),
+            Divider(),
+//BottomSheet Mode with no searchBox
+            DropdownSearch<String>(
+                dialogTitle: 'Country',
+                mode: Mode.BOTTOM_SHEET,
+                maxHeight: 300,
+                items: ["Brazil", "Italia", "Tunisia"],
+                label: "BottomShet mode",
+                onChanged: print,
+                selectedItem: "Brazil",
+                showSearchBox: false),
+            Divider(),
+//BottomSheet Mode with searchBox
+            DropdownSearch<String>(
+                mode: Mode.BOTTOM_SHEET,
+                maxHeight: 300,
+                items: ["Brazil", "Italia", "Tunisia"],
+                label: "BottomShet mode",
+                onChanged: print,
+                selectedItem: "Brazil",
+                showSearchBox: true),
+            Divider(),
+//dialog mode with clear option and validate
+            DropdownSearch<String>(
+              showClearButton: true,
               items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
               label: "País",
               onChanged: print,
@@ -68,6 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Divider(),
+//using "itemAsString" to define the fields to be shown
             DropdownSearch<UserModel>(
               label: "filtre name with custom function ItemAsString",
               onFind: (String filter) => getData(filter),
@@ -79,11 +113,13 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (UserModel data) => print(data),
             ),
             Divider(),
+//merge online and offline data in the same list and set custom max Height
             DropdownSearch<UserModel>(
               items: [
                 UserModel(name: "name", id: "999"),
                 UserModel(name: "name2", id: "0101")
               ],
+              maxHeight: 300,
               onFind: (String filter) => getData(filter),
               label: "Online and offline together",
               onChanged: print,
@@ -98,10 +134,11 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Divider(),
+//add title to the dialog
             DropdownSearch<UserModel>(
               label: "Label",
               dialogTitle: "Title dialog",
-              dropdownBuilderHeight: 70,
+              dropdownItemBuilderHeight: 70,
               onFind: (String filter) => getData(filter),
               searchBoxDecoration: InputDecoration(
                 hintText: "Search",
@@ -110,8 +147,9 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (UserModel data) => print(data),
             ),
             Divider(),
+//custom itemBuilder and dropDownBuilder
             DropdownSearch<UserModel>(
-              label: "Personagem",
+              label: "Person",
               onFind: (String filter) => getData(filter),
               onChanged: (UserModel data) {
                 print(data);
@@ -161,9 +199,122 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Divider(),
+//custom itemBuilder and dropDownBuilder with clear option
             DropdownSearch<UserModel>(
+              dialogTitle: 'person',
               isFilteredOnline: true,
               label: "Person with clear option with filter online",
+              showClearButton: true,
+              onFind: (String filter) => getData(filter),
+              onChanged: (UserModel data) {
+                print(data);
+              },
+              dropdownBuilder: (BuildContext context, UserModel item,
+                  String itemDesignation) {
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).dividerColor),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white,
+                  ),
+                  child: (item?.avatar == null)
+                      ? ListTile(
+                          leading: CircleAvatar(),
+                          title: Text("No item selected"),
+                        )
+                      : ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(item.avatar),
+                          ),
+                          title: Text(item.name),
+                          subtitle: Text(item.createdAt.toString()),
+                        ),
+                );
+              },
+              dropdownItemBuilder:
+                  (BuildContext context, UserModel item, bool isSelected) {
+                return Container(
+                  decoration: !isSelected
+                      ? null
+                      : BoxDecoration(
+                          border:
+                              Border.all(color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
+                  child: ListTile(
+                    selected: isSelected,
+                    title: Text(item.name),
+                    subtitle: Text(item.createdAt.toString()),
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(item.avatar),
+                    ),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+//custom itemBuilder and dropDownBuilder with clear option and FilterFN
+            DropdownSearch<UserModel>(
+              dialogTitle: 'person',
+              filterFn: UserModel.userFilterByCreationDate,
+              isFilteredOnline: false,
+              label: "Person with clear option and Custom FilterFN",
+              showClearButton: true,
+              onFind: (String filter) => getData(filter),
+              onChanged: (UserModel data) {
+                print(data);
+              },
+              dropdownBuilder: (BuildContext context, UserModel item,
+                  String itemDesignation) {
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).dividerColor),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white,
+                  ),
+                  child: (item?.avatar == null)
+                      ? ListTile(
+                    leading: CircleAvatar(),
+                    title: Text("No item selected"),
+                  )
+                      : ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(item.avatar),
+                    ),
+                    title: Text(item.name),
+                    subtitle: Text(item.createdAt.toString()),
+                  ),
+                );
+              },
+              dropdownItemBuilder:
+                  (BuildContext context, UserModel item, bool isSelected) {
+                return Container(
+                  decoration: !isSelected
+                      ? null
+                      : BoxDecoration(
+                    border:
+                    Border.all(color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white,
+                  ),
+                  child: ListTile(
+                    selected: isSelected,
+                    title: Text(item.name),
+                    subtitle: Text(item.createdAt.toString()),
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(item.avatar),
+                    ),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+//disabled
+            DropdownSearch<UserModel>(
+              isFilteredOnline: true,
+              enabled: false,
+              label: "DISABLED Person with clear option with filter online",
               showClearButton: true,
               onFind: (String filter) => getData(filter),
               onChanged: (UserModel data) {

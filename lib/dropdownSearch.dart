@@ -5,208 +5,307 @@ import 'package:flutter/material.dart';
 import 'selectDialog.dart';
 import 'dart:async';
 
-typedef Future<List<T>> DropdownSearchFindType<T>(String text);
-typedef void DropdownSearchChangedType<T>(T selectedItem);
-typedef Widget DropdownSearchBuilderType<T>(
+typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
+typedef void DropdownSearchOnChanged<T>(T selectedItem);
+typedef Widget DropdownSearchBuilder<T>(
     BuildContext context, T selectedItem, String itemAsString);
-typedef String DropdownSearchValidationType<T>(T selectedItem);
-typedef Widget DropdownSearchItemBuilderType<T>(
+typedef String DropdownSearchValidation<T>(T selectedItem);
+typedef Widget DropdownSearchItemBuilder<T>(
   BuildContext context,
   T item,
   bool isSelected,
 );
 
-class DropdownSearch<T> extends StatelessWidget {
+class DropdownSearch<T> extends StatefulWidget {
   final String label;
   final bool showSearchBox;
   final bool isFilteredOnline;
   final bool showClearButton;
   final TextStyle labelStyle;
   final List<T> items;
-  T selectedItem;
-  final DropdownSearchFindType<T> onFind;
-  final DropdownSearchChangedType<T> onChanged;
-  final DropdownSearchBuilderType<T> dropdownBuilder;
-  final DropdownSearchItemBuilderType<T> dropdownItemBuilder;
-  final DropdownSearchValidationType<T> validate;
+  final T selectedItem;
+  final DropdownSearchOnFind<T> onFind;
+  final DropdownSearchOnChanged<T> onChanged;
+  final DropdownSearchBuilder<T> dropdownBuilder;
+  final DropdownSearchItemBuilder<T> dropdownItemBuilder;
+  final DropdownSearchValidation<T> validate;
   final InputDecoration searchBoxDecoration;
   final Color backgroundColor;
   final String dialogTitle;
   final TextStyle dialogTitleStyle;
-  final double dropdownBuilderHeight;
+  final double dropdownItemBuilderHeight;
   final String Function(T item) itemAsString;
+  final Function(T item, String filter) filterFn;
+  final bool enabled;
+  final Mode mode;
+  final double maxHeight;
 
   DropdownSearch(
       {Key key,
       @required this.onChanged,
+      this.mode = Mode.DIALOG,
       this.label,
       this.isFilteredOnline = false,
       this.dialogTitle,
+      this.dialogTitleStyle =
+          const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       this.labelStyle,
       this.items,
       this.selectedItem,
       this.onFind,
-      this.dropdownBuilderHeight = 40,
+      this.dropdownItemBuilderHeight = 40,
       this.dropdownBuilder,
       this.dropdownItemBuilder,
       this.showSearchBox = true,
       this.showClearButton = false,
       this.validate,
       this.searchBoxDecoration,
-      this.backgroundColor,
-      this.dialogTitleStyle,
+      this.backgroundColor = Colors.white,
+      this.enabled = true,
+      this.maxHeight,
+      this.filterFn,
       this.itemAsString})
       : assert(onChanged != null),
         super(key: key);
 
+  @override
+  _DropdownSearchState<T> createState() => _DropdownSearchState<T>();
+}
+
+class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
+  //menu Mode parameters
+  final LayerLink _layerLink = LayerLink();
+  OverlayEntry _overlayEntry;
+
+  //general parameters
   ValueNotifier<T> selectedItemNotifier = ValueNotifier(null);
   ValueNotifier<String> validateMessageNotifier = ValueNotifier(null);
 
   @override
-  Widget build(BuildContext context) {
-    selectedItemNotifier.value = selectedItem;
-    if (validate != null) {
-      validateMessageNotifier.value = validate(selectedItem);
+  void initState() {
+    super.initState();
+    //init general parameters and listeners
+    selectedItemNotifier.value = widget.selectedItem;
+    if (widget.validate != null) {
+      validateMessageNotifier.value = widget.validate(widget.selectedItem);
     }
+  }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        if (label != null)
-          Text(
-            label,
-            style: labelStyle ?? Theme.of(context).textTheme.subhead,
-          ),
-        if (label != null) SizedBox(height: 5),
-        Column(
+  @override
+  Widget build(BuildContext context) {
+    return CompositedTransformTarget(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            ValueListenableBuilder(
-              valueListenable: selectedItemNotifier,
-              builder: (context, data, wt) {
-                return GestureDetector(
-                  onTap: () {
-                    SelectDialog.showModal<T>(
-                      context,
-                      isFilteredOnline: isFilteredOnline,
-                      itemAsString: itemAsString,
-                      items: items,
-                      label: dialogTitle == null ? label : dialogTitle,
-                      onFind: onFind,
-                      showSearchBox: showSearchBox,
-                      itemBuilder: dropdownItemBuilder,
-                      selectedValue: data,
-                      searchBoxDecoration: searchBoxDecoration,
-                      backgroundColor: backgroundColor,
-                      titleStyle: dialogTitleStyle,
-                      onChange: (item) {
-                        selectedItem  = item; //fix widget rebuild issue
-                        selectedItemNotifier.value = item;
-                        if (validate != null) {
-                          validateMessageNotifier.value = validate(item);
-                        }
-                        onChanged(item);
-                      },
+            if (widget.label != null && widget.dropdownBuilder != null)
+              Text(
+                widget.label,
+                style: widget.labelStyle ?? Theme.of(context).textTheme.subhead,
+              ),
+            if (widget.label != null) SizedBox(height: 5),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                ValueListenableBuilder<T>(
+                  valueListenable: selectedItemNotifier,
+                  builder: (context, data, wt) {
+                    return IgnorePointer(
+                      ignoring: !widget.enabled,
+                      child: GestureDetector(
+                          onTap: () {
+                            _selectSearchMode(data);
+                          },
+                          child: (widget.dropdownBuilder != null)
+                              ? Stack(children: <Widget>[
+                                  widget.dropdownBuilder(context, data,
+                                      _selectedItemAsString(data)),
+                                  Positioned.fill(
+                                      right: 5,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child:
+                                            _manageTrailingIcon(context, data),
+                                      ))
+                                ])
+                              : _defaultSelectItemWidget(context, data)),
                     );
                   },
-                  child: (dropdownBuilder != null)
-                      ? Stack(children: <Widget>[
-                          dropdownBuilder(context, data,
-                              _manageSelectedItemDesignation(data)),
-                          Positioned.fill(
-                              right: 5,
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: _manageTrailingIcon(data),
-                              ))
-                        ])
-                      : Container(
-                          padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
-                          height: dropdownBuilderHeight,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              width: 1,
-                              color: Theme.of(context).dividerColor,
-                            ),
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(_manageSelectedItemDesignation(data)),
-                              Align(
-                                  alignment: Alignment.centerRight,
-                                  child: _manageTrailingIcon(data)),
-                            ],
-                          ),
+                ),
+                if (widget.validate != null)
+                  ValueListenableBuilder(
+                    valueListenable: validateMessageNotifier,
+                    builder: (context, msg, w) {
+                      return ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: 15),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Text(msg ?? "",
+                              style: Theme.of(context).textTheme.body1.copyWith(
+                                  color: Theme.of(context).errorColor)),
                         ),
-                );
-              },
+                      );
+                    },
+                  )
+              ],
             ),
-            if (validate != null)
-              ValueListenableBuilder(
-                valueListenable: validateMessageNotifier,
-                builder: (context, msg, w) {
-                  return ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: 15),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Text(
-                        msg ?? "",
-                        style: Theme.of(context).textTheme.body1.copyWith(
-                            color: msg != null
-                                ? Theme.of(context).errorColor
-                                : Colors.transparent),
-                      ),
-                    ),
-                  );
-                },
-              )
           ],
         ),
-      ],
+        link: this._layerLink);
+  }
+
+  Widget _defaultSelectItemWidget(BuildContext context, T data) {
+    return TextFormField(
+      readOnly: true,
+      controller: TextEditingController(text: _selectedItemAsString(data)),
+      decoration: InputDecoration(
+          labelText: widget.label,
+          labelStyle: widget.labelStyle,
+          border: OutlineInputBorder(),
+          suffixIcon: _manageTrailingIcon(context, data)),
     );
   }
 
-  String _manageSelectedItemDesignation(data) {
+  String _selectedItemAsString(T data) {
     if (data == null) {
       return "";
-    } else if (itemAsString == null) {
+    } else if (widget.itemAsString == null) {
       return data.toString();
     } else {
-      return itemAsString(data);
+      return widget.itemAsString(data);
     }
   }
 
-  Widget _manageTrailingIcon(data) {
+  Widget _manageTrailingIcon(BuildContext context, T data) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        if (data != null && showClearButton)
-          GestureDetector(
-            onTap: () {
-              selectedItemNotifier.value = null;
-              onChanged(null);
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 0),
-              child: Icon(
+        if (data != null && widget.showClearButton)
+          IconButton(
+              icon: Icon(
                 Icons.clear,
                 size: 25,
                 color: Colors.black54,
               ),
+              onPressed: () => _handleOnChangeSelectedItem(null)),
+        IconButton(
+            icon: Icon(
+              Icons.arrow_drop_down,
+              size: 25,
+              color: Colors.black54,
             ),
-          ),
-        if (data == null || !showClearButton)
-          Icon(
-            Icons.arrow_drop_down,
-            size: 25,
-            color: Colors.black54,
-          ),
+            onPressed: () => _selectSearchMode(data)),
       ],
     );
   }
+
+  Future<void> _openSelectDialog(T data) {
+    return SelectDialog.showModal<T>(
+      context,
+      dialogTitle: widget.dialogTitle,
+      isMenuMode: false,
+      maxHeight: widget.maxHeight,
+      isFilteredOnline: widget.isFilteredOnline,
+      itemAsString: widget.itemAsString,
+      filterFn: widget.filterFn,
+      items: widget.items,
+      label: widget.label,
+      onFind: widget.onFind,
+      showSearchBox: widget.showSearchBox,
+      itemBuilder: widget.dropdownItemBuilder,
+      selectedValue: data,
+      searchBoxDecoration: widget.searchBoxDecoration,
+      backgroundColor: widget.backgroundColor,
+      dialogTitleStyle: widget.dialogTitleStyle,
+      onChange: _handleOnChangeSelectedItem,
+    );
+  }
+
+  PersistentBottomSheetController<T> _openBottomSheet(T data) {
+    return SelectDialog.showAsBottomSheet<T>(
+      context,
+      isMenuMode: false,
+      dialogTitle: widget.dialogTitle,
+      maxHeight: widget.maxHeight,
+      isFilteredOnline: widget.isFilteredOnline,
+      itemAsString: widget.itemAsString,
+      filterFn: widget.filterFn,
+      items: widget.items,
+      label: widget.label,
+      onFind: widget.onFind,
+      showSearchBox: widget.showSearchBox,
+      itemBuilder: widget.dropdownItemBuilder,
+      selectedValue: data,
+      searchBoxDecoration: widget.searchBoxDecoration,
+      backgroundColor: widget.backgroundColor,
+      dialogTitleStyle: widget.dialogTitleStyle,
+      onChange: _handleOnChangeSelectedItem,
+    );
+  }
+
+  void _handleOnChangeSelectedItem(T selectedItem) {
+    selectedItemNotifier.value = selectedItem;
+    if (widget.validate != null) {
+      validateMessageNotifier.value = widget.validate(selectedItem);
+    }
+    widget.onChanged(selectedItem);
+    if (widget.mode == Mode.MENU) {
+      _toggleMenu();
+    }
+  }
+
+  OverlayEntry _createOverlayEntry(T data) {
+    RenderBox renderBox = context.findRenderObject();
+    var size = renderBox.size;
+
+    return OverlayEntry(
+        builder: (context) => Positioned(
+              width: size.width,
+              child: CompositedTransformFollower(
+                link: this._layerLink,
+                showWhenUnlinked: false,
+                offset: Offset(0.0, size.height),
+                child: Material(
+                  elevation: 4.0,
+                  child: SelectDialog(
+                    maxHeight: widget.maxHeight ?? 300,
+                    isMenuMode: true,
+                    itemAsString: widget.itemAsString,
+                    itemsList: widget.items,
+                    onFind: widget.onFind,
+                    showSearchBox: widget.showSearchBox,
+                    itemBuilder: widget.dropdownItemBuilder,
+                    selectedValue: data,
+                    searchBoxDecoration: widget.searchBoxDecoration,
+                    backgroundColor: widget.backgroundColor,
+                    dialogTitleStyle: widget.dialogTitleStyle,
+                    onChange: _handleOnChangeSelectedItem,
+                  ),
+                ),
+              ),
+            ));
+  }
+
+  void _selectSearchMode(T data) {
+    if (widget.mode == Mode.MENU) {
+      _toggleMenu(data: data);
+    } else if (widget.mode == Mode.BOTTOM_SHEET) {
+      _openBottomSheet(data);
+    } else {
+      _openSelectDialog(data);
+    }
+  }
+
+  void _toggleMenu({T data}) {
+    if (_overlayEntry == null) {
+      _overlayEntry = this._createOverlayEntry(data);
+      Overlay.of(context).insert(this._overlayEntry);
+    } else {
+      this._overlayEntry.remove();
+      _overlayEntry = null;
+    }
+  }
 }
+
+enum Mode { DIALOG, BOTTOM_SHEET, MENU }
