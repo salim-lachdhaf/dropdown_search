@@ -16,7 +16,7 @@ typedef Widget DropdownSearchItemBuilder<T>(
   bool isSelected,
 );
 
-class DropdownSearch<T> extends StatefulWidget {
+class DropdownSearch<T> extends StatelessWidget {
   final String label;
   final bool showSearchBox;
   final bool isFilteredOnline;
@@ -68,42 +68,35 @@ class DropdownSearch<T> extends StatefulWidget {
       : assert(onChanged != null),
         super(key: key);
 
-  @override
-  _DropdownSearchState<T> createState() => _DropdownSearchState<T>();
-}
-
-class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   //menu Mode parameters
   final LayerLink _layerLink = LayerLink();
   OverlayEntry _overlayEntry;
 
   //general parameters
-  ValueNotifier<T> selectedItemNotifier = ValueNotifier(null);
-  ValueNotifier<String> validateMessageNotifier = ValueNotifier(null);
-
-  @override
-  void initState() {
-    super.initState();
-    //init general parameters and listeners
-    selectedItemNotifier.value = widget.selectedItem;
-    if (widget.validate != null) {
-      validateMessageNotifier.value = widget.validate(widget.selectedItem);
-    }
-  }
+  final ValueNotifier<T> selectedItemNotifier = ValueNotifier(null);
+  final ValueNotifier<String> validateMessageNotifier = ValueNotifier(null);
+  BuildContext myContext;
 
   @override
   Widget build(BuildContext context) {
+    myContext = context;
+    //init general parameters and listeners
+    selectedItemNotifier.value = selectedItem;
+    if (validate != null) {
+      validateMessageNotifier.value = validate(selectedItem);
+    }
+
     return CompositedTransformTarget(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            if (widget.label != null && widget.dropdownBuilder != null)
+            if (label != null && dropdownBuilder != null)
               Text(
-                widget.label,
-                style: widget.labelStyle ?? Theme.of(context).textTheme.subhead,
+                label,
+                style: labelStyle ?? Theme.of(context).textTheme.subhead,
               ),
-            if (widget.label != null) SizedBox(height: 5),
+            if (label != null) SizedBox(height: 5),
             Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,28 +105,28 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                   valueListenable: selectedItemNotifier,
                   builder: (context, data, wt) {
                     return IgnorePointer(
-                      ignoring: !widget.enabled,
+                      ignoring: !enabled,
                       child: GestureDetector(
                           onTap: () {
                             _selectSearchMode(data);
                           },
-                          child: (widget.dropdownBuilder != null)
+                          child: (dropdownBuilder != null)
                               ? Stack(children: <Widget>[
-                                  widget.dropdownBuilder(context, data,
+                                  dropdownBuilder(context, data,
                                       _selectedItemAsString(data)),
                                   Positioned.fill(
                                       right: 5,
                                       child: Align(
                                         alignment: Alignment.centerRight,
                                         child:
-                                            _manageTrailingIcon(context, data),
+                                            _manageTrailingIcons(context, data),
                                       ))
                                 ])
                               : _defaultSelectItemWidget(context, data)),
                     );
                   },
                 ),
-                if (widget.validate != null)
+                if (validate != null)
                   ValueListenableBuilder(
                     valueListenable: validateMessageNotifier,
                     builder: (context, msg, w) {
@@ -160,28 +153,30 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       readOnly: true,
       controller: TextEditingController(text: _selectedItemAsString(data)),
       decoration: InputDecoration(
-          labelText: widget.label,
-          labelStyle: widget.labelStyle,
+          labelText: label,
+          labelStyle: labelStyle,
           border: OutlineInputBorder(),
-          suffixIcon: _manageTrailingIcon(context, data)),
+          suffixIcon: _manageTrailingIcons(context, data)),
     );
   }
 
+  ///function that return the String value of an object
   String _selectedItemAsString(T data) {
     if (data == null) {
       return "";
-    } else if (widget.itemAsString == null) {
+    } else if (itemAsString == null) {
       return data.toString();
     } else {
-      return widget.itemAsString(data);
+      return itemAsString(data);
     }
   }
 
-  Widget _manageTrailingIcon(BuildContext context, T data) {
+  ///function that manage Trailing icons(close, dropDown)
+  Widget _manageTrailingIcons(BuildContext context, T data) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        if (data != null && widget.showClearButton)
+        if (data != null && showClearButton)
           IconButton(
               icon: Icon(
                 Icons.clear,
@@ -200,63 +195,64 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
     );
   }
 
+  ///open dialog (Dialog mode)
   Future<void> _openSelectDialog(T data) {
     return SelectDialog.showModal<T>(
-      context,
-      dialogTitle: widget.dialogTitle,
+      myContext,
+      dialogTitle: dialogTitle,
       isMenuMode: false,
-      maxHeight: widget.maxHeight,
-      isFilteredOnline: widget.isFilteredOnline,
-      itemAsString: widget.itemAsString,
-      filterFn: widget.filterFn,
-      items: widget.items,
-      label: widget.label,
-      onFind: widget.onFind,
-      showSearchBox: widget.showSearchBox,
-      itemBuilder: widget.dropdownItemBuilder,
+      maxHeight: maxHeight,
+      isFilteredOnline: isFilteredOnline,
+      itemAsString: itemAsString,
+      filterFn: filterFn,
+      items: items,
+      label: label,
+      onFind: onFind,
+      showSearchBox: showSearchBox,
+      itemBuilder: dropdownItemBuilder,
       selectedValue: data,
-      searchBoxDecoration: widget.searchBoxDecoration,
-      backgroundColor: widget.backgroundColor,
-      dialogTitleStyle: widget.dialogTitleStyle,
+      searchBoxDecoration: searchBoxDecoration,
+      backgroundColor: backgroundColor,
+      dialogTitleStyle: dialogTitleStyle,
       onChange: _handleOnChangeSelectedItem,
     );
   }
 
   PersistentBottomSheetController<T> _openBottomSheet(T data) {
     return SelectDialog.showAsBottomSheet<T>(
-      context,
+      myContext,
       isMenuMode: false,
-      dialogTitle: widget.dialogTitle,
-      maxHeight: widget.maxHeight,
-      isFilteredOnline: widget.isFilteredOnline,
-      itemAsString: widget.itemAsString,
-      filterFn: widget.filterFn,
-      items: widget.items,
-      label: widget.label,
-      onFind: widget.onFind,
-      showSearchBox: widget.showSearchBox,
-      itemBuilder: widget.dropdownItemBuilder,
+      dialogTitle: dialogTitle,
+      maxHeight: maxHeight,
+      isFilteredOnline: isFilteredOnline,
+      itemAsString: itemAsString,
+      filterFn: filterFn,
+      items: items,
+      label: label,
+      onFind: onFind,
+      showSearchBox: showSearchBox,
+      itemBuilder: dropdownItemBuilder,
       selectedValue: data,
-      searchBoxDecoration: widget.searchBoxDecoration,
-      backgroundColor: widget.backgroundColor,
-      dialogTitleStyle: widget.dialogTitleStyle,
+      searchBoxDecoration: searchBoxDecoration,
+      backgroundColor: backgroundColor,
+      dialogTitleStyle: dialogTitleStyle,
       onChange: _handleOnChangeSelectedItem,
     );
   }
 
   void _handleOnChangeSelectedItem(T selectedItem) {
     selectedItemNotifier.value = selectedItem;
-    if (widget.validate != null) {
-      validateMessageNotifier.value = widget.validate(selectedItem);
+    if (validate != null) {
+      validateMessageNotifier.value = validate(selectedItem);
     }
-    widget.onChanged(selectedItem);
-    if (widget.mode == Mode.MENU) {
-      _toggleMenu();
+    onChanged(selectedItem);
+    if (mode == Mode.MENU) {
+      _closeMenu();
     }
   }
 
   OverlayEntry _createOverlayEntry(T data) {
-    RenderBox renderBox = context.findRenderObject();
+    RenderBox renderBox = myContext.findRenderObject();
     var size = renderBox.size;
 
     return OverlayEntry(
@@ -269,17 +265,17 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 child: Material(
                   elevation: 4.0,
                   child: SelectDialog(
-                    maxHeight: widget.maxHeight ?? 300,
+                    maxHeight: maxHeight ?? 300,
                     isMenuMode: true,
-                    itemAsString: widget.itemAsString,
-                    itemsList: widget.items,
-                    onFind: widget.onFind,
-                    showSearchBox: widget.showSearchBox,
-                    itemBuilder: widget.dropdownItemBuilder,
+                    itemAsString: itemAsString,
+                    itemsList: items,
+                    onFind: onFind,
+                    showSearchBox: showSearchBox,
+                    itemBuilder: dropdownItemBuilder,
                     selectedValue: data,
-                    searchBoxDecoration: widget.searchBoxDecoration,
-                    backgroundColor: widget.backgroundColor,
-                    dialogTitleStyle: widget.dialogTitleStyle,
+                    searchBoxDecoration: searchBoxDecoration,
+                    backgroundColor: backgroundColor,
+                    dialogTitleStyle: dialogTitleStyle,
                     onChange: _handleOnChangeSelectedItem,
                   ),
                 ),
@@ -287,22 +283,28 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
             ));
   }
 
+  ///Function that return then UI based on searchMode
+  ///@param data: data to be passed to the UI
   void _selectSearchMode(T data) {
-    if (widget.mode == Mode.MENU) {
-      _toggleMenu(data: data);
-    } else if (widget.mode == Mode.BOTTOM_SHEET) {
+    if (mode == Mode.MENU) {
+      _openMenu(data: data);
+    } else if (mode == Mode.BOTTOM_SHEET) {
       _openBottomSheet(data);
     } else {
       _openSelectDialog(data);
     }
   }
 
-  void _toggleMenu({T data}) {
+  void _openMenu({T data}) {
     if (_overlayEntry == null) {
       _overlayEntry = this._createOverlayEntry(data);
-      Overlay.of(context).insert(this._overlayEntry);
-    } else {
-      this._overlayEntry.remove();
+      Overlay.of(myContext).insert(this._overlayEntry);
+    }
+  }
+
+  void _closeMenu() {
+    if (_overlayEntry != null) {
+      _overlayEntry.remove();
       _overlayEntry = null;
     }
   }

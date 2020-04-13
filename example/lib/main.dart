@@ -38,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
 //Menu Mode with no searchBox
             DropdownSearch<String>(
+                showClearButton: true,
                 maxHeight: 200,
                 mode: Mode.MENU,
                 items: ["Brasil", "Itália", "Estados Unidos"],
@@ -275,16 +276,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   child: (item?.avatar == null)
                       ? ListTile(
-                    leading: CircleAvatar(),
-                    title: Text("No item selected"),
-                  )
+                          leading: CircleAvatar(),
+                          title: Text("No item selected"),
+                        )
                       : ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(item.avatar),
-                    ),
-                    title: Text(item.name),
-                    subtitle: Text(item.createdAt.toString()),
-                  ),
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(item.avatar),
+                          ),
+                          title: Text(item.name),
+                          subtitle: Text(item.createdAt.toString()),
+                        ),
                 );
               },
               dropdownItemBuilder:
@@ -293,11 +294,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   decoration: !isSelected
                       ? null
                       : BoxDecoration(
-                    border:
-                    Border.all(color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.white,
-                  ),
+                          border:
+                              Border.all(color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
                   child: ListTile(
                     selected: isSelected,
                     title: Text(item.name),
