@@ -287,7 +287,7 @@ class DropdownSearch<T> extends StatelessWidget {
   ///@param data: data to be passed to the UI
   void _selectSearchMode(T data) {
     if (mode == Mode.MENU) {
-      _openMenu(data: data);
+      _toggleMenu(data: data);
     } else if (mode == Mode.BOTTOM_SHEET) {
       _openBottomSheet(data);
     } else {
@@ -306,6 +306,14 @@ class DropdownSearch<T> extends StatelessWidget {
     if (_overlayEntry != null) {
       _overlayEntry.remove();
       _overlayEntry = null;
+    }
+  }
+
+  void _toggleMenu({T data}) {
+    if (_overlayEntry == null) {
+      _openMenu(data: data);
+    } else {
+      _closeMenu();
     }
   }
 }
