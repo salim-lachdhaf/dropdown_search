@@ -1,3 +1,6 @@
+## [0.2.4] - 2020.04.14
+* Improve performance
+
 ## [0.2.3] - 2020.04.13
 * Improve performance
 

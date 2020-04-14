@@ -5,10 +5,8 @@
 Simple and robust DropdownSearch with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
 
 ![](https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_4.png?raw=true)
-
+![](https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/example.gif?raw=true)
 <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%" /> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%" />
-
-
 ## packages.yaml
 ```yaml
 dropdown_search: <lastest version>
