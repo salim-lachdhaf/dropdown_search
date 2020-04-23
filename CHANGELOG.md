@@ -1,3 +1,6 @@
+## [0.2.5] - 2020.04.23
+* Add showSelected option
+
 ## [0.2.4] - 2020.04.14
 * Improve performance
 

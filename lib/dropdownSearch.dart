@@ -83,6 +83,12 @@ class DropdownSearch<T> extends StatefulWidget {
   ///the max height for dialog/bottomSheet/Menu
   final double maxHeight;
 
+  ///select the selected item in the menu/dialog/bottomSheet of items
+  final bool showSelectedItem;
+
+  ///function that compares two object with the same type to detected if it's the selected item or not
+  final bool Function(T item, T selectedItem) compareFn;
+
   DropdownSearch(
       {Key key,
       @required this.onChanged,
@@ -107,13 +113,17 @@ class DropdownSearch<T> extends StatefulWidget {
       this.enabled = true,
       this.maxHeight,
       this.filterFn,
-      this.itemAsString})
+      this.itemAsString,
+      this.showSelectedItem = false,
+      this.compareFn})
       : assert(onChanged != null),
+        assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
   @override
   _DropdownSearchState<T> createState() => _DropdownSearchState<T>();
 }
+
 
 class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   final LayerLink _layerLink = LayerLink();
@@ -241,47 +251,47 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///open dialog (Dialog mode)
   Future<void> _openSelectDialog(T data) {
-    return SelectDialog.showModal<T>(
-      context,
-      dialogTitle: widget.dialogTitle,
-      isMenuMode: false,
-      maxHeight: widget.maxHeight,
-      isFilteredOnline: widget.isFilteredOnline,
-      itemAsString: widget.itemAsString,
-      filterFn: widget.filterFn,
-      items: widget.items,
-      label: widget.label,
-      onFind: widget.onFind,
-      showSearchBox: widget.showSearchBox,
-      itemBuilder: widget.dropdownItemBuilder,
-      selectedValue: data,
-      searchBoxDecoration: widget.searchBoxDecoration,
-      backgroundColor: widget.backgroundColor,
-      dialogTitleStyle: widget.dialogTitleStyle,
-      onChange: _handleOnChangeSelectedItem,
-    );
+    return SelectDialog.showModal<T>(context,
+        dialogTitle: widget.dialogTitle,
+        isMenuMode: false,
+        maxHeight: widget.maxHeight,
+        isFilteredOnline: widget.isFilteredOnline,
+        itemAsString: widget.itemAsString,
+        filterFn: widget.filterFn,
+        items: widget.items,
+        label: widget.label,
+        onFind: widget.onFind,
+        showSearchBox: widget.showSearchBox,
+        itemBuilder: widget.dropdownItemBuilder,
+        selectedValue: data,
+        searchBoxDecoration: widget.searchBoxDecoration,
+        backgroundColor: widget.backgroundColor,
+        dialogTitleStyle: widget.dialogTitleStyle,
+        onChange: _handleOnChangeSelectedItem,
+        showSelectedItem: widget.showSelectedItem,
+        compareFn: widget.compareFn);
   }
 
   PersistentBottomSheetController<T> _openBottomSheet(T data) {
-    return SelectDialog.showAsBottomSheet<T>(
-      context,
-      isMenuMode: false,
-      dialogTitle: widget.dialogTitle,
-      maxHeight: widget.maxHeight,
-      isFilteredOnline: widget.isFilteredOnline,
-      itemAsString: widget.itemAsString,
-      filterFn: widget.filterFn,
-      items: widget.items,
-      label: widget.label,
-      onFind: widget.onFind,
-      showSearchBox: widget.showSearchBox,
-      itemBuilder: widget.dropdownItemBuilder,
-      selectedValue: data,
-      searchBoxDecoration: widget.searchBoxDecoration,
-      backgroundColor: widget.backgroundColor,
-      dialogTitleStyle: widget.dialogTitleStyle,
-      onChange: _handleOnChangeSelectedItem,
-    );
+    return SelectDialog.showAsBottomSheet<T>(context,
+        isMenuMode: false,
+        dialogTitle: widget.dialogTitle,
+        maxHeight: widget.maxHeight,
+        isFilteredOnline: widget.isFilteredOnline,
+        itemAsString: widget.itemAsString,
+        filterFn: widget.filterFn,
+        items: widget.items,
+        label: widget.label,
+        onFind: widget.onFind,
+        showSearchBox: widget.showSearchBox,
+        itemBuilder: widget.dropdownItemBuilder,
+        selectedValue: data,
+        searchBoxDecoration: widget.searchBoxDecoration,
+        backgroundColor: widget.backgroundColor,
+        dialogTitleStyle: widget.dialogTitleStyle,
+        onChange: _handleOnChangeSelectedItem,
+        showSelectedItem: widget.showSelectedItem,
+        compareFn: widget.compareFn);
   }
 
   void _handleOnChangeSelectedItem(T selectedItem) {
@@ -309,26 +319,27 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 child: Material(
                   elevation: 4.0,
                   child: SelectDialog(
-                    maxHeight: widget.maxHeight ?? 300,
-                    isMenuMode: true,
-                    itemAsString: widget.itemAsString,
-                    itemsList: widget.items,
-                    onFind: widget.onFind,
-                    showSearchBox: widget.showSearchBox,
-                    itemBuilder: widget.dropdownItemBuilder,
-                    selectedValue: data,
-                    searchBoxDecoration: widget.searchBoxDecoration,
-                    backgroundColor: widget.backgroundColor,
-                    dialogTitleStyle: widget.dialogTitleStyle,
-                    onChange: _handleOnChangeSelectedItem,
-                  ),
+                      maxHeight: widget.maxHeight ?? 300,
+                      isMenuMode: true,
+                      itemAsString: widget.itemAsString,
+                      itemsList: widget.items,
+                      onFind: widget.onFind,
+                      showSearchBox: widget.showSearchBox,
+                      itemBuilder: widget.dropdownItemBuilder,
+                      selectedValue: data,
+                      searchBoxDecoration: widget.searchBoxDecoration,
+                      backgroundColor: widget.backgroundColor,
+                      dialogTitleStyle: widget.dialogTitleStyle,
+                      onChange: _handleOnChangeSelectedItem,
+                      showSelectedItem: widget.showSelectedItem,
+                      compareFn: widget.compareFn),
                 ),
               ),
             ));
   }
 
   ///Function that return then UI based on searchMode
-  ///@param data: data to be passed to the UI
+  ///[data] to be passed to the UI
   void _selectSearchMode(T data) {
     if (widget.mode == Mode.MENU) {
       _toggleMenu(data: data);

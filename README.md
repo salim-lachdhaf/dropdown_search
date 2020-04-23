@@ -147,6 +147,8 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`enabled`|enable/disable dropdownSearch|
 |`mode`| MENU / DIALOG/ BOTTOM_SHEET|
 |`maxHeight`| the max height for dialog/bottomSheet/Menu|
+|`showSelectedItem`| manage selected item visibility (if true, the selected item will be highlighted)|
+|`compareFn`| Function(T item, T selectedItem), custom comparing function|
 
 
 # Attention
@@ -161,7 +163,7 @@ class UserModel {
 
   UserModel({this.id, this.createdAt, this.name, this.avatar});
 
-  //this method will prevent the override of toString and make the same model useful for different cases
+  ///this method will prevent the override of toString and make the same model useful for different cases
     static String userAsStringByName(UserModel userModel){
       return '#${userModel.id} ${userModel.name}';
     }
@@ -171,10 +173,15 @@ class UserModel {
       return '#${userModel.id} ${userModel.id}';
     }
 
-//this method will prevent the override of toString
+  ///this method will prevent the override of toString
   static bool userFilterByCreationDate(UserModel userModel, String filter){
     return userModel?.createdAt?.toString()?.contains(filter);
   }
+
+    ///custom comparing function to check if two users are equal
+    static bool isEqual(UserModel model1, UserModel model2) {
+        return model1?.id == model2?.id;
+      }
 
   @override
   String toString() => name;

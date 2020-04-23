@@ -22,6 +22,8 @@ class SelectDialog<T> extends StatefulWidget {
   final bool isMenuMode;
   final double maxHeight;
   final String dialogTitle;
+  final bool showSelectedItem;
+  final bool Function(T item, T selectedItem) compareFn;
 
   const SelectDialog(
       {Key key,
@@ -40,7 +42,9 @@ class SelectDialog<T> extends StatefulWidget {
       this.dialogTitleStyle,
       this.hintText,
       this.itemAsString,
-      this.filterFn})
+      this.filterFn,
+      this.showSelectedItem,
+      this.compareFn})
       : super(key: key);
 
   static Future<T> showModal<T>(BuildContext context,
@@ -60,7 +64,9 @@ class SelectDialog<T> extends StatefulWidget {
       InputDecoration searchBoxDecoration,
       Color backgroundColor,
       String hintText,
-      TextStyle dialogTitleStyle}) {
+      TextStyle dialogTitleStyle,
+      showSelectedItem,
+      bool Function(T item, T selectedItem) compareFn}) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -82,7 +88,9 @@ class SelectDialog<T> extends StatefulWidget {
               searchBoxDecoration: searchBoxDecoration,
               backgroundColor: backgroundColor,
               hintText: hintText,
-              dialogTitleStyle: dialogTitleStyle),
+              dialogTitleStyle: dialogTitleStyle,
+              showSelectedItem: showSelectedItem,
+              compareFn: compareFn),
         );
       },
     );
@@ -106,7 +114,9 @@ class SelectDialog<T> extends StatefulWidget {
       Color backgroundColor,
       String hintText,
       double maxHeight,
-      TextStyle dialogTitleStyle}) {
+      TextStyle dialogTitleStyle,
+      showSelectedItem,
+      bool Function(T item, T selectedItem) compareFn}) {
     return showBottomSheet<T>(
         context: context,
         builder: (context) {
@@ -136,7 +146,9 @@ class SelectDialog<T> extends StatefulWidget {
                   searchBoxDecoration: searchBoxDecoration,
                   backgroundColor: backgroundColor,
                   hintText: hintText,
-                  dialogTitleStyle: dialogTitleStyle));
+                  dialogTitleStyle: dialogTitleStyle,
+                  showSelectedItem: showSelectedItem,
+                  compareFn: compareFn));
         });
   }
 
@@ -233,7 +245,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   Widget _itemWidget(T item) {
     if (widget.itemBuilder != null)
       return InkWell(
-        child: widget.itemBuilder(context, item, item == widget.selectedValue),
+        child: widget.itemBuilder(
+            context, item, _manageSelectedItemVisibility(item)),
         onTap: () {
           widget.onChange(item);
           if (!widget.isMenuMode) Navigator.pop(context);
@@ -244,12 +257,24 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         title: Text(widget.itemAsString != null
             ? widget.itemAsString(item)
             : item.toString()),
-        selected: item == widget.selectedValue,
+        selected: _manageSelectedItemVisibility(item),
         onTap: () {
           widget.onChange(item);
           if (!widget.isMenuMode) Navigator.pop(context);
         },
       );
+  }
+
+  /// selected item will be highlighted only when [widget.showSelectedItem] is true,
+  /// if our object is String [widget.compareFn] is not required , other wises it's required
+  bool _manageSelectedItemVisibility(T item) {
+    if (!widget.showSelectedItem) return false;
+
+    if (T == String) {
+      return item == widget.selectedValue;
+    } else {
+      return widget.compareFn(item, widget.selectedValue);
+    }
   }
 
   Widget _searchField() {

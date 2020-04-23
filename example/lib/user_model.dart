@@ -1,5 +1,3 @@
-//Created on http://app.quicktype.io/
-
 class UserModel {
   final String id;
   final DateTime createdAt;
@@ -12,7 +10,8 @@ class UserModel {
     if (json == null) return null;
     return UserModel(
       id: json["id"],
-      createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      createdAt:
+          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
       name: json["name"],
       avatar: json["avatar"],
     );
@@ -23,26 +22,21 @@ class UserModel {
     return list.map((item) => UserModel.fromJson(item)).toList();
   }
 
-
-
-  //this method will prevent the override of toString
-  static String userAsString(UserModel userModel){
+  ///this method will prevent the override of toString
+  static String userAsString(UserModel userModel) {
     return '#${userModel.id} ${userModel.name}';
   }
 
-  //this method will prevent the override of toString
-  static bool userFilterByCreationDate(UserModel userModel, String filter){
+  ///this method will prevent the override of toString
+  static bool userFilterByCreationDate(UserModel userModel, String filter) {
     return userModel?.createdAt?.toString()?.contains(filter);
   }
 
+  ///custom comparing function to check if two users are equal
+  static bool isEqual(UserModel model1, UserModel model2) {
+    return model1?.id == model2?.id;
+  }
 
   @override
   String toString() => name;
-
-  @override
-  operator ==(o) => o is UserModel && o.id == id;
-
-  @override
-  int get hashCode => id.hashCode^name.hashCode^createdAt.hashCode;
-
 }

@@ -36,9 +36,10 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: EdgeInsets.all(16),
             ),
-//Menu Mode with no searchBox
+
+            ///Menu Mode with no searchBox
             DropdownSearch<String>(
-                showClearButton: true,
+                showSelectedItem: true,
                 maxHeight: 200,
                 mode: Mode.MENU,
                 items: ["Brasil", "Itália", "Estados Unidos"],
@@ -50,20 +51,23 @@ class _MyHomePageState extends State<MyHomePage> {
                 backgroundColor: Colors.redAccent,
                 dialogTitleStyle: TextStyle(color: Colors.greenAccent)),
             Divider(),
-//Menu Mode with searchBox
-            DropdownSearch<String>(
+
+            ///Menu Mode with searchBox
+            DropdownSearch(
+                showSelectedItem: true,
                 maxHeight: 200,
                 mode: Mode.MENU,
-                items: ["Brasil", "Itália", "Estados Unidos"],
+                items: ["Brazil", "Itália", "Estados Unidos"],
                 label: "country with custom colors",
                 onChanged: print,
-                selectedItem: "Brasil",
+                selectedItem: "Brazil",
                 showSearchBox: true,
                 labelStyle: TextStyle(color: Colors.redAccent),
                 backgroundColor: Colors.redAccent,
                 dialogTitleStyle: TextStyle(color: Colors.greenAccent)),
             Divider(),
-//BottomSheet Mode with no searchBox
+
+            ///BottomSheet Mode with no searchBox
             DropdownSearch<String>(
                 dialogTitle: 'Country',
                 mode: Mode.BOTTOM_SHEET,
@@ -74,7 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 selectedItem: "Brazil",
                 showSearchBox: false),
             Divider(),
-//BottomSheet Mode with searchBox
+
+            ///BottomSheet Mode with searchBox
             DropdownSearch<String>(
                 mode: Mode.BOTTOM_SHEET,
                 maxHeight: 300,
@@ -84,7 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 selectedItem: "Brazil",
                 showSearchBox: true),
             Divider(),
-//dialog mode with clear option and validate
+
+            ///dialog mode with clear option and validate
             DropdownSearch<String>(
               showClearButton: true,
               items: ["Brasil", "Itália", "Estados Unidos", "Canadá"],
@@ -102,7 +108,8 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Divider(),
-//using "itemAsString" to define the fields to be shown
+
+            ///using "itemAsString" to define the fields to be shown
             DropdownSearch<UserModel>(
               label: "filtre name with custom function ItemAsString",
               onFind: (String filter) => getData(filter),
@@ -114,7 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (UserModel data) => print(data),
             ),
             Divider(),
-//merge online and offline data in the same list and set custom max Height
+
+            ///merge online and offline data in the same list and set custom max Height
             DropdownSearch<UserModel>(
               items: [
                 UserModel(name: "name", id: "999"),
@@ -135,7 +143,8 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Divider(),
-//add title to the dialog
+
+            ///add title to the dialog
             DropdownSearch<UserModel>(
               label: "Label",
               dialogTitle: "Title dialog",
@@ -148,8 +157,11 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (UserModel data) => print(data),
             ),
             Divider(),
-//custom itemBuilder and dropDownBuilder
+
+            ///custom itemBuilder and dropDownBuilder
             DropdownSearch<UserModel>(
+              showSelectedItem: true,
+              compareFn: UserModel.isEqual,
               label: "Person",
               onFind: (String filter) => getData(filter),
               onChanged: (UserModel data) {
@@ -200,7 +212,8 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Divider(),
-//custom itemBuilder and dropDownBuilder with clear option
+
+            ///custom itemBuilder and dropDownBuilder with clear option
             DropdownSearch<UserModel>(
               dialogTitle: 'person',
               isFilteredOnline: true,
@@ -255,7 +268,8 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Divider(),
-//custom itemBuilder and dropDownBuilder with clear option and FilterFN
+
+            ///custom itemBuilder and dropDownBuilder with clear option and FilterFN
             DropdownSearch<UserModel>(
               dialogTitle: 'person',
               filterFn: UserModel.userFilterByCreationDate,
@@ -311,7 +325,8 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Divider(),
-//disabled
+
+            ///disabled
             DropdownSearch<UserModel>(
               isFilteredOnline: true,
               enabled: false,
