@@ -1,6 +1,6 @@
 name: dropdown_search
-description: Simple and robust Searchable Dropdown with item search feature, making it possible to use an offline item list or filtering URL for easy customization in three modes as Menu, BottomSheet and Dialog.
-version: 0.2.5
+description: Simple and robust Searchable Dropdown with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
+version: 0.2.6
 author: SalimDev <salimlachdef@gmail.com>
 homepage: https://github.com/salim-lachdhaf
 git: https://github.com/salim-lachdhaf/searchable_dropdown

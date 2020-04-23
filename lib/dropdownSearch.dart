@@ -124,7 +124,6 @@ class DropdownSearch<T> extends StatefulWidget {
   _DropdownSearchState<T> createState() => _DropdownSearchState<T>();
 }
 
-
 class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   final LayerLink _layerLink = LayerLink();
   OverlayEntry _overlayEntry;

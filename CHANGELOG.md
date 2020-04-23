@@ -1,3 +1,6 @@
+## [0.2.6] - 2020.04.23
+* Health suggestions
+
 ## [0.2.5] - 2020.04.23
 * Add showSelected option
 
