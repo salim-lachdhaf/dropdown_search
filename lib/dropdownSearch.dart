@@ -145,7 +145,8 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 widget.label,
                 style: widget.labelStyle ?? Theme.of(context).textTheme.subhead,
               ),
-            if (widget.label != null) SizedBox(height: 5),
+            if (widget.label != null && widget.dropdownBuilder != null)
+              SizedBox(height: 5),
             Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
