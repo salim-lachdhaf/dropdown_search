@@ -173,24 +173,18 @@ class UserModel {
       return '#${userModel.id} ${userModel.id}';
     }
 
-  ///this method will prevent the override of toString
-  static bool userFilterByCreationDate(UserModel userModel, String filter){
-    return userModel?.createdAt?.toString()?.contains(filter);
-  }
+    ///this method will prevent the override of toString
+    static bool userFilterByCreationDate(UserModel userModel, String filter){
+      return userModel?.createdAt?.toString()?.contains(filter);
+    }
 
     ///custom comparing function to check if two users are equal
     static bool isEqual(UserModel model1, UserModel model2) {
-        return model1?.id == model2?.id;
-      }
+      return model1?.id == model2?.id;
+    }
 
   @override
   String toString() => name;
-
-  @override
-  operator ==(o) => o is UserModel && o.id == id;
-
-  @override
-  int get hashCode => id.hashCode^name.hashCode^createdAt.hashCode;
 
 }
 ```

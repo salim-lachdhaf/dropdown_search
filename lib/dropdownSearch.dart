@@ -66,9 +66,6 @@ class DropdownSearch<T> extends StatefulWidget {
   final TextStyle dialogTitleStyle;
 
   ///customize the fields the be shown
-  final double dropdownItemBuilderHeight;
-
-  ///customize the fields the be shown
   final String Function(T item) itemAsString;
 
   ///	custom filter function
@@ -102,7 +99,6 @@ class DropdownSearch<T> extends StatefulWidget {
       this.items,
       this.selectedItem,
       this.onFind,
-      this.dropdownItemBuilderHeight = 40,
       this.dropdownBuilder,
       this.dropdownItemBuilder,
       this.showSearchBox = true,
@@ -164,17 +160,19 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                             _selectSearchMode(data);
                           },
                           child: (widget.dropdownBuilder != null)
-                              ? Stack(children: <Widget>[
-                                  widget.dropdownBuilder(context, data,
-                                      _selectedItemAsString(data)),
-                                  Positioned.fill(
-                                      right: 5,
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child:
-                                            _manageTrailingIcons(context, data),
-                                      ))
-                                ])
+                              ? Stack(
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                      widget.dropdownBuilder(context, data,
+                                          _selectedItemAsString(data)),
+                                      Positioned.fill(
+                                          right: 5,
+                                          child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: _manageTrailingIcons(
+                                                context, data),
+                                          ))
+                                    ])
                               : _defaultSelectItemWidget(context, data)),
                     );
                   },

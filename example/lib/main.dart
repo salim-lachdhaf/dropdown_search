@@ -148,7 +148,6 @@ class _MyHomePageState extends State<MyHomePage> {
             DropdownSearch<UserModel>(
               label: "Label",
               dialogTitle: "Title dialog",
-              dropdownItemBuilderHeight: 70,
               onFind: (String filter) => getData(filter),
               searchBoxDecoration: InputDecoration(
                 hintText: "Search",

@@ -1,3 +1,6 @@
+## [0.2.7] - 2020.04.23
+* minor improvement
+
 ## [0.2.6] - 2020.04.23
 * Health suggestions
 
