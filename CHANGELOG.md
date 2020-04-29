@@ -1,3 +1,7 @@
+## [0.3.1] - 2020.04.29
+* fix bug: filter items
+* fix menu mode background color
+
 ## [0.3.0] - 2020.04.29
 * fix bug: empty items online
 

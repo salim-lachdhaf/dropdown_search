@@ -13,7 +13,6 @@ const double _kMenuVerticalPadding = 8.0;
 const double _kMenuWidthStep = 1.0;
 const double _kMenuScreenPadding = 0.0;
 
-
 // This widget only exists to enable _PopupMenuRoute to save the sizes of
 // each menu item. The sizes are used by _PopupMenuRouteLayout to compute the
 // y coordinate of the menu's origin so that the center of selected menu

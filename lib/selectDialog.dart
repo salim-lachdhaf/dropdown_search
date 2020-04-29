@@ -11,7 +11,6 @@ class SelectDialog<T> extends StatefulWidget {
   final DropdownSearchOnFind<T> onFind;
   final DropdownSearchItemBuilder<T> itemBuilder;
   final InputDecoration searchBoxDecoration;
-  final Color backgroundColor;
   final TextStyle dialogTitleStyle;
   final DropdownSearchItemAsString<T> itemAsString;
   final DropdownSearchFilterFn<T> filterFn;
@@ -42,7 +41,6 @@ class SelectDialog<T> extends StatefulWidget {
       this.onFind,
       this.itemBuilder,
       this.searchBoxDecoration,
-      this.backgroundColor,
       this.dialogTitleStyle,
       this.hintText,
       this.itemAsString,
@@ -171,8 +169,17 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
 
     List<T> applyFilter(String filter) {
       return _items.where((i) {
-        if (widget.filterFn != null) return (widget.filterFn(i, filter));
-        return i.toString().toLowerCase().contains(filter.toLowerCase());
+        if (widget.filterFn != null)
+          return (widget.filterFn(i, filter));
+        else if (i.toString().toLowerCase().contains(filter.toLowerCase()))
+          return true;
+        else if (widget.itemAsString != null) {
+          return (widget.itemAsString(i))
+                  ?.toLowerCase()
+                  ?.contains(filter.toLowerCase()) ??
+              false;
+        }
+        return false;
       }).toList();
     }
 

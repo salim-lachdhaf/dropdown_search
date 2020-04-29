@@ -233,7 +233,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
             InputDecoration(
                 labelText: widget.label,
                 labelStyle: widget.labelStyle,
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 suffixIcon: _manageTrailingIcons(context, data)));
   }
 
@@ -255,14 +255,14 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       children: <Widget>[
         if (data != null && widget.showClearButton)
           IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.clear,
                 size: 25,
                 color: Colors.black54,
               ),
               onPressed: () => _handleOnChangeSelectedItem(null)),
         IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_drop_down,
               size: 25,
               color: Colors.black54,
@@ -288,23 +288,29 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///open BottomSheet (Dialog mode)
   Future<T> _openBottomSheet(T data) {
     return showModalBottomSheet<T>(
+        isScrollControlled: true,
         context: context,
         builder: (context) {
-          return Container(
-            color: Color(0xFF737373),
-            height: widget.maxHeight ?? 350,
-            width: double.infinity,
+          return SingleChildScrollView(
+              child: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
-                padding: EdgeInsets.all(8),
+                height: widget.maxHeight ?? 350,
+                width: double.infinity,
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                     color: widget.backgroundColor,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
-                    border: Border.all(
-                        color: Theme.of(context).primaryColor, width: 2)),
+                    border: Border(
+                        left: BorderSide(
+                            color: Theme.of(context).primaryColor, width: 1.5),
+                        right: BorderSide(
+                            color: Theme.of(context).primaryColor, width: 1.5),
+                        top: BorderSide(
+                            color: Theme.of(context).primaryColor,
+                            width: 1.5))),
                 child: _selectDialogInstance(data)),
-          );
+          ));
         });
   }
 
@@ -326,6 +332,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         ),
         Size(overlay.size.width, overlay.size.height));
     return customShowMenu<T>(
+        color: widget.backgroundColor,
         context: context,
         position: position,
         elevation: 8,
@@ -351,7 +358,6 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         itemBuilder: widget.dropdownItemBuilder,
         selectedValue: data,
         searchBoxDecoration: widget.searchBoxDecoration,
-        backgroundColor: widget.backgroundColor,
         dialogTitleStyle: widget.dialogTitleStyle,
         onChange: _handleOnChangeSelectedItem,
         showSelectedItem: widget.showSelectedItem,

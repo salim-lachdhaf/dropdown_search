@@ -55,8 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           onChanged: print,
                           selectedItem: "Brasil",
                           showSearchBox: false,
-                          labelStyle: TextStyle(color: Colors.redAccent),
-                          backgroundColor: Colors.redAccent,
                           dialogTitleStyle:
                               TextStyle(color: Colors.greenAccent)),
                 ),
@@ -76,8 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           onChanged: print,
                           selectedItem: "Brasil",
                           showSearchBox: false,
-                          labelStyle: TextStyle(color: Colors.redAccent),
-                          backgroundColor: Colors.redAccent,
                           dialogTitleStyle:
                               TextStyle(color: Colors.greenAccent)),
                 ),
@@ -95,10 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: "country with custom colors",
                 onChanged: print,
                 selectedItem: "Brazil",
-                showSearchBox: true,
-                labelStyle: TextStyle(color: Colors.redAccent),
-                backgroundColor: Colors.redAccent,
-                dialogTitleStyle: TextStyle(color: Colors.greenAccent)),
+                showSearchBox: true),
             Divider(),
 
             ///BottomSheet Mode with no searchBox
