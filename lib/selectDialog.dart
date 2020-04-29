@@ -59,28 +59,22 @@ class SelectDialog<T> extends StatefulWidget {
 }
 
 class _SelectDialogState<T> extends State<SelectDialog<T>> {
-  StreamController<List<T>> itemsStream = StreamController();
+  final StreamController<List<T>> _itemsStream = StreamController();
+  final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
 
-  final List<T> _items = List();
+  final List<T> _items = List<T>();
   final _debouncer = Debouncer();
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      if (widget.onFind != null) {
-        var founded = await widget.onFind("").catchError(itemsStream.addError);
-        _items.addAll(founded ?? List());
-      }
-      if (widget.items != null) _items.addAll(widget.items);
-
-      if (_items.isNotEmpty) itemsStream.add(_items);
-    });
+    Future.delayed(
+        Duration.zero, () => manageItemsByFilter("", isFistLoad: true));
   }
 
   @override
   void dispose() {
-    itemsStream.close();
+    _itemsStream.close();
     super.dispose();
   }
 
@@ -93,33 +87,32 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         children: <Widget>[
           _searchField(),
           Expanded(
-            child: StreamBuilder<List<T>>(
-              stream: itemsStream.stream,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  if (widget.errorBuilder != null)
-                    return widget.errorBuilder(context, snapshot.error);
-                  else
-                    return Center(child: Text(snapshot?.error?.toString()));
-                } else if (!snapshot.hasData) {
-                  if (widget.loadingBuilder != null)
-                    return widget.loadingBuilder(context);
-                  else
-                    return Center(child: CircularProgressIndicator());
-                } else if (snapshot.data.isEmpty) {
-                  if (widget.emptyBuilder != null)
-                    return widget.emptyBuilder(context);
-                  else
-                    return Center(child: Text("No data found"));
-                }
-                return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    var item = snapshot.data[index];
-                    return _itemWidget(item);
+            child: Stack(
+              children: <Widget>[
+                StreamBuilder<List<T>>(
+                  stream: _itemsStream.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      _errorWidget(snapshot?.error);
+                    } else if (!snapshot.hasData) {
+                      return _loadingWidget();
+                    } else if (snapshot.data.isEmpty) {
+                      if (widget.emptyBuilder != null)
+                        return widget.emptyBuilder(context);
+                      else
+                        return Center(child: Text("No data found"));
+                    }
+                    return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        var item = snapshot.data[index];
+                        return _itemWidget(item);
+                      },
+                    );
                   },
-                );
-              },
+                ),
+                _loadingWidget()
+              ],
             ),
           ),
         ],
@@ -127,32 +120,89 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     );
   }
 
+  void _showErrorDialog(dynamic error) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        child: AlertDialog(
+          title: Text("Error while getting online items"),
+          content: _errorWidget(error),
+          actions: <Widget>[
+            FlatButton(
+              child: new Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            )
+          ],
+        ));
+  }
+
+  Widget _errorWidget(dynamic error) {
+    if (widget.errorBuilder != null)
+      return widget.errorBuilder(context, error);
+    else
+      return Center(child: Text(error?.toString()));
+  }
+
+  Widget _loadingWidget() {
+    return ValueListenableBuilder(
+        valueListenable: _loadingNotifier,
+        builder: (context, bool isLoading, wid) {
+          if (isLoading) {
+            if (widget.loadingBuilder != null)
+              return widget.loadingBuilder(context);
+            else
+              return Center(child: CircularProgressIndicator());
+          }
+          return Container();
+        });
+  }
+
   void _onTextChanged(String filter) async {
-    if (widget.onFind != null && widget.isFilteredOnline) {
-      List<T> onlineItems = await widget
-          .onFind(filter)
-          .catchError((e) => itemsStream.addError(e));
-      if (onlineItems != null) {
+    manageItemsByFilter(filter);
+  }
+
+  ///Function that filter item (online and offline) base on user filter
+  ///[filter] is the filter keyword
+  ///[isFistLoad] true if it's the first time we load data from online, false other wises
+  void manageItemsByFilter(String filter, {bool isFistLoad = false}) async {
+    _loadingNotifier.value = true;
+
+    List<T> applyFilter(String filter) {
+      return _items.where((i) {
+        if (widget.filterFn != null) return (widget.filterFn(i, filter));
+        return i.toString().toLowerCase().contains(filter.toLowerCase());
+      }).toList();
+    }
+
+    //load offline data for the first time
+    if (isFistLoad && widget.items != null) _items.addAll(widget.items);
+
+    //manage offline items
+    if (widget.onFind != null && (widget.isFilteredOnline || isFistLoad)) {
+      try {
+        final List<T> onlineItems = List();
+        onlineItems.addAll(await widget.onFind(filter) ?? List());
+
         //Remove all old data
         _items.clear();
         //add offline items
         if (widget.items != null) _items.addAll(widget.items);
         //add new online items to list
         _items.addAll(onlineItems);
+      } catch (e) {
+        _itemsStream.addError(e);
+        //if offline items count > 0 , the error will be not visible for the user
+        //As solution we show it in dialog
+        if (widget.items != null && widget.items.isNotEmpty) {
+          _showErrorDialog(e);
+        }
       }
     }
 
-    itemsStream.add(_items.where((i) {
-      if (widget.filterFn != null)
-        return (widget.filterFn(i, filter));
-      else if (widget.itemAsString != null) {
-        return (widget.itemAsString(i))
-                ?.toLowerCase()
-                ?.contains(filter.toLowerCase()) ??
-            List();
-      }
-      return i.toString().toLowerCase().contains(filter.toLowerCase());
-    }).toList());
+    _itemsStream.add(applyFilter(filter));
+    _loadingNotifier.value = false;
   }
 
   Widget _itemWidget(T item) {

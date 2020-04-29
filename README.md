@@ -50,23 +50,25 @@ dropdown_search: <lastest version>
 import 'package:dropdown_search/dropdownSearch.dart';
 ```
 
+
 ## Simple implementation
 
 ```dart
 DropdownSearch(
   items: ["Brazil", "Italia", "Tunisia", "Canada"],
-  label: "País",
+  label: Country,
   onChanged: print,
   selectedItem: "Brazil",
 );
 ```
 
 ## customize showed field (itemAsString)
+
 ```dart
 DropdownSearch<UserModel>(
   label: "Name",
   onFind: (String filter) => getData(filter),
-  itemAsString: UserModel.userAsStringByName,
+  itemAsString: (UserModel u) => u.userAsStringByName(),
   searchBoxDecoration: InputDecoration(
     hintText: "Search",
     border: OutlineInputBorder(),
@@ -77,7 +79,7 @@ DropdownSearch<UserModel>(
 DropdownSearch<UserModel>(
   label: "Name",
   onFind: (String filter) => getData(filter),
-  itemAsString: UserModel.userAsStringById,
+  itemAsString: (UserModel u) => u.userAsStringById(),
   searchBoxDecoration: InputDecoration(
     hintText: "Search",
     border: OutlineInputBorder(),
@@ -90,9 +92,9 @@ DropdownSearch<UserModel>(
 ```dart
 DropdownSearch<UserModel>(
   label: "Name",
-  filterFn: UserModel.userFilterByCreationDate,
+  filterFn: (user, filter) => user.userFilterByCreationDate(filter),
   onFind: (String filter) => getData(filter),
-  itemAsString: UserModel.userAsStringByName,
+  itemAsString: (UserModel u) => u.userAsStringByName(),
   searchBoxDecoration: InputDecoration(
     hintText: "Search",
     border: OutlineInputBorder(),
@@ -108,7 +110,7 @@ DropdownSearch<UserModel>(
   label: "Name",
   maxHeight: 350,
   onFind: (String filter) => getData(filter),
-  itemAsString: UserModel.userAsStringByName,
+  itemAsString: (UserModel u) => u.userAsString(),
   searchBoxDecoration: InputDecoration(
     hintText: "Search",
     border: OutlineInputBorder(),
@@ -190,6 +192,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 # Attention
 To use a template as an item type, and you don't want to use a custom fonction **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
 
+
 ```dart
 class UserModel {
   final String id;
@@ -199,29 +202,39 @@ class UserModel {
 
   UserModel({this.id, this.createdAt, this.name, this.avatar});
 
-  ///this method will prevent the override of toString and make the same model useful for different cases
-    static String userAsStringByName(UserModel userModel){
-      return '#${userModel.id} ${userModel.name}';
-    }
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    if (json == null) return null;
+    return UserModel(
+      id: json["id"],
+      createdAt:
+          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      name: json["name"],
+      avatar: json["avatar"],
+    );
+  }
 
-    //this method will prevent the override of toString
-    static String userAsStringById(UserModel userModel){
-      return '#${userModel.id} ${userModel.id}';
-    }
+  static List<UserModel> fromJsonList(List list) {
+    if (list == null) return null;
+    return list.map((item) => UserModel.fromJson(item)).toList();
+  }
 
-    ///this method will prevent the override of toString
-    static bool userFilterByCreationDate(UserModel userModel, String filter){
-      return userModel?.createdAt?.toString()?.contains(filter);
-    }
+  ///this method will prevent the override of toString
+  String userAsString() {
+    return '#${this.id} ${this.name}';
+  }
 
-    ///custom comparing function to check if two users are equal
-    static bool isEqual(UserModel model1, UserModel model2) {
-      return model1?.id == model2?.id;
-    }
+  ///this method will prevent the override of toString
+  bool userFilterByCreationDate(String filter) {
+    return this?.createdAt?.toString()?.contains(filter);
+  }
+
+  ///custom comparing function to check if two users are equal
+  bool isEqual(UserModel model) {
+    return this?.id == model?.id;
+  }
 
   @override
   String toString() => name;
-
 }
 ```
 
