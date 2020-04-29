@@ -1,3 +1,12 @@
+## [0.2.9] - 2020.04.29
+# Added callbacks
+* emptyBuilder
+* loadingBuilder
+* errorBuilder
+# Improvement
+* improve Menu mode
+* improve bottomSheet mode
+
 ## [0.2.8] - 2020.04.24
 * minor improvement
 

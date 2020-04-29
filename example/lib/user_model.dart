@@ -23,18 +23,18 @@ class UserModel {
   }
 
   ///this method will prevent the override of toString
-  static String userAsString(UserModel userModel) {
-    return '#${userModel.id} ${userModel.name}';
+  String userAsString() {
+    return '#${this.id} ${this.name}';
   }
 
   ///this method will prevent the override of toString
-  static bool userFilterByCreationDate(UserModel userModel, String filter) {
-    return userModel?.createdAt?.toString()?.contains(filter);
+  bool userFilterByCreationDate(String filter) {
+    return this?.createdAt?.toString()?.contains(filter);
   }
 
   ///custom comparing function to check if two users are equal
-  static bool isEqual(UserModel model1, UserModel model2) {
-    return model1?.id == model2?.id;
+  bool isEqual(UserModel model) {
+    return this?.id == model?.id;
   }
 
   @override

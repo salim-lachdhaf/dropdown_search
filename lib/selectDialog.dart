@@ -1,36 +1,40 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
-typedef Widget SelectOneItemBuilderType<T>(
-    BuildContext context, T item, bool isSelected);
+import 'dropdownSearch.dart';
 
 class SelectDialog<T> extends StatefulWidget {
   final T selectedValue;
-  final List<T> itemsList;
+  final List<T> items;
   final bool showSearchBox;
   final bool isFilteredOnline;
-  final void Function(T) onChange;
-  final Future<List<T>> Function(String text) onFind;
-  final SelectOneItemBuilderType<T> itemBuilder;
+  final DropdownSearchOnChanged<T> onChange;
+  final DropdownSearchOnFind<T> onFind;
+  final DropdownSearchItemBuilder<T> itemBuilder;
   final InputDecoration searchBoxDecoration;
   final Color backgroundColor;
   final TextStyle dialogTitleStyle;
-  final String Function(T item) itemAsString;
-  final bool Function(T item, String filter) filterFn;
+  final DropdownSearchItemAsString<T> itemAsString;
+  final DropdownSearchFilterFn<T> filterFn;
   final String hintText;
-  final bool isMenuMode;
   final double maxHeight;
   final String dialogTitle;
   final bool showSelectedItem;
-  final bool Function(T item, T selectedItem) compareFn;
+  final DropdownSearchCompareFn<T> compareFn;
+
+  ///custom layout for empty results
+  final WidgetBuilder emptyBuilder;
+
+  ///custom layout for loading items
+  final WidgetBuilder loadingBuilder;
+
+  ///custom layout for error
+  final ErrorBuilder errorBuilder;
 
   const SelectDialog(
       {Key key,
       this.dialogTitle,
-      this.itemsList,
+      this.items,
       this.maxHeight,
-      this.isMenuMode,
       this.showSearchBox,
       this.isFilteredOnline,
       this.onChange,
@@ -44,113 +48,11 @@ class SelectDialog<T> extends StatefulWidget {
       this.itemAsString,
       this.filterFn,
       this.showSelectedItem,
-      this.compareFn})
+      this.compareFn,
+      this.emptyBuilder,
+      this.loadingBuilder,
+      this.errorBuilder})
       : super(key: key);
-
-  static Future<T> showModal<T>(BuildContext context,
-      {List<T> items,
-      String label,
-      String dialogTitle,
-      isMenuMode,
-      double maxHeight,
-      bool isFilteredOnline,
-      T selectedValue,
-      bool showSearchBox,
-      Future<List<T>> Function(String text) onFind,
-      String Function(T item) itemAsString,
-      bool Function(T item, String filter) filterFn,
-      SelectOneItemBuilderType<T> itemBuilder,
-      void Function(T) onChange,
-      InputDecoration searchBoxDecoration,
-      Color backgroundColor,
-      String hintText,
-      TextStyle dialogTitleStyle,
-      showSelectedItem,
-      bool Function(T item, T selectedItem) compareFn}) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: backgroundColor,
-          content: SelectDialog<T>(
-              isMenuMode: isMenuMode,
-              dialogTitle: dialogTitle,
-              maxHeight: maxHeight,
-              isFilteredOnline: isFilteredOnline,
-              itemAsString: itemAsString,
-              filterFn: filterFn,
-              selectedValue: selectedValue,
-              itemsList: items,
-              onChange: onChange,
-              onFind: onFind,
-              showSearchBox: showSearchBox,
-              itemBuilder: itemBuilder,
-              searchBoxDecoration: searchBoxDecoration,
-              backgroundColor: backgroundColor,
-              hintText: hintText,
-              dialogTitleStyle: dialogTitleStyle,
-              showSelectedItem: showSelectedItem,
-              compareFn: compareFn),
-        );
-      },
-    );
-  }
-
-  static PersistentBottomSheetController<T> showAsBottomSheet<T>(
-      BuildContext context,
-      {List<T> items,
-      String label,
-      isMenuMode,
-      bool isFilteredOnline,
-      T selectedValue,
-      bool showSearchBox,
-      String dialogTitle,
-      Future<List<T>> Function(String text) onFind,
-      String Function(T item) itemAsString,
-      bool Function(T item, String filter) filterFn,
-      SelectOneItemBuilderType<T> itemBuilder,
-      void Function(T) onChange,
-      InputDecoration searchBoxDecoration,
-      Color backgroundColor,
-      String hintText,
-      double maxHeight,
-      TextStyle dialogTitleStyle,
-      showSelectedItem,
-      bool Function(T item, T selectedItem) compareFn}) {
-    return showBottomSheet<T>(
-        context: context,
-        builder: (context) {
-          return Container(
-              height: maxHeight ?? 350,
-              width: double.infinity,
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-                border: Border.all(color: Colors.blue, width: 2),
-              ),
-              child: SelectDialog<T>(
-                  dialogTitle: dialogTitle,
-                  isMenuMode: isMenuMode,
-                  itemAsString: itemAsString,
-                  filterFn: filterFn,
-                  isFilteredOnline: isFilteredOnline,
-                  selectedValue: selectedValue,
-                  itemsList: items,
-                  onChange: onChange,
-                  maxHeight: maxHeight,
-                  onFind: onFind,
-                  showSearchBox: showSearchBox,
-                  itemBuilder: itemBuilder,
-                  searchBoxDecoration: searchBoxDecoration,
-                  backgroundColor: backgroundColor,
-                  hintText: hintText,
-                  dialogTitleStyle: dialogTitleStyle,
-                  showSelectedItem: showSelectedItem,
-                  compareFn: compareFn));
-        });
-  }
 
   @override
   _SelectDialogState<T> createState() => _SelectDialogState<T>();
@@ -166,12 +68,13 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      if (widget.onFind != null)
-        _items.addAll(
-            await widget.onFind("").catchError((e) => itemsStream.addError(e)));
-      if (widget.itemsList != null) _items.addAll(widget.itemsList);
+      if (widget.onFind != null) {
+        var founded = await widget.onFind("").catchError(itemsStream.addError);
+        _items.addAll(founded ?? List());
+      }
+      if (widget.items != null) _items.addAll(widget.items);
 
-      itemsStream.add(_items);
+      if (_items.isNotEmpty) itemsStream.add(_items);
     });
   }
 
@@ -193,12 +96,22 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             child: StreamBuilder<List<T>>(
               stream: itemsStream.stream,
               builder: (context, snapshot) {
-                if (snapshot.hasError)
-                  return Center(child: Text(snapshot?.error?.toString()));
-                else if (!snapshot.hasData)
-                  return Center(child: CircularProgressIndicator());
-                else if (snapshot.data.isEmpty)
-                  return Center(child: Text("No data found"));
+                if (snapshot.hasError) {
+                  if (widget.errorBuilder != null)
+                    return widget.errorBuilder(context, snapshot.error);
+                  else
+                    return Center(child: Text(snapshot?.error?.toString()));
+                } else if (!snapshot.hasData) {
+                  if (widget.loadingBuilder != null)
+                    return widget.loadingBuilder(context);
+                  else
+                    return Center(child: CircularProgressIndicator());
+                } else if (snapshot.data.isEmpty) {
+                  if (widget.emptyBuilder != null)
+                    return widget.emptyBuilder(context);
+                  else
+                    return Center(child: Text("No data found"));
+                }
                 return ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
@@ -219,11 +132,11 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
       List<T> onlineItems = await widget
           .onFind(filter)
           .catchError((e) => itemsStream.addError(e));
-      if (onlineItems != null && onlineItems.isNotEmpty) {
+      if (onlineItems != null) {
         //Remove all old data
         _items.clear();
         //add offline items
-        if (widget.itemsList != null) _items.addAll(widget.itemsList);
+        if (widget.items != null) _items.addAll(widget.items);
         //add new online items to list
         _items.addAll(onlineItems);
       }
@@ -249,7 +162,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             context, item, _manageSelectedItemVisibility(item)),
         onTap: () {
           widget.onChange(item);
-          if (!widget.isMenuMode) Navigator.pop(context);
+          Navigator.pop(context);
         },
       );
     else
@@ -260,7 +173,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         selected: _manageSelectedItemVisibility(item),
         onTap: () {
           widget.onChange(item);
-          if (!widget.isMenuMode) Navigator.pop(context);
+          Navigator.pop(context);
         },
       );
   }

@@ -25,6 +25,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final popupButtonKey = GlobalKey<
+      State>(); // We use `State` because Flutter libs do not export `PopupMenuButton` state specifically.
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,19 +40,50 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: EdgeInsets.all(16),
             ),
 
-            ///Menu Mode with no searchBox
-            DropdownSearch<String>(
-                showSelectedItem: true,
-                maxHeight: 200,
-                mode: Mode.MENU,
-                items: ["Brasil", "Itália", "Estados Unidos"],
-                label: "country with custom colors",
-                onChanged: print,
-                selectedItem: "Brasil",
-                showSearchBox: false,
-                labelStyle: TextStyle(color: Colors.redAccent),
-                backgroundColor: Colors.redAccent,
-                dialogTitleStyle: TextStyle(color: Colors.greenAccent)),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child:
+
+                      ///Menu Mode with no searchBox
+                      DropdownSearch<String>(
+                          showSelectedItem: true,
+                          maxHeight: 200,
+                          mode: Mode.MENU,
+                          items: ["Brasil", "Itália", "Estados Unidos"],
+                          label: "country with custom colors",
+                          onChanged: print,
+                          selectedItem: "Brasil",
+                          showSearchBox: false,
+                          labelStyle: TextStyle(color: Colors.redAccent),
+                          backgroundColor: Colors.redAccent,
+                          dialogTitleStyle:
+                              TextStyle(color: Colors.greenAccent)),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8),
+                ),
+                Expanded(
+                  child:
+
+                      ///Menu Mode with no searchBox
+                      DropdownSearch<String>(
+                          showSelectedItem: true,
+                          maxHeight: 200,
+                          mode: Mode.MENU,
+                          items: ["Brasil", "Itália", "Estados Unidos"],
+                          label: "country with custom colors",
+                          onChanged: print,
+                          selectedItem: "Brasil",
+                          showSearchBox: false,
+                          labelStyle: TextStyle(color: Colors.redAccent),
+                          backgroundColor: Colors.redAccent,
+                          dialogTitleStyle:
+                              TextStyle(color: Colors.greenAccent)),
+                ),
+              ],
+              mainAxisSize: MainAxisSize.max,
+            ),
             Divider(),
 
             ///Menu Mode with searchBox
@@ -113,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
             DropdownSearch<UserModel>(
               label: "filtre name with custom function ItemAsString",
               onFind: (String filter) => getData(filter),
-              itemAsString: UserModel.userAsString,
+              itemAsString: (UserModel u) => u.userAsString(),
               searchBoxDecoration: InputDecoration(
                 hintText: "Search",
                 border: OutlineInputBorder(),
@@ -160,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ///custom itemBuilder and dropDownBuilder
             DropdownSearch<UserModel>(
               showSelectedItem: true,
-              compareFn: UserModel.isEqual,
+              compareFn: (UserModel i, UserModel s) => i.isEqual(s),
               label: "Person",
               onFind: (String filter) => getData(filter),
               onChanged: (UserModel data) {
@@ -271,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ///custom itemBuilder and dropDownBuilder with clear option and FilterFN
             DropdownSearch<UserModel>(
               dialogTitle: 'person',
-              filterFn: UserModel.userFilterByCreationDate,
+              filterFn: (user, filter) => user.userFilterByCreationDate(filter),
               isFilteredOnline: false,
               label: "Person with clear option and Custom FilterFN",
               showClearButton: true,
