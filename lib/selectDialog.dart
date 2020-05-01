@@ -104,7 +104,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                   stream: _itemsStream.stream,
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
-                      _errorWidget(snapshot?.error);
+                      return _errorWidget(snapshot?.error);
                     } else if (!snapshot.hasData) {
                       return _loadingWidget();
                     } else if (snapshot.data.isEmpty) {
