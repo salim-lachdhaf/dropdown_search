@@ -103,6 +103,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom layout for error
   final ErrorBuilder errorBuilder;
 
+  ///the search box will be focused if true
+  final bool autoFocusSearchBox;
+
   DropdownSearch(
       {Key key,
       @required this.onChanged,
@@ -132,7 +135,8 @@ class DropdownSearch<T> extends StatefulWidget {
       this.dropdownSearchDecoration,
       this.emptyBuilder,
       this.loadingBuilder,
-      this.errorBuilder})
+      this.errorBuilder,
+      this.autoFocusSearchBox = false})
       : assert(onChanged != null),
         assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
@@ -228,6 +232,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Widget _defaultSelectItemWidget(BuildContext context, T data) {
     return TextFormField(
         readOnly: true,
+        enabled: widget.enabled,
         controller: TextEditingController(text: _selectedItemAsString(data)),
         decoration: widget.dropdownSearchDecoration ??
             InputDecoration(
@@ -364,7 +369,8 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         compareFn: widget.compareFn,
         emptyBuilder: widget.emptyBuilder,
         loadingBuilder: widget.loadingBuilder,
-        errorBuilder: widget.errorBuilder);
+        errorBuilder: widget.errorBuilder,
+        autoFocusSearchBox: widget.autoFocusSearchBox);
   }
 
   ///handle on change value , if the validation is active , we validate the new selected item

@@ -1,3 +1,6 @@
+## [0.3.2] - 2020.05.01
+* add autoFocus searchBox feature
+
 ## [0.3.1] - 2020.04.29
 * fix bug: filter items
 * fix menu mode background color

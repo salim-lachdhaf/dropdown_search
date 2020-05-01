@@ -297,6 +297,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
             ///custom itemBuilder and dropDownBuilder with clear option and FilterFN
             DropdownSearch<UserModel>(
+              autoFocusSearchBox: true,
               dialogTitle: 'person',
               filterFn: (user, filter) => user.userFilterByCreationDate(filter),
               isFilteredOnline: false,

@@ -188,6 +188,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`emptyBuilder`| custom layout for empty results|
 |`loadingBuilder`| custom layout for loading items|
 |`errorBuilder`| custom layout for error|
+|`autoFocusSearchBox`| the search box will be focused if true|
 
 # Attention
 To use a template as an item type, and you don't want to use a custom fonction **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:

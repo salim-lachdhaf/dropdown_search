@@ -29,27 +29,32 @@ class SelectDialog<T> extends StatefulWidget {
   ///custom layout for error
   final ErrorBuilder errorBuilder;
 
+  ///the search box will be focused if true
+  final bool autoFocusSearchBox;
+
   const SelectDialog(
       {Key key,
       this.dialogTitle,
       this.items,
       this.maxHeight,
-      this.showSearchBox,
-      this.isFilteredOnline,
+      this.showSearchBox = true,
+      this.isFilteredOnline = false,
       this.onChange,
       this.selectedValue,
       this.onFind,
       this.itemBuilder,
       this.searchBoxDecoration,
-      this.dialogTitleStyle,
+      this.dialogTitleStyle =
+          const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       this.hintText,
       this.itemAsString,
       this.filterFn,
-      this.showSelectedItem,
+      this.showSelectedItem = false,
       this.compareFn,
       this.emptyBuilder,
       this.loadingBuilder,
-      this.errorBuilder})
+      this.errorBuilder,
+      this.autoFocusSearchBox = false})
       : super(key: key);
 
   @override
@@ -57,6 +62,7 @@ class SelectDialog<T> extends StatefulWidget {
 }
 
 class _SelectDialogState<T> extends State<SelectDialog<T>> {
+  final FocusNode focusNode = new FocusNode();
   final StreamController<List<T>> _itemsStream = StreamController();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
 
@@ -68,6 +74,13 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     super.initState();
     Future.delayed(
         Duration.zero, () => manageItemsByFilter("", isFistLoad: true));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (widget.autoFocusSearchBox)
+      FocusScope.of(context).requestFocus(focusNode);
   }
 
   @override
@@ -255,6 +268,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
+              focusNode: focusNode,
               onChanged: (f) => _debouncer(() {
                 _onTextChanged(f);
               }),
