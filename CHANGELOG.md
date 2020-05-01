@@ -1,3 +1,6 @@
+## [0.3.3] - 2020.05.01
+* fix bug error widget
+
 ## [0.3.2] - 2020.05.01
 * add autoFocus searchBox feature
 
