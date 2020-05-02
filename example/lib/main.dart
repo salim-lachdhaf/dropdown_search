@@ -81,7 +81,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       ///Menu Mode with no searchBox
                       DropdownSearch<String>(
                           showSelectedItem: true,
-                          maxHeight: 100,
                           mode: Mode.MENU,
                           dialogMaxWidth: 50,
                           items: ["Brasil", "Itália", "Estados Unidos"],

@@ -308,7 +308,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
               child: Padding(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: _selectDialogInstance(data),
+            child: _selectDialogInstance(data, defaultHeight: 350),
           ));
         });
   }
@@ -341,14 +341,14 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
               enabled: false,
               child: Container(
                   width: popupButtonObject.size.width,
-                  child: _selectDialogInstance(data)))
+                  child: _selectDialogInstance(data, defaultHeight: 224)))
         ]);
   }
 
-  SelectDialog<T> _selectDialogInstance(T data) {
+  SelectDialog<T> _selectDialogInstance(T data, {double defaultHeight}) {
     return SelectDialog<T>(
         popupTitle: widget.popupTitle,
-        maxHeight: widget.maxHeight,
+        maxHeight: widget.maxHeight ?? defaultHeight,
         isFilteredOnline: widget.isFilteredOnline,
         itemAsString: widget.itemAsString,
         filterFn: widget.filterFn,
