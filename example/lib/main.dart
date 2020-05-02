@@ -48,15 +48,29 @@ class _MyHomePageState extends State<MyHomePage> {
                       ///Menu Mode with no searchBox
                       DropdownSearch<String>(
                           showSelectedItem: true,
-                          maxHeight: 200,
                           mode: Mode.MENU,
-                          items: ["Brasil", "Itália", "Estados Unidos"],
-                          label: "country with custom colors",
+                          items: [
+                            "Brazil",
+                            "Itália",
+                            "Itália",
+                            "Itália",
+                            "Itália",
+                            "Itália",
+                            "Itália",
+                            "Estados Unidos",
+                            "Estados Unidos",
+                            "Estados Unidos",
+                            "Estados Unidos",
+                            "Estados Unidos",
+                            "Estados Unidos",
+                            "Estados Unidos",
+                            "Estados Unidos",
+                            'salim'
+                          ],
+                          label: "country",
                           onChanged: print,
-                          selectedItem: "Brasil",
-                          showSearchBox: false,
-                          dialogTitleStyle:
-                              TextStyle(color: Colors.greenAccent)),
+                          selectedItem: "Brazil",
+                          showSearchBox: false),
                 ),
                 Padding(
                   padding: EdgeInsets.all(8),
@@ -67,15 +81,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       ///Menu Mode with no searchBox
                       DropdownSearch<String>(
                           showSelectedItem: true,
-                          maxHeight: 200,
+                          maxHeight: 100,
                           mode: Mode.MENU,
+                          dialogMaxWidth: 50,
                           items: ["Brasil", "Itália", "Estados Unidos"],
-                          label: "country with custom colors",
+                          label: "country",
                           onChanged: print,
                           selectedItem: "Brasil",
-                          showSearchBox: false,
-                          dialogTitleStyle:
-                              TextStyle(color: Colors.greenAccent)),
+                          showSearchBox: false),
                 ),
               ],
               mainAxisSize: MainAxisSize.max,
@@ -85,9 +98,18 @@ class _MyHomePageState extends State<MyHomePage> {
             ///Menu Mode with searchBox
             DropdownSearch(
                 showSelectedItem: true,
-                maxHeight: 200,
                 mode: Mode.MENU,
-                items: ["Brazil", "Itália", "Estados Unidos"],
+                items: [
+                  "Brazil",
+                  "Itália",
+                  "Estados Unidos",
+                  "Estados Unidos",
+                  "Estados Unidos",
+                  "Estados Unidos",
+                  "Estados Unidos",
+                  "Estados Unidos",
+                  "last item"
+                ],
                 label: "country with custom colors",
                 onChanged: print,
                 selectedItem: "Brazil",
@@ -96,14 +118,33 @@ class _MyHomePageState extends State<MyHomePage> {
 
             ///BottomSheet Mode with no searchBox
             DropdownSearch<String>(
-                dialogTitle: 'Country',
-                mode: Mode.BOTTOM_SHEET,
+                popupTitle: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColorDark,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                  ),
+                  child: Center(
+                    child: Text('Country',
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24))),
+                mode: Mode.MENU,
                 maxHeight: 300,
-                items: ["Brazil", "Italia", "Tunisia"],
+                items: ["Brazil", "Italia", "Tunisia",'Canada','France', "Tunisia",'Canada','France', "Tunisia",'Canada','France', "Tunisia",'Canada','end'],
                 label: "BottomShet mode",
                 onChanged: print,
                 selectedItem: "Brazil",
-                showSearchBox: false),
+                showSearchBox: true),
             Divider(),
 
             ///BottomSheet Mode with searchBox
@@ -174,7 +215,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ///add title to the dialog
             DropdownSearch<UserModel>(
               label: "Label",
-              dialogTitle: "Title dialog",
               onFind: (String filter) => getData(filter),
               searchBoxDecoration: InputDecoration(
                 hintText: "Search",
@@ -186,6 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
             ///custom itemBuilder and dropDownBuilder
             DropdownSearch<UserModel>(
+              dialogMaxWidth: 200,
               showSelectedItem: true,
               compareFn: (UserModel i, UserModel s) => i.isEqual(s),
               label: "Person",
@@ -241,7 +282,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
             ///custom itemBuilder and dropDownBuilder with clear option
             DropdownSearch<UserModel>(
-              dialogTitle: 'person',
               isFilteredOnline: true,
               label: "Person with clear option with filter online",
               showClearButton: true,
@@ -297,10 +337,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
             ///custom itemBuilder and dropDownBuilder with clear option and FilterFN
             DropdownSearch<UserModel>(
+              showSearchBox: true,
               autoFocusSearchBox: true,
-              dialogTitle: 'person',
               filterFn: (user, filter) => user.userFilterByCreationDate(filter),
-              isFilteredOnline: false,
+              isFilteredOnline: true,
               label: "Person with clear option and Custom FilterFN",
               showClearButton: true,
               onFind: (String filter) => getData(filter),

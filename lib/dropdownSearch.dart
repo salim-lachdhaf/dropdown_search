@@ -1,6 +1,7 @@
 library dropdown_search;
 
 import 'package:dropdown_search/popupMenu.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'selectDialog.dart';
@@ -64,11 +65,8 @@ class DropdownSearch<T> extends StatefulWidget {
   ///the title for dialog/menu/bottomSheet
   final Color backgroundColor;
 
-  ///text style for the dialog title
-  final String dialogTitle;
-
-  ///the height of the selected item UI
-  final TextStyle dialogTitleStyle;
+  ///custom widget for the popup
+  final Widget popupTitle;
 
   ///customize the fields the be shown
   final DropdownSearchItemAsString<T> itemAsString;
@@ -84,6 +82,9 @@ class DropdownSearch<T> extends StatefulWidget {
 
   ///the max height for dialog/bottomSheet/Menu
   final double maxHeight;
+
+  ///the max width for dialog/bottomSheet/Menu
+  final double dialogMaxWidth;
 
   ///select the selected item in the menu/dialog/bottomSheet of items
   final bool showSelectedItem;
@@ -106,22 +107,23 @@ class DropdownSearch<T> extends StatefulWidget {
   ///the search box will be focused if true
   final bool autoFocusSearchBox;
 
+  ///custom shape
+  final ShapeBorder shape;
+
   DropdownSearch(
       {Key key,
       @required this.onChanged,
       this.mode = Mode.DIALOG,
       this.label,
       this.isFilteredOnline = false,
-      this.dialogTitle,
-      this.dialogTitleStyle =
-          const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      this.popupTitle,
       this.labelStyle,
       this.items,
       this.selectedItem,
       this.onFind,
       this.dropdownBuilder,
       this.dropdownItemBuilder,
-      this.showSearchBox = true,
+      this.showSearchBox = false,
       this.showClearButton = false,
       this.validate,
       this.searchBoxDecoration,
@@ -136,7 +138,9 @@ class DropdownSearch<T> extends StatefulWidget {
       this.emptyBuilder,
       this.loadingBuilder,
       this.errorBuilder,
-      this.autoFocusSearchBox = false})
+      this.autoFocusSearchBox = false,
+      this.dialogMaxWidth,
+      this.shape})
       : assert(onChanged != null),
         assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
@@ -159,7 +163,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         if (widget.label != null && widget.dropdownBuilder != null)
           Text(
@@ -170,7 +174,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
           SizedBox(height: 5),
         Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             ValueListenableBuilder<T>(
               valueListenable: _selectedItemNotifier,
@@ -221,12 +225,12 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                       .copyWith(color: Theme.of(context).errorColor)),
             );
           } else {
-            return Container(height: 0);
+            return SizedBox.shrink();
           }
         },
       );
     }
-    return Container(height: 0);
+    return SizedBox.shrink();
   }
 
   Widget _defaultSelectItemWidget(BuildContext context, T data) {
@@ -283,6 +287,8 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          contentPadding: EdgeInsets.all(0),
+          shape: widget.shape,
           backgroundColor: widget.backgroundColor,
           content: _selectDialogInstance(data),
         );
@@ -294,27 +300,15 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Future<T> _openBottomSheet(T data) {
     return showModalBottomSheet<T>(
         isScrollControlled: true,
+        backgroundColor: widget.backgroundColor,
+        shape: widget.shape,
         context: context,
         builder: (context) {
           return SingleChildScrollView(
               child: Padding(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Container(
-                height: widget.maxHeight ?? 350,
-                width: double.infinity,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: widget.backgroundColor,
-                    border: Border(
-                        left: BorderSide(
-                            color: Theme.of(context).primaryColor, width: 1.5),
-                        right: BorderSide(
-                            color: Theme.of(context).primaryColor, width: 1.5),
-                        top: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                            width: 1.5))),
-                child: _selectDialogInstance(data)),
+            child: _selectDialogInstance(data),
           ));
         });
   }
@@ -337,6 +331,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         ),
         Size(overlay.size.width, overlay.size.height));
     return customShowMenu<T>(
+        shape: widget.shape,
         color: widget.backgroundColor,
         context: context,
         position: position,
@@ -352,7 +347,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   SelectDialog<T> _selectDialogInstance(T data) {
     return SelectDialog<T>(
-        dialogTitle: widget.dialogTitle,
+        popupTitle: widget.popupTitle,
         maxHeight: widget.maxHeight,
         isFilteredOnline: widget.isFilteredOnline,
         itemAsString: widget.itemAsString,
@@ -363,14 +358,14 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         itemBuilder: widget.dropdownItemBuilder,
         selectedValue: data,
         searchBoxDecoration: widget.searchBoxDecoration,
-        dialogTitleStyle: widget.dialogTitleStyle,
         onChange: _handleOnChangeSelectedItem,
         showSelectedItem: widget.showSelectedItem,
         compareFn: widget.compareFn,
         emptyBuilder: widget.emptyBuilder,
         loadingBuilder: widget.loadingBuilder,
         errorBuilder: widget.errorBuilder,
-        autoFocusSearchBox: widget.autoFocusSearchBox);
+        autoFocusSearchBox: widget.autoFocusSearchBox,
+        dialogMaxWidth: widget.dialogMaxWidth);
   }
 
   ///handle on change value , if the validation is active , we validate the new selected item

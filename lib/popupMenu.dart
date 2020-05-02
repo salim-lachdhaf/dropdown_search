@@ -9,7 +9,7 @@ const Duration _kMenuDuration = Duration(milliseconds: 300);
 const double _kMenuCloseIntervalEnd = 2.0 / 3.0;
 const double _kMenuHorizontalPadding = 0.0;
 const double _kMenuMinWidth = 2.0 * _kMenuWidthStep;
-const double _kMenuVerticalPadding = 8.0;
+const double _kMenuVerticalPadding = 0.0;
 const double _kMenuWidthStep = 1.0;
 const double _kMenuScreenPadding = 0.0;
 

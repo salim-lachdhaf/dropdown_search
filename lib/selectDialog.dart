@@ -11,12 +11,12 @@ class SelectDialog<T> extends StatefulWidget {
   final DropdownSearchOnFind<T> onFind;
   final DropdownSearchItemBuilder<T> itemBuilder;
   final InputDecoration searchBoxDecoration;
-  final TextStyle dialogTitleStyle;
   final DropdownSearchItemAsString<T> itemAsString;
   final DropdownSearchFilterFn<T> filterFn;
   final String hintText;
   final double maxHeight;
-  final String dialogTitle;
+  final double dialogMaxWidth;
+  final Widget popupTitle;
   final bool showSelectedItem;
   final DropdownSearchCompareFn<T> compareFn;
 
@@ -34,18 +34,16 @@ class SelectDialog<T> extends StatefulWidget {
 
   const SelectDialog(
       {Key key,
-      this.dialogTitle,
+      this.popupTitle,
       this.items,
       this.maxHeight,
-      this.showSearchBox = true,
+      this.showSearchBox = false,
       this.isFilteredOnline = false,
       this.onChange,
       this.selectedValue,
       this.onFind,
       this.itemBuilder,
       this.searchBoxDecoration,
-      this.dialogTitleStyle =
-          const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       this.hintText,
       this.itemAsString,
       this.filterFn,
@@ -54,7 +52,8 @@ class SelectDialog<T> extends StatefulWidget {
       this.emptyBuilder,
       this.loadingBuilder,
       this.errorBuilder,
-      this.autoFocusSearchBox = false})
+      this.autoFocusSearchBox = false,
+      this.dialogMaxWidth})
       : super(key: key);
 
   @override
@@ -92,38 +91,46 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.height * .9,
-      height: widget.maxHeight ?? MediaQuery.of(context).size.height * .7,
+      width: widget.dialogMaxWidth ?? MediaQuery.of(context).size.width * .9,
+      constraints: BoxConstraints(
+          maxHeight: widget.maxHeight ?? MediaQuery.of(context).size.height),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           _searchField(),
           Expanded(
-            child: Stack(
-              children: <Widget>[
-                StreamBuilder<List<T>>(
-                  stream: _itemsStream.stream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return _errorWidget(snapshot?.error);
-                    } else if (!snapshot.hasData) {
-                      return _loadingWidget();
-                    } else if (snapshot.data.isEmpty) {
-                      if (widget.emptyBuilder != null)
-                        return widget.emptyBuilder(context);
-                      else
-                        return Center(child: Text("No data found"));
-                    }
-                    return ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        var item = snapshot.data[index];
-                        return _itemWidget(item);
-                      },
-                    );
-                  },
-                ),
-                _loadingWidget()
-              ],
+            child: SingleChildScrollView(
+              child: Stack(
+                children: <Widget>[
+                  StreamBuilder<List<T>>(
+                    stream: _itemsStream.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return _errorWidget(snapshot?.error);
+                      } else if (!snapshot.hasData) {
+                        return _loadingWidget();
+                      } else if (snapshot.data.isEmpty) {
+                        if (widget.emptyBuilder != null)
+                          return widget.emptyBuilder(context);
+                        else
+                          return const Center(
+                              child: const Text("No data found"));
+                      }
+                      return ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          var item = snapshot.data[index];
+                          return _itemWidget(item);
+                        },
+                      );
+                    },
+                  ),
+                  _loadingWidget()
+                ],
+              ),
             ),
           ),
         ],
@@ -164,7 +171,10 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             if (widget.loadingBuilder != null)
               return widget.loadingBuilder(context);
             else
-              return Center(child: CircularProgressIndicator());
+              return Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: const Center(child: const CircularProgressIndicator()),
+              );
           }
           return Container();
         });
@@ -238,7 +248,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     else
       return ListTile(
         title: Text(widget.itemAsString != null
-            ? widget.itemAsString(item)
+            ? (widget.itemAsString(item) ?? "")
             : item.toString()),
         selected: _manageSelectedItemVisibility(item),
         onTap: () {
@@ -261,25 +271,28 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   }
 
   Widget _searchField() {
-    return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-      if (widget.dialogTitle != null)
-        Text(widget.dialogTitle, style: widget.dialogTitleStyle),
-      if (widget.showSearchBox)
-        Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              focusNode: focusNode,
-              onChanged: (f) => _debouncer(() {
-                _onTextChanged(f);
-              }),
-              decoration: widget.searchBoxDecoration ??
-                  InputDecoration(
-                    hintText: widget.hintText,
-                    border: OutlineInputBorder(),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
-            ))
-    ]);
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          widget.popupTitle ?? SizedBox.shrink(),
+          if (widget.showSearchBox)
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  focusNode: focusNode,
+                  onChanged: (f) => _debouncer(() {
+                    _onTextChanged(f);
+                  }),
+                  decoration: widget.searchBoxDecoration ??
+                      InputDecoration(
+                        hintText: widget.hintText,
+                        border: OutlineInputBorder(),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                ))
+        ]);
   }
 }
 
