@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../dropdownSearch.dart';
+import '../dropdown_search.dart';
 
 class SelectDialog<T> extends StatefulWidget {
   final T selectedValue;

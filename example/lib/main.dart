@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:dropdown_search/dropdownSearch.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 import 'user_model.dart';
 
