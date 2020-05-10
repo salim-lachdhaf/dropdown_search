@@ -1,3 +1,9 @@
+## [0.3.6] - 2020.05.10
+* update description
+
+## [0.3.5] - 2020.05.10
+* fix issue
+
 ## [0.3.4] - 2020.05.10
 * Integrate material design
 * make DropdownSearch as item of a form

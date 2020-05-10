@@ -1,6 +1,6 @@
 library dropdown_search;
 
-import 'file:///E:/SalimDev/Plugin/dropdownSearch/lib/src/popupMenu.dart';
+import 'src/popupMenu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
