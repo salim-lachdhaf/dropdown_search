@@ -39,7 +39,6 @@
 
 ![](https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_4.png?raw=true)
 
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Simple.gif?raw=true" width="49.5%" /> <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/GIF_Custom_Layout.gif?raw=true" width="49.5%" />
 ## packages.yaml
 ```yaml
 dropdown_search: <lastest version>
@@ -54,12 +53,14 @@ import 'package:dropdown_search/dropdownSearch.dart';
 ## Simple implementation
 
 ```dart
-DropdownSearch(
-  items: ["Brazil", "Italia", "Tunisia", "Canada"],
-  label: Country,
-  onChanged: print,
-  selectedItem: "Brazil",
-);
+DropdownSearch<String>(
+    mode: Mode.MENU,
+    showSelectedItem: true,
+    items: ["Brazil", "Italia", "Tunisia", 'Canada'],
+    label: "Menu mode",
+    hint: "country in menu mode",
+    onChanged: print,
+    selectedItem: "Brazil"),
 ```
 
 ## customize showed field (itemAsString)
@@ -69,10 +70,6 @@ DropdownSearch<UserModel>(
   label: "Name",
   onFind: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringByName(),
-  searchBoxDecoration: InputDecoration(
-    hintText: "Search",
-    border: OutlineInputBorder(),
-  ),
   onChanged: (UserModel data) => print(data),
 ),
 
@@ -80,10 +77,6 @@ DropdownSearch<UserModel>(
   label: "Name",
   onFind: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringById(),
-  searchBoxDecoration: InputDecoration(
-    hintText: "Search",
-    border: OutlineInputBorder(),
-  ),
   onChanged: (UserModel data) => print(data),
 ),
 ```
@@ -95,10 +88,6 @@ DropdownSearch<UserModel>(
   filterFn: (user, filter) => user.userFilterByCreationDate(filter),
   onFind: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringByName(),
-  searchBoxDecoration: InputDecoration(
-    hintText: "Search",
-    border: OutlineInputBorder(),
-  ),
   onChanged: (UserModel data) => print(data),
 ),
 ```
@@ -108,13 +97,8 @@ DropdownSearch<UserModel>(
 DropdownSearch<UserModel>(
   mode: Mode.BOTTOM_SHEET,
   label: "Name",
-  maxHeight: 350,
   onFind: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsString(),
-  searchBoxDecoration: InputDecoration(
-    hintText: "Search",
-    border: OutlineInputBorder(),
-  ),
   onChanged: (UserModel data) => print(data),
 ),
 ```
@@ -126,7 +110,7 @@ DropdownSearch(
   label: "Country",
   onChanged: print,
   selectedItem: "Tunisia",
-  validate: (String item) {
+  validator: (String item) {
     if (item == null)
       return "Required field";
     else if (item == "Brazil")
@@ -141,7 +125,7 @@ DropdownSearch(
 ## Endpoint implementation (using [Dio package](https://pub.dev/packages/dio))
 ```dart
 DropdownSearch<UserModel>(
-  label: "Nome",
+  label: "Name",
   onFind: (String filter) async {
     var response = await Dio().get(
         "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
@@ -164,30 +148,33 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`showSearchBox`|show/hide the search box|
 |`isFilteredOnline`|true if the filter on items is applied onlie (via API)|
 |`showClearButton`| show/hide clear selected item|
-|`labelStyle`| text style for the DropdownSearch label|
 |`items`| offline items list|
 |`selectedItem`| selected item|
 |`onFind`|function that returns item from API|
 |`onChanged`|called when a new item is selected|
 |`dropdownBuilder`|to customize list of items UI|
-|`dropdownItemBuilder`|to customize selected item|
-|`validate`|function to apply the validation formula|
+|`popupItemBuilder`|to customize selected item|
+|`validator`|function to apply the validation formula|
 |`searchBoxDecoration`|decoration for the search box|
-|`backgroundColor`|background color for the dialog/menu/bottomSheet|
-|`dialogTitle`|the title for dialog/menu/bottomSheet|
-|`dialogTitleStyle`|text style for the dialog title|
-|`dropdownItemBuilderHeight`|the height of the selected item UI|
+|`popupBackgroundColor`|background color for the dialog/menu/bottomSheet|
+|`popupTitle`|Custom widget for the popup title|
 |`itemAsString`|customize the fields the be shown|
 |`filterFn`|custom filter function|
 |`enabled`|enable/disable dropdownSearch|
 |`mode`| MENU / DIALOG/ BOTTOM_SHEET|
 |`maxHeight`| the max height for dialog/bottomSheet/Menu|
+|`dialogMaxWidth`| the max width for the dialog|
 |`showSelectedItem`| manage selected item visibility (if true, the selected item will be highlighted)|
 |`compareFn`| Function(T item, T selectedItem), custom comparing function|
-|`dropdownSearchDecoration`| input decoration|
+|`dropdownSearchDecoration`| DropdownSearch input decoration|
 |`emptyBuilder`| custom layout for empty results|
 |`loadingBuilder`| custom layout for loading items|
 |`errorBuilder`| custom layout for error|
+|`autoFocusSearchBox`| the search box will be focused if true|
+|`popupShape`| custom shape for the popup|
+|`autoValidate`|handle auto validation|
+|`onSaved`|An optional method to call with the final value when the form is saved via|
+|`validator`|An optional method that validates an input. Returns an error string to display if the input is invalid, or null otherwise.|
 
 # Attention
 To use a template as an item type, and you don't want to use a custom fonction **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
