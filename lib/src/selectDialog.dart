@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'dropdownSearch.dart';
+import '../dropdownSearch.dart';
 
 class SelectDialog<T> extends StatefulWidget {
   final T selectedValue;
   final List<T> items;
   final bool showSearchBox;
   final bool isFilteredOnline;
-  final DropdownSearchOnChanged<T> onChange;
+  final ValueChanged<T> onChanged;
   final DropdownSearchOnFind<T> onFind;
   final DropdownSearchItemBuilder<T> itemBuilder;
   final InputDecoration searchBoxDecoration;
@@ -39,7 +39,7 @@ class SelectDialog<T> extends StatefulWidget {
       this.maxHeight,
       this.showSearchBox = false,
       this.isFilteredOnline = false,
-      this.onChange,
+      this.onChanged,
       this.selectedValue,
       this.onFind,
       this.itemBuilder,
@@ -160,7 +160,10 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     if (widget.errorBuilder != null)
       return widget.errorBuilder(context, error);
     else
-      return Center(child: Text(error?.toString()));
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(child: Text(error?.toString())),
+      );
   }
 
   Widget _loadingWidget() {
@@ -221,17 +224,21 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         if (widget.items != null) _items.addAll(widget.items);
         //add new online items to list
         _items.addAll(onlineItems);
+
+        _itemsStream.add(applyFilter(filter));
       } catch (e) {
         _itemsStream.addError(e);
         //if offline items count > 0 , the error will be not visible for the user
         //As solution we show it in dialog
         if (widget.items != null && widget.items.isNotEmpty) {
           _showErrorDialog(e);
+          _itemsStream.add(applyFilter(filter));
         }
       }
+    } else {
+      _itemsStream.add(applyFilter(filter));
     }
 
-    _itemsStream.add(applyFilter(filter));
     _loadingNotifier.value = false;
   }
 
@@ -241,8 +248,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         child: widget.itemBuilder(
             context, item, _manageSelectedItemVisibility(item)),
         onTap: () {
-          widget.onChange(item);
-          Navigator.pop(context);
+          if (widget.onChanged != null) widget.onChanged(item);
+          Navigator.pop(context, item);
         },
       );
     else
@@ -252,8 +259,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             : item.toString()),
         selected: _manageSelectedItemVisibility(item),
         onTap: () {
-          widget.onChange(item);
-          Navigator.pop(context);
+          if (widget.onChanged != null) widget.onChanged(item);
+          Navigator.pop(context, item);
         },
       );
   }
@@ -275,7 +282,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          widget.popupTitle ?? SizedBox.shrink(),
+          widget.popupTitle ?? const SizedBox.shrink(),
           if (widget.showSearchBox)
             Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -287,7 +294,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                   decoration: widget.searchBoxDecoration ??
                       InputDecoration(
                         hintText: widget.hintText,
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 16),
                       ),

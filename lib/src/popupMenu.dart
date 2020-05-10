@@ -193,8 +193,9 @@ class PopupMenuItemState<T, W extends CustomPopupMenuItem<T>> extends State<W> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
-    TextStyle style =
-        widget.textStyle ?? popupMenuTheme.textStyle ?? theme.textTheme.subhead;
+    TextStyle style = widget.textStyle ??
+        popupMenuTheme.textStyle ??
+        theme.textTheme.subtitle1;
 
     if (!widget.enabled) style = style.copyWith(color: theme.disabledColor);
 
@@ -589,10 +590,13 @@ Future<T> customShowMenu<T>({
   String label = semanticLabel;
   switch (Theme.of(context).platform) {
     case TargetPlatform.iOS:
+    case TargetPlatform.macOS:
       label = semanticLabel;
       break;
     case TargetPlatform.android:
     case TargetPlatform.fuchsia:
+    case TargetPlatform.linux:
+    case TargetPlatform.windows:
       label =
           semanticLabel ?? MaterialLocalizations.of(context)?.popupMenuLabel;
   }

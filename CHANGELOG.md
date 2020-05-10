@@ -1,4 +1,9 @@
-## [0.3.3] - 2020.05.01
+## [0.3.4] - 2020.05.10
+* Integrate material design
+* make DropdownSearch as item of a form
+* manage validation form
+
+## [0.3.4] - 2020.05.01
 * fix bug error widget
 
 ## [0.3.2] - 2020.05.01

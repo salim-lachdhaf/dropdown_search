@@ -1,26 +1,26 @@
 library dropdown_search;
 
-import 'package:dropdown_search/popupMenu.dart';
+import 'file:///E:/SalimDev/Plugin/dropdownSearch/lib/src/popupMenu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
-import 'selectDialog.dart';
+import 'src/selectDialog.dart';
 import 'dart:async';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
 typedef String DropdownSearchItemAsString<T>(T item);
 typedef bool DropdownSearchFilterFn<T>(T item, String filter);
 typedef bool DropdownSearchCompareFn<T>(T item, T selectedItem);
-typedef void DropdownSearchOnChanged<T>(T selectedItem);
 typedef Widget DropdownSearchBuilder<T>(
     BuildContext context, T selectedItem, String itemAsString);
-typedef String DropdownSearchValidation<T>(T selectedItem);
 typedef Widget DropdownSearchItemBuilder<T>(
   BuildContext context,
   T item,
   bool isSelected,
 );
 typedef Widget ErrorBuilder<T>(BuildContext context, dynamic exception);
+
+enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
 class DropdownSearch<T> extends StatefulWidget {
   ///DropDownSearch label
@@ -35,9 +35,6 @@ class DropdownSearch<T> extends StatefulWidget {
   ///show/hide clear selected item
   final bool showClearButton;
 
-  ///text style for the DropdownSearch label
-  final TextStyle labelStyle;
-
   ///offline items list
   final List<T> items;
 
@@ -48,24 +45,21 @@ class DropdownSearch<T> extends StatefulWidget {
   final DropdownSearchOnFind<T> onFind;
 
   ///called when a new item is selected
-  final DropdownSearchOnChanged<T> onChanged;
+  final ValueChanged<T> onChanged;
 
   ///to customize list of items UI
   final DropdownSearchBuilder<T> dropdownBuilder;
 
   ///to customize selected item
-  final DropdownSearchItemBuilder<T> dropdownItemBuilder;
-
-  ///function to apply the validation formula
-  final DropdownSearchValidation<T> validate;
+  final DropdownSearchItemBuilder<T> popupItemBuilder;
 
   ///decoration for search box
   final InputDecoration searchBoxDecoration;
 
   ///the title for dialog/menu/bottomSheet
-  final Color backgroundColor;
+  final Color popupBackgroundColor;
 
-  ///custom widget for the popup
+  ///custom widget for the popup title
   final Widget popupTitle;
 
   ///customize the fields the be shown
@@ -83,7 +77,7 @@ class DropdownSearch<T> extends StatefulWidget {
   ///the max height for dialog/bottomSheet/Menu
   final double maxHeight;
 
-  ///the max width for dialog/bottomSheet/Menu
+  ///the max width for the dialog
   final double dialogMaxWidth;
 
   ///select the selected item in the menu/dialog/bottomSheet of items
@@ -92,7 +86,7 @@ class DropdownSearch<T> extends StatefulWidget {
   ///function that compares two object with the same type to detected if it's the selected item or not
   final DropdownSearchCompareFn<T> compareFn;
 
-  ///input decoration
+  ///dropdownSearch input decoration
   final InputDecoration dropdownSearchDecoration;
 
   ///custom layout for empty results
@@ -107,27 +101,40 @@ class DropdownSearch<T> extends StatefulWidget {
   ///the search box will be focused if true
   final bool autoFocusSearchBox;
 
-  ///custom shape
-  final ShapeBorder shape;
+  ///custom shape for the popup
+  final ShapeBorder popupShape;
+
+  ///handle auto validation
+  final bool autoValidate;
+
+  /// An optional method to call with the final value when the form is saved via
+  final FormFieldSetter<T> onSaved;
+
+  /// An optional method that validates an input. Returns an error string to
+  /// display if the input is invalid, or null otherwise.
+  final FormFieldValidator<T> validator;
+
+  final InputDecoration dropDownSearchDecoration;
 
   DropdownSearch(
       {Key key,
-      @required this.onChanged,
+      this.onSaved,
+      this.validator,
+      this.autoValidate = false,
+      this.onChanged,
       this.mode = Mode.DIALOG,
       this.label,
       this.isFilteredOnline = false,
       this.popupTitle,
-      this.labelStyle,
       this.items,
       this.selectedItem,
       this.onFind,
       this.dropdownBuilder,
-      this.dropdownItemBuilder,
+      this.popupItemBuilder,
       this.showSearchBox = false,
       this.showClearButton = false,
-      this.validate,
       this.searchBoxDecoration,
-      this.backgroundColor = Colors.white,
+      this.popupBackgroundColor = Colors.white,
       this.enabled = true,
       this.maxHeight,
       this.filterFn,
@@ -140,8 +147,15 @@ class DropdownSearch<T> extends StatefulWidget {
       this.errorBuilder,
       this.autoFocusSearchBox = false,
       this.dialogMaxWidth,
-      this.shape})
-      : assert(onChanged != null),
+      this.dropDownSearchDecoration,
+      this.popupShape})
+      : assert(autoValidate != null),
+        assert(isFilteredOnline != null),
+        assert(enabled != null),
+        assert(showSelectedItem != null),
+        assert(autoFocusSearchBox != null),
+        assert(showClearButton != null),
+        assert(showSearchBox != null),
         assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
@@ -151,129 +165,116 @@ class DropdownSearch<T> extends StatefulWidget {
 
 class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   final ValueNotifier<T> _selectedItemNotifier = ValueNotifier(null);
-  final ValueNotifier<String> _validateMessageNotifier = ValueNotifier(null);
+  final ValueNotifier<bool> _isFocused = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
-    //init general parameters and listeners
-    _selectedItemNotifier.value = widget.selectedItem;
-    if (widget.validate != null) {
-      _validateMessageNotifier.value = widget.validate(widget.selectedItem);
-    }
+    return ValueListenableBuilder<T>(
+      valueListenable: _selectedItemNotifier,
+      builder: (context, T data, wt) {
+        return IgnorePointer(
+          ignoring: !widget.enabled,
+          child: GestureDetector(
+              onTap: () => _selectSearchMode(data), child: _formField(data)),
+        );
+      },
+    );
+  }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+  Widget _errorValidationWidget(String error) {
+    if (error != null && error.isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(5),
+        child: Text(error,
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2
+                .copyWith(color: Theme.of(context).errorColor)),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _defaultSelectItemWidget(T data) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        if (widget.label != null && widget.dropdownBuilder != null)
-          Text(
-            widget.label,
-            style: widget.labelStyle ?? Theme.of(context).textTheme.subhead,
-          ),
-        if (widget.label != null && widget.dropdownBuilder != null)
-          SizedBox(height: 5),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            ValueListenableBuilder<T>(
-              valueListenable: _selectedItemNotifier,
-              builder: (context, T data, wt) {
-                return IgnorePointer(
-                  ignoring: !widget.enabled,
-                  child: GestureDetector(
-                      onTap: () {
-                        _selectSearchMode(data);
-                      },
-                      child: (widget.dropdownBuilder != null)
-                          ? Stack(
-                              alignment: Alignment.center,
-                              children: <Widget>[
-                                  widget.dropdownBuilder(context, data,
-                                      _selectedItemAsString(data)),
-                                  Positioned.fill(
-                                      right: 5,
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child:
-                                            _manageTrailingIcons(context, data),
-                                      ))
-                                ])
-                          : _defaultSelectItemWidget(context, data)),
-                );
-              },
-            ),
-            _errorValidationWidget()
-          ],
-        ),
+        Expanded(
+            child: widget.dropdownBuilder != null
+                ? widget.dropdownBuilder(
+                    context, data, _selectedItemAsString(data))
+                : Text(_selectedItemAsString(data),
+                    style: Theme.of(context).textTheme.subtitle1)),
+        _manageTrailingIcons(data)
       ],
     );
   }
 
-  Widget _errorValidationWidget() {
-    if (widget.validate != null) {
-      return ValueListenableBuilder(
-        valueListenable: _validateMessageNotifier,
-        builder: (context, String msg, w) {
-          if (msg != null && msg.isNotEmpty) {
-            return Padding(
-              padding: const EdgeInsets.all(5),
-              child: Text(msg,
-                  style: Theme.of(context)
-                      .textTheme
-                      .body1
-                      .copyWith(color: Theme.of(context).errorColor)),
-            );
-          } else {
-            return SizedBox.shrink();
-          }
-        },
-      );
-    }
-    return SizedBox.shrink();
-  }
-
-  Widget _defaultSelectItemWidget(BuildContext context, T data) {
-    return TextFormField(
-        readOnly: true,
-        enabled: widget.enabled,
-        controller: TextEditingController(text: _selectedItemAsString(data)),
-        decoration: widget.dropdownSearchDecoration ??
-            InputDecoration(
-                labelText: widget.label,
-                labelStyle: widget.labelStyle,
-                border: const OutlineInputBorder(),
-                suffixIcon: _manageTrailingIcons(context, data)));
+  Widget _formField(T value) {
+    return FormField<T>(
+      enabled: widget.enabled,
+      onSaved: widget.onSaved,
+      validator: widget.validator,
+      autovalidate: widget.autoValidate,
+      initialValue: widget.selectedItem,
+      builder: (FormFieldState<T> state) {
+        if (state.value != value) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            state.didChange(value);
+          });
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ValueListenableBuilder(
+                valueListenable: _isFocused,
+                builder: (context, bool isFocused, w) {
+                  return InputDecorator(
+                      isEmpty: value == null && widget.dropdownBuilder == null,
+                      isFocused: isFocused,
+                      decoration: widget.dropDownSearchDecoration ??
+                          InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                              border: OutlineInputBorder(),
+                              labelText: widget.label),
+                      child: _defaultSelectItemWidget(value));
+                }),
+            if (state.hasError) _errorValidationWidget(state.errorText)
+          ],
+        );
+      },
+    );
   }
 
   ///function that return the String value of an object
   String _selectedItemAsString(T data) {
     if (data == null) {
       return "";
-    } else if (widget.itemAsString == null) {
-      return data.toString();
-    } else {
+    } else if (widget.itemAsString != null) {
       return widget.itemAsString(data);
+    } else {
+      return data.toString();
     }
   }
 
   ///function that manage Trailing icons(close, dropDown)
-  Widget _manageTrailingIcons(BuildContext context, T data) {
+  Widget _manageTrailingIcons(T data) {
     return Row(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         if (data != null && widget.showClearButton)
           IconButton(
               icon: const Icon(
                 Icons.clear,
-                size: 25,
+                size: 24,
                 color: Colors.black54,
               ),
               onPressed: () => _handleOnChangeSelectedItem(null)),
         IconButton(
             icon: const Icon(
               Icons.arrow_drop_down,
-              size: 25,
+              size: 24,
               color: Colors.black54,
             ),
             onPressed: () => _selectSearchMode(data)),
@@ -282,14 +283,14 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   ///open dialog
-  Future<void> _openSelectDialog(T data) {
+  Future<T> _openSelectDialog(T data) {
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           contentPadding: EdgeInsets.all(0),
-          shape: widget.shape,
-          backgroundColor: widget.backgroundColor,
+          shape: widget.popupShape,
+          backgroundColor: widget.popupBackgroundColor,
           content: _selectDialogInstance(data),
         );
       },
@@ -300,14 +301,15 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Future<T> _openBottomSheet(T data) {
     return showModalBottomSheet<T>(
         isScrollControlled: true,
-        backgroundColor: widget.backgroundColor,
-        shape: widget.shape,
+        backgroundColor: widget.popupBackgroundColor,
+        shape: widget.popupShape,
         context: context,
         builder: (context) {
           return SingleChildScrollView(
               child: Padding(
             padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
             child: _selectDialogInstance(data, defaultHeight: 350),
           ));
         });
@@ -331,8 +333,8 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         ),
         Size(overlay.size.width, overlay.size.height));
     return customShowMenu<T>(
-        shape: widget.shape,
-        color: widget.backgroundColor,
+        shape: widget.popupShape,
+        color: widget.popupBackgroundColor,
         context: context,
         position: position,
         elevation: 8,
@@ -355,10 +357,10 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         items: widget.items,
         onFind: widget.onFind,
         showSearchBox: widget.showSearchBox,
-        itemBuilder: widget.dropdownItemBuilder,
+        itemBuilder: widget.popupItemBuilder,
         selectedValue: data,
         searchBoxDecoration: widget.searchBoxDecoration,
-        onChange: _handleOnChangeSelectedItem,
+        onChanged: _handleOnChangeSelectedItem,
         showSelectedItem: widget.showSelectedItem,
         compareFn: widget.compareFn,
         emptyBuilder: widget.emptyBuilder,
@@ -368,26 +370,37 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         dialogMaxWidth: widget.dialogMaxWidth);
   }
 
+  ///Function that manage focus listener
+  ///set true only if the widget already not focused to prevent unnecessary build
+  ///same thing for clear focus,
+  void _handleFocus(bool isFocused) {
+    if (isFocused && !_isFocused.value) {
+      FocusScope.of(context).unfocus();
+      _isFocused.value = true;
+    } else if (!isFocused && _isFocused.value) _isFocused.value = false;
+  }
+
   ///handle on change value , if the validation is active , we validate the new selected item
   void _handleOnChangeSelectedItem(T selectedItem) {
     _selectedItemNotifier.value = selectedItem;
-    if (widget.validate != null) {
-      _validateMessageNotifier.value = widget.validate(selectedItem);
-    }
-    widget.onChanged(selectedItem);
+    if (widget.onChanged != null) widget.onChanged(selectedItem);
+    _handleFocus(false);
   }
 
   ///Function that return then UI based on searchMode
   ///[data] selected item to be passed to the UI
-  void _selectSearchMode(T data) {
+  ///If we close the popup , or maybe we just selected
+  ///another widget we should clear the focus
+  Future<void> _selectSearchMode(T data) async {
+    _handleFocus(true);
     if (widget.mode == Mode.MENU) {
-      _openMenu(data);
+      await _openMenu(data);
     } else if (widget.mode == Mode.BOTTOM_SHEET) {
-      _openBottomSheet(data);
+      await _openBottomSheet(data);
     } else {
-      _openSelectDialog(data);
+      await _openSelectDialog(data);
     }
+
+    _handleFocus(false);
   }
 }
-
-enum Mode { DIALOG, BOTTOM_SHEET, MENU }
