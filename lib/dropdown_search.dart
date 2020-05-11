@@ -168,6 +168,12 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   final ValueNotifier<bool> _isFocused = ValueNotifier(false);
 
   @override
+  void initState() {
+    super.initState();
+    _selectedItemNotifier.value = widget.selectedItem;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<T>(
       valueListenable: _selectedItemNotifier,

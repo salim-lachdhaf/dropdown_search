@@ -1,3 +1,6 @@
+## [0.3.8] - 2020.05.11
+* fix issue: default selected item
+
 ## [0.3.7] - 2020.05.10
 * update description
 
