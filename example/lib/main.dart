@@ -41,10 +41,11 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               ///Menu Mode with no searchBox
               DropdownSearch<String>(
+                  validator: (v) => v == null ? "required field" : null,
                   mode: Mode.MENU,
                   showSelectedItem: true,
                   items: ["Brazil", "Italia", "Tunisia", 'Canada'],
-                  label: "Menu mode",
+                  label: "Menu mode *",
                   showClearButton: true,
                   onChanged: print,
                   selectedItem: "Brazil"),

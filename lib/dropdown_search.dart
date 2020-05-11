@@ -241,6 +241,11 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                       decoration: widget.dropDownSearchDecoration ??
                           InputDecoration(
                               contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                              enabledBorder: state.hasError
+                                  ? OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).errorColor))
+                                  : null,
                               border: OutlineInputBorder(),
                               labelText: widget.label),
                       child: _defaultSelectItemWidget(value));

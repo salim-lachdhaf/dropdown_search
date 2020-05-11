@@ -1,3 +1,6 @@
+## [0.3.9] - 2020.05.12
+* manage default border color
+
 ## [0.3.8] - 2020.05.11
 * fix issue: default selected item
 
