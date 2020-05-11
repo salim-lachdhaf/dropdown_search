@@ -26,6 +26,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///DropDownSearch label
   final String label;
 
+  ///DropDownSearch hint
+  final String hint;
+
   ///show/hide the search box
   final bool showSearchBox;
 
@@ -114,7 +117,14 @@ class DropdownSearch<T> extends StatefulWidget {
   /// display if the input is invalid, or null otherwise.
   final FormFieldValidator<T> validator;
 
+  ///dropdown field decoration
   final InputDecoration dropDownSearchDecoration;
+
+  ///custom dropdown clear button icon widget
+  final Widget clearButton;
+
+  ///custom dropdown icon button widget
+  final Widget dropDownButton;
 
   DropdownSearch(
       {Key key,
@@ -124,6 +134,7 @@ class DropdownSearch<T> extends StatefulWidget {
       this.onChanged,
       this.mode = Mode.DIALOG,
       this.label,
+      this.hint,
       this.isFilteredOnline = false,
       this.popupTitle,
       this.items,
@@ -148,6 +159,8 @@ class DropdownSearch<T> extends StatefulWidget {
       this.autoFocusSearchBox = false,
       this.dialogMaxWidth,
       this.dropDownSearchDecoration,
+      this.clearButton,
+      this.dropDownButton,
       this.popupShape})
       : assert(autoValidate != null),
         assert(isFilteredOnline != null),
@@ -174,6 +187,12 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   @override
+  void didUpdateWidget(DropdownSearch<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _selectedItemNotifier.value = widget.selectedItem;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<T>(
       valueListenable: _selectedItemNotifier,
@@ -185,20 +204,6 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         );
       },
     );
-  }
-
-  Widget _errorValidationWidget(String error) {
-    if (error != null && error.isNotEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(5),
-        child: Text(error,
-            style: Theme.of(context)
-                .textTheme
-                .bodyText2
-                .copyWith(color: Theme.of(context).errorColor)),
-      );
-    }
-    return const SizedBox.shrink();
   }
 
   Widget _defaultSelectItemWidget(T data) {
@@ -217,7 +222,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   Widget _formField(T value) {
-    return FormField<T>(
+    return FormField(
       enabled: widget.enabled,
       onSaved: widget.onSaved,
       validator: widget.validator,
@@ -229,32 +234,31 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
             state.didChange(value);
           });
         }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ValueListenableBuilder(
-                valueListenable: _isFocused,
-                builder: (context, bool isFocused, w) {
-                  return InputDecorator(
-                      isEmpty: value == null && widget.dropdownBuilder == null,
-                      isFocused: isFocused,
-                      decoration: widget.dropDownSearchDecoration ??
-                          InputDecoration(
-                              contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                              enabledBorder: state.hasError
-                                  ? OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Theme.of(context).errorColor))
-                                  : null,
-                              border: OutlineInputBorder(),
-                              labelText: widget.label),
-                      child: _defaultSelectItemWidget(value));
-                }),
-            if (state.hasError) _errorValidationWidget(state.errorText)
-          ],
-        );
+        return ValueListenableBuilder(
+            valueListenable: _isFocused,
+            builder: (context, bool isFocused, w) {
+              return InputDecorator(
+                  isEmpty: value == null && widget.dropdownBuilder == null,
+                  isFocused: isFocused,
+                  decoration: _manageDropdownDecoration(state),
+                  child: _defaultSelectItemWidget(value));
+            });
       },
     );
+  }
+
+  ///manage dropdownSearch field decoration
+  InputDecoration _manageDropdownDecoration(FormFieldState state) {
+    return (widget.dropDownSearchDecoration ??
+            InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                border: OutlineInputBorder()))
+        .applyDefaults(Theme.of(state.context).inputDecorationTheme)
+        .copyWith(
+            enabled: widget.enabled,
+            labelText: widget.label,
+            hintText: widget.hint,
+            errorText: state.errorText);
   }
 
   ///function that return the String value of an object
@@ -276,18 +280,20 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       children: <Widget>[
         if (data != null && widget.showClearButton)
           IconButton(
-              icon: const Icon(
-                Icons.clear,
-                size: 24,
-                color: Colors.black54,
-              ),
+              icon: widget.clearButton ??
+                  const Icon(
+                    Icons.clear,
+                    size: 24,
+                    color: Colors.black54,
+                  ),
               onPressed: () => _handleOnChangeSelectedItem(null)),
         IconButton(
-            icon: const Icon(
-              Icons.arrow_drop_down,
-              size: 24,
-              color: Colors.black54,
-            ),
+            icon: widget.dropDownButton ??
+                const Icon(
+                  Icons.arrow_drop_down,
+                  size: 24,
+                  color: Colors.black54,
+                ),
             onPressed: () => _selectSearchMode(data)),
       ],
     );

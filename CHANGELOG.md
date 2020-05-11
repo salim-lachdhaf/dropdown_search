@@ -1,3 +1,7 @@
+## [0.4.0] - 2020.05.15
+* add dropdown icon customization
+* add clear button icon customization
+
 ## [0.3.9] - 2020.05.12
 * manage default border color
 

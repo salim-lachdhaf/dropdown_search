@@ -54,13 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 mode: Mode.BOTTOM_SHEET,
                 isFilteredOnline: true,
                 showClearButton: true,
-                autoValidate: true,
                 showSearchBox: true,
-                dropDownSearchDecoration: InputDecoration(
-                    hintText: "Please choose a user",
-                    labelText: 'User *',
-                    filled: true,
-                    fillColor: Colors.grey[200]),
+                label: 'User *',
+                dropDownSearchDecoration:
+                    InputDecoration(filled: true, fillColor: Colors.grey[200]),
+                autoValidate: true,
                 validator: (UserModel u) =>
                     u == null ? "user field is required " : null,
                 onFind: (String filter) => getData(filter),
