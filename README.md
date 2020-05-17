@@ -177,6 +177,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`validator`|An optional method that validates an input. Returns an error string to display if the input is invalid, or null otherwise.|
 |`clearButton`|customize clear button widget|
 |`dropDownButton`|customize dropdown button widget|
+|`dropdownBuilderSupportsNullItem`|If true, the dropdownBuilder will continue the uses of material behavior. This will be useful if you want to handle a custom UI only if the item !=null|
 
 # Attention
 To use a template as an item type, and you don't want to use a custom fonction **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:

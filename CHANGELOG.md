@@ -1,3 +1,7 @@
+## [0.4.1] - 2020.05.17
+* handle dark and light theme
+* handle dropdownBuilder if item is Null
+
 ## [0.4.0] - 2020.05.15
 * add dropdown icon customization
 * add clear button icon customization

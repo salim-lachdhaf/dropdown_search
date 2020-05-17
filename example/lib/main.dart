@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-
 import 'user_model.dart';
 
 void main() => runApp(MyApp());
@@ -11,9 +10,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      //enable this line if you want test Dark Mode
+      //theme: ThemeData.dark(),
       home: MyHomePage(),
     );
   }
@@ -42,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ///Menu Mode with no searchBox
               DropdownSearch<String>(
                   validator: (v) => v == null ? "required field" : null,
+                  hint: "Select a country",
                   mode: Mode.MENU,
                   showSelectedItem: true,
                   items: ["Brazil", "Italia", "Tunisia", 'Canada'],
@@ -56,8 +55,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 showClearButton: true,
                 showSearchBox: true,
                 label: 'User *',
-                dropDownSearchDecoration:
-                    InputDecoration(filled: true, fillColor: Colors.grey[200]),
+                dropDownSearchDecoration: InputDecoration(
+                    filled: true,
+                    fillColor:
+                        Theme.of(context).inputDecorationTheme.fillColor),
                 autoValidate: true,
                 validator: (UserModel u) =>
                     u == null ? "user field is required " : null,

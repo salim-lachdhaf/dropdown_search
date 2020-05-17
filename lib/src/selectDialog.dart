@@ -72,7 +72,9 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   void initState() {
     super.initState();
     Future.delayed(
-        Duration.zero, () => manageItemsByFilter("", isFistLoad: true));
+      Duration.zero,
+      () => manageItemsByFilter("", isFistLoad: true),
+    );
   }
 
   @override
@@ -117,7 +119,9 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                       if (widget.emptyBuilder != null)
                         return widget.emptyBuilder(context);
                       else
-                        return const Center(child: const Text("No data found"));
+                        return const Center(
+                          child: const Text("No data found"),
+                        );
                     }
                     return ListView.builder(
                       shrinkWrap: true,
@@ -140,20 +144,21 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
 
   void _showErrorDialog(dynamic error) {
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        child: AlertDialog(
-          title: Text("Error while getting online items"),
-          content: _errorWidget(error),
-          actions: <Widget>[
-            FlatButton(
-              child: new Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            )
-          ],
-        ));
+      context: context,
+      barrierDismissible: false,
+      child: AlertDialog(
+        title: Text("Error while getting online items"),
+        content: _errorWidget(error),
+        actions: <Widget>[
+          FlatButton(
+            child: new Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          )
+        ],
+      ),
+    );
   }
 
   Widget _errorWidget(dynamic error) {
@@ -162,7 +167,11 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     else
       return Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Center(child: Text(error?.toString())),
+        child: Center(
+          child: Text(
+            error?.toString(),
+          ),
+        ),
       );
   }
 
@@ -176,7 +185,9 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             else
               return Padding(
                 padding: const EdgeInsets.all(24.0),
-                child: const Center(child: const CircularProgressIndicator()),
+                child: const Center(
+                  child: const CircularProgressIndicator(),
+                ),
               );
           }
           return Container();
@@ -246,7 +257,10 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     if (widget.itemBuilder != null)
       return InkWell(
         child: widget.itemBuilder(
-            context, item, _manageSelectedItemVisibility(item)),
+          context,
+          item,
+          _manageSelectedItemVisibility(item),
+        ),
         onTap: () {
           if (widget.onChanged != null) widget.onChanged(item);
           Navigator.pop(context, item);
@@ -254,9 +268,11 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
       );
     else
       return ListTile(
-        title: Text(widget.itemAsString != null
-            ? (widget.itemAsString(item) ?? "")
-            : item.toString()),
+        title: Text(
+          widget.itemAsString != null
+              ? (widget.itemAsString(item) ?? "")
+              : item.toString(),
+        ),
         selected: _manageSelectedItemVisibility(item),
         onTap: () {
           if (widget.onChanged != null) widget.onChanged(item);
@@ -285,20 +301,21 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
           widget.popupTitle ?? const SizedBox.shrink(),
           if (widget.showSearchBox)
             Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  focusNode: focusNode,
-                  onChanged: (f) => _debouncer(() {
-                    _onTextChanged(f);
-                  }),
-                  decoration: widget.searchBoxDecoration ??
-                      InputDecoration(
-                        hintText: widget.hintText,
-                        border: const OutlineInputBorder(),
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 16),
-                      ),
-                ))
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                focusNode: focusNode,
+                onChanged: (f) => _debouncer(() {
+                  _onTextChanged(f);
+                }),
+                decoration: widget.searchBoxDecoration ??
+                    InputDecoration(
+                      hintText: widget.hintText,
+                      border: const OutlineInputBorder(),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16),
+                    ),
+              ),
+            )
         ]);
   }
 }

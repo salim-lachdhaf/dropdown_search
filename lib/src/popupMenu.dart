@@ -601,19 +601,20 @@ Future<T> customShowMenu<T>({
           semanticLabel ?? MaterialLocalizations.of(context)?.popupMenuLabel;
   }
 
-  return Navigator.of(context, rootNavigator: useRootNavigator)
-      .push(_PopupMenuRoute<T>(
-    position: position,
-    items: items,
-    initialValue: initialValue,
-    elevation: elevation,
-    semanticLabel: label,
-    theme: Theme.of(context, shadowThemeOnly: true),
-    popupMenuTheme: PopupMenuTheme.of(context),
-    barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-    shape: shape,
-    color: color,
-    showMenuContext: context,
-    captureInheritedThemes: captureInheritedThemes,
-  ));
+  return Navigator.of(context, rootNavigator: useRootNavigator).push(
+    _PopupMenuRoute<T>(
+      position: position,
+      items: items,
+      initialValue: initialValue,
+      elevation: elevation,
+      semanticLabel: label,
+      theme: Theme.of(context, shadowThemeOnly: true),
+      popupMenuTheme: PopupMenuTheme.of(context),
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      shape: shape,
+      color: color,
+      showMenuContext: context,
+      captureInheritedThemes: captureInheritedThemes,
+    ),
+  );
 }

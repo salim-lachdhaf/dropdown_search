@@ -126,6 +126,10 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom dropdown icon button widget
   final Widget dropDownButton;
 
+  ///If true, the dropdownBuilder will continue the uses of material behavior
+  ///This will be useful if you want to handle a custom UI only if the item !=null
+  final bool dropdownBuilderSupportsNullItem;
+
   DropdownSearch(
       {Key key,
       this.onSaved,
@@ -145,7 +149,7 @@ class DropdownSearch<T> extends StatefulWidget {
       this.showSearchBox = false,
       this.showClearButton = false,
       this.searchBoxDecoration,
-      this.popupBackgroundColor = Colors.white,
+      this.popupBackgroundColor,
       this.enabled = true,
       this.maxHeight,
       this.filterFn,
@@ -161,9 +165,11 @@ class DropdownSearch<T> extends StatefulWidget {
       this.dropDownSearchDecoration,
       this.clearButton,
       this.dropDownButton,
+      this.dropdownBuilderSupportsNullItem = false,
       this.popupShape})
       : assert(autoValidate != null),
         assert(isFilteredOnline != null),
+        assert(dropdownBuilderSupportsNullItem != null),
         assert(enabled != null),
         assert(showSelectedItem != null),
         assert(autoFocusSearchBox != null),
@@ -200,7 +206,9 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         return IgnorePointer(
           ignoring: !widget.enabled,
           child: GestureDetector(
-              onTap: () => _selectSearchMode(data), child: _formField(data)),
+            onTap: () => _selectSearchMode(data),
+            child: _formField(data),
+          ),
         );
       },
     );
@@ -211,12 +219,16 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Expanded(
-            child: widget.dropdownBuilder != null
-                ? widget.dropdownBuilder(
-                    context, data, _selectedItemAsString(data))
-                : Text(_selectedItemAsString(data),
-                    style: Theme.of(context).textTheme.subtitle1)),
-        _manageTrailingIcons(data)
+          child: widget.dropdownBuilder != null
+              ? widget.dropdownBuilder(
+                  context,
+                  data,
+                  _selectedItemAsString(data),
+                )
+              : Text(_selectedItemAsString(data),
+                  style: Theme.of(context).textTheme.subtitle1),
+        ),
+        _manageTrailingIcons(data),
       ],
     );
   }
@@ -238,10 +250,13 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
             valueListenable: _isFocused,
             builder: (context, bool isFocused, w) {
               return InputDecorator(
-                  isEmpty: value == null && widget.dropdownBuilder == null,
-                  isFocused: isFocused,
-                  decoration: _manageDropdownDecoration(state),
-                  child: _defaultSelectItemWidget(value));
+                isEmpty: value == null &&
+                    (widget.dropdownBuilder == null ||
+                        widget.dropdownBuilderSupportsNullItem),
+                isFocused: isFocused,
+                decoration: _manageDropdownDecoration(state),
+                child: _defaultSelectItemWidget(value),
+              );
             });
       },
     );
@@ -280,21 +295,14 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       children: <Widget>[
         if (data != null && widget.showClearButton)
           IconButton(
-              icon: widget.clearButton ??
-                  const Icon(
-                    Icons.clear,
-                    size: 24,
-                    color: Colors.black54,
-                  ),
-              onPressed: () => _handleOnChangeSelectedItem(null)),
+            icon: widget.clearButton ?? const Icon(Icons.clear, size: 24),
+            onPressed: () => _handleOnChangeSelectedItem(null),
+          ),
         IconButton(
-            icon: widget.dropDownButton ??
-                const Icon(
-                  Icons.arrow_drop_down,
-                  size: 24,
-                  color: Colors.black54,
-                ),
-            onPressed: () => _selectSearchMode(data)),
+          icon: widget.dropDownButton ??
+              const Icon(Icons.arrow_drop_down, size: 24),
+          onPressed: () => _selectSearchMode(data),
+        ),
       ],
     );
   }
@@ -323,12 +331,13 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         context: context,
         builder: (context) {
           return SingleChildScrollView(
-              child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: _selectDialogInstance(data, defaultHeight: 350),
             ),
-            child: _selectDialogInstance(data, defaultHeight: 350),
-          ));
+          );
         });
   }
 
@@ -340,15 +349,16 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
     final RelativeRect position = RelativeRect.fromSize(
-        Rect.fromPoints(
-          popupButtonObject.localToGlobal(
-              popupButtonObject.size.bottomLeft(Offset.zero),
-              ancestor: overlay),
-          popupButtonObject.localToGlobal(
-              popupButtonObject.size.bottomRight(Offset.zero),
-              ancestor: overlay),
-        ),
-        Size(overlay.size.width, overlay.size.height));
+      Rect.fromPoints(
+        popupButtonObject.localToGlobal(
+            popupButtonObject.size.bottomLeft(Offset.zero),
+            ancestor: overlay),
+        popupButtonObject.localToGlobal(
+            popupButtonObject.size.bottomRight(Offset.zero),
+            ancestor: overlay),
+      ),
+      Size(overlay.size.width, overlay.size.height),
+    );
     return customShowMenu<T>(
         shape: widget.popupShape,
         color: widget.popupBackgroundColor,
@@ -357,34 +367,37 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         elevation: 8,
         items: [
           CustomPopupMenuItem(
-              enabled: false,
-              child: Container(
-                  width: popupButtonObject.size.width,
-                  child: _selectDialogInstance(data, defaultHeight: 224)))
+            enabled: false,
+            child: Container(
+              width: popupButtonObject.size.width,
+              child: _selectDialogInstance(data, defaultHeight: 224),
+            ),
+          ),
         ]);
   }
 
   SelectDialog<T> _selectDialogInstance(T data, {double defaultHeight}) {
     return SelectDialog<T>(
-        popupTitle: widget.popupTitle,
-        maxHeight: widget.maxHeight ?? defaultHeight,
-        isFilteredOnline: widget.isFilteredOnline,
-        itemAsString: widget.itemAsString,
-        filterFn: widget.filterFn,
-        items: widget.items,
-        onFind: widget.onFind,
-        showSearchBox: widget.showSearchBox,
-        itemBuilder: widget.popupItemBuilder,
-        selectedValue: data,
-        searchBoxDecoration: widget.searchBoxDecoration,
-        onChanged: _handleOnChangeSelectedItem,
-        showSelectedItem: widget.showSelectedItem,
-        compareFn: widget.compareFn,
-        emptyBuilder: widget.emptyBuilder,
-        loadingBuilder: widget.loadingBuilder,
-        errorBuilder: widget.errorBuilder,
-        autoFocusSearchBox: widget.autoFocusSearchBox,
-        dialogMaxWidth: widget.dialogMaxWidth);
+      popupTitle: widget.popupTitle,
+      maxHeight: widget.maxHeight ?? defaultHeight,
+      isFilteredOnline: widget.isFilteredOnline,
+      itemAsString: widget.itemAsString,
+      filterFn: widget.filterFn,
+      items: widget.items,
+      onFind: widget.onFind,
+      showSearchBox: widget.showSearchBox,
+      itemBuilder: widget.popupItemBuilder,
+      selectedValue: data,
+      searchBoxDecoration: widget.searchBoxDecoration,
+      onChanged: _handleOnChangeSelectedItem,
+      showSelectedItem: widget.showSelectedItem,
+      compareFn: widget.compareFn,
+      emptyBuilder: widget.emptyBuilder,
+      loadingBuilder: widget.loadingBuilder,
+      errorBuilder: widget.errorBuilder,
+      autoFocusSearchBox: widget.autoFocusSearchBox,
+      dialogMaxWidth: widget.dialogMaxWidth,
+    );
   }
 
   ///Function that manage focus listener
