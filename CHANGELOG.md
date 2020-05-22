@@ -1,5 +1,5 @@
 ## [0.4.2] - 2020.05.23
-* add `popupItemEnabled` feature, to manage popupItems accessibility
+* add `popupItemDisabled` feature, to manage popupItems accessibility
 
 ## [0.4.1] - 2020.05.17
 * handle dark and light theme
