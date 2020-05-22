@@ -35,6 +35,7 @@
 * Three dropdown mode: Menu/ BottomSheet/ Dialog
 * Material dropdown
 * Easy customizable UI
+* Handle Light and Dark theme
 * Easy implementation into statelessWidget
 
 ![](https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_4.png?raw=true)
@@ -46,7 +47,7 @@ dropdown_search: <lastest version>
 
 ## Import
 ```dart
-import 'package:dropdown_search/dropdownSearch.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 ```
 
 
@@ -56,9 +57,10 @@ import 'package:dropdown_search/dropdownSearch.dart';
 DropdownSearch<String>(
     mode: Mode.MENU,
     showSelectedItem: true,
-    items: ["Brazil", "Italia", "Tunisia", 'Canada'],
+    items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
     label: "Menu mode",
     hint: "country in menu mode",
+    popupItemDisabled: (String s) => s.startsWith('I'),
     onChanged: print,
     selectedItem: "Brazil"),
 ```

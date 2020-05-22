@@ -1,11 +1,13 @@
 library dropdown_search;
 
-import 'src/popupMenu.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/material.dart';
-import 'src/selectDialog.dart';
 import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
+import 'src/popupMenu.dart';
+import 'src/selectDialog.dart';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
 typedef String DropdownSearchItemAsString<T>(T item);
@@ -13,11 +15,12 @@ typedef bool DropdownSearchFilterFn<T>(T item, String filter);
 typedef bool DropdownSearchCompareFn<T>(T item, T selectedItem);
 typedef Widget DropdownSearchBuilder<T>(
     BuildContext context, T selectedItem, String itemAsString);
-typedef Widget DropdownSearchItemBuilder<T>(
+typedef Widget DropdownSearchPopupItemBuilder<T>(
   BuildContext context,
   T item,
   bool isSelected,
 );
+typedef bool DropdownSearchPopupItemEnabled<T>(T item);
 typedef Widget ErrorBuilder<T>(BuildContext context, dynamic exception);
 
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
@@ -54,7 +57,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final DropdownSearchBuilder<T> dropdownBuilder;
 
   ///to customize selected item
-  final DropdownSearchItemBuilder<T> popupItemBuilder;
+  final DropdownSearchPopupItemBuilder<T> popupItemBuilder;
 
   ///decoration for search box
   final InputDecoration searchBoxDecoration;
@@ -130,44 +133,49 @@ class DropdownSearch<T> extends StatefulWidget {
   ///This will be useful if you want to handle a custom UI only if the item !=null
   final bool dropdownBuilderSupportsNullItem;
 
-  DropdownSearch(
-      {Key key,
-      this.onSaved,
-      this.validator,
-      this.autoValidate = false,
-      this.onChanged,
-      this.mode = Mode.DIALOG,
-      this.label,
-      this.hint,
-      this.isFilteredOnline = false,
-      this.popupTitle,
-      this.items,
-      this.selectedItem,
-      this.onFind,
-      this.dropdownBuilder,
-      this.popupItemBuilder,
-      this.showSearchBox = false,
-      this.showClearButton = false,
-      this.searchBoxDecoration,
-      this.popupBackgroundColor,
-      this.enabled = true,
-      this.maxHeight,
-      this.filterFn,
-      this.itemAsString,
-      this.showSelectedItem = false,
-      this.compareFn,
-      this.dropdownSearchDecoration,
-      this.emptyBuilder,
-      this.loadingBuilder,
-      this.errorBuilder,
-      this.autoFocusSearchBox = false,
-      this.dialogMaxWidth,
-      this.dropDownSearchDecoration,
-      this.clearButton,
-      this.dropDownButton,
-      this.dropdownBuilderSupportsNullItem = false,
-      this.popupShape})
-      : assert(autoValidate != null),
+  ///defines if an item of the popup is enabled or not, if the item is disabled,
+  ///it cannot be clicked
+  final DropdownSearchPopupItemEnabled<T> popupItemDisabled;
+
+  DropdownSearch({
+    Key key,
+    this.onSaved,
+    this.validator,
+    this.autoValidate = false,
+    this.onChanged,
+    this.mode = Mode.DIALOG,
+    this.label,
+    this.hint,
+    this.isFilteredOnline = false,
+    this.popupTitle,
+    this.items,
+    this.selectedItem,
+    this.onFind,
+    this.dropdownBuilder,
+    this.popupItemBuilder,
+    this.showSearchBox = false,
+    this.showClearButton = false,
+    this.searchBoxDecoration,
+    this.popupBackgroundColor,
+    this.enabled = true,
+    this.maxHeight,
+    this.filterFn,
+    this.itemAsString,
+    this.showSelectedItem = false,
+    this.compareFn,
+    this.dropdownSearchDecoration,
+    this.emptyBuilder,
+    this.loadingBuilder,
+    this.errorBuilder,
+    this.autoFocusSearchBox = false,
+    this.dialogMaxWidth,
+    this.dropDownSearchDecoration,
+    this.clearButton,
+    this.dropDownButton,
+    this.dropdownBuilderSupportsNullItem = false,
+    this.popupShape,
+    this.popupItemDisabled,
+  })  : assert(autoValidate != null),
         assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
         assert(enabled != null),
@@ -397,6 +405,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       errorBuilder: widget.errorBuilder,
       autoFocusSearchBox: widget.autoFocusSearchBox,
       dialogMaxWidth: widget.dialogMaxWidth,
+      itemDisabled: widget.popupItemDisabled,
     );
   }
 

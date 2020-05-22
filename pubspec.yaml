@@ -1,13 +1,12 @@
 name: dropdown_search
 description: Simple and robust Searchable Dropdown with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
-version: 0.4.1
-author: SalimDev <salimlachdef@gmail.com>
+version: 0.4.2
 homepage: https://github.com/salim-lachdhaf
 git: https://github.com/salim-lachdhaf/searchable_dropdown
 repository: https://github.com/salim-lachdhaf/searchable_dropdown
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:

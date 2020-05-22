@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/material.dart';
+
 import 'user_model.dart';
 
 void main() => runApp(MyApp());
@@ -39,15 +40,17 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               ///Menu Mode with no searchBox
               DropdownSearch<String>(
-                  validator: (v) => v == null ? "required field" : null,
-                  hint: "Select a country",
-                  mode: Mode.MENU,
-                  showSelectedItem: true,
-                  items: ["Brazil", "Italia", "Tunisia", 'Canada'],
-                  label: "Menu mode *",
-                  showClearButton: true,
-                  onChanged: print,
-                  selectedItem: "Brazil"),
+                validator: (v) => v == null ? "required field" : null,
+                hint: "Select a country",
+                mode: Mode.MENU,
+                showSelectedItem: true,
+                items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+                label: "Menu mode *",
+                showClearButton: true,
+                onChanged: print,
+                popupItemDisabled: (String s) => s.startsWith('I'),
+                selectedItem: "Brazil",
+              ),
               Divider(),
               DropdownSearch<UserModel>(
                 mode: Mode.BOTTOM_SHEET,
@@ -87,37 +90,45 @@ class _MyHomePageState extends State<MyHomePage> {
 
               ///BottomSheet Mode with no searchBox
               DropdownSearch<String>(
-                  mode: Mode.BOTTOM_SHEET,
-                  maxHeight: 300,
-                  items: ["Brazil", "Italia", "Tunisia", 'Canada'],
-                  label: "Custom BottomShet mode",
-                  onChanged: print,
-                  selectedItem: "Brazil",
-                  showSearchBox: true,
-                  searchBoxDecoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
-                      labelText: "Search a country"),
-                  popupTitle: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColorDark,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20)),
-                    ),
-                    child: Center(
-                      child: Text('Country',
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
+                mode: Mode.BOTTOM_SHEET,
+                maxHeight: 300,
+                items: ["Brazil", "Italia", "Tunisia", 'Canada'],
+                label: "Custom BottomShet mode",
+                onChanged: print,
+                selectedItem: "Brazil",
+                showSearchBox: true,
+                searchBoxDecoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
+                  labelText: "Search a country",
+                ),
+                popupTitle: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColorDark,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
                     ),
                   ),
-                  popupShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24)))),
+                  child: Center(
+                    child: Text(
+                      'Country',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                popupShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
+                  ),
+                ),
+              ),
               Divider(),
 
               ///merge online and offline data in the same list and set custom max Height
@@ -155,7 +166,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 backgroundImage: NetworkImage(item.avatar),
               ),
               title: Text(item.name),
-              subtitle: Text(item.createdAt.toString()),
+              subtitle: Text(
+                item.createdAt.toString(),
+              ),
             ),
     );
   }

@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import '../dropdown_search.dart';
 
 class SelectDialog<T> extends StatefulWidget {
@@ -9,7 +11,7 @@ class SelectDialog<T> extends StatefulWidget {
   final bool isFilteredOnline;
   final ValueChanged<T> onChanged;
   final DropdownSearchOnFind<T> onFind;
-  final DropdownSearchItemBuilder<T> itemBuilder;
+  final DropdownSearchPopupItemBuilder<T> itemBuilder;
   final InputDecoration searchBoxDecoration;
   final DropdownSearchItemAsString<T> itemAsString;
   final DropdownSearchFilterFn<T> filterFn;
@@ -19,6 +21,7 @@ class SelectDialog<T> extends StatefulWidget {
   final Widget popupTitle;
   final bool showSelectedItem;
   final DropdownSearchCompareFn<T> compareFn;
+  final DropdownSearchPopupItemEnabled<T> itemDisabled;
 
   ///custom layout for empty results
   final WidgetBuilder emptyBuilder;
@@ -32,29 +35,30 @@ class SelectDialog<T> extends StatefulWidget {
   ///the search box will be focused if true
   final bool autoFocusSearchBox;
 
-  const SelectDialog(
-      {Key key,
-      this.popupTitle,
-      this.items,
-      this.maxHeight,
-      this.showSearchBox = false,
-      this.isFilteredOnline = false,
-      this.onChanged,
-      this.selectedValue,
-      this.onFind,
-      this.itemBuilder,
-      this.searchBoxDecoration,
-      this.hintText,
-      this.itemAsString,
-      this.filterFn,
-      this.showSelectedItem = false,
-      this.compareFn,
-      this.emptyBuilder,
-      this.loadingBuilder,
-      this.errorBuilder,
-      this.autoFocusSearchBox = false,
-      this.dialogMaxWidth})
-      : super(key: key);
+  const SelectDialog({
+    Key key,
+    this.popupTitle,
+    this.items,
+    this.maxHeight,
+    this.showSearchBox = false,
+    this.isFilteredOnline = false,
+    this.onChanged,
+    this.selectedValue,
+    this.onFind,
+    this.itemBuilder,
+    this.searchBoxDecoration,
+    this.hintText,
+    this.itemAsString,
+    this.filterFn,
+    this.showSelectedItem = false,
+    this.compareFn,
+    this.emptyBuilder,
+    this.loadingBuilder,
+    this.errorBuilder,
+    this.autoFocusSearchBox = false,
+    this.dialogMaxWidth,
+    this.itemDisabled,
+  }) : super(key: key);
 
   @override
   _SelectDialogState<T> createState() => _SelectDialogState<T>();
@@ -261,10 +265,13 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
           item,
           _manageSelectedItemVisibility(item),
         ),
-        onTap: () {
-          if (widget.onChanged != null) widget.onChanged(item);
-          Navigator.pop(context, item);
-        },
+        onTap: widget.itemDisabled != null &&
+                (widget.itemDisabled(item) ?? false) == true
+            ? null
+            : () {
+                if (widget.onChanged != null) widget.onChanged(item);
+                Navigator.pop(context, item);
+              },
       );
     else
       return ListTile(
@@ -274,10 +281,13 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
               : item.toString(),
         ),
         selected: _manageSelectedItemVisibility(item),
-        onTap: () {
-          if (widget.onChanged != null) widget.onChanged(item);
-          Navigator.pop(context, item);
-        },
+        onTap: widget.itemDisabled != null &&
+                (widget.itemDisabled(item) ?? false) == true
+            ? null
+            : () {
+                if (widget.onChanged != null) widget.onChanged(item);
+                Navigator.pop(context, item);
+              },
       );
   }
 
