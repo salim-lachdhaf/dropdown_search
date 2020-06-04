@@ -611,7 +611,7 @@ Future<T> customShowMenu<T>({
       theme: Theme.of(context, shadowThemeOnly: true),
       popupMenuTheme: PopupMenuTheme.of(context),
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor : barrierColor,
+      barrierColor: barrierColor,
       shape: shape,
       color: color,
       showMenuContext: context,
