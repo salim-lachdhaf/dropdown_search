@@ -432,6 +432,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
     this.color,
     this.showMenuContext,
     this.captureInheritedThemes,
+    this.barrierColor,
   }) : itemSizes = List<Size>(items.length);
 
   final RelativeRect position;
@@ -446,6 +447,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
   final PopupMenuThemeData popupMenuTheme;
   final BuildContext showMenuContext;
   final bool captureInheritedThemes;
+  final Color barrierColor;
 
   @override
   Animation<double> createAnimation() {
@@ -461,9 +463,6 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
 
   @override
   bool get barrierDismissible => true;
-
-  @override
-  Color get barrierColor => null;
 
   @override
   final String barrierLabel;
@@ -575,6 +574,7 @@ Future<T> customShowMenu<T>({
   T initialValue,
   double elevation,
   String semanticLabel,
+  Color barrierColor,
   ShapeBorder shape,
   Color color,
   bool captureInheritedThemes = true,
@@ -611,6 +611,7 @@ Future<T> customShowMenu<T>({
       theme: Theme.of(context, shadowThemeOnly: true),
       popupMenuTheme: PopupMenuTheme.of(context),
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor : barrierColor,
       shape: shape,
       color: color,
       showMenuContext: context,

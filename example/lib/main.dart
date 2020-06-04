@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showClearButton: true,
                 showSearchBox: true,
                 label: 'User *',
-                dropDownSearchDecoration: InputDecoration(
+                dropdownSearchDecoration: InputDecoration(
                     filled: true,
                     fillColor:
                         Theme.of(context).inputDecorationTheme.fillColor),

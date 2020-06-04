@@ -1,3 +1,7 @@
+## [0.4.3] - 2020.06.04
+* remove `dropDownSearchDecoration` duplication
+* add `popupBarrierColor` feature
+
 ## [0.4.2] - 2020.05.23
 * add `popupItemDisabled` feature, to manage popupItems accessibility
 

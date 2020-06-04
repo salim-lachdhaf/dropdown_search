@@ -120,9 +120,6 @@ class DropdownSearch<T> extends StatefulWidget {
   /// display if the input is invalid, or null otherwise.
   final FormFieldValidator<T> validator;
 
-  ///dropdown field decoration
-  final InputDecoration dropDownSearchDecoration;
-
   ///custom dropdown clear button icon widget
   final Widget clearButton;
 
@@ -136,6 +133,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///defines if an item of the popup is enabled or not, if the item is disabled,
   ///it cannot be clicked
   final DropdownSearchPopupItemEnabled<T> popupItemDisabled;
+
+  ///set a custom color for the popup barrier
+  final Color popupBarrierColor;
 
   DropdownSearch({
     Key key,
@@ -169,12 +169,12 @@ class DropdownSearch<T> extends StatefulWidget {
     this.errorBuilder,
     this.autoFocusSearchBox = false,
     this.dialogMaxWidth,
-    this.dropDownSearchDecoration,
     this.clearButton,
     this.dropDownButton,
     this.dropdownBuilderSupportsNullItem = false,
     this.popupShape,
     this.popupItemDisabled,
+    this.popupBarrierColor,
   })  : assert(autoValidate != null),
         assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
@@ -272,7 +272,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///manage dropdownSearch field decoration
   InputDecoration _manageDropdownDecoration(FormFieldState state) {
-    return (widget.dropDownSearchDecoration ??
+    return (widget.dropdownSearchDecoration ??
             InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                 border: OutlineInputBorder()))
@@ -317,9 +317,13 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///open dialog
   Future<T> _openSelectDialog(T data) {
-    return showDialog(
+    return showGeneralDialog(
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      transitionDuration: const Duration(milliseconds: 400),
+      barrierColor: widget.popupBarrierColor ?? const Color(0x80000000),
       context: context,
-      builder: (context) {
+      pageBuilder: (context, animation, secondaryAnimation) {
         return AlertDialog(
           contentPadding: EdgeInsets.all(0),
           shape: widget.popupShape,
@@ -333,6 +337,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///open BottomSheet (Dialog mode)
   Future<T> _openBottomSheet(T data) {
     return showModalBottomSheet<T>(
+        barrierColor: widget.popupBarrierColor,
         isScrollControlled: true,
         backgroundColor: widget.popupBackgroundColor,
         shape: widget.popupShape,
@@ -368,6 +373,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       Size(overlay.size.width, overlay.size.height),
     );
     return customShowMenu<T>(
+        barrierColor: widget.popupBarrierColor,
         shape: widget.popupShape,
         color: widget.popupBackgroundColor,
         context: context,
