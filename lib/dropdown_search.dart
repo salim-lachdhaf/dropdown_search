@@ -344,7 +344,8 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         context: context,
         builder: (context) {
           return SingleChildScrollView(
-            child: Padding(
+            child: AnimatedPadding(
+              duration: Duration(milliseconds: 300),
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
