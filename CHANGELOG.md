@@ -1,3 +1,6 @@
+## [0.4.4] - 2020.07.06
+* fix bug
+
 ## [0.4.3] - 2020.06.04
 * remove `dropDownSearchDecoration` duplication
 * add `popupBarrierColor` feature

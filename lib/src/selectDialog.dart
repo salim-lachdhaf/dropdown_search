@@ -269,8 +269,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                 (widget.itemDisabled(item) ?? false) == true
             ? null
             : () {
-                if (widget.onChanged != null) widget.onChanged(item);
                 Navigator.pop(context, item);
+                if (widget.onChanged != null) widget.onChanged(item);
               },
       );
     else
@@ -285,8 +285,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                 (widget.itemDisabled(item) ?? false) == true
             ? null
             : () {
-                if (widget.onChanged != null) widget.onChanged(item);
                 Navigator.pop(context, item);
+                if (widget.onChanged != null) widget.onChanged(item);
               },
       );
   }
