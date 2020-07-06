@@ -24,6 +24,7 @@ typedef bool DropdownSearchPopupItemEnabled<T>(T item);
 typedef Widget ErrorBuilder<T>(BuildContext context, dynamic exception);
 
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
+enum MenuDirection { UP, DOWN }
 
 class DropdownSearch<T> extends StatefulWidget {
   ///DropDownSearch label
@@ -76,6 +77,15 @@ class DropdownSearch<T> extends StatefulWidget {
 
   ///enable/disable dropdownSearch
   final bool enabled;
+
+  /// shadow elevation
+  final double elevation;
+
+  /// menu pop-up offset
+  final Offset offset;
+
+  /// menu opening direction
+  final MenuDirection direction;
 
   ///MENU / DIALOG/ BOTTOM_SHEET
   final Mode mode;
@@ -158,6 +168,9 @@ class DropdownSearch<T> extends StatefulWidget {
     this.searchBoxDecoration,
     this.popupBackgroundColor,
     this.enabled = true,
+    this.elevation = 8.0,
+    this.offset = Offset.zero,
+    this.direction = MenuDirection.DOWN,
     this.maxHeight,
     this.filterFn,
     this.itemAsString,
@@ -362,14 +375,24 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
     // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
+    final Offset left = widget.direction == MenuDirection.UP
+        ? popupButtonObject.size.topLeft(
+            Offset(
+                widget.offset.dx, (widget.offset.dy + widget.maxHeight) * -1),
+          ) // Calculate the menu y coord if MenuDirection is UP
+        : popupButtonObject.size.bottomLeft(widget.offset);
+
+    final Offset right = widget.direction == MenuDirection.UP
+        ? popupButtonObject.size.topRight(
+            Offset(
+                widget.offset.dx, (widget.offset.dy + widget.maxHeight) * -1),
+          ) // Calculate the menu y coord if MenuDirection is UP
+        : popupButtonObject.size.bottomRight(widget.offset);
+
     final RelativeRect position = RelativeRect.fromSize(
       Rect.fromPoints(
-        popupButtonObject.localToGlobal(
-            popupButtonObject.size.bottomLeft(Offset.zero),
-            ancestor: overlay),
-        popupButtonObject.localToGlobal(
-            popupButtonObject.size.bottomRight(Offset.zero),
-            ancestor: overlay),
+        popupButtonObject.localToGlobal(left, ancestor: overlay),
+        popupButtonObject.localToGlobal(right, ancestor: overlay),
       ),
       Size(overlay.size.width, overlay.size.height),
     );
@@ -379,7 +402,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
         color: widget.popupBackgroundColor,
         context: context,
         position: position,
-        elevation: 8,
+        elevation: widget.elevation,
         items: [
           CustomPopupMenuItem(
             enabled: false,
