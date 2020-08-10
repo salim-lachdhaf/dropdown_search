@@ -305,28 +305,33 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
 
   Widget _searchField() {
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          widget.popupTitle ?? const SizedBox.shrink(),
-          if (widget.showSearchBox)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                focusNode: focusNode,
-                onChanged: (f) => _debouncer(() {
-                  _onTextChanged(f);
-                }),
-                decoration: widget.searchBoxDecoration ??
-                    InputDecoration(
-                      hintText: widget.hintText,
-                      border: const OutlineInputBorder(),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16),
-                    ),
-              ),
-            )
-        ]);
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        widget.popupTitle ?? const SizedBox.shrink(),
+        if (widget.showSearchBox)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              focusNode: focusNode,
+              onChanged: (f) => _debouncer(() {
+                _onTextChanged(f);
+              }),
+              onSubmitted: (value) {
+                if (widget.autoFocusSearchBox) {
+                  Navigator.of(context).pop();
+                }
+              },
+              decoration: widget.searchBoxDecoration ??
+                  InputDecoration(
+                    hintText: widget.hintText,
+                    border: const OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+            ),
+          )
+      ],
+    );
   }
 }
 
