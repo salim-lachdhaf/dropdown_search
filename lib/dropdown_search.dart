@@ -239,9 +239,8 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 )
               : Text(
                   _selectedItemAsString(data),
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(
-                        color: widget.defaultSelectItemTextStyle?.color ?? null,
-                      ),
+                  style: widget.defaultSelectItemTextStyle?.getTextStyle() ??
+                      Theme.of(context).textTheme.subtitle1,
                 ),
         ),
         _manageTrailingIcons(data),
