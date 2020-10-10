@@ -281,11 +281,8 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   InputDecoration _manageDropdownDecoration(FormFieldState state) {
     return (widget.dropdownSearchDecoration ??
             InputDecoration(
-              labelStyle: widget.itemTextStyle,
-              hintStyle: widget.itemTextStyle,
-              contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-              border: OutlineInputBorder(),
-            ))
+                contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                border: OutlineInputBorder()))
         .applyDefaults(Theme.of(state.context).inputDecorationTheme)
         .copyWith(
             enabled: widget.enabled,
