@@ -280,10 +280,11 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   InputDecoration _manageDropdownDecoration(FormFieldState state) {
     return (widget.dropdownSearchDecoration ??
             InputDecoration(
-                labelStyle: widget.defaultSelectItemTextStyle,
-                hintStyle: widget.defaultSelectItemTextStyle,
-                contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                border: OutlineInputBorder()))
+              labelStyle: widget.defaultSelectItemTextStyle,
+              hintStyle: widget.defaultSelectItemTextStyle,
+              contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+              border: OutlineInputBorder(),
+            ))
         .applyDefaults(Theme.of(state.context).inputDecorationTheme)
         .copyWith(
             enabled: widget.enabled,
@@ -311,10 +312,12 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       children: <Widget>[
         if (data != null && widget.showClearButton)
           IconButton(
+            color: widget.defaultSelectItemTextStyle?.color ?? null,
             icon: widget.clearButton ?? const Icon(Icons.clear, size: 24),
             onPressed: () => _handleOnChangeSelectedItem(null),
           ),
         IconButton(
+          color: widget.defaultSelectItemTextStyle?.color ?? null,
           icon: widget.dropDownButton ??
               const Icon(Icons.arrow_drop_down, size: 24),
           onPressed: () => _selectSearchMode(data),
