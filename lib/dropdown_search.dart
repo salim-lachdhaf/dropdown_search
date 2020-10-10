@@ -138,7 +138,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final Color popupBarrierColor;
 
   //set the TextStyle for the menu
-  final TextStyle defaultSelectItemTextStyle;
+  final TextStyle itemTextStyle;
 
   DropdownSearch({
     Key key,
@@ -178,7 +178,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupShape,
     this.popupItemDisabled,
     this.popupBarrierColor,
-    this.defaultSelectItemTextStyle,
+    this.itemTextStyle,
   })  : assert(autoValidate != null),
         assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
@@ -239,7 +239,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 )
               : Text(
                   _selectedItemAsString(data),
-                  style: widget.defaultSelectItemTextStyle ??
+                  style: widget.itemTextStyle ??
                       Theme.of(context).textTheme.subtitle1,
                 ),
         ),
@@ -281,8 +281,8 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   InputDecoration _manageDropdownDecoration(FormFieldState state) {
     return (widget.dropdownSearchDecoration ??
             InputDecoration(
-              labelStyle: widget.defaultSelectItemTextStyle,
-              hintStyle: widget.defaultSelectItemTextStyle,
+              labelStyle: widget.itemTextStyle,
+              hintStyle: widget.itemTextStyle,
               contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
               border: OutlineInputBorder(),
             ))
@@ -313,12 +313,12 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       children: <Widget>[
         if (data != null && widget.showClearButton)
           IconButton(
-            color: widget.defaultSelectItemTextStyle?.color ?? null,
+            color: widget.itemTextStyle?.color ?? null,
             icon: widget.clearButton ?? const Icon(Icons.clear, size: 24),
             onPressed: () => _handleOnChangeSelectedItem(null),
           ),
         IconButton(
-          color: widget.defaultSelectItemTextStyle?.color ?? null,
+          color: widget.itemTextStyle?.color ?? null,
           icon: widget.dropDownButton ??
               const Icon(Icons.arrow_drop_down, size: 24),
           onPressed: () => _selectSearchMode(data),
@@ -425,7 +425,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       autoFocusSearchBox: widget.autoFocusSearchBox,
       dialogMaxWidth: widget.dialogMaxWidth,
       itemDisabled: widget.popupItemDisabled,
-      defaultSelectItemTextStyle: widget.defaultSelectItemTextStyle,
+      itemTextStyle: widget.itemTextStyle,
     );
   }
 
