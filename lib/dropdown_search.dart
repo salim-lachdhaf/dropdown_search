@@ -239,7 +239,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 )
               : Text(
                   _selectedItemAsString(data),
-                  style: widget.defaultSelectItemTextStyle?.getTextStyle() ??
+                  style: widget.defaultSelectItemTextStyle ??
                       Theme.of(context).textTheme.subtitle1,
                 ),
         ),
@@ -425,6 +425,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       autoFocusSearchBox: widget.autoFocusSearchBox,
       dialogMaxWidth: widget.dialogMaxWidth,
       itemDisabled: widget.popupItemDisabled,
+      defaultSelectItemTextStyle: widget.defaultSelectItemTextStyle,
     );
   }
 

@@ -35,6 +35,8 @@ class SelectDialog<T> extends StatefulWidget {
   ///the search box will be focused if true
   final bool autoFocusSearchBox;
 
+  final TextStyle defaultSelectItemTextStyle;
+
   const SelectDialog({
     Key key,
     this.popupTitle,
@@ -58,6 +60,7 @@ class SelectDialog<T> extends StatefulWidget {
     this.autoFocusSearchBox = false,
     this.dialogMaxWidth,
     this.itemDisabled,
+    this.defaultSelectItemTextStyle,
   }) : super(key: key);
 
   @override
@@ -279,6 +282,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
           widget.itemAsString != null
               ? (widget.itemAsString(item) ?? "")
               : item.toString(),
+          style: widget.defaultSelectItemTextStyle,
         ),
         selected: _manageSelectedItemVisibility(item),
         onTap: widget.itemDisabled != null &&
