@@ -237,10 +237,15 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
                   data,
                   _selectedItemAsString(data),
                 )
-              : Text(
-                  _selectedItemAsString(data),
-                  style: widget.itemTextStyle ??
-                      Theme.of(context).textTheme.subtitle1,
+              : Container(
+                  height: 25.0,
+                  child: FittedBox(
+                    child: Text(
+                      _selectedItemAsString(data) ?? ' ',
+                      style: widget.itemTextStyle ??
+                          Theme.of(context).textTheme.subtitle1,
+                    ),
+                  ),
                 ),
         ),
         _manageTrailingIcons(data),
