@@ -111,7 +111,12 @@ class DropdownSearch<T> extends StatefulWidget {
   final ShapeBorder popupShape;
 
   ///handle auto validation
+  @Deprecated('Use autoValidateMode parameter which provide more specific '
+      'behaviour related to auto validation. '
+      'This feature was deprecated after v1.19.0.')
   final bool autoValidate;
+
+  final AutovalidateMode autovalidateMode;
 
   /// An optional method to call with the final value when the form is saved via
   final FormFieldSetter<T> onSaved;
@@ -141,6 +146,7 @@ class DropdownSearch<T> extends StatefulWidget {
     Key key,
     this.onSaved,
     this.validator,
+    this.autovalidateMode,
     this.autoValidate = false,
     this.onChanged,
     this.mode = Mode.DIALOG,
@@ -247,6 +253,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       onSaved: widget.onSaved,
       validator: widget.validator,
       autovalidate: widget.autoValidate,
+      autovalidateMode: widget.autovalidateMode,
       initialValue: widget.selectedItem,
       builder: (FormFieldState<T> state) {
         if (state.value != value) {
