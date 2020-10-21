@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(25),
         child: Form(
           key: _formKey,
-          autovalidate: true,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: ListView(
             padding: EdgeInsets.all(4),
             children: <Widget>[
@@ -53,16 +53,17 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Divider(),
               DropdownSearch<UserModel>(
+                searchBoxController: TextEditingController(text: 'Mrs'),
                 mode: Mode.BOTTOM_SHEET,
                 isFilteredOnline: true,
                 showClearButton: true,
                 showSearchBox: true,
                 label: 'User *',
                 dropdownSearchDecoration: InputDecoration(
-                    filled: true,
-                    fillColor:
-                        Theme.of(context).inputDecorationTheme.fillColor),
-                autoValidate: true,
+                  filled: true,
+                  fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                ),
+                autoValidateMode: AutovalidateMode.onUserInteraction,
                 validator: (UserModel u) =>
                     u == null ? "user field is required " : null,
                 onFind: (String filter) => getData(filter),

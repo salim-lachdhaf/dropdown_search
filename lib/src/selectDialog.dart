@@ -24,16 +24,19 @@ class SelectDialog<T> extends StatefulWidget {
   final DropdownSearchPopupItemEnabled<T> itemDisabled;
 
   ///custom layout for empty results
-  final WidgetBuilder emptyBuilder;
+  final EmptyBuilder emptyBuilder;
 
   ///custom layout for loading items
-  final WidgetBuilder loadingBuilder;
+  final LoadingBuilder loadingBuilder;
 
   ///custom layout for error
   final ErrorBuilder errorBuilder;
 
   ///the search box will be focused if true
   final bool autoFocusSearchBox;
+
+  ///text controller to set default search word for example
+  final TextEditingController searchBoxController;
 
   const SelectDialog({
     Key key,
@@ -58,6 +61,7 @@ class SelectDialog<T> extends StatefulWidget {
     this.autoFocusSearchBox = false,
     this.dialogMaxWidth,
     this.itemDisabled,
+    this.searchBoxController,
   }) : super(key: key);
 
   @override
@@ -68,7 +72,6 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   final FocusNode focusNode = new FocusNode();
   final StreamController<List<T>> _itemsStream = StreamController();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
-
   final List<T> _items = List<T>();
   final _debouncer = Debouncer();
 
@@ -77,7 +80,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     super.initState();
     Future.delayed(
       Duration.zero,
-      () => manageItemsByFilter("", isFistLoad: true),
+      () => manageItemsByFilter(widget.searchBoxController?.text ?? '',
+          isFistLoad: true),
     );
   }
 
@@ -121,7 +125,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                       return _loadingWidget();
                     } else if (snapshot.data.isEmpty) {
                       if (widget.emptyBuilder != null)
-                        return widget.emptyBuilder(context);
+                        return widget.emptyBuilder(
+                            context, widget.searchBoxController?.text);
                       else
                         return const Center(
                           child: const Text("No data found"),
@@ -167,13 +172,14 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
 
   Widget _errorWidget(dynamic error) {
     if (widget.errorBuilder != null)
-      return widget.errorBuilder(context, error);
+      return widget.errorBuilder(
+          context, widget.searchBoxController?.text, error);
     else
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
           child: Text(
-            error?.toString(),
+            error?.toString() ?? 'Error',
           ),
         ),
       );
@@ -185,7 +191,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         builder: (context, bool isLoading, wid) {
           if (isLoading) {
             if (widget.loadingBuilder != null)
-              return widget.loadingBuilder(context);
+              return widget.loadingBuilder(
+                  context, widget.searchBoxController?.text);
             else
               return Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -204,7 +211,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
 
   ///Function that filter item (online and offline) base on user filter
   ///[filter] is the filter keyword
-  ///[isFistLoad] true if it's the first time we load data from online, false other wises
+  ///[isFirstLoad] true if it's the first time we load data from online, false other wises
   void manageItemsByFilter(String filter, {bool isFistLoad = false}) async {
     _loadingNotifier.value = true;
 
@@ -313,6 +320,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                controller: widget.searchBoxController,
                 focusNode: focusNode,
                 onChanged: (f) => _debouncer(() {
                   _onTextChanged(f);

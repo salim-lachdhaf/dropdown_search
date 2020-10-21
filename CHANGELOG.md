@@ -1,3 +1,8 @@
+## [0.4.5] - 2020.10.21
+* replace autoValidate by autoValidateMode
+* pass searchWord to loadingBuilder/emptyBuilder/errorBuilder
+* add searchBoxController to be used as default filter for example
+
 ## [0.4.4] - 2020.07.06
 * fix bug
 

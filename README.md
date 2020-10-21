@@ -13,7 +13,7 @@
          alt="Build">
   </a>
   <a href="https://pub.dev/packages/dropdown_search"><img src="https://img.shields.io/pub/v/dropdown_search"></a>
-  <a href="https://www.buymeacoffee.com/SalimDev">
+  <a href="https://salim-lachdhaf.github.io">
     <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat">
   </a>
 </p>
@@ -174,7 +174,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`errorBuilder`| custom layout for error|
 |`autoFocusSearchBox`| the search box will be focused if true|
 |`popupShape`| custom shape for the popup|
-|`autoValidate`|handle auto validation|
+|`autoValidateMode`|handle auto validation mode|
 |`onSaved`|An optional method to call with the final value when the form is saved via|
 |`validator`|An optional method that validates an input. Returns an error string to display if the input is invalid, or null otherwise.|
 |`clearButton`|customize clear button widget|
@@ -182,6 +182,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`dropdownBuilderSupportsNullItem`|If true, the dropdownBuilder will continue the uses of material behavior. This will be useful if you want to handle a custom UI only if the item !=null|
 |`popupItemDisabled`|defines if an item of the popup is enabled or not, if the item is disabled, it cannot be clicked|
 |`popupBarrierColor`|set a custom color for the popup barrier|
+|`searchBoxController`|search box controller|
 
 # Attention
 To use a template as an item type, and you don't want to use a custom fonction **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:

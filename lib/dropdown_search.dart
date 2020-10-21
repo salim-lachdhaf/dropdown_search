@@ -21,7 +21,9 @@ typedef Widget DropdownSearchPopupItemBuilder<T>(
   bool isSelected,
 );
 typedef bool DropdownSearchPopupItemEnabled<T>(T item);
-typedef Widget ErrorBuilder<T>(BuildContext context, dynamic exception);
+typedef Widget ErrorBuilder<T>(BuildContext context, String searchEntry, dynamic exception);
+typedef Widget EmptyBuilder<T>(BuildContext context, String searchEntry);
+typedef Widget LoadingBuilder<T>(BuildContext context, String searchEntry);
 
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
@@ -96,10 +98,10 @@ class DropdownSearch<T> extends StatefulWidget {
   final InputDecoration dropdownSearchDecoration;
 
   ///custom layout for empty results
-  final WidgetBuilder emptyBuilder;
+  final EmptyBuilder emptyBuilder;
 
   ///custom layout for loading items
-  final WidgetBuilder loadingBuilder;
+  final LoadingBuilder loadingBuilder;
 
   ///custom layout for error
   final ErrorBuilder errorBuilder;
@@ -110,13 +112,7 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom shape for the popup
   final ShapeBorder popupShape;
 
-  ///handle auto validation
-  @Deprecated('Use autoValidateMode parameter which provide more specific '
-      'behaviour related to auto validation. '
-      'This feature was deprecated after v1.19.0.')
-  final bool autoValidate;
-
-  final AutovalidateMode autovalidateMode;
+  final AutovalidateMode autoValidateMode;
 
   /// An optional method to call with the final value when the form is saved via
   final FormFieldSetter<T> onSaved;
@@ -142,12 +138,14 @@ class DropdownSearch<T> extends StatefulWidget {
   ///set a custom color for the popup barrier
   final Color popupBarrierColor;
 
+  ///text controller to set default search word for example
+  final TextEditingController searchBoxController;
+
   DropdownSearch({
     Key key,
     this.onSaved,
     this.validator,
-    this.autovalidateMode,
-    this.autoValidate = false,
+    this.autoValidateMode = AutovalidateMode.disabled,
     this.onChanged,
     this.mode = Mode.DIALOG,
     this.label,
@@ -181,8 +179,8 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupShape,
     this.popupItemDisabled,
     this.popupBarrierColor,
-  })  : assert(autoValidate != null),
-        assert(isFilteredOnline != null),
+    this.searchBoxController,
+  })  :assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
         assert(enabled != null),
         assert(showSelectedItem != null),
@@ -252,8 +250,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       enabled: widget.enabled,
       onSaved: widget.onSaved,
       validator: widget.validator,
-      autovalidate: widget.autoValidate,
-      autovalidateMode: widget.autovalidateMode,
+      autovalidateMode: widget.autoValidateMode,
       initialValue: widget.selectedItem,
       builder: (FormFieldState<T> state) {
         if (state.value != value) {
@@ -420,6 +417,7 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       autoFocusSearchBox: widget.autoFocusSearchBox,
       dialogMaxWidth: widget.dialogMaxWidth,
       itemDisabled: widget.popupItemDisabled,
+      searchBoxController: widget.searchBoxController ?? TextEditingController(),
     );
   }
 
