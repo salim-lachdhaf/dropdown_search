@@ -21,7 +21,8 @@ typedef Widget DropdownSearchPopupItemBuilder<T>(
   bool isSelected,
 );
 typedef bool DropdownSearchPopupItemEnabled<T>(T item);
-typedef Widget ErrorBuilder<T>(BuildContext context, String searchEntry, dynamic exception);
+typedef Widget ErrorBuilder<T>(
+    BuildContext context, String searchEntry, dynamic exception);
 typedef Widget EmptyBuilder<T>(BuildContext context, String searchEntry);
 typedef Widget LoadingBuilder<T>(BuildContext context, String searchEntry);
 
@@ -180,7 +181,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupItemDisabled,
     this.popupBarrierColor,
     this.searchBoxController,
-  })  :assert(isFilteredOnline != null),
+  })  : assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
         assert(enabled != null),
         assert(showSelectedItem != null),
@@ -417,7 +418,8 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
       autoFocusSearchBox: widget.autoFocusSearchBox,
       dialogMaxWidth: widget.dialogMaxWidth,
       itemDisabled: widget.popupItemDisabled,
-      searchBoxController: widget.searchBoxController ?? TextEditingController(),
+      searchBoxController:
+          widget.searchBoxController ?? TextEditingController(),
     );
   }
 
