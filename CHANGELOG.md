@@ -1,3 +1,11 @@
+## [0.4.6] - 2020.10.30
+* Invoke the dropdown programmatically
+* change dropdownSearch selected value programmatically
+* fix issue #25
+* fix issue #36
+* fix issue #51
+* fix issue #55
+
 ## [0.4.5] - 2020.10.21
 * replace autoValidate by autoValidateMode
 * pass searchWord to loadingBuilder/emptyBuilder/errorBuilder

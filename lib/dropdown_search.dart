@@ -192,22 +192,16 @@ class DropdownSearch<T> extends StatefulWidget {
         super(key: key);
 
   @override
-  _DropdownSearchState<T> createState() => _DropdownSearchState<T>();
+  DropdownSearchState<T> createState() => DropdownSearchState<T>();
 }
 
-class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
+class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   final ValueNotifier<T> _selectedItemNotifier = ValueNotifier(null);
   final ValueNotifier<bool> _isFocused = ValueNotifier(false);
 
   @override
   void initState() {
     super.initState();
-    _selectedItemNotifier.value = widget.selectedItem;
-  }
-
-  @override
-  void didUpdateWidget(DropdownSearch<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
     _selectedItemNotifier.value = widget.selectedItem;
   }
 
@@ -444,16 +438,32 @@ class _DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///[data] selected item to be passed to the UI
   ///If we close the popup , or maybe we just selected
   ///another widget we should clear the focus
-  Future<void> _selectSearchMode(T data) async {
+  Future<T> _selectSearchMode(T data) async {
     _handleFocus(true);
+    T selectedItem;
     if (widget.mode == Mode.MENU) {
-      await _openMenu(data);
+      selectedItem = await _openMenu(data);
     } else if (widget.mode == Mode.BOTTOM_SHEET) {
-      await _openBottomSheet(data);
+      selectedItem = await _openBottomSheet(data);
     } else {
-      await _openSelectDialog(data);
+      selectedItem = await _openSelectDialog(data);
     }
-
     _handleFocus(false);
+
+    return selectedItem;
   }
+
+  ///Public Function that return then UI based on searchMode
+  ///[data] selected item to be passed to the UI
+  ///If we close the popup , or maybe we just selected
+  ///another widget we should clear the focus
+  ///THIS USED FOR OPEN DROPDOWN_SEARCH PROGRAMMATICALLY,
+  ///otherwise you can you [_selectSearchMode]
+  Future<T> openDropDownSearch() =>
+      _selectSearchMode(_selectedItemNotifier.value);
+
+  ///Change selected Value; this function is public USED to change the selected
+  ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItem]
+  void changeSelectedItem(T selectedItem) =>
+      _handleOnChangeSelectedItem(selectedItem);
 }

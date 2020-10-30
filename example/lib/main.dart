@@ -25,6 +25,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
+  final _openDropDownProgKey = GlobalKey<DropdownSearchState<String>>();
 
   @override
   Widget build(BuildContext context) {
@@ -145,6 +146,54 @@ class _MyHomePageState extends State<MyHomePage> {
                 showSearchBox: true,
               ),
               Divider(),
+
+              ///open dropdown programmatically
+              DropdownSearch<String>(
+                items: ["no action", "confirm in the next dropdown"],
+                label: "open another dropdown programmatically",
+                onChanged: (String v) {
+                  if (v == "confirm in the next dropdown") {
+                    _openDropDownProgKey.currentState.openDropDownSearch();
+                  }
+                },
+              ),
+              Padding(padding: EdgeInsets.all(4)),
+              DropdownSearch<String>(
+                key: _openDropDownProgKey,
+                items: ["Yes", "No"],
+                label: "confirm",
+                showSelectedItem: true,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  RaisedButton(
+                      onPressed: () {
+                        _openDropDownProgKey.currentState.openDropDownSearch();
+                      },
+                      color: Theme.of(context).accentColor,
+                      child: Text("Open dropdownSearch")),
+                  RaisedButton(
+                      onPressed: () {
+                        _openDropDownProgKey.currentState
+                            .changeSelectedItem("No");
+                      },
+                      child: Text("set to 'NO'")),
+                  RaisedButton(
+                      onPressed: () {
+                        _openDropDownProgKey.currentState
+                            .changeSelectedItem("Yes");
+                      },
+                      child: Text("set to 'YES'")),
+                  RaisedButton(
+                      onPressed: () {
+                        _openDropDownProgKey.currentState
+                            .changeSelectedItem("Blabla");
+                      },
+                      child: Text("set to 'Blabla'")),
+                ],
+              )
             ],
           ),
         ),

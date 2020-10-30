@@ -134,6 +134,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                     }
                     return ListView.builder(
                       shrinkWrap: true,
+                      padding: EdgeInsets.symmetric(vertical: 0),
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
                         var item = snapshot.data[index];
@@ -155,18 +156,20 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      child: AlertDialog(
-        title: Text("Error while getting online items"),
-        content: _errorWidget(error),
-        actions: <Widget>[
-          FlatButton(
-            child: new Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-          )
-        ],
-      ),
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error while getting online items"),
+          content: _errorWidget(error),
+          actions: <Widget>[
+            FlatButton(
+              child: new Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            )
+          ],
+        );
+      },
     );
   }
 
@@ -176,11 +179,9 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
           context, widget.searchBoxController?.text, error);
     else
       return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Text(
-            error?.toString() ?? 'Error',
-          ),
+        padding: EdgeInsets.all(8),
+        child: Text(
+          error?.toString() ?? 'Error',
         ),
       );
   }
@@ -247,21 +248,31 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         //add new online items to list
         _items.addAll(onlineItems);
 
-        _itemsStream.add(applyFilter(filter));
+        _addDataToStream(applyFilter(filter));
       } catch (e) {
-        _itemsStream.addError(e);
+        _addErrorToStream(e);
         //if offline items count > 0 , the error will be not visible for the user
         //As solution we show it in dialog
         if (widget.items != null && widget.items.isNotEmpty) {
           _showErrorDialog(e);
-          _itemsStream.add(applyFilter(filter));
+          _addDataToStream(applyFilter(filter));
         }
       }
     } else {
-      _itemsStream.add(applyFilter(filter));
+      _addDataToStream(applyFilter(filter));
     }
 
     _loadingNotifier.value = false;
+  }
+
+  void _addDataToStream(List<T> data) {
+    if (_itemsStream.isClosed) return;
+    _itemsStream.add(data);
+  }
+
+  void _addErrorToStream(Object error, [StackTrace stackTrace]) {
+    if (_itemsStream.isClosed) return;
+    _itemsStream.addError(error, stackTrace);
   }
 
   Widget _itemWidget(T item) {
