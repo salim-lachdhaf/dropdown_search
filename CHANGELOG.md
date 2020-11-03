@@ -1,3 +1,6 @@
+## [0.4.7] - 2020.11.03
+* fix issue #58
+
 ## [0.4.6] - 2020.10.30
 * Invoke the dropdown programmatically
 * change dropdownSearch selected value programmatically
