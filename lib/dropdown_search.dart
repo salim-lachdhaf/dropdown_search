@@ -113,7 +113,7 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom shape for the popup
   final ShapeBorder popupShape;
 
-  final AutovalidateMode autoValidateMode;
+  final bool autoValidateMode;
 
   /// An optional method to call with the final value when the form is saved via
   final FormFieldSetter<T> onSaved;
@@ -146,7 +146,7 @@ class DropdownSearch<T> extends StatefulWidget {
     Key key,
     this.onSaved,
     this.validator,
-    this.autoValidateMode = AutovalidateMode.disabled,
+    this.autoValidateMode = false,
     this.onChanged,
     this.mode = Mode.DIALOG,
     this.label,
@@ -245,7 +245,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       enabled: widget.enabled,
       onSaved: widget.onSaved,
       validator: widget.validator,
-      autovalidateMode: widget.autoValidateMode,
+      autovalidate: widget.autoValidateMode,
       initialValue: widget.selectedItem,
       builder: (FormFieldState<T> state) {
         if (state.value != value) {

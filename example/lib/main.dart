@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(25),
         child: Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          autovalidate: false,
           child: ListView(
             padding: EdgeInsets.all(4),
             children: <Widget>[
@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   filled: true,
                   fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                 ),
-                autoValidateMode: AutovalidateMode.onUserInteraction,
+                autoValidateMode: false,
                 validator: (UserModel u) =>
                     u == null ? "user field is required " : null,
                 onFind: (String filter) => getData(filter),
