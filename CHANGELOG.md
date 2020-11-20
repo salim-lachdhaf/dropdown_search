@@ -1,10 +1,15 @@
+## [0.4.7] - 2020.10.30
+* fix bug caused by last flutter SDK breaking changes [#56](https://github.com/salim-lachdhaf/searchable_dropdown/issues/69)
+* Add a getter for the selected item
+* Add a getter to check if the DropDownSearch is focused or not
+
 ## [0.4.6] - 2020.10.30
 * Invoke the dropdown programmatically
 * change dropdownSearch selected value programmatically
-* fix issue #25
-* fix issue #36
-* fix issue #51
-* fix issue #55
+* fix issue [#25](https://github.com/salim-lachdhaf/searchable_dropdown/issues/25)
+* fix issue [#36](https://github.com/salim-lachdhaf/searchable_dropdown/issues/36)
+* fix issue [#51](https://github.com/salim-lachdhaf/searchable_dropdown/issues/51)
+* fix issue [#55](https://github.com/salim-lachdhaf/searchable_dropdown/issues/55)
 
 ## [0.4.5] - 2020.10.21
 * replace autoValidate by autoValidateMode

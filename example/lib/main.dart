@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showClearButton: true,
                 onChanged: print,
                 popupItemDisabled: (String s) => s.startsWith('I'),
-                selectedItem: "Brazil",
+                selectedItem: "Tunisia",
               ),
               Divider(),
               DropdownSearch<UserModel>(

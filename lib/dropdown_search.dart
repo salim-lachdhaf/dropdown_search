@@ -466,4 +466,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItem]
   void changeSelectedItem(T selectedItem) =>
       _handleOnChangeSelectedItem(selectedItem);
+
+  ///get selected value programmatically
+  T get getSelectedItem => _selectedItemNotifier.value;
+
+  ///check if the dropdownSearch is focused
+  bool get isFocused => _isFocused.value;
 }
