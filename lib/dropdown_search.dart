@@ -25,6 +25,7 @@ typedef Widget ErrorBuilder<T>(
     BuildContext context, String searchEntry, dynamic exception);
 typedef Widget EmptyBuilder<T>(BuildContext context, String searchEntry);
 typedef Widget LoadingBuilder<T>(BuildContext context, String searchEntry);
+typedef Widget IconButtonBuilder(BuildContext context, VoidCallback onPressed);
 
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
@@ -125,8 +126,17 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom dropdown clear button icon widget
   final Widget clearButton;
 
+  ///custom clear button widget builder
+  final IconButtonBuilder clearButtonBuilder;
+
   ///custom dropdown icon button widget
   final Widget dropDownButton;
+
+  ///custom dropdown button widget builder
+  final IconButtonBuilder dropdownButtonBuilder;
+
+  ///whether to manage the clear and dropdown icons via InputDecoration suffixIcon
+  final bool suffixIcons;
 
   ///If true, the dropdownBuilder will continue the uses of material behavior
   ///This will be useful if you want to handle a custom UI only if the item !=null
@@ -182,7 +192,10 @@ class DropdownSearch<T> extends StatefulWidget {
     this.autoFocusSearchBox = false,
     this.dialogMaxWidth,
     this.clearButton,
+    this.clearButtonBuilder,
     this.dropDownButton,
+    this.dropdownButtonBuilder,
+    this.suffixIcons = false,
     this.dropdownBuilderSupportsNullItem = false,
     this.popupShape,
     this.popupItemDisabled,
@@ -244,7 +257,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               : Text(_selectedItemAsString(data),
                   style: Theme.of(context).textTheme.subtitle1),
         ),
-        _manageTrailingIcons(data),
+        if (!widget.suffixIcons) _manageTrailingIcons(data),
       ],
     );
   }
@@ -270,7 +283,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                     (widget.dropdownBuilder == null ||
                         widget.dropdownBuilderSupportsNullItem),
                 isFocused: isFocused,
-                decoration: _manageDropdownDecoration(state),
+                decoration: _manageDropdownDecoration(state, value),
                 child: _defaultSelectItemWidget(value),
               );
             });
@@ -279,7 +292,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   ///manage dropdownSearch field decoration
-  InputDecoration _manageDropdownDecoration(FormFieldState state) {
+  InputDecoration _manageDropdownDecoration(FormFieldState state, T data) {
     return (widget.dropdownSearchDecoration ??
             InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
@@ -289,6 +302,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             enabled: widget.enabled,
             labelText: widget.label,
             hintText: widget.hint,
+            suffixIcon: widget.suffixIcons ? _manageTrailingIcons(data) : null,
             errorText: state.errorText);
   }
 
@@ -305,20 +319,27 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///function that manage Trailing icons(close, dropDown)
   Widget _manageTrailingIcons(T data) {
+    final clearButtonPressed = () => _handleOnChangeSelectedItem(null);
+    final dropdownButtonPressed = () => _selectSearchMode(data);
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         if (data != null && widget.showClearButton)
-          IconButton(
-            icon: widget.clearButton ?? const Icon(Icons.clear, size: 24),
-            onPressed: () => _handleOnChangeSelectedItem(null),
-          ),
-        IconButton(
-          icon: widget.dropDownButton ??
-              const Icon(Icons.arrow_drop_down, size: 24),
-          onPressed: () => _selectSearchMode(data),
-        ),
+          widget.clearButtonBuilder != null
+              ? widget.clearButtonBuilder(context, clearButtonPressed)
+              : IconButton(
+                  icon: widget.clearButton ?? const Icon(Icons.clear, size: 24),
+                  onPressed: clearButtonPressed,
+                ),
+        widget.dropdownButtonBuilder != null
+            ? widget.dropdownButtonBuilder(context, dropdownButtonPressed)
+            : IconButton(
+                icon: widget.dropDownButton ??
+                    const Icon(Icons.arrow_drop_down, size: 24),
+                onPressed: dropdownButtonPressed,
+              ),
       ],
     );
   }

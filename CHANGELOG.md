@@ -1,3 +1,7 @@
+## [0.4.9] - 2021.01.12
+* added an ability to override the clear and dropdown icon buttons with builder
+* `suffixIcons` adds an ability to switch icon management through the `suffixIcon` of `InputDecoration` 
+
 ## [0.4.8] - 2020.11.20
 * fix bug caused by last flutter SDK breaking changes [#69](https://github.com/salim-lachdhaf/searchable_dropdown/issues/69)
 * Add a getter for the selected item

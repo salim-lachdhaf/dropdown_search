@@ -53,6 +53,60 @@ class _MyHomePageState extends State<MyHomePage> {
                 selectedItem: "Tunisia",
               ),
               Divider(),
+
+              ///Menu Mode with overriden icon and dropdown buttons
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: DropdownSearch<String>(
+                      validator: (v) => v == null ? "required field" : null,
+                      hint: "Select a country",
+                      mode: Mode.MENU,
+                      dropdownSearchDecoration: InputDecoration(
+                        filled: true,
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF01689A)),
+                        ),
+                      ),
+                      suffixIcons: true,
+                      clearButtonBuilder: (_, onPressed) => IconButton(
+                        icon: const Icon(Icons.clear,
+                            size: 24, color: Colors.black),
+                        onPressed: onPressed,
+                      ),
+                      dropdownButtonBuilder: (_, onPressed) => IconButton(
+                        icon: const Icon(Icons.arrow_drop_down,
+                            size: 24, color: Colors.black),
+                        onPressed: onPressed,
+                      ),
+                      showSelectedItem: true,
+                      items: [
+                        "Brazil",
+                        "Italia (Disabled)",
+                        "Tunisia",
+                        'Canada'
+                      ],
+                      label: "Menu mode *",
+                      showClearButton: true,
+                      onChanged: print,
+                      popupItemDisabled: (String s) => s.startsWith('I'),
+                      selectedItem: "Tunisia",
+                    ),
+                  ),
+                  Expanded(
+                      child: TextField(
+                    decoration: InputDecoration(
+                      filled: true,
+                      labelText: "Menu mode *",
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF01689A)),
+                      ),
+                    ),
+                  ))
+                ],
+              ),
+              Divider(),
               DropdownSearch<UserModel>(
                 searchBoxController: TextEditingController(text: 'Mrs'),
                 mode: Mode.BOTTOM_SHEET,
@@ -180,12 +234,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             .changeSelectedItem("No");
                       },
                       child: Text("set to 'NO'")),
-                  RaisedButton(
-                      onPressed: () {
-                        _openDropDownProgKey.currentState
-                            .changeSelectedItem("Yes");
-                      },
-                      child: Text("set to 'YES'")),
+                  Material(
+                    child: RaisedButton(
+                        onPressed: () {
+                          _openDropDownProgKey.currentState
+                              .changeSelectedItem("Yes");
+                        },
+                        child: Text("set to 'YES'")),
+                  ),
                   RaisedButton(
                       onPressed: () {
                         _openDropDownProgKey.currentState
