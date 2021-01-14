@@ -497,6 +497,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   void changeSelectedItem(T selectedItem) =>
       _handleOnChangeSelectedItem(selectedItem);
 
+  ///Change selected Value; this function is public USED to clear selected
+  ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItem]
+  void clear() => _handleOnChangeSelectedItem(null);
+
   ///get selected value programmatically
   T get getSelectedItem => _selectedItemNotifier.value;
 

@@ -70,11 +70,37 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       suffixIcons: true,
-                      clearButtonBuilder: (_, onPressed) => IconButton(
-                        icon: const Icon(Icons.clear,
-                            size: 24, color: Colors.black),
-                        onPressed: onPressed,
-                      ),
+                      clearButtonBuilder: (_, onPressed) {
+                        // set up the button
+                        Widget okButton = FlatButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            onPressed();
+                            Navigator.of(context).pop();
+                          },
+                        );
+
+                        // set up the AlertDialog
+                        AlertDialog alert = AlertDialog(
+                          title: Text("Are you sure..."),
+                          content: Text("...you want to clear the selection"),
+                          actions: [
+                            okButton,
+                          ],
+                        );
+
+                        return IconButton(
+                          icon: const Icon(Icons.clear,
+                              size: 24, color: Colors.black),
+                          onPressed: () => // show the dialog
+                              showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alert;
+                            },
+                          ),
+                        );
+                      },
                       dropdownButtonBuilder: (_, onPressed) => IconButton(
                         icon: const Icon(Icons.arrow_drop_down,
                             size: 24, color: Colors.black),
