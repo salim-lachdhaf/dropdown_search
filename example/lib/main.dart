@@ -70,15 +70,21 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       suffixIcons: true,
-                      clearButtonBuilder: (_, onPressed) => IconButton(
-                        icon: const Icon(Icons.clear,
-                            size: 24, color: Colors.black),
-                        onPressed: onPressed,
+                      clearButtonBuilder: (_) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Icon(
+                          Icons.clear,
+                          size: 24,
+                          color: Colors.black,
+                        ),
                       ),
-                      dropdownButtonBuilder: (_, onPressed) => IconButton(
-                        icon: const Icon(Icons.arrow_drop_down,
-                            size: 24, color: Colors.black),
-                        onPressed: onPressed,
+                      dropdownButtonBuilder: (_) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Icon(
+                          Icons.arrow_drop_down,
+                          size: 24,
+                          color: Colors.black,
+                        ),
                       ),
                       showSelectedItem: true,
                       items: [
@@ -230,8 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text("Open dropdownSearch")),
                   RaisedButton(
                       onPressed: () {
-                        _openDropDownProgKey.currentState
-                            .changeSelectedItem("No");
+                        _openDropDownProgKey.currentState.clear();
                       },
                       child: Text("set to 'NO'")),
                   Material(

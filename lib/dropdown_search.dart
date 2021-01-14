@@ -25,7 +25,7 @@ typedef Widget ErrorBuilder<T>(
     BuildContext context, String searchEntry, dynamic exception);
 typedef Widget EmptyBuilder<T>(BuildContext context, String searchEntry);
 typedef Widget LoadingBuilder<T>(BuildContext context, String searchEntry);
-typedef Widget IconButtonBuilder(BuildContext context, VoidCallback onPressed);
+typedef Widget IconButtonBuilder(BuildContext context);
 
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
@@ -328,13 +328,19 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       children: <Widget>[
         if (data != null && widget.showClearButton)
           widget.clearButtonBuilder != null
-              ? widget.clearButtonBuilder(context, clearButtonPressed)
+              ? GestureDetector(
+                  onTap: clearButtonPressed,
+                  child: widget.clearButtonBuilder(context),
+                )
               : IconButton(
                   icon: widget.clearButton ?? const Icon(Icons.clear, size: 24),
                   onPressed: clearButtonPressed,
                 ),
         widget.dropdownButtonBuilder != null
-            ? widget.dropdownButtonBuilder(context, dropdownButtonPressed)
+            ? GestureDetector(
+                onTap: dropdownButtonPressed,
+                child: widget.dropdownButtonBuilder(context),
+              )
             : IconButton(
                 icon: widget.dropDownButton ??
                     const Icon(Icons.arrow_drop_down, size: 24),
@@ -496,6 +502,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItem]
   void changeSelectedItem(T selectedItem) =>
       _handleOnChangeSelectedItem(selectedItem);
+
+  ///Change selected Value; this function is public USED to clear selected
+  ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItem]
+  void clear() => _handleOnChangeSelectedItem(null);
 
   ///get selected value programmatically
   T get getSelectedItem => _selectedItemNotifier.value;
