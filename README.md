@@ -183,6 +183,9 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`popupItemDisabled`|defines if an item of the popup is enabled or not, if the item is disabled, it cannot be clicked|
 |`popupBarrierColor`|set a custom color for the popup barrier|
 |`searchBoxController`|search box controller|
+|`clearButtonBuilder`|custom clear button builder|
+|`dropdownButtonBuilder`|custom dropdown button builder|
+|`onBeforeChange`|callback executed before applying value change|
 |`searchDelay`|delay before searching|
 
 # Attention

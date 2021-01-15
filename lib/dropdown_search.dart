@@ -156,11 +156,12 @@ class DropdownSearch<T> extends StatefulWidget {
   ///called when popup is dismissed
   final VoidCallback onPopupDismissed;
 
+  /// callback executed before applying value change
   ///delay before searching, change it to Duration(milliseconds: 0)
   ///if you do not use online search
   final Duration searchDelay;
 
-  ///
+  /// callback executed before applying value change
   final BeforeChange<T> onBeforeChange;
 
   DropdownSearch({
