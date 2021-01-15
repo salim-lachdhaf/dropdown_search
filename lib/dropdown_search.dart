@@ -143,7 +143,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final TextEditingController searchBoxController;
 
   ///called when popup is dismissed
-  final VoidCallback onPopupDismiss;
+  final VoidCallback onPopupDismissed;
 
   DropdownSearch({
     Key key,
@@ -183,7 +183,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupShape,
     this.popupItemDisabled,
     this.popupBarrierColor,
-    this.onPopupDismiss,
+    this.onPopupDismissed,
     this.searchBoxController,
   })  : assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
@@ -453,7 +453,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       selectedItem = await _openSelectDialog(data);
     }
     _handleFocus(false);
-    widget.onPopupDismiss?.call();
+    widget.onPopupDismissed?.call();
 
     return selectedItem;
   }
