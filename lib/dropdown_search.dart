@@ -145,6 +145,10 @@ class DropdownSearch<T> extends StatefulWidget {
   ///called when popup is dismissed
   final VoidCallback onPopupDismissed;
 
+  ///delay before searching, change it to Duration(milliseconds: 0)
+  ///if you do not use online search
+  final Duration searchDelay;
+
   DropdownSearch({
     Key key,
     this.onSaved,
@@ -185,6 +189,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupBarrierColor,
     this.onPopupDismissed,
     this.searchBoxController,
+    this.searchDelay,
   })  : assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
         assert(enabled != null),
@@ -418,6 +423,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       itemDisabled: widget.popupItemDisabled,
       searchBoxController:
           widget.searchBoxController ?? TextEditingController(),
+      searchDelay: widget.searchDelay,
     );
   }
 
