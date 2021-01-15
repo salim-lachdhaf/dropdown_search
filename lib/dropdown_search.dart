@@ -26,6 +26,7 @@ typedef Widget ErrorBuilder<T>(
 typedef Widget EmptyBuilder<T>(BuildContext context, String searchEntry);
 typedef Widget LoadingBuilder<T>(BuildContext context, String searchEntry);
 typedef Widget IconButtonBuilder(BuildContext context);
+typedef Future<bool> BeforeChange<T>(T prevItem, T nextItem);
 
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
@@ -159,6 +160,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///if you do not use online search
   final Duration searchDelay;
 
+  ///
+  final BeforeChange<T> onBeforeChange;
+
   DropdownSearch({
     Key key,
     this.onSaved,
@@ -203,6 +207,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.onPopupDismissed,
     this.searchBoxController,
     this.searchDelay,
+    this.onBeforeChange,
   })  : assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
         assert(enabled != null),
@@ -465,8 +470,23 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///handle on change value , if the validation is active , we validate the new selected item
   void _handleOnChangeSelectedItem(T selectedItem) {
-    _selectedItemNotifier.value = selectedItem;
-    if (widget.onChanged != null) widget.onChanged(selectedItem);
+    final changeItem = () {
+      _selectedItemNotifier.value = selectedItem;
+      if (widget.onChanged != null) widget.onChanged(selectedItem);
+    };
+
+    if (widget.onBeforeChange != null) {
+      widget
+          .onBeforeChange(_selectedItemNotifier.value, selectedItem)
+          .then((value) {
+        if (value == true) {
+          changeItem();
+        }
+      });
+    } else {
+      changeItem();
+    }
+
     _handleFocus(false);
   }
 

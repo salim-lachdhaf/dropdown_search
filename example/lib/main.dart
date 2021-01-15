@@ -51,6 +51,32 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: print,
                 popupItemDisabled: (String s) => s.startsWith('I'),
                 selectedItem: "Tunisia",
+                onBeforeChange: (a, b) {
+                  AlertDialog alert = AlertDialog(
+                    title: Text("Are you sure..."),
+                    content: Text("...you want to clear the selection"),
+                    actions: [
+                      FlatButton(
+                        child: Text("OK"),
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                      ),
+                      FlatButton(
+                        child: Text("NOT OK"),
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                      ),
+                    ],
+                  );
+
+                  return showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return alert;
+                      });
+                },
               ),
               Divider(),
 
