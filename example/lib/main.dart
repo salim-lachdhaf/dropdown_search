@@ -137,6 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ))
                 ],
+                stickMenuToBorder: true,
               ),
               Divider(),
               DropdownSearch<UserModel>(

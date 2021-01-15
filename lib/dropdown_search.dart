@@ -164,6 +164,9 @@ class DropdownSearch<T> extends StatefulWidget {
   /// callback executed before applying value change
   final BeforeChange<T> onBeforeChange;
 
+  /// forces menu to stick to the input decoration border
+  final bool stickMenuToBorder;
+
   DropdownSearch({
     Key key,
     this.onSaved,
@@ -209,6 +212,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.searchBoxController,
     this.searchDelay,
     this.onBeforeChange,
+    this.stickMenuToBorder = false,
   })  : assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
         assert(enabled != null),
@@ -395,18 +399,45 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         });
   }
 
+  RenderBox findBorderBox(RenderBox box) {
+    RenderBox borderBox;
+
+    box.visitChildren((child) {
+      if (child is RenderCustomPaint) {
+        borderBox = child;
+      }
+
+      final box = findBorderBox(child);
+      if (box != null) {
+        borderBox = box;
+      }
+    });
+
+    return borderBox;
+  }
+
   ///openMenu
   Future<T> _openMenu(T data) {
     // Here we get the render object of our physical button, later to get its size & position
     final RenderBox popupButtonObject = context.findRenderObject();
+
+    final decorationBox = findBorderBox(popupButtonObject);
+
+    double translateOffset = 0;
+    if (widget.stickMenuToBorder && decorationBox != null) {
+      translateOffset =
+          decorationBox.size.height - popupButtonObject.size.height;
+    }
+
     // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
     final RelativeRect position = RelativeRect.fromSize(
       Rect.fromPoints(
-        popupButtonObject.localToGlobal(
-            popupButtonObject.size.bottomLeft(Offset.zero),
-            ancestor: overlay),
+        popupButtonObject
+            .localToGlobal(popupButtonObject.size.bottomLeft(Offset.zero),
+                ancestor: overlay)
+            .translate(0, translateOffset),
         popupButtonObject.localToGlobal(
             popupButtonObject.size.bottomRight(Offset.zero),
             ancestor: overlay),
