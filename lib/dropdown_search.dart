@@ -136,7 +136,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final IconButtonBuilder dropdownButtonBuilder;
 
   ///whether to manage the clear and dropdown icons via InputDecoration suffixIcon
-  final bool suffixIcons;
+  final bool showAsSuffixIcons;
 
   ///If true, the dropdownBuilder will continue the uses of material behavior
   ///This will be useful if you want to handle a custom UI only if the item !=null
@@ -195,7 +195,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.clearButtonBuilder,
     this.dropDownButton,
     this.dropdownButtonBuilder,
-    this.suffixIcons = false,
+    this.showAsSuffixIcons = false,
     this.dropdownBuilderSupportsNullItem = false,
     this.popupShape,
     this.popupItemDisabled,
@@ -257,7 +257,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               : Text(_selectedItemAsString(data),
                   style: Theme.of(context).textTheme.subtitle1),
         ),
-        if (!widget.suffixIcons) _manageTrailingIcons(data),
+        if (!widget.showAsSuffixIcons) _manageTrailingIcons(data),
       ],
     );
   }
@@ -302,7 +302,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             enabled: widget.enabled,
             labelText: widget.label,
             hintText: widget.hint,
-            suffixIcon: widget.suffixIcons ? _manageTrailingIcons(data) : null,
+            suffixIcon:
+                widget.showAsSuffixIcons ? _manageTrailingIcons(data) : null,
             errorText: state.errorText);
   }
 

@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           borderSide: BorderSide(color: Color(0xFF01689A)),
                         ),
                       ),
-                      suffixIcons: true,
+                      showAsSuffixIcons: true,
                       clearButtonBuilder: (_, onPressed) {
                         // set up the button
                         Widget okButton = FlatButton(
