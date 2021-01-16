@@ -346,14 +346,12 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         shape: widget.popupShape,
         context: context,
         builder: (context) {
-          return SingleChildScrollView(
-            child: AnimatedPadding(
-              duration: Duration(milliseconds: 300),
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: _selectDialogInstance(data, defaultHeight: 350),
+          return AnimatedPadding(
+            duration: Duration(milliseconds: 300),
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
+            child: _selectDialogInstance(data, defaultHeight: 350),
           );
         });
   }
