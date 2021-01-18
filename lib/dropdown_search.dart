@@ -25,6 +25,8 @@ typedef Widget ErrorBuilder<T>(
     BuildContext context, String searchEntry, dynamic exception);
 typedef Widget EmptyBuilder<T>(BuildContext context, String searchEntry);
 typedef Widget LoadingBuilder<T>(BuildContext context, String searchEntry);
+typedef Widget IconButtonBuilder(BuildContext context);
+typedef Future<bool> BeforeChange<T>(T prevItem, T nextItem);
 
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
@@ -125,8 +127,17 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom dropdown clear button icon widget
   final Widget clearButton;
 
+  ///custom clear button widget builder
+  final IconButtonBuilder clearButtonBuilder;
+
   ///custom dropdown icon button widget
   final Widget dropDownButton;
+
+  ///custom dropdown button widget builder
+  final IconButtonBuilder dropdownButtonBuilder;
+
+  ///whether to manage the clear and dropdown icons via InputDecoration suffixIcon
+  final bool showAsSuffixIcons;
 
   ///If true, the dropdownBuilder will continue the uses of material behavior
   ///This will be useful if you want to handle a custom UI only if the item !=null
@@ -145,9 +156,13 @@ class DropdownSearch<T> extends StatefulWidget {
   ///called when popup is dismissed
   final VoidCallback onPopupDismissed;
 
+  /// callback executed before applying value change
   ///delay before searching, change it to Duration(milliseconds: 0)
   ///if you do not use online search
   final Duration searchDelay;
+
+  /// callback executed before applying value change
+  final BeforeChange<T> onBeforeChange;
 
   DropdownSearch({
     Key key,
@@ -182,7 +197,10 @@ class DropdownSearch<T> extends StatefulWidget {
     this.autoFocusSearchBox = false,
     this.dialogMaxWidth,
     this.clearButton,
+    this.clearButtonBuilder,
     this.dropDownButton,
+    this.dropdownButtonBuilder,
+    this.showAsSuffixIcons = false,
     this.dropdownBuilderSupportsNullItem = false,
     this.popupShape,
     this.popupItemDisabled,
@@ -190,6 +208,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.onPopupDismissed,
     this.searchBoxController,
     this.searchDelay,
+    this.onBeforeChange,
   })  : assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
         assert(enabled != null),
@@ -244,7 +263,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               : Text(_selectedItemAsString(data),
                   style: Theme.of(context).textTheme.subtitle1),
         ),
-        _manageTrailingIcons(data),
+        if (!widget.showAsSuffixIcons) _manageTrailingIcons(data),
       ],
     );
   }
@@ -270,7 +289,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                     (widget.dropdownBuilder == null ||
                         widget.dropdownBuilderSupportsNullItem),
                 isFocused: isFocused,
-                decoration: _manageDropdownDecoration(state),
+                decoration: _manageDropdownDecoration(state, value),
                 child: _defaultSelectItemWidget(value),
               );
             });
@@ -279,7 +298,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   ///manage dropdownSearch field decoration
-  InputDecoration _manageDropdownDecoration(FormFieldState state) {
+  InputDecoration _manageDropdownDecoration(FormFieldState state, T data) {
     return (widget.dropdownSearchDecoration ??
             InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
@@ -289,6 +308,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             enabled: widget.enabled,
             labelText: widget.label,
             hintText: widget.hint,
+            suffixIcon:
+                widget.showAsSuffixIcons ? _manageTrailingIcons(data) : null,
             errorText: state.errorText);
   }
 
@@ -305,20 +326,33 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///function that manage Trailing icons(close, dropDown)
   Widget _manageTrailingIcons(T data) {
+    final clearButtonPressed = () => _handleOnChangeSelectedItem(null);
+    final dropdownButtonPressed = () => _selectSearchMode(data);
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         if (data != null && widget.showClearButton)
-          IconButton(
-            icon: widget.clearButton ?? const Icon(Icons.clear, size: 24),
-            onPressed: () => _handleOnChangeSelectedItem(null),
-          ),
-        IconButton(
-          icon: widget.dropDownButton ??
-              const Icon(Icons.arrow_drop_down, size: 24),
-          onPressed: () => _selectSearchMode(data),
-        ),
+          widget.clearButtonBuilder != null
+              ? GestureDetector(
+                  onTap: clearButtonPressed,
+                  child: widget.clearButtonBuilder(context),
+                )
+              : IconButton(
+                  icon: widget.clearButton ?? const Icon(Icons.clear, size: 24),
+                  onPressed: clearButtonPressed,
+                ),
+        widget.dropdownButtonBuilder != null
+            ? GestureDetector(
+                onTap: dropdownButtonPressed,
+                child: widget.dropdownButtonBuilder(context),
+              )
+            : IconButton(
+                icon: widget.dropDownButton ??
+                    const Icon(Icons.arrow_drop_down, size: 24),
+                onPressed: dropdownButtonPressed,
+              ),
       ],
     );
   }
@@ -437,8 +471,23 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///handle on change value , if the validation is active , we validate the new selected item
   void _handleOnChangeSelectedItem(T selectedItem) {
-    _selectedItemNotifier.value = selectedItem;
-    if (widget.onChanged != null) widget.onChanged(selectedItem);
+    final changeItem = () {
+      _selectedItemNotifier.value = selectedItem;
+      if (widget.onChanged != null) widget.onChanged(selectedItem);
+    };
+
+    if (widget.onBeforeChange != null) {
+      widget
+          .onBeforeChange(_selectedItemNotifier.value, selectedItem)
+          .then((value) {
+        if (value == true) {
+          changeItem();
+        }
+      });
+    } else {
+      changeItem();
+    }
+
     _handleFocus(false);
   }
 
@@ -475,6 +524,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItem]
   void changeSelectedItem(T selectedItem) =>
       _handleOnChangeSelectedItem(selectedItem);
+
+  ///Change selected Value; this function is public USED to clear selected
+  ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItem]
+  void clear() => _handleOnChangeSelectedItem(null);
 
   ///get selected value programmatically
   T get getSelectedItem => _selectedItemNotifier.value;
