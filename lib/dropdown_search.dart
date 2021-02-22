@@ -243,6 +243,16 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   @override
+  void didUpdateWidget(DropdownSearch<T> oldWidget) {
+    final oldSelectedItem = oldWidget.selectedItem;
+    final newSelectedItem = widget.selectedItem;
+    if (oldSelectedItem != newSelectedItem) {
+      _selectedItemNotifier.value = newSelectedItem;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<T>(
       valueListenable: _selectedItemNotifier,

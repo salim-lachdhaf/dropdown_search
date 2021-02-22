@@ -1,4 +1,10 @@
-## [0.4.9] - 2021.01.12
+## [0.4.9] - 2021.02.22
+* fix bug filterOnline [#116](https://github.com/salim-lachdhaf/searchable_dropdown/issues/116)
+* Add onBeforeChange CallBack @thinks [Vasiliy](https://github.com/vasilich6107)
+* Add onPopupDismiss CallBack @thinks [Vasiliy](https://github.com/vasilich6107)
+* search delay feature @thinks [Vasiliy](https://github.com/vasilich6107)
+* BottomSheet scrolling behavior improvement @thinks [Vasiliy](https://github.com/vasilich6107)
+* fix bug update selectedItem
 * added an ability to override the clear and dropdown icon buttons with builder
 * `suffixIcons` adds an ability to switch icon management through the `suffixIcon` of `InputDecoration` 
 

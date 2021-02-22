@@ -250,7 +250,15 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         //Remove all old data
         _items.clear();
         //add offline items
-        if (widget.items != null) _items.addAll(widget.items);
+        if (widget.items != null) {
+          _items.addAll(widget.items);
+          //if filter online we filter only local list based on entred keyword (filter)
+          if (widget.isFilteredOnline == true) {
+            var filteredLocalList = applyFilter(filter);
+            _items.clear();
+            _items.addAll(filteredLocalList);
+          }
+        }
         //add new online items to list
         _items.addAll(onlineItems);
 
