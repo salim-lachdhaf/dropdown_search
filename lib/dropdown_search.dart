@@ -163,6 +163,9 @@ class DropdownSearch<T> extends StatefulWidget {
 
   /// callback executed before applying value change
   final BeforeChange<T> onBeforeChange;
+    
+  /// Style for value item
+  final TextStyle style;
 
   DropdownSearch({
     Key key,
@@ -208,6 +211,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.onPopupDismissed,
     this.searchBoxController,
     this.searchDelay,
+    this.style,
     this.onBeforeChange,
   })  : assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
@@ -261,7 +265,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                   _selectedItemAsString(data),
                 )
               : Text(_selectedItemAsString(data),
-                  style: Theme.of(context).textTheme.subtitle1),
+                  style: this.widget.style),
         ),
         if (!widget.showAsSuffixIcons) _manageTrailingIcons(data),
       ],
@@ -442,6 +446,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       onFind: widget.onFind,
       showSearchBox: widget.showSearchBox,
       itemBuilder: widget.popupItemBuilder,
+      style: widget.style,
       selectedValue: data,
       searchBoxDecoration: widget.searchBoxDecoration,
       onChanged: _handleOnChangeSelectedItem,
