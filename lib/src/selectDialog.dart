@@ -40,6 +40,9 @@ class SelectDialog<T> extends StatefulWidget {
 
   ///delay before searching
   final Duration searchDelay;
+  
+  /// Style for item
+  final TextStyle style;
 
   const SelectDialog({
     Key key,
@@ -66,6 +69,7 @@ class SelectDialog<T> extends StatefulWidget {
     this.itemDisabled,
     this.searchBoxController,
     this.searchDelay,
+    this.style
   }) : super(key: key);
 
   @override
@@ -303,6 +307,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
           widget.itemAsString != null
               ? (widget.itemAsString(item) ?? "")
               : item.toString(),
+          style: widget.style,
         ),
         selected: _manageSelectedItemVisibility(item),
         onTap: widget.itemDisabled != null &&
