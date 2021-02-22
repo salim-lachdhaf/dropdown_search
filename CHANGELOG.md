@@ -1,3 +1,11 @@
+## [0.4.9] - 2021.02.22
+* fix bug filterOnline [#116](https://github.com/salim-lachdhaf/searchable_dropdown/issues/116)
+* Add onBeforeChange CallBack @thinks [Vasiliy](https://github.com/vasilich6107)
+* Add onPopupDismiss CallBack @thinks [Vasiliy](https://github.com/vasilich6107)
+* search delay feature @thinks [Vasiliy](https://github.com/vasilich6107)
+* BottomSheet scrolling behavior improvement @thinks [Vasiliy](https://github.com/vasilich6107)
+* fix bug update selectedItem
+
 ## [0.4.8] - 2020.11.20
 * fix bug caused by last flutter SDK breaking changes [#69](https://github.com/salim-lachdhaf/searchable_dropdown/issues/69)
 * Add a getter for the selected item

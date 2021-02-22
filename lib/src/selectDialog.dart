@@ -38,6 +38,9 @@ class SelectDialog<T> extends StatefulWidget {
   ///text controller to set default search word for example
   final TextEditingController searchBoxController;
 
+  ///delay before searching
+  final Duration searchDelay;
+
   const SelectDialog({
     Key key,
     this.popupTitle,
@@ -62,6 +65,7 @@ class SelectDialog<T> extends StatefulWidget {
     this.dialogMaxWidth,
     this.itemDisabled,
     this.searchBoxController,
+    this.searchDelay,
   }) : super(key: key);
 
   @override
@@ -73,11 +77,13 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   final StreamController<List<T>> _itemsStream = StreamController();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
   final List<T> _items = List<T>();
-  final _debouncer = Debouncer();
+  Debouncer _debouncer;
 
   @override
   void initState() {
     super.initState();
+    _debouncer = Debouncer(delay: widget.searchDelay);
+
     Future.delayed(
       Duration.zero,
       () => manageItemsByFilter(widget.searchBoxController?.text ?? '',
@@ -244,7 +250,15 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         //Remove all old data
         _items.clear();
         //add offline items
-        if (widget.items != null) _items.addAll(widget.items);
+        if (widget.items != null) {
+          _items.addAll(widget.items);
+          //if filter online we filter only local list based on entred keyword (filter)
+          if (widget.isFilteredOnline == true) {
+            var filteredLocalList = applyFilter(filter);
+            _items.clear();
+            _items.addAll(filteredLocalList);
+          }
+        }
         //add new online items to list
         _items.addAll(onlineItems);
 
@@ -353,10 +367,10 @@ class Debouncer {
   final Duration delay;
   Timer _timer;
 
-  Debouncer({this.delay = const Duration(milliseconds: 500)});
+  Debouncer({this.delay});
 
   call(Function action) {
     _timer?.cancel();
-    _timer = Timer(delay, action);
+    _timer = Timer(delay ?? const Duration(milliseconds: 500), action);
   }
 }
