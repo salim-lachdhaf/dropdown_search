@@ -183,6 +183,10 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`popupItemDisabled`|defines if an item of the popup is enabled or not, if the item is disabled, it cannot be clicked|
 |`popupBarrierColor`|set a custom color for the popup barrier|
 |`searchBoxController`|search box controller|
+|`clearButtonBuilder`|custom clear button builder|
+|`dropdownButtonBuilder`|custom dropdown button builder|
+|`onBeforeChange`|callback executed before applying value change|
+|`searchDelay`|delay before searching|
 
 # Attention
 To use a template as an item type, and you don't want to use a custom fonction **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:

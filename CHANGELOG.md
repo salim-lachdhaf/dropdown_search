@@ -5,6 +5,8 @@
 * search delay feature @thinks [Vasiliy](https://github.com/vasilich6107)
 * BottomSheet scrolling behavior improvement @thinks [Vasiliy](https://github.com/vasilich6107)
 * fix bug update selectedItem
+* added an ability to override the clear and dropdown icon buttons with builder
+* `suffixIcons` adds an ability to switch icon management through the `suffixIcon` of `InputDecoration` 
 
 ## [0.4.8] - 2020.11.20
 * fix bug caused by last flutter SDK breaking changes [#69](https://github.com/salim-lachdhaf/searchable_dropdown/issues/69)
