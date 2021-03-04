@@ -232,15 +232,6 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     super.initState();
     _selectedItemNotifier.value = widget.selectedItem;
   }
-    
-  @override
-  void didUpdateWidget(DropdownSearch<T> oldWidget) {
-    final oldSelectedItem = oldWidget.selectedItem;
-    final newSelectedItem = widget.selectedItem;
-    if (oldSelectedItem != newSelectedItem) {
-      _selectedItemNotifier.value = newSelectedItem;
-    }
-  }
 
   @override
   void didUpdateWidget(DropdownSearch<T> oldWidget) {
@@ -404,13 +395,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         shape: widget.popupShape,
         context: context,
         builder: (context) {
-          return AnimatedPadding(
-            duration: Duration(milliseconds: 300),
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: _selectDialogInstance(data, defaultHeight: 350),
-          );
+          return _selectDialogInstance(data, defaultHeight: 350); //for Flutter 2.0.0 no need to implement Padding as flutter automatically add it.
         });
   }
 
