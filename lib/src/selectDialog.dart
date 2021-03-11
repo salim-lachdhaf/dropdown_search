@@ -327,7 +327,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
   bool _manageSelectedItemVisibility(T? item) {
     if (!widget.showSelectedItem) return false;
 
-    if (T == String) {
+    if (item is String?) {
       return item == widget.selectedValue;
     } else {
       return widget.compareFn!(item, widget.selectedValue);
