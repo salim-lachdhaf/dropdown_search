@@ -41,6 +41,15 @@ class SelectDialog<T> extends StatefulWidget {
   ///delay before searching
   final Duration searchDelay;
 
+  ///show or hide favorites items
+  final bool showFavorites;
+
+  ///build favorites chips
+  final FavoritesChips<T> favoritesBuilder;
+
+  ///favorites item
+  final FavoritesData<T> favoritesItem;
+
   const SelectDialog({
     Key key,
     this.popupTitle,
@@ -66,6 +75,9 @@ class SelectDialog<T> extends StatefulWidget {
     this.itemDisabled,
     this.searchBoxController,
     this.searchDelay,
+    this.favoritesBuilder,
+    this.favoritesItem,
+    this.showFavorites = false,
   }) : super(key: key);
 
   @override
@@ -141,10 +153,17 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                     return ListView.builder(
                       shrinkWrap: true,
                       padding: EdgeInsets.symmetric(vertical: 0),
-                      itemCount: snapshot.data.length,
+                      itemCount: snapshot.data.length + 1,
                       itemBuilder: (context, index) {
-                        var item = snapshot.data[index];
-                        return _itemWidget(item);
+                        if (index == 0) {
+                          return widget.showFavorites
+                              ? _buildFavorites(
+                                  widget.favoritesItem(snapshot.data))
+                              : Container();
+                        } else {
+                          var item = snapshot.data[index - 1];
+                          return _itemWidget(item);
+                        }
                       },
                     );
                   },
@@ -360,6 +379,32 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
               ),
             )
         ]);
+  }
+
+  Widget _buildFavorites(List<T> item) {
+    if (item != null) {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: item
+                .map(
+                  (e) => GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context, e);
+                      if (widget.onChanged != null) widget.onChanged(e);
+                    },
+                    child: Container(
+                        margin: EdgeInsets.only(right: 4),
+                        child: widget.favoritesBuilder(e)),
+                  ),
+                )
+                .toList()),
+      );
+    } else {
+      return Container();
+    }
   }
 }
 

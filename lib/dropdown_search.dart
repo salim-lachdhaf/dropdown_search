@@ -28,6 +28,9 @@ typedef Widget LoadingBuilder<T>(BuildContext context, String searchEntry);
 typedef Widget IconButtonBuilder(BuildContext context);
 typedef Future<bool> BeforeChange<T>(T prevItem, T nextItem);
 
+typedef Widget FavoritesChips<T>(T item);
+typedef List<T> FavoritesData<T>(List<T> item);
+
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
 class DropdownSearch<T> extends StatefulWidget {
@@ -164,6 +167,15 @@ class DropdownSearch<T> extends StatefulWidget {
   /// callback executed before applying value change
   final BeforeChange<T> onBeforeChange;
 
+  ///show or hide favorites items
+  final bool showFavorites;
+
+  ///to customize favorites chips
+  final FavoritesChips<T> favoritesBuilder;
+
+  ///favorites items list
+  final FavoritesData<T> favoritesItem;
+
   DropdownSearch({
     Key key,
     this.onSaved,
@@ -209,6 +221,9 @@ class DropdownSearch<T> extends StatefulWidget {
     this.searchBoxController,
     this.searchDelay,
     this.onBeforeChange,
+    this.favoritesBuilder,
+    this.favoritesItem,
+    this.showFavorites = false,
   })  : assert(isFilteredOnline != null),
         assert(dropdownBuilderSupportsNullItem != null),
         assert(enabled != null),
@@ -395,7 +410,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         shape: widget.popupShape,
         context: context,
         builder: (context) {
-          return _selectDialogInstance(data, defaultHeight: 350); //for Flutter 2.0.0 no need to implement Padding as flutter automatically add it.
+          return _selectDialogInstance(data,
+              defaultHeight:
+                  350); //for Flutter 2.0.0 no need to implement Padding as flutter automatically add it.
         });
   }
 
@@ -460,6 +477,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       searchBoxController:
           widget.searchBoxController ?? TextEditingController(),
       searchDelay: widget.searchDelay,
+      favoritesBuilder: widget.favoritesBuilder,
+      favoritesItem: widget.favoritesItem,
+      showFavorites: widget.showFavorites,
     );
   }
 
