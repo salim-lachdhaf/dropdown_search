@@ -230,11 +230,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 dropdownBuilder: _customDropDownExample,
                 popupItemBuilder: _customPopupItemBuilderExample2,
-                showFavorites: true,
-                favoritesItem: (item) {
+                showFavoriteItems: true,
+                favoriteItems: (item) {
                   return item.where((e) => e.name.contains("i"));
                 },
-                favoritesBuilder: (item) {
+                favoriteItemsBuilder: (context, item) {
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     decoration: BoxDecoration(

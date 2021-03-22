@@ -42,13 +42,13 @@ class SelectDialog<T> extends StatefulWidget {
   final Duration searchDelay;
 
   ///show or hide favorites items
-  final bool showFavorites;
+  final bool showFavoriteItems;
 
   ///build favorites chips
-  final FavoritesChips<T> favoritesBuilder;
+  final FavoriteItemsBuilder<T> favoriteItemsBuilder;
 
   ///favorites item
-  final FavoritesData<T> favoritesItem;
+  final FavoriteItems<T> favoriteItems;
 
   const SelectDialog({
     Key key,
@@ -75,9 +75,9 @@ class SelectDialog<T> extends StatefulWidget {
     this.itemDisabled,
     this.searchBoxController,
     this.searchDelay,
-    this.favoritesBuilder,
-    this.favoritesItem,
-    this.showFavorites = false,
+    this.favoriteItemsBuilder,
+    this.favoriteItems,
+    this.showFavoriteItems = false,
   }) : super(key: key);
 
   @override
@@ -86,9 +86,10 @@ class SelectDialog<T> extends StatefulWidget {
 
 class _SelectDialogState<T> extends State<SelectDialog<T>> {
   final FocusNode focusNode = new FocusNode();
-  final StreamController<List<T>> _itemsStream = StreamController();
+  final StreamController<List<T>> _itemsStream =
+      StreamController<List<T>>.broadcast();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
-  final List<T> _items = List<T>();
+  final List<T> _items = [];
   Debouncer _debouncer;
 
   @override
@@ -131,6 +132,17 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           _searchField(),
+          StreamBuilder<List<T>>(
+              stream: _itemsStream.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return widget.showFavoriteItems
+                      ? _buildFavoriteItems(widget.favoriteItems(snapshot.data))
+                      : Container();
+                } else {
+                  return Container();
+                }
+              }),
           Expanded(
             child: Stack(
               children: <Widget>[
@@ -153,17 +165,10 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                     return ListView.builder(
                       shrinkWrap: true,
                       padding: EdgeInsets.symmetric(vertical: 0),
-                      itemCount: snapshot.data.length + 1,
+                      itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return widget.showFavorites
-                              ? _buildFavorites(
-                                  widget.favoritesItem(snapshot.data))
-                              : Container();
-                        } else {
-                          var item = snapshot.data[index - 1];
-                          return _itemWidget(item);
-                        }
+                        var item = snapshot.data[index];
+                        return _itemWidget(item);
                       },
                     );
                   },
@@ -186,7 +191,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
           title: Text("Error while getting online items"),
           content: _errorWidget(error),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: new Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop(false);
@@ -263,8 +268,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     //manage offline items
     if (widget.onFind != null && (widget.isFilteredOnline || isFistLoad)) {
       try {
-        final List<T> onlineItems = List();
-        onlineItems.addAll(await widget.onFind(filter) ?? List());
+        final List<T> onlineItems = [];
+        onlineItems.addAll(await widget.onFind(filter) ?? []);
 
         //Remove all old data
         _items.clear();
@@ -377,11 +382,11 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                           const EdgeInsets.symmetric(horizontal: 16),
                     ),
               ),
-            )
+            ),
         ]);
   }
 
-  Widget _buildFavorites(List<T> item) {
+  Widget _buildFavoriteItems(List<T> item) {
     if (item != null) {
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -397,7 +402,9 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 4),
-                        child: widget.favoritesBuilder(e)),
+                        child: widget.favoriteItemsBuilder != null
+                            ? widget.favoriteItemsBuilder(context, e)
+                            : _favoriteItemsBuilder(e)),
                   ),
                 )
                 .toList()),
@@ -405,6 +412,23 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     } else {
       return Container();
     }
+  }
+
+  Widget _favoriteItemsBuilder(T item) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey[200]),
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.grey[100]),
+      child: Text(
+        widget.itemAsString != null
+            ? (widget.itemAsString(item) ?? "")
+            : item.toString(),
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.indigo),
+      ),
+    );
   }
 }
 
