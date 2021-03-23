@@ -22,7 +22,7 @@ class _MenuItem extends SingleChildRenderObjectWidget {
     Key? key,
     required this.onLayout,
     Widget? child,
-  })  : super(key: key, child: child);
+  }) : super(key: key, child: child);
 
   final ValueChanged<Size> onLayout;
 
@@ -39,8 +39,7 @@ class _MenuItem extends SingleChildRenderObjectWidget {
 }
 
 class _RenderMenuItem extends RenderShiftedBox {
-  _RenderMenuItem(this.onLayout, [RenderBox? child])
-      : super(child);
+  _RenderMenuItem(this.onLayout, [RenderBox? child]) : super(child);
 
   ValueChanged<Size> onLayout;
 
@@ -110,7 +109,7 @@ class CustomPopupMenuItem<T> extends PopupMenuEntry<T> {
     this.height = kMinInteractiveDimension,
     this.textStyle,
     required this.child,
-  })  : super(key: key);
+  }) : super(key: key);
 
   /// The value that will be returned by [customShowMenu] if this entry is selected.
   final T? value;
@@ -345,7 +344,8 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
     // The menu can be at most the size of the overlay minus 8.0 pixels in each
     // direction.
     return BoxConstraints.loose(constraints.biggest -
-        const Offset(_kMenuScreenPadding * 2.0, _kMenuScreenPadding * 2.0) as Size);
+            const Offset(_kMenuScreenPadding * 2.0, _kMenuScreenPadding * 2.0)
+        as Size);
   }
 
   @override
@@ -588,8 +588,8 @@ Future<T?> customShowMenu<T>({
     case TargetPlatform.fuchsia:
     case TargetPlatform.linux:
     case TargetPlatform.windows:
-      label =
-          semanticLabel ?? MaterialLocalizations.of(context).popupMenuLabel;
+      label = semanticLabel ?? MaterialLocalizations.of(context).popupMenuLabel;
+
   }
 
   return Navigator.of(context, rootNavigator: useRootNavigator).push(

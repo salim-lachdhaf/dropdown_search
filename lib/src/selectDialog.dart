@@ -41,6 +41,15 @@ class SelectDialog<T> extends StatefulWidget {
   ///delay before searching
   final Duration? searchDelay;
 
+  ///show or hide favorites items
+  final bool showFavoriteItems;
+
+  ///build favorites chips
+  final FavoriteItemsBuilder<T>? favoriteItemsBuilder;
+
+  ///favorites item
+  final FavoriteItems<T>? favoriteItems;
+
   const SelectDialog({
     Key? key,
     this.popupTitle,
@@ -66,6 +75,9 @@ class SelectDialog<T> extends StatefulWidget {
     this.itemDisabled,
     this.searchBoxController,
     this.searchDelay,
+    this.favoriteItemsBuilder,
+    this.favoriteItems,
+    this.showFavoriteItems = false,
   }) : super(key: key);
 
   @override
@@ -74,7 +86,8 @@ class SelectDialog<T> extends StatefulWidget {
 
 class _SelectDialogState<T> extends State<SelectDialog<T?>> {
   final FocusNode focusNode = new FocusNode();
-  final StreamController<List<T?>> _itemsStream = StreamController();
+  final StreamController<List<T?>> _itemsStream =
+      StreamController<List<T?>>.broadcast();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
   final List<T?> _items = <T>[];
   late Debouncer _debouncer;
@@ -119,6 +132,18 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           _searchField(),
+          StreamBuilder<List<T?>>(
+              stream: _itemsStream.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return widget.showFavoriteItems
+                      ? _buildFavoriteItems(
+                          widget.favoriteItems!(snapshot.data!))
+                      : Container();
+                } else {
+                  return Container();
+                }
+              }),
           Expanded(
             child: Stack(
               children: <Widget>[
@@ -296,29 +321,26 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
           item,
           _manageSelectedItemVisibility(item),
         ),
-        onTap: widget.itemDisabled != null &&
-                (widget.itemDisabled!(item)) == true
-            ? null
-            : () {
-                Navigator.pop(context, item);
-                if (widget.onChanged != null) widget.onChanged!(item);
-              },
+        onTap:
+            widget.itemDisabled != null && (widget.itemDisabled!(item)) == true
+                ? null
+                : () {
+                    Navigator.pop(context, item);
+                    if (widget.onChanged != null) widget.onChanged!(item);
+                  },
       );
     else
       return ListTile(
-        title: Text(
-          widget.itemAsString != null
-              ? (widget.itemAsString!(item))
-              : item.toString(),
-        ),
+        title: Text(_selectedItemAsString(item)),
         selected: _manageSelectedItemVisibility(item),
-        onTap: widget.itemDisabled != null &&
-                (widget.itemDisabled!(item)) == true
-            ? null
-            : () {
-                Navigator.pop(context, item);
-                if (widget.onChanged != null) widget.onChanged!(item);
-              },
+        onTap:
+            widget.itemDisabled != null && (widget.itemDisabled!(item)) == true
+                ? null
+                : () {
+                    Navigator.pop(context, item);
+                    if (widget.onChanged != null) widget.onChanged!(item);
+                  },
+
       );
   }
 
@@ -359,6 +381,60 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
               ),
             )
         ]);
+  }
+
+  Widget _buildFavoriteItems(List<T?>? item) {
+    if (item != null) {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: item
+                .map(
+                  (e) => GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context, e);
+                      if (widget.onChanged != null) widget.onChanged!(e);
+                    },
+                    child: Container(
+                        margin: EdgeInsets.only(right: 4),
+                        child: widget.favoriteItemsBuilder != null
+                            ? widget.favoriteItemsBuilder!(context, e)
+                            : _favoriteItemsBuilder(e)),
+                  ),
+                )
+                .toList()),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _favoriteItemsBuilder(T? item) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+          border: Border.all(color: Color(0xFFEEEEEE)),
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.grey[100]),
+      child: Text(
+        _selectedItemAsString(item),
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.indigo),
+      ),
+    );
+  }
+
+  ///function that return the String value of an object
+  String _selectedItemAsString(T? data) {
+    if (data == null) {
+      return "";
+    } else if (widget.itemAsString != null) {
+      return widget.itemAsString!(data);
+    } else {
+      return data.toString();
+    }
   }
 }
 

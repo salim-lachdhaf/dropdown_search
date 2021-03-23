@@ -219,6 +219,38 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Divider(),
 
+              ///show favorites on top list
+              DropdownSearch<UserModel>(
+                showSelectedItem: true,
+                compareFn: (UserModel i, UserModel s) => i.isEqual(s),
+                label: "Person",
+                onFind: (String filter) => getData(filter),
+                onChanged: (UserModel data) {
+                  print(data);
+                },
+                dropdownBuilder: _customDropDownExample,
+                popupItemBuilder: _customPopupItemBuilderExample2,
+                showFavoriteItems: true,
+                favoriteItems: (item) {
+                  return item.where((e) => e.name.contains("i"));
+                },
+                favoriteItemsBuilder: (context, item) {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[200]),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey[100]),
+                    child: Text(
+                      "${item.name}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.indigo),
+                    ),
+                  );
+                },
+              ),
+              Divider(),
+
               ///merge online and offline data in the same list and set custom max Height
               DropdownSearch<UserModel>(
                 items: [

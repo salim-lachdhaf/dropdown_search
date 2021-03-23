@@ -28,6 +28,9 @@ typedef Widget LoadingBuilder<T>(BuildContext context, String? searchEntry);
 typedef Widget IconButtonBuilder(BuildContext context);
 typedef Future<bool> BeforeChange<T>(T prevItem, T nextItem);
 
+typedef Widget FavoriteItemsBuilder<T>(BuildContext context, T item);
+typedef List<T> FavoriteItems<T>(List<T> item);
+
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
 class DropdownSearch<T> extends StatefulWidget {
@@ -164,6 +167,16 @@ class DropdownSearch<T> extends StatefulWidget {
   /// callback executed before applying value change
   final BeforeChange<T>? onBeforeChange;
 
+  ///show or hide favorites items
+  final bool showFavoriteItems;
+
+  ///to customize favorites chips
+  final FavoriteItemsBuilder<T>? favoriteItemsBuilder;
+
+  ///favorites items list
+  final FavoriteItems<T>? favoriteItems;
+
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -209,6 +222,10 @@ class DropdownSearch<T> extends StatefulWidget {
     this.searchBoxController,
     this.searchDelay,
     this.onBeforeChange,
+    this.favoriteItemsBuilder,
+    this.favoriteItems,
+    this.showFavoriteItems = false,
+
   })  : assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
