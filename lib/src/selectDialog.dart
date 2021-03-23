@@ -331,11 +331,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
       );
     else
       return ListTile(
-        title: Text(
-          widget.itemAsString != null
-              ? (widget.itemAsString!(item))
-              : item.toString(),
-        ),
+        title: Text(_selectedItemAsString(item)),
         selected: _manageSelectedItemVisibility(item),
         onTap:
             widget.itemDisabled != null && (widget.itemDisabled!(item)) == true
@@ -422,13 +418,22 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
           borderRadius: BorderRadius.circular(10),
           color: Colors.grey[100]),
       child: Text(
-        widget.itemAsString != null
-            ? widget.itemAsString!(item)
-            : item.toString(),
+        _selectedItemAsString(item),
         textAlign: TextAlign.center,
         style: TextStyle(color: Colors.indigo),
       ),
     );
+  }
+
+  ///function that return the String value of an object
+  String _selectedItemAsString(T? data) {
+    if (data == null) {
+      return "";
+    } else if (widget.itemAsString != null) {
+      return widget.itemAsString!(data);
+    } else {
+      return data.toString();
+    }
   }
 }
 
