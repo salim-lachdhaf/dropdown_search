@@ -340,6 +340,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
                     Navigator.pop(context, item);
                     if (widget.onChanged != null) widget.onChanged!(item);
                   },
+
       );
   }
 

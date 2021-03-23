@@ -176,6 +176,7 @@ class DropdownSearch<T> extends StatefulWidget {
   ///favorites items list
   final FavoriteItems<T>? favoriteItems;
 
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -224,6 +225,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.favoriteItemsBuilder,
     this.favoriteItems,
     this.showFavoriteItems = false,
+
   })  : assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
