@@ -19,7 +19,7 @@ environment:
 dependencies:
   dio: ^3.0.1
   dropdown_search:
-    path: ../
+    # path: ../
   flutter:
     sdk: flutter
 
