@@ -179,8 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ///BottomSheet Mode with no searchBox
               DropdownSearch<String>(
                 mode: Mode.BOTTOM_SHEET,
-                maxHeight: 300,
-                items: ["Brazil", "Italia", "Tunisia", 'Canada'],
+                items: ["Brazil", "Italia", "Tunisia", 'Canada', 'Zraoua', 'France', 'Belgique'],
                 label: "Custom BottomShet mode",
                 onChanged: print,
                 selectedItem: "Brazil",
@@ -222,8 +221,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ///show favorites on top list
               DropdownSearch<UserModel>(
                 showSelectedItem: true,
+                showSearchBox: true,
                 compareFn: (UserModel i, UserModel s) => i.isEqual(s),
-                label: "Person",
+                label: "Person with favorite option",
                 onFind: (String filter) => getData(filter),
                 onChanged: (UserModel data) {
                   print(data);
@@ -231,10 +231,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 dropdownBuilder: _customDropDownExample,
                 popupItemBuilder: _customPopupItemBuilderExample2,
                 showFavoriteItems: true,
-                favoriteItems: (item) {
-                  return item.where((e) => e.name.contains("i"));
+                favoriteItemsAlignment: MainAxisAlignment.start,
+                favoriteItems: (items) {
+                  return items.where((e) => e.name.contains("Mrs")).toList();
                 },
-                favoriteItemsBuilder: (context, item) {
+                favoriteItemBuilder: (context, item) {
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     decoration: BoxDecoration(

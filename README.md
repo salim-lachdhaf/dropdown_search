@@ -30,7 +30,7 @@
 
 ## Key Features
 
-* Online and offline items
+* Sync and/or Async items (online, offline, DB, ...)
 * Searchable dropdown
 * Three dropdown mode: Menu/ BottomSheet/ Dialog
 * Material dropdown

@@ -1,5 +1,7 @@
-## [0.5.0] - 2021.03.11
-* Migrating to null-safety
+## [0.5.0] - 2021.03.23
+* Migrating to null-safety @thx [nizarhdt](https://github.com/nizarhdt)
+* add new feature: favorites items @thx [nizarhdt](https://github.com/nizarhdt)
+* fix bugs
 
 ## [0.4.9] - 2021.02.22
 * fix bug filterOnline [#116](https://github.com/salim-lachdhaf/searchable_dropdown/issues/116)

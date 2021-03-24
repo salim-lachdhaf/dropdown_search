@@ -589,7 +589,6 @@ Future<T?> customShowMenu<T>({
     case TargetPlatform.linux:
     case TargetPlatform.windows:
       label = semanticLabel ?? MaterialLocalizations.of(context).popupMenuLabel;
-
   }
 
   return Navigator.of(context, rootNavigator: useRootNavigator).push(

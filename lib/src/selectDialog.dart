@@ -45,7 +45,10 @@ class SelectDialog<T> extends StatefulWidget {
   final bool showFavoriteItems;
 
   ///build favorites chips
-  final FavoriteItemsBuilder<T>? favoriteItemsBuilder;
+  final FavoriteItemsBuilder<T>? favoriteItemBuilder;
+
+  ///favorite items alignment
+  final MainAxisAlignment? favoriteItemsAlignment;
 
   ///favorites item
   final FavoriteItems<T>? favoriteItems;
@@ -75,9 +78,10 @@ class SelectDialog<T> extends StatefulWidget {
     this.itemDisabled,
     this.searchBoxController,
     this.searchDelay,
-    this.favoriteItemsBuilder,
+    this.favoriteItemBuilder,
     this.favoriteItems,
     this.showFavoriteItems = false,
+    this.favoriteItemsAlignment = MainAxisAlignment.start,
   }) : super(key: key);
 
   @override
@@ -132,18 +136,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           _searchField(),
-          StreamBuilder<List<T?>>(
-              stream: _itemsStream.stream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return widget.showFavoriteItems
-                      ? _buildFavoriteItems(
-                          widget.favoriteItems!(snapshot.data!))
-                      : Container();
-                } else {
-                  return Container();
-                }
-              }),
+          if (widget.showFavoriteItems == true) _favoriteItemsWidget(),
           Expanded(
             child: Stack(
               children: <Widget>[
@@ -276,7 +269,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
         //add offline items
         if (widget.items != null) {
           _items.addAll(widget.items!);
-          //if filter online we filter only local list based on entred keyword (filter)
+          //if filter online we filter only local list based on entered keyword (filter)
           if (widget.isFilteredOnline == true) {
             var filteredLocalList = applyFilter(filter);
             _items.clear();
@@ -286,7 +279,11 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
         //add new online items to list
         _items.addAll(onlineItems);
 
-        _addDataToStream(applyFilter(filter));
+        //don't filter data , they are already filtred online and local data are already filtered
+        if (widget.isFilteredOnline == true)
+          _addDataToStream(_items);
+        else
+          _addDataToStream(applyFilter(filter));
       } catch (e) {
         _addErrorToStream(e);
         //if offline items count > 0 , the error will be not visible for the user
@@ -324,10 +321,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
         onTap:
             widget.itemDisabled != null && (widget.itemDisabled!(item)) == true
                 ? null
-                : () {
-                    Navigator.pop(context, item);
-                    if (widget.onChanged != null) widget.onChanged!(item);
-                  },
+                : () => _handleSelectItem(item),
       );
     else
       return ListTile(
@@ -336,11 +330,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
         onTap:
             widget.itemDisabled != null && (widget.itemDisabled!(item)) == true
                 ? null
-                : () {
-                    Navigator.pop(context, item);
-                    if (widget.onChanged != null) widget.onChanged!(item);
-                  },
-
+                : () => _handleSelectItem(item),
       );
   }
 
@@ -383,45 +373,68 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
         ]);
   }
 
-  Widget _buildFavoriteItems(List<T?>? item) {
-    if (item != null) {
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
+  Widget _favoriteItemsWidget() {
+    return StreamBuilder<List<T?>>(
+        stream: _itemsStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return _buildFavoriteItems(widget.favoriteItems!(snapshot.data!));
+          } else {
+            return Container();
+          }
+        });
+  }
+
+  Widget _buildFavoriteItems(List<T?>? favoriteItems) {
+    if (favoriteItems != null) {
+      return Container(
         padding: EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: item
-                .map(
-                  (e) => GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context, e);
-                      if (widget.onChanged != null) widget.onChanged!(e);
-                    },
-                    child: Container(
-                        margin: EdgeInsets.only(right: 4),
-                        child: widget.favoriteItemsBuilder != null
-                            ? widget.favoriteItemsBuilder!(context, e)
-                            : _favoriteItemsBuilder(e)),
-                  ),
-                )
-                .toList()),
+        child: LayoutBuilder(builder: (context, constraints) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: constraints.maxWidth),
+              child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment:
+                      widget.favoriteItemsAlignment ?? MainAxisAlignment.start,
+                  children: favoriteItems
+                      .map(
+                        (f) => GestureDetector(
+                          onTap: () => _handleSelectItem(f),
+                          child: Container(
+                            margin: EdgeInsets.only(right: 4),
+                            child: widget.favoriteItemBuilder != null
+                                ? widget.favoriteItemBuilder!(context, f)
+                                : _favoriteItemDefaultWidget(f),
+                          ),
+                        ),
+                      )
+                      .toList()),
+            ),
+          );
+        }),
       );
     } else {
       return Container();
     }
   }
 
-  Widget _favoriteItemsBuilder(T? item) {
+  void _handleSelectItem(T? selectedItem) {
+    Navigator.pop(context, selectedItem);
+    if (widget.onChanged != null) widget.onChanged!(selectedItem);
+  }
+
+  Widget _favoriteItemDefaultWidget(T? item) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-          border: Border.all(color: Color(0xFFEEEEEE)),
           borderRadius: BorderRadius.circular(10),
-          color: Colors.grey[100]),
+          color: Theme.of(context).primaryColorLight),
       child: Text(
         _selectedItemAsString(item),
         textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.indigo),
+        style: Theme.of(context).textTheme.subtitle1,
       ),
     );
   }

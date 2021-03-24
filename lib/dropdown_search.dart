@@ -29,7 +29,9 @@ typedef Widget IconButtonBuilder(BuildContext context);
 typedef Future<bool> BeforeChange<T>(T prevItem, T nextItem);
 
 typedef Widget FavoriteItemsBuilder<T>(BuildContext context, T item);
-typedef List<T> FavoriteItems<T>(List<T> item);
+
+///[items] are the original item from [items] or/and [onFind]
+typedef List<T> FavoriteItems<T>(List<T> items);
 
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
@@ -171,11 +173,13 @@ class DropdownSearch<T> extends StatefulWidget {
   final bool showFavoriteItems;
 
   ///to customize favorites chips
-  final FavoriteItemsBuilder<T>? favoriteItemsBuilder;
+  final FavoriteItemsBuilder<T>? favoriteItemBuilder;
 
   ///favorites items list
   final FavoriteItems<T>? favoriteItems;
 
+  ///favorite items alignment
+  final MainAxisAlignment? favoriteItemsAlignment;
 
   DropdownSearch({
     Key? key,
@@ -222,10 +226,10 @@ class DropdownSearch<T> extends StatefulWidget {
     this.searchBoxController,
     this.searchDelay,
     this.onBeforeChange,
-    this.favoriteItemsBuilder,
+    this.favoriteItemBuilder,
     this.favoriteItems,
     this.showFavoriteItems = false,
-
+    this.favoriteItemsAlignment = MainAxisAlignment.start,
   })  : assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
@@ -353,7 +357,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T?>> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        if (data != null && widget.showClearButton)
+        if (data != null && widget.showClearButton == true)
           widget.clearButtonBuilder != null
               ? GestureDetector(
                   onTap: clearButtonPressed,
@@ -400,14 +404,12 @@ class DropdownSearchState<T> extends State<DropdownSearch<T?>> {
   Future<T?> _openBottomSheet(T? data) {
     return showModalBottomSheet<T>(
         barrierColor: widget.popupBarrierColor,
-        isScrollControlled: true,
         backgroundColor: widget.popupBackgroundColor,
+        isScrollControlled: true,
         shape: widget.popupShape,
         context: context,
-        builder: (context) {
-          return _selectDialogInstance(data,
-              defaultHeight:
-                  350); //for Flutter 2.0.0 no need to implement Padding as flutter automatically add it.
+        builder: (ctx) {
+          return _selectDialogInstance(data, defaultHeight: 700);
         });
   }
 
@@ -473,6 +475,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T?>> {
       searchBoxController:
           widget.searchBoxController ?? TextEditingController(),
       searchDelay: widget.searchDelay,
+      showFavoriteItems: widget.showFavoriteItems,
+      favoriteItems: widget.favoriteItems,
+      favoriteItemBuilder: widget.favoriteItemBuilder,
+      favoriteItemsAlignment: widget.favoriteItemsAlignment,
     );
   }
 
