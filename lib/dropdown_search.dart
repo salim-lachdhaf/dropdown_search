@@ -409,7 +409,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T?>> {
         shape: widget.popupShape,
         context: context,
         builder: (ctx) {
-          return _selectDialogInstance(data, defaultHeight: 700);
+          return _selectDialogInstance(data, defaultHeight: 350);
         });
   }
 
