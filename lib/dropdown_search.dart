@@ -138,6 +138,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom dropdown icon button widget
   final Widget? dropDownButton;
 
+  //custom style of the searchBox
+  final TextStyle? searchBoxStyle;
+
   ///custom dropdown button widget builder
   final IconButtonBuilder? dropdownButtonBuilder;
 
@@ -230,6 +233,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.favoriteItems,
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
+    this.searchBoxStyle,
   })  : assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
@@ -452,6 +456,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T?>> {
 
   SelectDialog<T?> _selectDialogInstance(T? data, {double? defaultHeight}) {
     return SelectDialog<T?>(
+      searchBoxStyle: widget.searchBoxStyle,
       popupTitle: widget.popupTitle,
       maxHeight: widget.maxHeight ?? defaultHeight,
       isFilteredOnline: widget.isFilteredOnline,

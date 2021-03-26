@@ -16,6 +16,7 @@ class SelectDialog<T> extends StatefulWidget {
   final DropdownSearchItemAsString<T>? itemAsString;
   final DropdownSearchFilterFn<T>? filterFn;
   final String? hintText;
+  final TextStyle? searchBoxStyle;
   final double? maxHeight;
   final double? dialogMaxWidth;
   final Widget? popupTitle;
@@ -82,6 +83,7 @@ class SelectDialog<T> extends StatefulWidget {
     this.favoriteItems,
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
+    this.searchBoxStyle,
   }) : super(key: key);
 
   @override
@@ -356,6 +358,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                style: widget.searchBoxStyle,
                 controller: widget.searchBoxController,
                 focusNode: focusNode,
                 onChanged: (f) => _debouncer(() {
