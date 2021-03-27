@@ -49,14 +49,14 @@ packages:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.10"
+    version: "4.0.0-prev3"
   dropdown_search:
     dependency: "direct main"
     description:
-      name: dropdown_search
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.0"
+      path: ".."
+      relative: true
+    source: path
+    version: "0.6.0"
   fake_async:
     dependency: transitive
     description:
@@ -80,7 +80,7 @@ packages:
       name: http_parser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.4"
+    version: "4.0.0"
   matcher:
     dependency: transitive
     description:
@@ -113,7 +113,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.1"
+    version: "1.8.0"
   stack_trace:
     dependency: transitive
     description:

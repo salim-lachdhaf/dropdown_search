@@ -433,7 +433,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
   final RelativeRect? position;
   final List<PopupMenuEntry<T>> items;
   final List<Size?> itemSizes;
-  final dynamic initialValue;
+  final T? initialValue;
   final double? elevation;
   final ThemeData? theme;
   final String? semanticLabel;
