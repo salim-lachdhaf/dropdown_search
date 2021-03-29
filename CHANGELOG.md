@@ -1,3 +1,8 @@
+## [0.6.0] - 2021.03.27
+* fixed `null safety` issues after initial migraion
+* migrated example to `null safety`
+* allowed `http` traffic for Android to make async requests work
+
 ## [0.5.0] - 2021.03.23
 * Migrating to null-safety @thx [nizarhdt](https://github.com/nizarhdt)
 * add new feature: favorites items @thx [nizarhdt](https://github.com/nizarhdt)

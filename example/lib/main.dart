@@ -52,30 +52,34 @@ class _MyHomePageState extends State<MyHomePage> {
                 popupItemDisabled: (String s) => s.startsWith('I'),
                 selectedItem: "Tunisia",
                 onBeforeChange: (a, b) {
-                  AlertDialog alert = AlertDialog(
-                    title: Text("Are you sure..."),
-                    content: Text("...you want to clear the selection"),
-                    actions: [
-                      FlatButton(
-                        child: Text("OK"),
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                      ),
-                      FlatButton(
-                        child: Text("NOT OK"),
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                      ),
-                    ],
-                  );
+                  if (b == null) {
+                    AlertDialog alert = AlertDialog(
+                      title: Text("Are you sure..."),
+                      content: Text("...you want to clear the selection"),
+                      actions: [
+                        TextButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                        ),
+                        TextButton(
+                          child: Text("NOT OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                        ),
+                      ],
+                    );
 
-                  return showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return alert;
-                      });
+                    return showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return alert;
+                        });
+                  }
+
+                  return Future.value(true);
                 },
               ),
               Divider(),
@@ -151,10 +155,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                 ),
                 autoValidateMode: AutovalidateMode.onUserInteraction,
-                validator: (UserModel u) =>
-                    u == null ? "user field is required " : null,
+                validator: (u) => u == null ? "user field is required " : null,
                 onFind: (String filter) => getData(filter),
-                onChanged: (UserModel data) {
+                onChanged: (data) {
                   print(data);
                 },
                 dropdownBuilder: _customDropDownExample,
@@ -165,10 +168,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ///custom itemBuilder and dropDownBuilder
               DropdownSearch<UserModel>(
                 showSelectedItem: true,
-                compareFn: (UserModel i, UserModel s) => i.isEqual(s),
+                compareFn: (i, s) => i.isEqual(s),
                 label: "Person",
                 onFind: (String filter) => getData(filter),
-                onChanged: (UserModel data) {
+                onChanged: (data) {
                   print(data);
                 },
                 dropdownBuilder: _customDropDownExample,
@@ -179,7 +182,15 @@ class _MyHomePageState extends State<MyHomePage> {
               ///BottomSheet Mode with no searchBox
               DropdownSearch<String>(
                 mode: Mode.BOTTOM_SHEET,
-                items: ["Brazil", "Italia", "Tunisia", 'Canada', 'Zraoua', 'France', 'Belgique'],
+                items: [
+                  "Brazil",
+                  "Italia",
+                  "Tunisia",
+                  'Canada',
+                  'Zraoua',
+                  'France',
+                  'Belgique'
+                ],
                 label: "Custom BottomShet mode",
                 onChanged: print,
                 selectedItem: "Brazil",
@@ -222,10 +233,10 @@ class _MyHomePageState extends State<MyHomePage> {
               DropdownSearch<UserModel>(
                 showSelectedItem: true,
                 showSearchBox: true,
-                compareFn: (UserModel i, UserModel s) => i.isEqual(s),
+                compareFn: (i, s) => i.isEqual(s),
                 label: "Person with favorite option",
-                onFind: (String filter) => getData(filter),
-                onChanged: (UserModel data) {
+                onFind: (filter) => getData(filter),
+                onChanged: (data) {
                   print(data);
                 },
                 dropdownBuilder: _customDropDownExample,
@@ -239,7 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[200]),
+                        border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey[100]),
                     child: Text(
@@ -270,9 +281,9 @@ class _MyHomePageState extends State<MyHomePage> {
               DropdownSearch<String>(
                 items: ["no action", "confirm in the next dropdown"],
                 label: "open another dropdown programmatically",
-                onChanged: (String v) {
+                onChanged: (v) {
                   if (v == "confirm in the next dropdown") {
-                    _openDropDownProgKey.currentState.openDropDownSearch();
+                    _openDropDownProgKey.currentState?.openDropDownSearch();
                   }
                 },
               ),
@@ -283,34 +294,33 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: "confirm",
                 showSelectedItem: true,
               ),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  RaisedButton(
+                  ElevatedButton(
                       onPressed: () {
-                        _openDropDownProgKey.currentState.openDropDownSearch();
+                        _openDropDownProgKey.currentState?.openDropDownSearch();
                       },
-                      color: Theme.of(context).accentColor,
                       child: Text("Open dropdownSearch")),
-                  RaisedButton(
+                  ElevatedButton(
                       onPressed: () {
                         _openDropDownProgKey.currentState
-                            .changeSelectedItem("No");
+                            ?.changeSelectedItem("No");
                       },
                       child: Text("set to 'NO'")),
                   Material(
-                    child: RaisedButton(
+                    child: ElevatedButton(
                         onPressed: () {
                           _openDropDownProgKey.currentState
-                              .changeSelectedItem("Yes");
+                              ?.changeSelectedItem("Yes");
                         },
                         child: Text("set to 'YES'")),
                   ),
-                  RaisedButton(
+                  ElevatedButton(
                       onPressed: () {
                         _openDropDownProgKey.currentState
-                            .changeSelectedItem("Blabla");
+                            ?.changeSelectedItem("Blabla");
                       },
                       child: Text("set to 'Blabla'")),
                 ],
@@ -323,9 +333,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _customDropDownExample(
-      BuildContext context, UserModel item, String itemDesignation) {
+      BuildContext context, UserModel? item, String itemDesignation) {
+    if (item == null) {
+      return Container();
+    }
+
     return Container(
-      child: (item?.avatar == null)
+      child: (item.avatar == null)
           ? ListTile(
               contentPadding: EdgeInsets.all(0),
               leading: CircleAvatar(),
@@ -334,8 +348,9 @@ class _MyHomePageState extends State<MyHomePage> {
           : ListTile(
               contentPadding: EdgeInsets.all(0),
               leading: CircleAvatar(
-                backgroundImage: NetworkImage(item.avatar),
-              ),
+                  // this does not work - throws 404 error
+                  // backgroundImage: NetworkImage(item.avatar ?? ''),
+                  ),
               title: Text(item.name),
               subtitle: Text(
                 item.createdAt.toString(),
@@ -360,8 +375,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(item.name),
         subtitle: Text(item.createdAt.toString()),
         leading: CircleAvatar(
-          backgroundImage: NetworkImage(item.avatar),
-        ),
+            // this does not work - throws 404 error
+            // backgroundImage: NetworkImage(item.avatar ?? ''),
+            ),
       ),
     );
   }
@@ -382,8 +398,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(item.name),
         subtitle: Text(item.createdAt.toString()),
         leading: CircleAvatar(
-          backgroundImage: NetworkImage(item.avatar),
-        ),
+            // this does not work - throws 404 error
+            // backgroundImage: NetworkImage(item.avatar ?? ''),
+            ),
       ),
     );
   }
@@ -394,7 +411,11 @@ class _MyHomePageState extends State<MyHomePage> {
       queryParameters: {"filter": filter},
     );
 
-    var models = UserModel.fromJsonList(response.data);
-    return models;
+    final data = response.data;
+    if (data != null) {
+      return UserModel.fromJsonList(data);
+    }
+
+    return [];
   }
 }

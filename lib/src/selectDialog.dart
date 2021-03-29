@@ -90,12 +90,12 @@ class SelectDialog<T> extends StatefulWidget {
   _SelectDialogState<T> createState() => _SelectDialogState<T>();
 }
 
-class _SelectDialogState<T> extends State<SelectDialog<T?>> {
+class _SelectDialogState<T> extends State<SelectDialog<T>> {
   final FocusNode focusNode = new FocusNode();
-  final StreamController<List<T?>> _itemsStream =
-      StreamController<List<T?>>.broadcast();
+  final StreamController<List<T>> _itemsStream =
+      StreamController<List<T>>.broadcast();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
-  final List<T?> _items = <T>[];
+  final List<T> _items = <T>[];
   late Debouncer _debouncer;
 
   @override
@@ -142,7 +142,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
           Expanded(
             child: Stack(
               children: <Widget>[
-                StreamBuilder<List<T?>>(
+                StreamBuilder<List<T>>(
                   stream: _itemsStream.stream,
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
@@ -179,7 +179,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
   }
 
   void _showErrorDialog(dynamic error) {
-    showDialog(
+    showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -242,7 +242,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
   void manageItemsByFilter(String filter, {bool isFistLoad = false}) async {
     _loadingNotifier.value = true;
 
-    List<T?> applyFilter(String filter) {
+    List<T> applyFilter(String filter) {
       return _items.where((i) {
         if (widget.filterFn != null)
           return (widget.filterFn!(i, filter));
@@ -263,7 +263,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
     //manage offline items
     if (widget.onFind != null && (widget.isFilteredOnline || isFistLoad)) {
       try {
-        final List<T?> onlineItems = [];
+        final List<T> onlineItems = [];
         onlineItems.addAll(await widget.onFind!(filter));
 
         //Remove all old data
@@ -302,7 +302,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
     _loadingNotifier.value = false;
   }
 
-  void _addDataToStream(List<T?> data) {
+  void _addDataToStream(List<T> data) {
     if (_itemsStream.isClosed) return;
     _itemsStream.add(data);
   }
@@ -312,7 +312,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
     _itemsStream.addError(error, stackTrace);
   }
 
-  Widget _itemWidget(T? item) {
+  Widget _itemWidget(T item) {
     if (widget.itemBuilder != null)
       return InkWell(
         child: widget.itemBuilder!(
@@ -377,7 +377,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
   }
 
   Widget _favoriteItemsWidget() {
-    return StreamBuilder<List<T?>>(
+    return StreamBuilder<List<T>>(
         stream: _itemsStream.stream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -388,7 +388,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
         });
   }
 
-  Widget _buildFavoriteItems(List<T?>? favoriteItems) {
+  Widget _buildFavoriteItems(List<T>? favoriteItems) {
     if (favoriteItems != null) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -423,7 +423,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T?>> {
     }
   }
 
-  void _handleSelectItem(T? selectedItem) {
+  void _handleSelectItem(T selectedItem) {
     Navigator.pop(context, selectedItem);
     if (widget.onChanged != null) widget.onChanged!(selectedItem);
   }
@@ -460,7 +460,7 @@ class Debouncer {
 
   Debouncer({this.delay});
 
-  call(Function action) {
+  void call(Function action) {
     _timer?.cancel();
     _timer = Timer(
         delay ?? const Duration(milliseconds: 500), action as void Function());

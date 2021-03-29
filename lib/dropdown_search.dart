@@ -12,9 +12,9 @@ import 'src/selectDialog.dart';
 typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
 typedef String DropdownSearchItemAsString<T>(T item);
 typedef bool DropdownSearchFilterFn<T>(T item, String filter);
-typedef bool DropdownSearchCompareFn<T>(T item, T selectedItem);
+typedef bool DropdownSearchCompareFn<T>(T item, T? selectedItem);
 typedef Widget DropdownSearchBuilder<T>(
-    BuildContext context, T selectedItem, String itemAsString);
+    BuildContext context, T? selectedItem, String itemAsString);
 typedef Widget DropdownSearchPopupItemBuilder<T>(
   BuildContext context,
   T item,
@@ -26,7 +26,7 @@ typedef Widget ErrorBuilder<T>(
 typedef Widget EmptyBuilder<T>(BuildContext context, String? searchEntry);
 typedef Widget LoadingBuilder<T>(BuildContext context, String? searchEntry);
 typedef Widget IconButtonBuilder(BuildContext context);
-typedef Future<bool> BeforeChange<T>(T prevItem, T nextItem);
+typedef Future<bool?> BeforeChange<T>(T prevItem, T nextItem);
 
 typedef Widget FavoriteItemsBuilder<T>(BuildContext context, T item);
 
@@ -61,7 +61,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final DropdownSearchOnFind<T>? onFind;
 
   ///called when a new item is selected
-  final ValueChanged<T>? onChanged;
+  final ValueChanged<T?>? onChanged;
 
   ///to customize list of items UI
   final DropdownSearchBuilder<T>? dropdownBuilder;
@@ -170,7 +170,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final Duration? searchDelay;
 
   /// callback executed before applying value change
-  final BeforeChange<T>? onBeforeChange;
+  final BeforeChange<T?>? onBeforeChange;
 
   ///show or hide favorites items
   final bool showFavoriteItems;
@@ -241,7 +241,7 @@ class DropdownSearch<T> extends StatefulWidget {
   DropdownSearchState<T> createState() => DropdownSearchState<T>();
 }
 
-class DropdownSearchState<T> extends State<DropdownSearch<T?>> {
+class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   final ValueNotifier<T?> _selectedItemNotifier = ValueNotifier(null);
   final ValueNotifier<bool> _isFocused = ValueNotifier(false);
 
@@ -252,7 +252,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T?>> {
   }
 
   @override
-  void didUpdateWidget(DropdownSearch<T?> oldWidget) {
+  void didUpdateWidget(DropdownSearch<T> oldWidget) {
     final oldSelectedItem = oldWidget.selectedItem;
     final newSelectedItem = widget.selectedItem;
     if (oldSelectedItem != newSelectedItem) {
@@ -265,7 +265,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T?>> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<T?>(
       valueListenable: _selectedItemNotifier,
-      builder: (context, T? data, wt) {
+      builder: (context, data, wt) {
         return IgnorePointer(
           ignoring: !widget.enabled,
           child: GestureDetector(
@@ -309,9 +309,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T?>> {
             state.didChange(value);
           });
         }
-        return ValueListenableBuilder(
+        return ValueListenableBuilder<bool>(
             valueListenable: _isFocused,
-            builder: (context, bool isFocused, w) {
+            builder: (context, isFocused, w) {
               return InputDecorator(
                 isEmpty: value == null &&
                     (widget.dropdownBuilder == null ||
@@ -454,8 +454,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T?>> {
         ]);
   }
 
-  SelectDialog<T?> _selectDialogInstance(T? data, {double? defaultHeight}) {
-    return SelectDialog<T?>(
+  SelectDialog<T> _selectDialogInstance(T? data, {double? defaultHeight}) {
+    return SelectDialog<T>(
       searchBoxStyle: widget.searchBoxStyle,
       popupTitle: widget.popupTitle,
       maxHeight: widget.maxHeight ?? defaultHeight,
