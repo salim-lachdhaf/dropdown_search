@@ -146,6 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
               DropdownSearch<UserModel>(
                 searchBoxController: TextEditingController(text: 'Mrs'),
                 mode: Mode.BOTTOM_SHEET,
+                maxHeight: 700,
                 isFilteredOnline: true,
                 showClearButton: true,
                 showSearchBox: true,
@@ -162,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 dropdownBuilder: _customDropDownExample,
                 popupItemBuilder: _customPopupItemBuilderExample,
-                popupSafeArea: PopupSafeArea(bottom: true),
+                popupSafeArea: PopupSafeArea(top: true, bottom: true),
               ),
               Divider(),
 

@@ -420,17 +420,32 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Future<T?> _openBottomSheet(T? data) {
     return showModalBottomSheet<T>(
         barrierColor: widget.popupBarrierColor,
-        backgroundColor: widget.popupBackgroundColor,
+        backgroundColor: Colors.transparent,
         isScrollControlled: true,
         shape: widget.popupShape,
         context: context,
         builder: (ctx) {
-          return SafeArea(
-            top: widget.popupSafeArea.top,
-            bottom: widget.popupSafeArea.bottom,
-            left: widget.popupSafeArea.left,
-            right: widget.popupSafeArea.right,
-            child: _selectDialogInstance(data, defaultHeight: 350),
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            builder: (_, child) {
+              return SafeArea(
+                top: widget.popupSafeArea.top,
+                bottom: false,
+                left: false,
+                right: false,
+                child: Container(
+                  color:
+                      widget.popupBackgroundColor ?? Theme.of(ctx).canvasColor,
+                  child: SafeArea(
+                    top: false,
+                    bottom: widget.popupSafeArea.bottom,
+                    left: widget.popupSafeArea.left,
+                    right: widget.popupSafeArea.right,
+                    child: _selectDialogInstance(data, defaultHeight: 350),
+                  ),
+                ),
+              );
+            },
           );
         });
   }
