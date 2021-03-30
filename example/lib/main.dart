@@ -162,6 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 dropdownBuilder: _customDropDownExample,
                 popupItemBuilder: _customPopupItemBuilderExample,
+                popupSafeArea: PopupSafeArea(bottom: true),
               ),
               Divider(),
 
@@ -407,7 +408,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<List<UserModel>> getData(filter) async {
     var response = await Dio().get(
-      "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
+      "https://5d85ccfb1e61af001471bf60.mockapi.io/user",
       queryParameters: {"filter": filter},
     );
 
