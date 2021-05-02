@@ -2,12 +2,14 @@ library dropdown_search;
 
 import 'dart:async';
 
+import 'package:dropdown_search/src/popup_safearea.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'src/popupMenu.dart';
 import 'src/selectDialog.dart';
+export 'src/popup_safearea.dart';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
 typedef String DropdownSearchItemAsString<T>(T item);
@@ -184,6 +186,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///favorite items alignment
   final MainAxisAlignment? favoriteItemsAlignment;
 
+  ///set properties of popup safe area
+  final PopupSafeArea popupSafeArea;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -234,6 +239,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
     this.searchBoxStyle,
+    this.popupSafeArea = const PopupSafeArea(),
   })  : assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
@@ -394,11 +400,17 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       barrierColor: widget.popupBarrierColor ?? const Color(0x80000000),
       context: context,
       pageBuilder: (context, animation, secondaryAnimation) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.all(0),
-          shape: widget.popupShape,
-          backgroundColor: widget.popupBackgroundColor,
-          content: _selectDialogInstance(data),
+        return SafeArea(
+          top: widget.popupSafeArea.top,
+          bottom: widget.popupSafeArea.bottom,
+          left: widget.popupSafeArea.left,
+          right: widget.popupSafeArea.right,
+          child: AlertDialog(
+            contentPadding: EdgeInsets.all(0),
+            shape: widget.popupShape,
+            backgroundColor: widget.popupBackgroundColor,
+            content: _selectDialogInstance(data),
+          ),
         );
       },
     );
@@ -408,12 +420,33 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Future<T?> _openBottomSheet(T? data) {
     return showModalBottomSheet<T>(
         barrierColor: widget.popupBarrierColor,
-        backgroundColor: widget.popupBackgroundColor,
+        backgroundColor: Colors.transparent,
         isScrollControlled: true,
         shape: widget.popupShape,
         context: context,
         builder: (ctx) {
-          return _selectDialogInstance(data, defaultHeight: 350);
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            builder: (_, child) {
+              return SafeArea(
+                top: widget.popupSafeArea.top,
+                bottom: false,
+                left: false,
+                right: false,
+                child: Container(
+                  color:
+                      widget.popupBackgroundColor ?? Theme.of(ctx).canvasColor,
+                  child: SafeArea(
+                    top: false,
+                    bottom: widget.popupSafeArea.bottom,
+                    left: widget.popupSafeArea.left,
+                    right: widget.popupSafeArea.right,
+                    child: _selectDialogInstance(data, defaultHeight: 350),
+                  ),
+                ),
+              );
+            },
+          );
         });
   }
 
@@ -437,6 +470,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       Size(overlay.size.width, overlay.size.height),
     );
     return customShowMenu<T>(
+        popupSafeArea: widget.popupSafeArea,
         barrierColor: widget.popupBarrierColor,
         shape: widget.popupShape,
         color: widget.popupBackgroundColor,

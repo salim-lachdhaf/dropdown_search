@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dropdown_search/src/popup_safearea.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -428,6 +429,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
     this.showMenuContext,
     this.captureInheritedThemes,
     this.barrierColor,
+    this.popupSafeArea = const PopupSafeArea(),
   }) : itemSizes = List<Size?>.filled(items.length, null, growable: false);
 
   final RelativeRect? position;
@@ -443,6 +445,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
   final BuildContext? showMenuContext;
   final bool? captureInheritedThemes;
   final Color? barrierColor;
+  final PopupSafeArea popupSafeArea;
 
   @override
   Animation<double> createAnimation() {
@@ -484,12 +487,11 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
       if (theme != null) menu = Theme(data: theme!, child: menu);
     }
 
-    return MediaQuery.removePadding(
-      context: context,
-      removeTop: true,
-      removeBottom: true,
-      removeLeft: true,
-      removeRight: true,
+    return SafeArea(
+      top: popupSafeArea.top,
+      bottom: popupSafeArea.bottom,
+      left: popupSafeArea.left,
+      right: popupSafeArea.right,
       child: Builder(
         builder: (BuildContext context) {
           return CustomSingleChildLayout(
@@ -574,6 +576,7 @@ Future<T?> customShowMenu<T>({
   Color? color,
   bool captureInheritedThemes = true,
   bool useRootNavigator = false,
+  PopupSafeArea popupSafeArea = const PopupSafeArea(),
 }) {
   assert(items.isNotEmpty);
   assert(debugCheckHasMaterialLocalizations(context));
@@ -606,6 +609,7 @@ Future<T?> customShowMenu<T>({
       color: color,
       showMenuContext: context,
       captureInheritedThemes: captureInheritedThemes,
+      popupSafeArea: popupSafeArea,
     ),
   );
 }
