@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 
 import 'src/popupMenu.dart';
 import 'src/selectDialog.dart';
+
 export 'src/popup_safearea.dart';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
@@ -430,19 +431,13 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             builder: (_, child) {
               return SafeArea(
                 top: widget.popupSafeArea.top,
-                bottom: false,
-                left: false,
-                right: false,
+                bottom: widget.popupSafeArea.bottom,
+                left: widget.popupSafeArea.left,
+                right: widget.popupSafeArea.right,
                 child: Container(
                   color:
                       widget.popupBackgroundColor ?? Theme.of(ctx).canvasColor,
-                  child: SafeArea(
-                    top: false,
-                    bottom: widget.popupSafeArea.bottom,
-                    left: widget.popupSafeArea.left,
-                    right: widget.popupSafeArea.right,
-                    child: _selectDialogInstance(data, defaultHeight: 350),
-                  ),
+                  child: _selectDialogInstance(data, defaultHeight: 350),
                 ),
               );
             },

@@ -1,5 +1,6 @@
-## [0.6.1] - 2021.03.27
+## [0.6.1] - 2021.05.02
 * added property to set up the popup safe area
+* fixed `null safety` issues
 
 ## [0.6.0] - 2021.03.27
 * fixed `null safety` issues after initial migraion
