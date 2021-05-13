@@ -190,7 +190,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`popupSafeArea`|set properties of popup safe area|
 
 # Attention
-To use a template as an item type, and you don't want to use a custom fonction **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
+To use a template as an item type, and you don't want to use a custom function **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
 
 
 ```dart
