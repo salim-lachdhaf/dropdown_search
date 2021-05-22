@@ -1,5 +1,7 @@
 import 'dart:async';
-
+import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
+import 'package:dropdown_search/src/text_field_props.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../dropdown_search.dart';
@@ -12,10 +14,14 @@ class SelectDialog<T> extends StatefulWidget {
   final ValueChanged<T>? onChanged;
   final DropdownSearchOnFind<T>? onFind;
   final DropdownSearchPopupItemBuilder<T>? itemBuilder;
+
+  @Deprecated('Use `searchFieldProps` instead')
   final InputDecoration? searchBoxDecoration;
   final DropdownSearchItemAsString<T>? itemAsString;
   final DropdownSearchFilterFn<T>? filterFn;
   final String? hintText;
+
+  @Deprecated('Use `searchFieldProps` instead')
   final TextStyle? searchBoxStyle;
   final double? maxHeight;
   final double? dialogMaxWidth;
@@ -34,9 +40,11 @@ class SelectDialog<T> extends StatefulWidget {
   final ErrorBuilder? errorBuilder;
 
   ///the search box will be focused if true
+  @Deprecated('Use `searchFieldProps` instead')
   final bool autoFocusSearchBox;
 
   ///text controller to set default search word for example
+  @Deprecated('Use `searchFieldProps` instead')
   final TextEditingController? searchBoxController;
 
   ///delay before searching
@@ -53,6 +61,9 @@ class SelectDialog<T> extends StatefulWidget {
 
   ///favorites item
   final FavoriteItems<T>? favoriteItems;
+
+  /// object that passes all props to search field
+  final TextFieldProps? searchFieldProps;
 
   const SelectDialog({
     Key? key,
@@ -84,6 +95,7 @@ class SelectDialog<T> extends StatefulWidget {
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
     this.searchBoxStyle,
+    this.searchFieldProps,
   }) : super(key: key);
 
   @override
@@ -105,7 +117,10 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
 
     Future.delayed(
       Duration.zero,
-      () => manageItemsByFilter(widget.searchBoxController?.text ?? '',
+      () => manageItemsByFilter(
+          widget.searchFieldProps?.controller?.text ??
+              widget.searchBoxController?.text ??
+              '',
           isFistLoad: true),
     );
   }
@@ -113,7 +128,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (widget.autoFocusSearchBox)
+    if (widget.searchFieldProps?.autofocus ?? widget.autoFocusSearchBox)
       FocusScope.of(context).requestFocus(focusNode);
   }
 
@@ -152,7 +167,10 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                     } else if (snapshot.data!.isEmpty) {
                       if (widget.emptyBuilder != null)
                         return widget.emptyBuilder!(
-                            context, widget.searchBoxController?.text);
+                          context,
+                          widget.searchFieldProps?.controller?.text ??
+                              widget.searchBoxController?.text,
+                        );
                       else
                         return const Center(
                           child: const Text("No data found"),
@@ -202,7 +220,11 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   Widget _errorWidget(dynamic error) {
     if (widget.errorBuilder != null)
       return widget.errorBuilder!(
-          context, widget.searchBoxController?.text, error);
+        context,
+        widget.searchFieldProps?.controller?.text ??
+            widget.searchBoxController?.text,
+        error,
+      );
     else
       return Padding(
         padding: EdgeInsets.all(8),
@@ -219,7 +241,10 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
           if (isLoading) {
             if (widget.loadingBuilder != null)
               return widget.loadingBuilder!(
-                  context, widget.searchBoxController?.text);
+                context,
+                widget.searchFieldProps?.controller?.text ??
+                    widget.searchBoxController?.text,
+              );
             else
               return Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -358,19 +383,77 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                style: widget.searchBoxStyle,
-                controller: widget.searchBoxController,
+                style: widget.searchFieldProps?.style ?? widget.searchBoxStyle,
+                controller: widget.searchFieldProps?.controller ??
+                    widget.searchBoxController,
                 focusNode: focusNode,
                 onChanged: (f) => _debouncer(() {
                   _onTextChanged(f);
                 }),
-                decoration: widget.searchBoxDecoration ??
+                decoration: widget.searchFieldProps?.decoration ??
+                    widget.searchBoxDecoration ??
                     InputDecoration(
                       hintText: widget.hintText,
                       border: const OutlineInputBorder(),
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 16),
                     ),
+                keyboardType: widget.searchFieldProps?.keyboardType,
+                textInputAction: widget.searchFieldProps?.textInputAction,
+                textCapitalization:
+                    widget.searchFieldProps?.textCapitalization ??
+                        TextCapitalization.none,
+                strutStyle: widget.searchFieldProps?.strutStyle,
+                textAlign:
+                    widget.searchFieldProps?.textAlign ?? TextAlign.start,
+                textAlignVertical: widget.searchFieldProps?.textAlignVertical,
+                textDirection: widget.searchFieldProps?.textDirection,
+                readOnly: widget.searchFieldProps?.readOnly ?? false,
+                toolbarOptions: widget.searchFieldProps?.toolbarOptions,
+                showCursor: widget.searchFieldProps?.showCursor,
+                obscuringCharacter:
+                    widget.searchFieldProps?.obscuringCharacter ?? '•',
+                obscureText: widget.searchFieldProps?.obscureText ?? false,
+                autocorrect: widget.searchFieldProps?.autocorrect ?? true,
+                smartDashesType: widget.searchFieldProps?.smartDashesType,
+                smartQuotesType: widget.searchFieldProps?.smartQuotesType,
+                enableSuggestions:
+                    widget.searchFieldProps?.enableSuggestions ?? true,
+                maxLines: widget.searchFieldProps?.maxLines ?? 1,
+                minLines: widget.searchFieldProps?.minLines,
+                expands: widget.searchFieldProps?.expands ?? false,
+                maxLengthEnforcement:
+                    widget.searchFieldProps?.maxLengthEnforcement,
+                maxLength: widget.searchFieldProps?.maxLength,
+                onAppPrivateCommand:
+                    widget.searchFieldProps?.onAppPrivateCommand,
+                inputFormatters: widget.searchFieldProps?.inputFormatters,
+                enabled: widget.searchFieldProps?.enabled,
+                cursorWidth: widget.searchFieldProps?.cursorWidth ?? 2.0,
+                cursorHeight: widget.searchFieldProps?.cursorHeight,
+                cursorRadius: widget.searchFieldProps?.cursorRadius,
+                cursorColor: widget.searchFieldProps?.cursorColor,
+                selectionHeightStyle:
+                    widget.searchFieldProps?.selectionHeightStyle ??
+                        ui.BoxHeightStyle.tight,
+                selectionWidthStyle:
+                    widget.searchFieldProps?.selectionWidthStyle ??
+                        ui.BoxWidthStyle.tight,
+                keyboardAppearance: widget.searchFieldProps?.keyboardAppearance,
+                scrollPadding: widget.searchFieldProps?.scrollPadding ??
+                    const EdgeInsets.all(20.0),
+                dragStartBehavior: widget.searchFieldProps?.dragStartBehavior ??
+                    DragStartBehavior.start,
+                enableInteractiveSelection:
+                    widget.searchFieldProps?.enableInteractiveSelection ?? true,
+                selectionControls: widget.searchFieldProps?.selectionControls,
+                onTap: widget.searchFieldProps?.onTap,
+                mouseCursor: widget.searchFieldProps?.mouseCursor,
+                buildCounter: widget.searchFieldProps?.buildCounter,
+                scrollController: widget.searchFieldProps?.scrollController,
+                scrollPhysics: widget.searchFieldProps?.scrollPhysics,
+                autofillHints: widget.searchFieldProps?.autofillHints,
+                restorationId: widget.searchFieldProps?.restorationId,
               ),
             )
         ]);

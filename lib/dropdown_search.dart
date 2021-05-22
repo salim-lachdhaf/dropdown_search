@@ -3,6 +3,7 @@ library dropdown_search;
 import 'dart:async';
 
 import 'package:dropdown_search/src/popup_safearea.dart';
+import 'package:dropdown_search/src/text_field_props.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -11,6 +12,7 @@ import 'src/popupMenu.dart';
 import 'src/selectDialog.dart';
 
 export 'src/popup_safearea.dart';
+export 'src/text_field_props.dart';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
 typedef String DropdownSearchItemAsString<T>(T item);
@@ -73,6 +75,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final DropdownSearchPopupItemBuilder<T>? popupItemBuilder;
 
   ///decoration for search box
+  @Deprecated('Use `searchFieldProps` instead')
   final InputDecoration? searchBoxDecoration;
 
   ///the title for dialog/menu/bottomSheet
@@ -118,6 +121,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final ErrorBuilder? errorBuilder;
 
   ///the search box will be focused if true
+  @Deprecated('Use `searchFieldProps` instead')
   final bool autoFocusSearchBox;
 
   ///custom shape for the popup
@@ -142,6 +146,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final Widget? dropDownButton;
 
   //custom style of the searchBox
+  @Deprecated('Use `searchFieldProps` instead')
   final TextStyle? searchBoxStyle;
 
   ///custom dropdown button widget builder
@@ -162,6 +167,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final Color? popupBarrierColor;
 
   ///text controller to set default search word for example
+  @Deprecated('Use `searchFieldProps` instead')
   final TextEditingController? searchBoxController;
 
   ///called when popup is dismissed
@@ -189,6 +195,9 @@ class DropdownSearch<T> extends StatefulWidget {
 
   ///set properties of popup safe area
   final PopupSafeArea popupSafeArea;
+
+  /// object that passes all props to search field
+  final TextFieldProps? searchFieldProps;
 
   DropdownSearch({
     Key? key,
@@ -241,6 +250,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.favoriteItemsAlignment = MainAxisAlignment.start,
     this.searchBoxStyle,
     this.popupSafeArea = const PopupSafeArea(),
+    this.searchFieldProps,
   })  : assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
@@ -513,6 +523,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       favoriteItems: widget.favoriteItems,
       favoriteItemBuilder: widget.favoriteItemBuilder,
       favoriteItemsAlignment: widget.favoriteItemsAlignment,
+      searchFieldProps: widget.searchFieldProps,
     );
   }
 
