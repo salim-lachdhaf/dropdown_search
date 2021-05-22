@@ -188,6 +188,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`onBeforeChange`|callback executed before applying value change|
 |`searchDelay`|delay before searching|
 |`popupSafeArea`|set properties of popup safe area|
+|`scrollbarProps`|scrollbar properties|
 
 # Attention
 To use a template as an item type, and you don't want to use a custom fonction **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
