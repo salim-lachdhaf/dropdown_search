@@ -447,7 +447,13 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 child: Container(
                   color:
                       widget.popupBackgroundColor ?? Theme.of(ctx).canvasColor,
-                  child: _selectDialogInstance(data, defaultHeight: 350),
+                  child: AnimatedPadding(
+                    duration: Duration(milliseconds: 300),
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                    ),
+                    child: _selectDialogInstance(data, defaultHeight: 350),
+                  ),
                 ),
               );
             },
