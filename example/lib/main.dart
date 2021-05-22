@@ -144,7 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Divider(),
               DropdownSearch<UserModel>(
-                searchBoxController: TextEditingController(text: 'Mrs'),
+                searchFieldProps: TextFieldProps(
+                  controller: TextEditingController(text: 'Mrs'),
+                ),
                 mode: Mode.BOTTOM_SHEET,
                 maxHeight: 700,
                 isFilteredOnline: true,
@@ -201,10 +203,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: print,
                 selectedItem: "Brazil",
                 showSearchBox: true,
-                searchBoxDecoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
-                  labelText: "Search a country",
+                searchFieldProps: TextFieldProps(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
+                    labelText: "Search a country1",
+                  ),
                 ),
                 popupTitle: Container(
                   height: 50,
