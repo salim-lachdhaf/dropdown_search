@@ -50,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showClearButton: true,
                 onChanged: print,
                 popupItemDisabled: (String s) => s.startsWith('I'),
+                clearButtonSplashRadius: 20,
                 selectedItem: "Tunisia",
                 onBeforeChange: (a, b) {
                   if (b == null) {
