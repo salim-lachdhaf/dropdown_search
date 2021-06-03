@@ -142,6 +142,10 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom clear button widget builder
   final IconButtonBuilder? clearButtonBuilder;
 
+  ///custom splash radius for the clear button
+  ///If null, default splash radius of [icon_button] is used.
+  final double? clearButtonSplashRadius;
+
   ///custom dropdown icon button widget
   final Widget? dropDownButton;
 
@@ -237,6 +241,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dialogMaxWidth,
     this.clearButton,
     this.clearButtonBuilder,
+    this.clearButtonSplashRadius,
     this.dropDownButton,
     this.dropdownButtonBuilder,
     this.dropdownButtonSplashRadius,
@@ -392,7 +397,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               : IconButton(
                   icon: widget.clearButton ?? const Icon(Icons.clear, size: 24),
                   onPressed: clearButtonPressed,
-                  splashRadius: widget.dropdownButtonSplashRadius ?? null,
+                  splashRadius: widget.clearButtonSplashRadius ?? null,
                 ),
         widget.dropdownButtonBuilder != null
             ? GestureDetector(

@@ -125,6 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                       label: "Menu mode *",
                       showClearButton: true,
+                      clearButtonSplashRadius: 20,
                       onChanged: print,
                       popupItemDisabled: (String s) => s.startsWith('I'),
                       selectedItem: "Tunisia",
