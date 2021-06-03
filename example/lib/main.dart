@@ -299,6 +299,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 items: ["Yes", "No"],
                 label: "confirm",
                 showSelectedItem: true,
+                dropdownButtonSplashRadius: 20,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -179,6 +179,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`validator`|An optional method that validates an input. Returns an error string to display if the input is invalid, or null otherwise.|
 |`clearButton`|customize clear button widget|
 |`dropDownButton`|customize dropdown button widget|
+|`dropDownButtonSplashRadius`|customize dropdown splash radius|
 |`dropdownBuilderSupportsNullItem`|If true, the dropdownBuilder will continue the uses of material behavior. This will be useful if you want to handle a custom UI only if the item !=null|
 |`popupItemDisabled`|defines if an item of the popup is enabled or not, if the item is disabled, it cannot be clicked|
 |`popupBarrierColor`|set a custom color for the popup barrier|
@@ -190,7 +191,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`popupSafeArea`|set properties of popup safe area|
 
 # Attention
-To use a template as an item type, and you don't want to use a custom fonction **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
+To use a template as an item type, and you don't want to use a custom function **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
 
 
 ```dart
