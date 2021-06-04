@@ -1,10 +1,10 @@
 <h1 align="center">
-  Flutter DropdownSearch
+  Flutter DropdownSelection
   <br>
 </h1>
 
 <h4 align="center">
-  <a href="https://flutter.io" target="_blank">Flutter</a> simple and robust DropdownSearch with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
+  <a href="https://flutter.io" target="_blank">Flutter</a> simple and robust DropdownSelection with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
 </h4>
 
 <p align="center">
@@ -42,19 +42,19 @@
 
 ## packages.yaml
 ```yaml
-dropdown_search: <lastest version>
+dropdown_selection: <lastest version>
 ```
 
 ## Import
 ```dart
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:dropdown_selection/dropdown_selection.dart';
 ```
 
 
 ## Simple implementation
 
 ```dart
-DropdownSearch<String>(
+DropdownSelection<String>(
     mode: Mode.MENU,
     showSelectedItem: true,
     items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
@@ -68,14 +68,14 @@ DropdownSearch<String>(
 ## customize showed field (itemAsString)
 
 ```dart
-DropdownSearch<UserModel>(
+DropdownSelection<UserModel>(
   label: "Name",
   onFind: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringByName(),
   onChanged: (UserModel data) => print(data),
 ),
 
-DropdownSearch<UserModel>(
+DropdownSelection<UserModel>(
   label: "Name",
   onFind: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringById(),
@@ -85,7 +85,7 @@ DropdownSearch<UserModel>(
 
 ## customize Filter Function
 ```dart
-DropdownSearch<UserModel>(
+DropdownSelection<UserModel>(
   label: "Name",
   filterFn: (user, filter) => user.userFilterByCreationDate(filter),
   onFind: (String filter) => getData(filter),
@@ -96,7 +96,7 @@ DropdownSearch<UserModel>(
 
 ## customize Search Mode
 ```dart
-DropdownSearch<UserModel>(
+DropdownSelection<UserModel>(
   mode: Mode.BOTTOM_SHEET,
   label: "Name",
   onFind: (String filter) => getData(filter),
@@ -107,7 +107,7 @@ DropdownSearch<UserModel>(
 
 ## Validation
 ```dart
-DropdownSearch(
+DropdownSelection(
   items: ["Brazil", "France", "Tunisia", "Canada"],
   label: "Country",
   onChanged: print,
@@ -126,7 +126,7 @@ DropdownSearch(
 
 ## Endpoint implementation (using [Dio package](https://pub.dev/packages/dio))
 ```dart
-DropdownSearch<UserModel>(
+DropdownSelection<UserModel>(
   label: "Name",
   onFind: (String filter) async {
     var response = await Dio().get(
@@ -142,7 +142,7 @@ DropdownSearch<UserModel>(
 );
 ```
 ## Layout customization
-You can customize the layout of the DropdownSearch and its items. [EXAMPLE](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example#custom-layout-endpoint-example)
+You can customize the layout of the DropdownSelection and its items. [EXAMPLE](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example#custom-layout-endpoint-example)
 
 |  Properties |   Description|
 | ------------ | ------------ |
