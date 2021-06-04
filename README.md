@@ -8,11 +8,11 @@
 </h4>
 
 <p align="center">
-  <a href="https://pub.dev/packages/dropdown_search">
+  <a href="https://pub.dev/packages/dropdown_selection">
     <img src="https://img.shields.io/badge/build-passing-brightgreen"
          alt="Build">
   </a>
-  <a href="https://pub.dev/packages/dropdown_search"><img src="https://img.shields.io/pub/v/dropdown_search"></a>
+  <a href="https://pub.dev/packages/dropdown_selection"><img src="https://img.shields.io/pub/v/dropdown_selection"></a>
   <a href="https://salim-lachdhaf.github.io">
     <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat">
   </a>
