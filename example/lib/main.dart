@@ -166,6 +166,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 dropdownBuilder: _customDropDownExample,
                 popupItemBuilder: _customPopupItemBuilderExample,
                 popupSafeArea: PopupSafeArea(top: true, bottom: true),
+                scrollbarProps: ScrollbarProps(
+                  isAlwaysShown: true,
+                  thickness: 7,
+                ),
               ),
               Divider(),
 

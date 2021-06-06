@@ -3,6 +3,7 @@ library dropdown_search;
 import 'dart:async';
 
 import 'package:dropdown_search/src/popup_safearea.dart';
+import 'package:dropdown_search/src/scrollbar_props.dart';
 import 'package:dropdown_search/src/text_field_props.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'src/selectDialog.dart';
 
 export 'src/popup_safearea.dart';
 export 'src/text_field_props.dart';
+export 'src/scrollbar_props.dart';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
 typedef String DropdownSearchItemAsString<T>(T item);
@@ -199,6 +201,9 @@ class DropdownSearch<T> extends StatefulWidget {
   /// object that passes all props to search field
   final TextFieldProps? searchFieldProps;
 
+  /// scrollbar properties
+  final ScrollbarProps? scrollbarProps;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -251,6 +256,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.searchBoxStyle,
     this.popupSafeArea = const PopupSafeArea(),
     this.searchFieldProps,
+    this.scrollbarProps,
   })  : assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
@@ -530,6 +536,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       favoriteItemBuilder: widget.favoriteItemBuilder,
       favoriteItemsAlignment: widget.favoriteItemsAlignment,
       searchFieldProps: widget.searchFieldProps,
+      scrollbarProps: widget.scrollbarProps,
     );
   }
 

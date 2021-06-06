@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
+import 'package:dropdown_search/src/scrollbar_props.dart';
 import 'package:dropdown_search/src/text_field_props.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +66,9 @@ class SelectDialog<T> extends StatefulWidget {
   /// object that passes all props to search field
   final TextFieldProps? searchFieldProps;
 
+  /// scrollbar properties
+  final ScrollbarProps? scrollbarProps;
+
   const SelectDialog({
     Key? key,
     this.popupTitle,
@@ -96,6 +100,7 @@ class SelectDialog<T> extends StatefulWidget {
     this.favoriteItemsAlignment = MainAxisAlignment.start,
     this.searchBoxStyle,
     this.searchFieldProps,
+    this.scrollbarProps,
   }) : super(key: key);
 
   @override
@@ -176,14 +181,25 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                           child: const Text("No data found"),
                         );
                     }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.symmetric(vertical: 0),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        var item = snapshot.data![index];
-                        return _itemWidget(item);
-                      },
+                    return Scrollbar(
+                      controller: widget.scrollbarProps?.controller,
+                      isAlwaysShown: widget.scrollbarProps?.isAlwaysShown,
+                      showTrackOnHover: widget.scrollbarProps?.showTrackOnHover,
+                      hoverThickness: widget.scrollbarProps?.hoverThickness,
+                      thickness: widget.scrollbarProps?.thickness,
+                      radius: widget.scrollbarProps?.radius,
+                      notificationPredicate:
+                          widget.scrollbarProps?.notificationPredicate,
+                      interactive: widget.scrollbarProps?.interactive,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.symmetric(vertical: 0),
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          var item = snapshot.data![index];
+                          return _itemWidget(item);
+                        },
+                      ),
                     );
                   },
                 ),
