@@ -204,6 +204,9 @@ class DropdownSearch<T> extends StatefulWidget {
   /// scrollbar properties
   final ScrollbarProps? scrollbarProps;
 
+  /// whether modal can be dismissed by tapping the modal barrier
+  final bool popupBarrierDismissible;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -257,6 +260,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupSafeArea = const PopupSafeArea(),
     this.searchFieldProps,
     this.scrollbarProps,
+    this.popupBarrierDismissible = true,
   })  : assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
@@ -411,7 +415,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///open dialog
   Future<T?> _openSelectDialog(T? data) {
     return showGeneralDialog(
-      barrierDismissible: true,
+      barrierDismissible: widget.popupBarrierDismissible,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       transitionDuration: const Duration(milliseconds: 400),
       barrierColor: widget.popupBarrierColor ?? const Color(0x80000000),
@@ -438,6 +442,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     return showModalBottomSheet<T>(
         barrierColor: widget.popupBarrierColor,
         backgroundColor: Colors.transparent,
+        isDismissible: widget.popupBarrierDismissible,
         isScrollControlled: true,
         shape: widget.popupShape,
         context: context,
@@ -494,6 +499,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         context: context,
         position: position,
         elevation: 8,
+        barrierDismissible: widget.popupBarrierDismissible,
         items: [
           CustomPopupMenuItem(
             enabled: false,
