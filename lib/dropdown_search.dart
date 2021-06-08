@@ -113,6 +113,15 @@ class DropdownSearch<T> extends StatefulWidget {
   ///dropdownSearch input decoration
   final InputDecoration? dropdownSearchDecoration;
 
+  /// style on which to base the label
+  final TextStyle? dropdownSearchBaseStyle;
+
+  /// How the text in the decoration should be aligned horizontally.
+  final TextAlign? dropdownSearchTextAlign;
+
+  /// How the text should be aligned vertically.
+  final TextAlignVertical? dropdownSearchTextAlignVertical;
+
   ///custom layout for empty results
   final EmptyBuilder? emptyBuilder;
 
@@ -261,6 +270,9 @@ class DropdownSearch<T> extends StatefulWidget {
     this.searchFieldProps,
     this.scrollbarProps,
     this.popupBarrierDismissible = true,
+    this.dropdownSearchBaseStyle,
+    this.dropdownSearchTextAlign,
+    this.dropdownSearchTextAlignVertical,
   })  : assert(!showSelectedItem || T == String || compareFn != null),
         super(key: key);
 
@@ -340,6 +352,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             valueListenable: _isFocused,
             builder: (context, isFocused, w) {
               return InputDecorator(
+                baseStyle: widget.dropdownSearchBaseStyle,
+                textAlign: widget.dropdownSearchTextAlign,
+                textAlignVertical: widget.dropdownSearchTextAlignVertical,
                 isEmpty: value == null &&
                     (widget.dropdownBuilder == null ||
                         widget.dropdownBuilderSupportsNullItem),
