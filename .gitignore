@@ -23,6 +23,8 @@ pubspec.lock
 
 # Flutter/Dart/Pub related
 **/doc/api/
+**/ios/.symlinks
+.fvm
 .dart_tool/
 .flutter-plugins
 .packages
