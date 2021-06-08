@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dropdown_search/src/popup_safearea.dart';
+import './popup_safearea.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

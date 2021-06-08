@@ -2,9 +2,9 @@ library dropdown_search;
 
 import 'dart:async';
 
-import 'package:dropdown_search/src/popup_safearea.dart';
-import 'package:dropdown_search/src/scrollbar_props.dart';
-import 'package:dropdown_search/src/text_field_props.dart';
+import '/src/popup_safearea.dart';
+import '/src/scrollbar_props.dart';
+import '/src/text_field_props.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
-import 'package:dropdown_search/src/scrollbar_props.dart';
-import 'package:dropdown_search/src/text_field_props.dart';
+import './text_field_props.dart';
+import './scrollbar_props.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
