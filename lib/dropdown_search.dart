@@ -295,7 +295,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (context, data, wt) {
         return IgnorePointer(
           ignoring: !widget.enabled,
-          child: GestureDetector(
+          child: InkWell(
             onTap: () => _selectSearchMode(data),
             child: _formField(data),
           ),
@@ -390,7 +390,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       children: <Widget>[
         if (data != null && widget.showClearButton == true)
           widget.clearButtonBuilder != null
-              ? GestureDetector(
+              ? InkWell(
                   onTap: clearButtonPressed,
                   child: widget.clearButtonBuilder!(context),
                 )
@@ -399,7 +399,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                   onPressed: clearButtonPressed,
                 ),
         widget.dropdownButtonBuilder != null
-            ? GestureDetector(
+            ? InkWell(
                 onTap: dropdownButtonPressed,
                 child: widget.dropdownButtonBuilder!(context),
               )
