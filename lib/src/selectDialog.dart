@@ -356,10 +356,14 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   Widget _itemWidget(T item) {
     if (widget.itemBuilder != null)
       return InkWell(
-        child: widget.itemBuilder!(
-          context,
-          item,
-          _manageSelectedItemVisibility(item),
+        // ignore pointers in itemBuilder
+        child: IgnorePointer(
+          ignoring: true,
+          child: widget.itemBuilder!(
+            context,
+            item,
+            _manageSelectedItemVisibility(item),
+          ),
         ),
         onTap:
             widget.itemDisabled != null && (widget.itemDisabled!(item)) == true
@@ -502,7 +506,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                       widget.favoriteItemsAlignment ?? MainAxisAlignment.start,
                   children: favoriteItems
                       .map(
-                        (f) => GestureDetector(
+                        (f) => InkWell(
                           onTap: () => _handleSelectItem(f),
                           child: Container(
                             margin: EdgeInsets.only(right: 4),
