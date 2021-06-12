@@ -1,3 +1,6 @@
+## [0.6.3] - 2021.06.02
+* added property to set up the splash radius for clear button and for dropdown button in dropdown_search
+
 ## [0.6.2] - 2021.05.22
 * prop that passes all props to search field
 
