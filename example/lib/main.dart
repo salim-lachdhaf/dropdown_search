@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'dropdownSearch Demo',
       //enable this line if you want test Dark Mode
       //theme: ThemeData.dark(),
       home: MyHomePage(),
