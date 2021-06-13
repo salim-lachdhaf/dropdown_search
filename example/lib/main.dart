@@ -50,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showClearButton: true,
                 onChanged: print,
                 popupItemDisabled: (String s) => s.startsWith('I'),
+                clearButtonSplashRadius: 20,
                 selectedItem: "Tunisia",
                 onBeforeChange: (a, b) {
                   if (b == null) {
@@ -303,6 +304,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 items: ["Yes", "No"],
                 label: "confirm",
                 showSelectedItem: true,
+                dropdownButtonSplashRadius: 20,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
