@@ -1,5 +1,5 @@
-## [0.6.3] - 2021.06.02
-* added property to set up the splash radius for clear button and for dropdown button in dropdown_search
+## [0.6.3] - 2021.06.03
+* fix analyser issues
 
 ## [0.6.2] - 2021.06.13
 * prop that passes all props to search field
@@ -9,6 +9,7 @@
 * new Feature "popup scrollView"
 * Ignore pointers in itemBuilder & cursor in web
 * Added property to customize DropdownButton Splash Radius
+* added property to set up the splash radius for clear button and for dropdown button in dropdown_search
 * @thanks [Vasiliy](https://github.com/vasilich6107)
 
 ## [0.6.1] - 2021.05.02

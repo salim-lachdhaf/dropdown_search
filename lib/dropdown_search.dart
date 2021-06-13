@@ -6,11 +6,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '/src/popup_safearea.dart';
-import '/src/scrollbar_props.dart';
-import '/src/text_field_props.dart';
 import 'src/popupMenu.dart';
+import 'src/popup_safearea.dart';
+import 'src/scrollbar_props.dart';
 import 'src/selectDialog.dart';
+import 'src/text_field_props.dart';
 
 export 'src/popup_safearea.dart';
 export 'src/scrollbar_props.dart';
