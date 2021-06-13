@@ -1,8 +1,15 @@
 ## [0.6.3] - 2021.06.02
 * added property to set up the splash radius for clear button and for dropdown button in dropdown_search
 
-## [0.6.2] - 2021.05.22
+## [0.6.2] - 2021.06.13
 * prop that passes all props to search field
+* fix issues [169](https://github.com/salim-lachdhaf/searchable_dropdown/issues/169)
+* fix issues [163](https://github.com/salim-lachdhaf/searchable_dropdown/issues/163)
+* new Feature "dropdown BaseStyle" [178](https://github.com/salim-lachdhaf/searchable_dropdown/issues/178)
+* new Feature "popup scrollView"
+* Ignore pointers in itemBuilder & cursor in web
+* Added property to customize DropdownButton Splash Radius
+* @thanks [Vasiliy](https://github.com/vasilich6107)
 
 ## [0.6.1] - 2021.05.02
 * added property to set up the popup safe area

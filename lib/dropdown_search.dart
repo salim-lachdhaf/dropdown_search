@@ -2,19 +2,19 @@ library dropdown_search;
 
 import 'dart:async';
 
-import '/src/popup_safearea.dart';
-import '/src/scrollbar_props.dart';
-import '/src/text_field_props.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '/src/popup_safearea.dart';
+import '/src/scrollbar_props.dart';
+import '/src/text_field_props.dart';
 import 'src/popupMenu.dart';
 import 'src/selectDialog.dart';
 
 export 'src/popup_safearea.dart';
-export 'src/text_field_props.dart';
 export 'src/scrollbar_props.dart';
+export 'src/text_field_props.dart';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
 typedef String DropdownSearchItemAsString<T>(T item);
@@ -276,7 +276,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
     this.searchBoxStyle,
-    this.popupSafeArea = const PopupSafeArea(),
+    this.popupSafeArea = const PopupSafeArea(top: true, bottom: true),
     this.searchFieldProps,
     this.scrollbarProps,
     this.popupBarrierDismissible = true,
@@ -476,6 +476,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         builder: (ctx) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
+            theme: Theme.of(ctx),
             builder: (_, child) {
               return SafeArea(
                 top: widget.popupSafeArea.top,
