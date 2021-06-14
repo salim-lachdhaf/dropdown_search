@@ -361,16 +361,31 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         return ValueListenableBuilder<bool>(
             valueListenable: _isFocused,
             builder: (context, isFocused, w) {
-              return InputDecorator(
-                baseStyle: widget.dropdownSearchBaseStyle,
-                textAlign: widget.dropdownSearchTextAlign,
-                textAlignVertical: widget.dropdownSearchTextAlignVertical,
-                isEmpty: value == null &&
-                    (widget.dropdownBuilder == null ||
-                        widget.dropdownBuilderSupportsNullItem),
-                isFocused: isFocused,
-                decoration: _manageDropdownDecoration(state, value),
-                child: _defaultSelectItemWidget(value),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InputDecorator(
+                    baseStyle: widget.dropdownSearchBaseStyle,
+                    textAlign: widget.dropdownSearchTextAlign,
+                    textAlignVertical: widget.dropdownSearchTextAlignVertical,
+                    isEmpty: value == null &&
+                        (widget.dropdownBuilder == null ||
+                            widget.dropdownBuilderSupportsNullItem),
+                    isFocused: isFocused,
+                    decoration: _manageDropdownDecoration(state, value),
+                    child: _defaultSelectItemWidget(value),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, left: 16),
+                    child: Text(
+                      state.errorText ?? '',
+                      style: Theme.of(context)
+                          .textTheme
+                          .caption!
+                          .copyWith(color: Theme.of(context).errorColor),
+                    ),
+                  ),
+                ],
               );
             });
       },
@@ -389,8 +404,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             labelText: widget.label,
             hintText: widget.hint,
             suffixIcon:
-                widget.showAsSuffixIcons ? _manageTrailingIcons(data) : null,
-            errorText: state.errorText);
+                widget.showAsSuffixIcons ? _manageTrailingIcons(data) : null);
   }
 
   ///function that return the String value of an object
