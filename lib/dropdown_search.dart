@@ -276,7 +276,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
     this.searchBoxStyle,
-    this.popupSafeArea = const PopupSafeArea(top: true, bottom: true),
+    this.popupSafeArea = const PopupSafeArea(),
     this.searchFieldProps,
     this.scrollbarProps,
     this.popupBarrierDismissible = true,
