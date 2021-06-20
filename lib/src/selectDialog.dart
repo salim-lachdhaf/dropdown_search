@@ -181,24 +181,30 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                           child: const Text("No data found"),
                         );
                     }
-                    return Scrollbar(
-                      controller: widget.scrollbarProps?.controller,
-                      isAlwaysShown: widget.scrollbarProps?.isAlwaysShown,
-                      showTrackOnHover: widget.scrollbarProps?.showTrackOnHover,
-                      hoverThickness: widget.scrollbarProps?.hoverThickness,
-                      thickness: widget.scrollbarProps?.thickness,
-                      radius: widget.scrollbarProps?.radius,
-                      notificationPredicate:
-                          widget.scrollbarProps?.notificationPredicate,
-                      interactive: widget.scrollbarProps?.interactive,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.symmetric(vertical: 0),
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          var item = snapshot.data![index];
-                          return _itemWidget(item);
-                        },
+                    return MediaQuery.removePadding(
+                      removeBottom: true,
+                      removeTop: true,
+                      context: context,
+                      child: Scrollbar(
+                        controller: widget.scrollbarProps?.controller,
+                        isAlwaysShown: widget.scrollbarProps?.isAlwaysShown,
+                        showTrackOnHover:
+                            widget.scrollbarProps?.showTrackOnHover,
+                        hoverThickness: widget.scrollbarProps?.hoverThickness,
+                        thickness: widget.scrollbarProps?.thickness,
+                        radius: widget.scrollbarProps?.radius,
+                        notificationPredicate:
+                            widget.scrollbarProps?.notificationPredicate,
+                        interactive: widget.scrollbarProps?.interactive,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            var item = snapshot.data![index];
+                            return _itemWidget(item);
+                          },
+                        ),
                       ),
                     );
                   },
