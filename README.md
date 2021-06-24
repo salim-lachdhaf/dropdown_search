@@ -13,7 +13,7 @@
          alt="Build">
   </a>
   <a href="https://pub.dev/packages/dropdown_search"><img src="https://img.shields.io/pub/v/dropdown_search"></a>
-  <a href="https://salim-lachdhaf.github.io">
+  <a href="https://www.buymeacoffee.com/SalimDev">
     <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat">
   </a>
 </p>
