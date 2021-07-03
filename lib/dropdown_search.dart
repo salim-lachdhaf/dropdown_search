@@ -76,10 +76,6 @@ class DropdownSearch<T> extends StatefulWidget {
   ///to customize selected item
   final DropdownSearchPopupItemBuilder<T>? popupItemBuilder;
 
-  ///decoration for search box
-  @Deprecated('Use `searchFieldProps` instead')
-  final InputDecoration? searchBoxDecoration;
-
   ///the title for dialog/menu/bottomSheet
   final Color? popupBackgroundColor;
 
@@ -131,10 +127,6 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom layout for error
   final ErrorBuilder? errorBuilder;
 
-  ///the search box will be focused if true
-  @Deprecated('Use `searchFieldProps` instead')
-  final bool autoFocusSearchBox;
-
   ///custom shape for the popup
   final ShapeBorder? popupShape;
 
@@ -160,10 +152,6 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom dropdown icon button widget
   final Widget? dropDownButton;
 
-  //custom style of the searchBox
-  @Deprecated('Use `searchFieldProps` instead')
-  final TextStyle? searchBoxStyle;
-
   ///custom dropdown button widget builder
   final IconButtonBuilder? dropdownButtonBuilder;
 
@@ -184,10 +172,6 @@ class DropdownSearch<T> extends StatefulWidget {
 
   ///set a custom color for the popup barrier
   final Color? popupBarrierColor;
-
-  ///text controller to set default search word for example
-  @Deprecated('Use `searchFieldProps` instead')
-  final TextEditingController? searchBoxController;
 
   ///called when popup is dismissed
   final VoidCallback? onPopupDismissed;
@@ -242,7 +226,6 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupItemBuilder,
     this.showSearchBox = false,
     this.showClearButton = false,
-    this.searchBoxDecoration,
     this.popupBackgroundColor,
     this.enabled = true,
     this.maxHeight,
@@ -254,7 +237,6 @@ class DropdownSearch<T> extends StatefulWidget {
     this.emptyBuilder,
     this.loadingBuilder,
     this.errorBuilder,
-    this.autoFocusSearchBox = false,
     this.dialogMaxWidth,
     this.clearButton,
     this.clearButtonBuilder,
@@ -268,22 +250,21 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupItemDisabled,
     this.popupBarrierColor,
     this.onPopupDismissed,
-    this.searchBoxController,
     this.searchDelay,
     this.onBeforeChange,
     this.favoriteItemBuilder,
     this.favoriteItems,
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
-    this.searchBoxStyle,
     this.popupSafeArea = const PopupSafeArea(),
-    this.searchFieldProps,
+    TextFieldProps? searchFieldProps,
     this.scrollbarProps,
     this.popupBarrierDismissible = true,
     this.dropdownSearchBaseStyle,
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
   })  : assert(!showSelectedItem || T == String || compareFn != null),
+        this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         super(key: key);
 
   @override
@@ -541,7 +522,6 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   SelectDialog<T> _selectDialogInstance(T? data, {double? defaultHeight}) {
     return SelectDialog<T>(
-      searchBoxStyle: widget.searchBoxStyle,
       popupTitle: widget.popupTitle,
       maxHeight: widget.maxHeight ?? defaultHeight,
       isFilteredOnline: widget.isFilteredOnline,
@@ -552,18 +532,14 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       showSearchBox: widget.showSearchBox,
       itemBuilder: widget.popupItemBuilder,
       selectedValue: data,
-      searchBoxDecoration: widget.searchBoxDecoration,
       onChanged: _handleOnChangeSelectedItem,
       showSelectedItem: widget.showSelectedItem,
       compareFn: widget.compareFn,
       emptyBuilder: widget.emptyBuilder,
       loadingBuilder: widget.loadingBuilder,
       errorBuilder: widget.errorBuilder,
-      autoFocusSearchBox: widget.autoFocusSearchBox,
       dialogMaxWidth: widget.dialogMaxWidth,
       itemDisabled: widget.popupItemDisabled,
-      searchBoxController:
-          widget.searchBoxController ?? TextEditingController(),
       searchDelay: widget.searchDelay,
       showFavoriteItems: widget.showFavoriteItems,
       favoriteItems: widget.favoriteItems,

@@ -1,3 +1,11 @@
+## [1.0.0] - 2021.07.03
+* new feature : multiSelection mode
+* breaking changes :
+        - searchBoxDecoration removed: replaced by searchFieldProps
+        _ autoFocusSearchBox removed : replaced by searchFieldProps
+        _ searchBoxStyle removed : replaced by searchFieldProps
+        _ searchBoxController removed : replaced by searchFieldProps
+
 ## [0.6.3] - 2021.06.03
 * fix analyser issues
 

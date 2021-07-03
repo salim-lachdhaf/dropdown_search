@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
-import './text_field_props.dart';
-import './scrollbar_props.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import './scrollbar_props.dart';
+import './text_field_props.dart';
 import '../dropdown_search.dart';
 
 class SelectDialog<T> extends StatefulWidget {
@@ -15,15 +16,10 @@ class SelectDialog<T> extends StatefulWidget {
   final ValueChanged<T>? onChanged;
   final DropdownSearchOnFind<T>? onFind;
   final DropdownSearchPopupItemBuilder<T>? itemBuilder;
-
-  @Deprecated('Use `searchFieldProps` instead')
-  final InputDecoration? searchBoxDecoration;
   final DropdownSearchItemAsString<T>? itemAsString;
   final DropdownSearchFilterFn<T>? filterFn;
   final String? hintText;
 
-  @Deprecated('Use `searchFieldProps` instead')
-  final TextStyle? searchBoxStyle;
   final double? maxHeight;
   final double? dialogMaxWidth;
   final Widget? popupTitle;
@@ -39,14 +35,6 @@ class SelectDialog<T> extends StatefulWidget {
 
   ///custom layout for error
   final ErrorBuilder? errorBuilder;
-
-  ///the search box will be focused if true
-  @Deprecated('Use `searchFieldProps` instead')
-  final bool autoFocusSearchBox;
-
-  ///text controller to set default search word for example
-  @Deprecated('Use `searchFieldProps` instead')
-  final TextEditingController? searchBoxController;
 
   ///delay before searching
   final Duration? searchDelay;
@@ -80,7 +68,6 @@ class SelectDialog<T> extends StatefulWidget {
     this.selectedValue,
     this.onFind,
     this.itemBuilder,
-    this.searchBoxDecoration,
     this.hintText,
     this.itemAsString,
     this.filterFn,
@@ -89,16 +76,13 @@ class SelectDialog<T> extends StatefulWidget {
     this.emptyBuilder,
     this.loadingBuilder,
     this.errorBuilder,
-    this.autoFocusSearchBox = false,
     this.dialogMaxWidth,
     this.itemDisabled,
-    this.searchBoxController,
     this.searchDelay,
     this.favoriteItemBuilder,
     this.favoriteItems,
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
-    this.searchBoxStyle,
     this.searchFieldProps,
     this.scrollbarProps,
   }) : super(key: key);
@@ -122,10 +106,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
 
     Future.delayed(
       Duration.zero,
-      () => manageItemsByFilter(
-          widget.searchFieldProps?.controller?.text ??
-              widget.searchBoxController?.text ??
-              '',
+      () => manageItemsByFilter(widget.searchFieldProps?.controller?.text ?? '',
           isFistLoad: true),
     );
   }
@@ -133,7 +114,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (widget.searchFieldProps?.autofocus ?? widget.autoFocusSearchBox)
+    if (widget.searchFieldProps?.autofocus == true) //handle null and false
       FocusScope.of(context).requestFocus(focusNode);
   }
 
@@ -173,8 +154,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                       if (widget.emptyBuilder != null)
                         return widget.emptyBuilder!(
                           context,
-                          widget.searchFieldProps?.controller?.text ??
-                              widget.searchBoxController?.text,
+                          widget.searchFieldProps?.controller?.text,
                         );
                       else
                         return const Center(
@@ -243,8 +223,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     if (widget.errorBuilder != null)
       return widget.errorBuilder!(
         context,
-        widget.searchFieldProps?.controller?.text ??
-            widget.searchBoxController?.text,
+        widget.searchFieldProps?.controller?.text,
         error,
       );
     else
@@ -264,8 +243,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             if (widget.loadingBuilder != null)
               return widget.loadingBuilder!(
                 context,
-                widget.searchFieldProps?.controller?.text ??
-                    widget.searchBoxController?.text,
+                widget.searchFieldProps?.controller?.text,
               );
             else
               return Padding(
@@ -409,15 +387,13 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                style: widget.searchFieldProps?.style ?? widget.searchBoxStyle,
-                controller: widget.searchFieldProps?.controller ??
-                    widget.searchBoxController,
+                style: widget.searchFieldProps?.style,
+                controller: widget.searchFieldProps?.controller,
                 focusNode: focusNode,
                 onChanged: (f) => _debouncer(() {
                   _onTextChanged(f);
                 }),
                 decoration: widget.searchFieldProps?.decoration ??
-                    widget.searchBoxDecoration ??
                     InputDecoration(
                       hintText: widget.hintText,
                       border: const OutlineInputBorder(),
