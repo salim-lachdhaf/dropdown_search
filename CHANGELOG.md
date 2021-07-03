@@ -6,6 +6,7 @@
         _ searchBoxStyle removed : replaced by searchFieldProps
         _ searchBoxController removed : replaced by searchFieldProps
 
+
 ## [0.6.3] - 2021.06.03
 * fix analyser issues
 

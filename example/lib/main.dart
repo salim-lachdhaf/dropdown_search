@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: "Menu mode *",
                 showClearButton: true,
                 onChanged: print,
-                popupItemDisabled: (String s) => s.startsWith('I'),
+                popupItemDisabled: (String? s) => s?.startsWith('I') ?? false,
                 clearButtonSplashRadius: 20,
                 selectedItem: "Tunisia",
                 onBeforeChange: (a, b) {
@@ -127,7 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: "Menu mode *",
                       showClearButton: true,
                       onChanged: print,
-                      popupItemDisabled: (String s) => s.startsWith('I'),
+                      popupItemDisabled: (String? s) =>
+                          s?.startsWith('I') ?? true,
                       selectedItem: "Tunisia",
                     ),
                   ),
@@ -177,7 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ///custom itemBuilder and dropDownBuilder
               DropdownSearch<UserModel>(
                 showSelectedItem: true,
-                compareFn: (i, s) => i.isEqual(s),
+                compareFn: (i, s) => i?.isEqual(s) ?? false,
                 label: "Person",
                 onFind: (String filter) => getData(filter),
                 onChanged: (data) {
@@ -244,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
               DropdownSearch<UserModel>(
                 showSelectedItem: true,
                 showSearchBox: true,
-                compareFn: (i, s) => i.isEqual(s),
+                compareFn: (i, s) => i?.isEqual(s) ?? false,
                 label: "Person with favorite option",
                 onFind: (filter) => getData(filter),
                 onChanged: (data) {
@@ -344,8 +345,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _customDropDownExample(
-      BuildContext context, UserModel? item, String itemDesignation) {
+  Widget _customDropDownExample(BuildContext context, UserModel? item) {
     if (item == null) {
       return Container();
     }
@@ -372,7 +372,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _customPopupItemBuilderExample(
-      BuildContext context, UserModel item, bool isSelected) {
+      BuildContext context, UserModel? item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -384,8 +384,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
       child: ListTile(
         selected: isSelected,
-        title: Text(item.name),
-        subtitle: Text(item.createdAt.toString()),
+        title: Text(item?.name ?? ''),
+        subtitle: Text(item?.createdAt?.toString() ?? ''),
         leading: CircleAvatar(
             // this does not work - throws 404 error
             // backgroundImage: NetworkImage(item.avatar ?? ''),
@@ -395,7 +395,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _customPopupItemBuilderExample2(
-      BuildContext context, UserModel item, bool isSelected) {
+      BuildContext context, UserModel? item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -407,8 +407,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
       child: ListTile(
         selected: isSelected,
-        title: Text(item.name),
-        subtitle: Text(item.createdAt.toString()),
+        title: Text(item?.name ?? ''),
+        subtitle: Text(item?.createdAt?.toString() ?? ''),
         leading: CircleAvatar(
             // this does not work - throws 404 error
             // backgroundImage: NetworkImage(item.avatar ?? ''),

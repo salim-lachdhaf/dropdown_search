@@ -9,11 +9,11 @@ import './text_field_props.dart';
 import '../dropdown_search.dart';
 
 class SelectDialog<T> extends StatefulWidget {
-  final T? selectedValue;
+  final List<T?> selectedValues;
   final List<T>? items;
   final bool showSearchBox;
   final bool isFilteredOnline;
-  final ValueChanged<T>? onChanged;
+  final ValueChanged<List<T>>? onChanged;
   final DropdownSearchOnFind<T>? onFind;
   final DropdownSearchPopupItemBuilder<T>? itemBuilder;
   final DropdownSearchItemAsString<T>? itemAsString;
@@ -57,6 +57,20 @@ class SelectDialog<T> extends StatefulWidget {
   /// scrollbar properties
   final ScrollbarProps? scrollbarProps;
 
+  final bool isMultiSelectionMode;
+
+  /// callback executed before applying values changes
+  final BeforeChangeMultiSelection<T?>? onBeforeChangeMultiSelection;
+
+  ///selected items
+  final List<T?> selectedItems;
+
+  ///called when a new item added on Multi selection mode
+  final OnItemAdded<T>? popupOnItemAdded;
+
+  ///called when a new item added on Multi selection mode
+  final OnItemRemoved<T>? popupOnItemRemoved;
+
   const SelectDialog({
     Key? key,
     this.popupTitle,
@@ -65,7 +79,7 @@ class SelectDialog<T> extends StatefulWidget {
     this.showSearchBox = false,
     this.isFilteredOnline = false,
     this.onChanged,
-    this.selectedValue,
+    this.selectedValues = const [],
     this.onFind,
     this.itemBuilder,
     this.hintText,
@@ -81,11 +95,16 @@ class SelectDialog<T> extends StatefulWidget {
     this.searchDelay,
     this.favoriteItemBuilder,
     this.favoriteItems,
+    this.searchFieldProps,
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
-    this.searchFieldProps,
     this.scrollbarProps,
-  }) : super(key: key);
+  })  : this.isMultiSelectionMode = false,
+        this.onBeforeChangeMultiSelection = null,
+        this.selectedItems = const [],
+        this.popupOnItemAdded = null,
+        this.popupOnItemRemoved = null,
+        super(key: key);
 
   @override
   _SelectDialogState<T> createState() => _SelectDialogState<T>();
@@ -96,7 +115,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   final StreamController<List<T>> _itemsStream =
       StreamController<List<T>>.broadcast();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
-  final List<T> _items = <T>[];
+  final List<T> _syncItems = [];
+  final List<T> _selectedItems = [];
   late Debouncer _debouncer;
 
   @override
@@ -106,7 +126,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
 
     Future.delayed(
       Duration.zero,
-      () => manageItemsByFilter(widget.searchFieldProps?.controller?.text ?? '',
+      () => _manageItemsByFilter(
+          widget.searchFieldProps?.controller?.text ?? '',
           isFistLoad: true),
     );
   }
@@ -193,8 +214,24 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
               ],
             ),
           ),
+          _multiSelectionValidation(),
         ],
       ),
+    );
+  }
+
+  Widget _multiSelectionValidation() {
+    return Row(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context, _selectedItems);
+            if(widget.onChanged!=null)
+              widget.onChanged!(_selectedItems);
+          },
+          child: Text("OK"),
+        )
+      ],
     );
   }
 
@@ -258,17 +295,17 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   }
 
   void _onTextChanged(String filter) async {
-    manageItemsByFilter(filter);
+    _manageItemsByFilter(filter);
   }
 
   ///Function that filter item (online and offline) base on user filter
   ///[filter] is the filter keyword
   ///[isFirstLoad] true if it's the first time we load data from online, false other wises
-  void manageItemsByFilter(String filter, {bool isFistLoad = false}) async {
+  void _manageItemsByFilter(String filter, {bool isFistLoad = false}) async {
     _loadingNotifier.value = true;
 
     List<T> applyFilter(String filter) {
-      return _items.where((i) {
+      return _syncItems.where((i) {
         if (widget.filterFn != null)
           return (widget.filterFn!(i, filter));
         else if (i.toString().toLowerCase().contains(filter.toLowerCase()))
@@ -283,7 +320,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     }
 
     //load offline data for the first time
-    if (isFistLoad && widget.items != null) _items.addAll(widget.items!);
+    if (isFistLoad && widget.items != null) _syncItems.addAll(widget.items!);
 
     //manage offline items
     if (widget.onFind != null && (widget.isFilteredOnline || isFistLoad)) {
@@ -292,23 +329,23 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         onlineItems.addAll(await widget.onFind!(filter));
 
         //Remove all old data
-        _items.clear();
+        _syncItems.clear();
         //add offline items
         if (widget.items != null) {
-          _items.addAll(widget.items!);
+          _syncItems.addAll(widget.items!);
           //if filter online we filter only local list based on entered keyword (filter)
           if (widget.isFilteredOnline == true) {
             var filteredLocalList = applyFilter(filter);
-            _items.clear();
-            _items.addAll(filteredLocalList);
+            _syncItems.clear();
+            _syncItems.addAll(filteredLocalList);
           }
         }
         //add new online items to list
-        _items.addAll(onlineItems);
+        _syncItems.addAll(onlineItems);
 
         //don't filter data , they are already filtred online and local data are already filtered
         if (widget.isFilteredOnline == true)
-          _addDataToStream(_items);
+          _addDataToStream(_syncItems);
         else
           _addDataToStream(applyFilter(filter));
       } catch (e) {
@@ -346,7 +383,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
           child: widget.itemBuilder!(
             context,
             item,
-            _manageSelectedItemVisibility(item),
+            _isSelectedItem(item),
           ),
         ),
         onTap:
@@ -357,7 +394,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     else
       return ListTile(
         title: Text(_selectedItemAsString(item)),
-        selected: _manageSelectedItemVisibility(item),
+        selected: _isSelectedItem(item),
         onTap:
             widget.itemDisabled != null && (widget.itemDisabled!(item)) == true
                 ? null
@@ -367,14 +404,15 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
 
   /// selected item will be highlighted only when [widget.showSelectedItem] is true,
   /// if our object is String [widget.compareFn] is not required , other wises it's required
-  bool _manageSelectedItemVisibility(T? item) {
+  bool _isSelectedItem(T? item) {
     if (!widget.showSelectedItem) return false;
 
-    if (item is String?) {
-      return item == widget.selectedValue;
-    } else {
-      return widget.compareFn!(item, widget.selectedValue);
-    }
+    if (widget.compareFn != null)
+      return widget.selectedItems.firstWhere((i) => widget.compareFn!(item, i),
+              orElse: () => null) !=
+          null;
+    else
+      return widget.selectedValues.contains(item);
   }
 
   Widget _searchField() {
@@ -508,9 +546,22 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     }
   }
 
-  void _handleSelectItem(T selectedItem) {
-    Navigator.pop(context, selectedItem);
-    if (widget.onChanged != null) widget.onChanged!(selectedItem);
+  void _handleSelectItem(T newSelectedItem) {
+    if (widget.isMultiSelectionMode) {
+      if (_selectedItems.contains(newSelectedItem)) {
+        _selectedItems.remove(newSelectedItem);
+        if (widget.popupOnItemRemoved != null)
+          widget.popupOnItemRemoved!(_selectedItems, newSelectedItem);
+      } else {
+        _selectedItems.add(newSelectedItem);
+        if (widget.popupOnItemAdded != null)
+          widget.popupOnItemAdded!(_selectedItems, newSelectedItem);
+      }
+    } else {
+      Navigator.pop(context, newSelectedItem);
+      if (widget.onChanged != null)
+        widget.onChanged!(List.filled(1, newSelectedItem));
+    }
   }
 
   Widget _favoriteItemDefaultWidget(T? item) {
