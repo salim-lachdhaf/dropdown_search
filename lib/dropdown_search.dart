@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import 'src/modal_dialog.dart';
 import 'src/popupMenu.dart';
 import 'src/popup_safearea.dart';
 import 'src/scrollbar_props.dart';
