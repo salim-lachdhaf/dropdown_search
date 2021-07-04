@@ -10,22 +10,22 @@ import '../dropdown_search.dart';
 
 class SelectDialog<T> extends StatefulWidget {
   final List<T?> selectedValues;
-  final List<T>? items;
+  final List<T?>? items;
   final bool showSearchBox;
   final bool isFilteredOnline;
-  final ValueChanged<List<T>>? onChanged;
-  final DropdownSearchOnFind<T>? onFind;
-  final DropdownSearchPopupItemBuilder<T>? itemBuilder;
-  final DropdownSearchItemAsString<T>? itemAsString;
-  final DropdownSearchFilterFn<T>? filterFn;
+  final ValueChanged<List<T?>>? onChanged;
+  final DropdownSearchOnFind<T?>? onFind;
+  final DropdownSearchPopupItemBuilder<T?>? itemBuilder;
+  final DropdownSearchItemAsString<T?>? itemAsString;
+  final DropdownSearchFilterFn<T?>? filterFn;
   final String? hintText;
 
   final double? maxHeight;
   final double? dialogMaxWidth;
   final Widget? popupTitle;
   final bool showSelectedItem;
-  final DropdownSearchCompareFn<T>? compareFn;
-  final DropdownSearchPopupItemEnabled<T>? itemDisabled;
+  final DropdownSearchCompareFn<T?>? compareFn;
+  final DropdownSearchPopupItemEnabled<T?>? itemDisabled;
 
   ///custom layout for empty results
   final EmptyBuilder? emptyBuilder;
@@ -43,13 +43,13 @@ class SelectDialog<T> extends StatefulWidget {
   final bool showFavoriteItems;
 
   ///build favorites chips
-  final FavoriteItemsBuilder<T>? favoriteItemBuilder;
+  final FavoriteItemsBuilder<T?>? favoriteItemBuilder;
 
   ///favorite items alignment
   final MainAxisAlignment? favoriteItemsAlignment;
 
   ///favorites item
-  final FavoriteItems<T>? favoriteItems;
+  final FavoriteItems<T?>? favoriteItems;
 
   /// object that passes all props to search field
   final TextFieldProps? searchFieldProps;
@@ -62,14 +62,18 @@ class SelectDialog<T> extends StatefulWidget {
   /// callback executed before applying values changes
   final BeforeChangeMultiSelection<T?>? onBeforeChangeMultiSelection;
 
-  ///selected items
-  final List<T?> selectedItems;
+  ///called when a new item added on Multi selection mode
+  final OnItemAdded<T?>? popupOnItemAdded;
 
   ///called when a new item added on Multi selection mode
-  final OnItemAdded<T>? popupOnItemAdded;
+  final OnItemRemoved<T?>? popupOnItemRemoved;
 
-  ///called when a new item added on Multi selection mode
-  final OnItemRemoved<T>? popupOnItemRemoved;
+  ///widget used to show checked items in multiSelection mode
+  final DropdownSearchPopupItemBuilder<T?>? popupSelectionWidget;
+
+  ///widget used to validate items in multiSelection mode
+  final ValidationMultiSelectionBuilder<T?>?
+      popupValidationMultiSelectionWidget;
 
   const SelectDialog({
     Key? key,
@@ -99,12 +103,13 @@ class SelectDialog<T> extends StatefulWidget {
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
     this.scrollbarProps,
-  })  : this.isMultiSelectionMode = false,
-        this.onBeforeChangeMultiSelection = null,
-        this.selectedItems = const [],
-        this.popupOnItemAdded = null,
-        this.popupOnItemRemoved = null,
-        super(key: key);
+    this.onBeforeChangeMultiSelection,
+    this.popupOnItemAdded,
+    this.popupOnItemRemoved,
+    this.popupSelectionWidget,
+    this.isMultiSelectionMode = false,
+    this.popupValidationMultiSelectionWidget,
+  }) : super(key: key);
 
   @override
   _SelectDialogState<T> createState() => _SelectDialogState<T>();
@@ -112,17 +117,19 @@ class SelectDialog<T> extends StatefulWidget {
 
 class _SelectDialogState<T> extends State<SelectDialog<T>> {
   final FocusNode focusNode = new FocusNode();
-  final StreamController<List<T>> _itemsStream =
-      StreamController<List<T>>.broadcast();
+  final StreamController<List<T?>> _itemsStream = StreamController.broadcast();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
-  final List<T> _syncItems = [];
-  final List<T> _selectedItems = [];
+  final List<T?> _syncItems = [];
+  final ValueNotifier<List<T?>> _selectedItemsNotifier = ValueNotifier([]);
   late Debouncer _debouncer;
+
+  List<T?> get _selectedItems => _selectedItemsNotifier.value;
 
   @override
   void initState() {
     super.initState();
     _debouncer = Debouncer(delay: widget.searchDelay);
+    _selectedItemsNotifier.value = widget.selectedValues;
 
     Future.delayed(
       Duration.zero,
@@ -164,7 +171,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
           Expanded(
             child: Stack(
               children: <Widget>[
-                StreamBuilder<List<T>>(
+                StreamBuilder<List<T?>>(
                   stream: _itemsStream.stream,
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
@@ -221,15 +228,26 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   }
 
   Widget _multiSelectionValidation() {
+    final onValidate = () {
+      Navigator.pop(context);
+      if (widget.onChanged != null) widget.onChanged!(_selectedItems);
+    };
+    if (widget.popupValidationMultiSelectionWidget != null)
+      return InkWell(
+        child: widget.popupValidationMultiSelectionWidget!(
+            context, _selectedItems),
+        onTap: onValidate,
+      );
+
     return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context, _selectedItems);
-            if(widget.onChanged!=null)
-              widget.onChanged!(_selectedItems);
-          },
-          child: Text("OK"),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: onValidate,
+            child: Text("OK"),
+          ),
         )
       ],
     );
@@ -304,16 +322,19 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   void _manageItemsByFilter(String filter, {bool isFistLoad = false}) async {
     _loadingNotifier.value = true;
 
-    List<T> applyFilter(String filter) {
+    List<T?> applyFilter(String? filter) {
       return _syncItems.where((i) {
         if (widget.filterFn != null)
           return (widget.filterFn!(i, filter));
-        else if (i.toString().toLowerCase().contains(filter.toLowerCase()))
+        else if (i
+            .toString()
+            .toLowerCase()
+            .contains(filter?.toLowerCase() ?? 'null'))
           return true;
         else if (widget.itemAsString != null) {
           return (widget.itemAsString!(i))
               .toLowerCase()
-              .contains(filter.toLowerCase());
+              .contains(filter?.toLowerCase() ?? 'null');
         }
         return false;
       }).toList();
@@ -325,7 +346,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     //manage offline items
     if (widget.onFind != null && (widget.isFilteredOnline || isFistLoad)) {
       try {
-        final List<T> onlineItems = [];
+        final List<T?> onlineItems = [];
         onlineItems.addAll(await widget.onFind!(filter));
 
         //Remove all old data
@@ -343,7 +364,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         //add new online items to list
         _syncItems.addAll(onlineItems);
 
-        //don't filter data , they are already filtred online and local data are already filtered
+        //don't filter data , they are already filtered online and local data are already filtered
         if (widget.isFilteredOnline == true)
           _addDataToStream(_syncItems);
         else
@@ -364,7 +385,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     _loadingNotifier.value = false;
   }
 
-  void _addDataToStream(List<T> data) {
+  void _addDataToStream(List<T?> data) {
     if (_itemsStream.isClosed) return;
     _itemsStream.add(data);
   }
@@ -374,41 +395,65 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     _itemsStream.addError(error, stackTrace);
   }
 
-  Widget _itemWidget(T item) {
-    if (widget.itemBuilder != null)
-      return InkWell(
-        // ignore pointers in itemBuilder
-        child: IgnorePointer(
-          ignoring: true,
-          child: widget.itemBuilder!(
-            context,
-            item,
-            _isSelectedItem(item),
-          ),
-        ),
-        onTap:
-            widget.itemDisabled != null && (widget.itemDisabled!(item)) == true
-                ? null
-                : () => _handleSelectItem(item),
-      );
-    else
-      return ListTile(
-        title: Text(_selectedItemAsString(item)),
-        selected: _isSelectedItem(item),
-        onTap:
-            widget.itemDisabled != null && (widget.itemDisabled!(item)) == true
-                ? null
-                : () => _handleSelectItem(item),
-      );
+  Widget _itemWidget(T? item) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        (widget.itemBuilder != null)
+            ? InkWell(
+                // ignore pointers in itemBuilder
+                child: IgnorePointer(
+                  ignoring: true,
+                  child: widget.itemBuilder!(
+                    context,
+                    item,
+                    !widget.showSelectedItem ? false : _isSelectedItem(item),
+                  ),
+                ),
+                onTap: widget.itemDisabled != null &&
+                        (widget.itemDisabled!(item)) == true
+                    ? null
+                    : () => _handleSelectedItem(item),
+              )
+            : Expanded(
+                child: ListTile(
+                  title: Text(_selectedItemAsString(item)),
+                  selected: _isSelectedItem(item),
+                  onTap: widget.itemDisabled != null &&
+                          (widget.itemDisabled!(item)) == true
+                      ? null
+                      : () => _handleSelectedItem(item),
+                ),
+              ),
+        _multiSelectionSelectionWidget(item),
+      ],
+    );
+  }
+
+  Widget _multiSelectionSelectionWidget(T? item) {
+    if (!widget.isMultiSelectionMode) return Container();
+
+    return ValueListenableBuilder(
+      valueListenable: _selectedItemsNotifier,
+      builder: (cnt, items, w) {
+        if (widget.popupSelectionWidget != null)
+          return widget.popupSelectionWidget!(
+              context, item, _isSelectedItem(item));
+        else
+          return Checkbox(
+              value: _isSelectedItem(item),
+              onChanged: (b) {
+                _handleSelectedItem(item);
+              });
+      },
+    );
   }
 
   /// selected item will be highlighted only when [widget.showSelectedItem] is true,
   /// if our object is String [widget.compareFn] is not required , other wises it's required
   bool _isSelectedItem(T? item) {
-    if (!widget.showSelectedItem) return false;
-
     if (widget.compareFn != null)
-      return widget.selectedItems.firstWhere((i) => widget.compareFn!(item, i),
+      return widget.selectedValues.firstWhere((i) => widget.compareFn!(item, i),
               orElse: () => null) !=
           null;
     else
@@ -500,7 +545,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   }
 
   Widget _favoriteItemsWidget() {
-    return StreamBuilder<List<T>>(
+    return StreamBuilder<List<T?>>(
         stream: _itemsStream.stream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -511,7 +556,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         });
   }
 
-  Widget _buildFavoriteItems(List<T>? favoriteItems) {
+  Widget _buildFavoriteItems(List<T?>? favoriteItems) {
     if (favoriteItems != null) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -527,7 +572,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                   children: favoriteItems
                       .map(
                         (f) => InkWell(
-                          onTap: () => _handleSelectItem(f),
+                          onTap: () => _handleSelectedItem(f),
                           child: Container(
                             margin: EdgeInsets.only(right: 4),
                             child: widget.favoriteItemBuilder != null
@@ -546,19 +591,19 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     }
   }
 
-  void _handleSelectItem(T newSelectedItem) {
+  void _handleSelectedItem(T? newSelectedItem) {
     if (widget.isMultiSelectionMode) {
       if (_selectedItems.contains(newSelectedItem)) {
-        _selectedItems.remove(newSelectedItem);
+        _selectedItemsNotifier.value = _selectedItems..remove(newSelectedItem);
         if (widget.popupOnItemRemoved != null)
           widget.popupOnItemRemoved!(_selectedItems, newSelectedItem);
       } else {
-        _selectedItems.add(newSelectedItem);
+        _selectedItemsNotifier.value = _selectedItems..add(newSelectedItem);
         if (widget.popupOnItemAdded != null)
           widget.popupOnItemAdded!(_selectedItems, newSelectedItem);
       }
     } else {
-      Navigator.pop(context, newSelectedItem);
+      Navigator.pop(context);
       if (widget.onChanged != null)
         widget.onChanged!(List.filled(1, newSelectedItem));
     }

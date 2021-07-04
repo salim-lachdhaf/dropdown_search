@@ -39,6 +39,24 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
             padding: EdgeInsets.all(4),
             children: <Widget>[
+              ///Menu Mode with no searchBox MultiSelection
+              DropdownSearch.multiSelection(
+                validatorMultiSelection: (List<String?>? v) {
+                  return v == null || v.isEmpty ? "required field" : null;
+                },
+                hint: "Select a country",
+                mode: Mode.MENU,
+                showSelectedItem: true,
+                items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+                label: "Menu mode multiSelection*",
+                showClearButton: true,
+                onChangedMultiSelection: print,
+                popupItemDisabled: (String? s) => s?.startsWith('I') ?? false,
+                clearButtonSplashRadius: 20,
+                selectedItems: ["Tunisia"],
+              ),
+              Divider(),
+
               ///Menu Mode with no searchBox
               DropdownSearch<String>(
                 validator: (v) => v == null ? "required field" : null,
@@ -161,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 autoValidateMode: AutovalidateMode.onUserInteraction,
                 validator: (u) => u == null ? "user field is required " : null,
-                onFind: (String filter) => getData(filter),
+                onFind: (String? filter) => getData(filter),
                 onChanged: (data) {
                   print(data);
                 },
@@ -180,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showSelectedItem: true,
                 compareFn: (i, s) => i?.isEqual(s) ?? false,
                 label: "Person",
-                onFind: (String filter) => getData(filter),
+                onFind: (String? filter) => getData(filter),
                 onChanged: (data) {
                   print(data);
                 },
@@ -256,7 +274,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 showFavoriteItems: true,
                 favoriteItemsAlignment: MainAxisAlignment.start,
                 favoriteItems: (items) {
-                  return items.where((e) => e.name.contains("Mrs")).toList();
+                  return items
+                      .where((e) => e?.name.contains("Mrs") ?? false)
+                      .toList();
                 },
                 favoriteItemBuilder: (context, item) {
                   return Container(
@@ -266,7 +286,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey[100]),
                     child: Text(
-                      "${item.name}",
+                      "${item?.name ?? 'null'}",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.indigo),
                     ),
@@ -282,7 +302,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   UserModel(name: "Offline name2", id: "0101")
                 ],
                 maxHeight: 300,
-                onFind: (String filter) => getData(filter),
+                onFind: (String? filter) => getData(filter),
                 label: "choose a user",
                 onChanged: print,
                 showSearchBox: true,
