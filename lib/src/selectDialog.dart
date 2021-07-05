@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import './scrollbar_props.dart';
 import './text_field_props.dart';
 import '../dropdown_search.dart';
+import 'checkbox_widget.dart';
 
 class SelectDialog<T> extends StatefulWidget {
   final List<T?> selectedValues;
@@ -23,7 +24,7 @@ class SelectDialog<T> extends StatefulWidget {
   final double? maxHeight;
   final double? dialogMaxWidth;
   final Widget? popupTitle;
-  final bool showSelectedItem;
+  final bool showSelectedItems;
   final DropdownSearchCompareFn<T?>? compareFn;
   final DropdownSearchPopupItemEnabled<T?>? itemDisabled;
 
@@ -89,7 +90,7 @@ class SelectDialog<T> extends StatefulWidget {
     this.hintText,
     this.itemAsString,
     this.filterFn,
-    this.showSelectedItem = false,
+    this.showSelectedItems = false,
     this.compareFn,
     this.emptyBuilder,
     this.loadingBuilder,
@@ -210,7 +211,9 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
                             var item = snapshot.data![index];
-                            return _itemWidget(item);
+                            return widget.isMultiSelectionMode
+                                ? _itemWidgetMultiSelection(item)
+                                : _itemWidgetSingleSelection(item);
                           },
                         ),
                       ),
@@ -228,6 +231,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   }
 
   Widget _multiSelectionValidation() {
+    if (!widget.isMultiSelectionMode) return Container();
+
     final onValidate = () {
       Navigator.pop(context);
       if (widget.onChanged != null) widget.onChanged!(_selectedItems);
@@ -239,11 +244,13 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         onTap: onValidate,
       );
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
       children: [
+        Divider(),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: ElevatedButton(
             onPressed: onValidate,
             child: Text("OK"),
@@ -395,69 +402,82 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     _itemsStream.addError(error, stackTrace);
   }
 
-  Widget _itemWidget(T? item) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        (widget.itemBuilder != null)
-            ? InkWell(
-                // ignore pointers in itemBuilder
-                child: IgnorePointer(
-                  ignoring: true,
-                  child: widget.itemBuilder!(
-                    context,
-                    item,
-                    !widget.showSelectedItem ? false : _isSelectedItem(item),
-                  ),
-                ),
-                onTap: widget.itemDisabled != null &&
-                        (widget.itemDisabled!(item)) == true
-                    ? null
-                    : () => _handleSelectedItem(item),
-              )
-            : Expanded(
-                child: ListTile(
-                  title: Text(_selectedItemAsString(item)),
-                  selected: _isSelectedItem(item),
-                  onTap: widget.itemDisabled != null &&
-                          (widget.itemDisabled!(item)) == true
-                      ? null
-                      : () => _handleSelectedItem(item),
-                ),
+  Widget _itemWidgetSingleSelection(T? item) {
+    return (widget.itemBuilder != null)
+        ? InkWell(
+            // ignore pointers in itemBuilder
+            child: IgnorePointer(
+              ignoring: true,
+              child: widget.itemBuilder!(
+                context,
+                item,
+                !widget.showSelectedItems ? false : _isSelectedItem(item),
               ),
-        _multiSelectionSelectionWidget(item),
-      ],
-    );
+            ),
+            onTap: widget.itemDisabled != null &&
+                    (widget.itemDisabled!(item)) == true
+                ? null
+                : () => _handleSelectedItem(item),
+          )
+        : ListTile(
+            enabled: !(widget.itemDisabled != null &&
+                (widget.itemDisabled!(item)) == true),
+            title: Text(_selectedItemAsString(item)),
+            selected: _isSelectedItem(item),
+            onTap: widget.itemDisabled != null &&
+                    (widget.itemDisabled!(item)) == true
+                ? null
+                : () => _handleSelectedItem(item),
+          );
   }
 
-  Widget _multiSelectionSelectionWidget(T? item) {
-    if (!widget.isMultiSelectionMode) return Container();
-
-    return ValueListenableBuilder(
-      valueListenable: _selectedItemsNotifier,
-      builder: (cnt, items, w) {
-        if (widget.popupSelectionWidget != null)
-          return widget.popupSelectionWidget!(
-              context, item, _isSelectedItem(item));
-        else
-          return Checkbox(
-              value: _isSelectedItem(item),
-              onChanged: (b) {
-                _handleSelectedItem(item);
-              });
-      },
-    );
+  Widget _itemWidgetMultiSelection(T? item) {
+    if (widget.popupSelectionWidget != null)
+      return CheckBoxWidget(
+        isChecked: _isSelectedItem(item),
+        checkBox: (cnt, checked) {
+          return widget.popupSelectionWidget!(context, item, checked);
+        },
+        layout: (context, isChecked) {
+          return (widget.itemBuilder != null)
+              ? widget.itemBuilder!(
+                  context,
+                  item,
+                  !widget.showSelectedItems ? false : isChecked,
+                )
+              : Container();
+        },
+        isDisabled:
+            widget.itemDisabled != null && (widget.itemDisabled!(item)) == true,
+        onChanged: (c) => _handleSelectedItem(item),
+      );
+    else
+      return CheckBoxWidget(
+        layout: (context, isChecked) {
+          return ListTile(
+            enabled: !(widget.itemDisabled != null &&
+                (widget.itemDisabled!(item)) == true),
+            title: Text(_selectedItemAsString(item)),
+            selected: isChecked,
+            onTap: () {},
+          );
+        },
+        isDisabled:
+            widget.itemDisabled != null && (widget.itemDisabled!(item)) == true,
+        isChecked: _isSelectedItem(item),
+        onChanged: (c) => _handleSelectedItem(item),
+      );
   }
 
-  /// selected item will be highlighted only when [widget.showSelectedItem] is true,
+  /// selected item will be highlighted only when [widget.showSelectedItems] is true,
   /// if our object is String [widget.compareFn] is not required , other wises it's required
   bool _isSelectedItem(T? item) {
     if (widget.compareFn != null)
-      return widget.selectedValues.firstWhere((i) => widget.compareFn!(item, i),
+      return _selectedItems.firstWhere((i) => widget.compareFn!(item, i),
               orElse: () => null) !=
           null;
     else
-      return widget.selectedValues.contains(item);
+      return _selectedItems.contains(item);
   }
 
   Widget _searchField() {
@@ -556,8 +576,8 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
         });
   }
 
-  Widget _buildFavoriteItems(List<T?>? favoriteItems) {
-    if (favoriteItems != null) {
+  Widget _buildFavoriteItems(List<T?> favoriteItems) {
+    if (favoriteItems.isNotEmpty) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 8),
         child: LayoutBuilder(builder: (context, constraints) {
@@ -594,11 +614,13 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   void _handleSelectedItem(T? newSelectedItem) {
     if (widget.isMultiSelectionMode) {
       if (_selectedItems.contains(newSelectedItem)) {
-        _selectedItemsNotifier.value = _selectedItems..remove(newSelectedItem);
+        _selectedItemsNotifier.value = List.from(_selectedItems)
+          ..remove(newSelectedItem);
         if (widget.popupOnItemRemoved != null)
           widget.popupOnItemRemoved!(_selectedItems, newSelectedItem);
       } else {
-        _selectedItemsNotifier.value = _selectedItems..add(newSelectedItem);
+        _selectedItemsNotifier.value = List.from(_selectedItems)
+          ..add(newSelectedItem);
         if (widget.popupOnItemAdded != null)
           widget.popupOnItemAdded!(_selectedItems, newSelectedItem);
       }

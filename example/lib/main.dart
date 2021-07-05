@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 hint: "Select a country",
                 mode: Mode.MENU,
-                showSelectedItem: true,
+                showSelectedItems: true,
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 label: "Menu mode multiSelection*",
                 showClearButton: true,
@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 validator: (v) => v == null ? "required field" : null,
                 hint: "Select a country",
                 mode: Mode.MENU,
-                showSelectedItem: true,
+                showSelectedItems: true,
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 label: "Menu mode *",
                 showClearButton: true,
@@ -135,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Colors.black,
                         ),
                       ),
-                      showSelectedItem: true,
+                      showSelectedItems: true,
                       items: [
                         "Brazil",
                         "Italia (Disabled)",
@@ -163,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               Divider(),
-              DropdownSearch<UserModel>(
+              DropdownSearch<UserModel>.multiSelection(
                 searchFieldProps: TextFieldProps(
                   controller: TextEditingController(text: 'Mrs'),
                 ),
@@ -171,6 +171,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 maxHeight: 700,
                 isFilteredOnline: true,
                 showClearButton: true,
+                showSelectedItems: true,
+                compareFn: (item, selectedItem) => item?.id == selectedItem?.id,
                 showSearchBox: true,
                 label: 'User *',
                 dropdownSearchDecoration: InputDecoration(
@@ -178,12 +180,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                 ),
                 autoValidateMode: AutovalidateMode.onUserInteraction,
-                validator: (u) => u == null ? "user field is required " : null,
+                validatorMultiSelection: (u) =>
+                    u == null || u.isEmpty ? "user field is required " : null,
                 onFind: (String? filter) => getData(filter),
-                onChanged: (data) {
+                onChangedMultiSelection: (data) {
                   print(data);
                 },
-                dropdownBuilder: _customDropDownExample,
+                dropdownBuilderMultiSelection:
+                    _customDropDownExampleMultiSelection,
                 popupItemBuilder: _customPopupItemBuilderExample,
                 popupSafeArea: PopupSafeArea(top: true, bottom: true),
                 scrollbarProps: ScrollbarProps(
@@ -195,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
               ///custom itemBuilder and dropDownBuilder
               DropdownSearch<UserModel>(
-                showSelectedItem: true,
+                showSelectedItems: true,
                 compareFn: (i, s) => i?.isEqual(s) ?? false,
                 label: "Person",
                 onFind: (String? filter) => getData(filter),
@@ -261,7 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
               ///show favorites on top list
               DropdownSearch<UserModel>(
-                showSelectedItem: true,
+                showSelectedItems: true,
                 showSearchBox: true,
                 compareFn: (i, s) => i?.isEqual(s) ?? false,
                 label: "Person with favorite option",
@@ -324,7 +328,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 key: _openDropDownProgKey,
                 items: ["Yes", "No"],
                 label: "confirm",
-                showSelectedItem: true,
+                showSelectedItems: true,
                 dropdownButtonSplashRadius: 20,
               ),
               Column(
@@ -362,6 +366,38 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _customDropDownExampleMultiSelection(
+      BuildContext context, List<UserModel?> selectedItems) {
+    if (selectedItems.isEmpty) {
+      return ListTile(
+        contentPadding: EdgeInsets.all(0),
+        leading: CircleAvatar(),
+        title: Text("No item selected"),
+      );
+    }
+
+    return Wrap(
+      children: selectedItems.map((e) {
+        return Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            child: ListTile(
+              contentPadding: EdgeInsets.all(0),
+              leading: CircleAvatar(
+                  // this does not work - throws 404 error
+                  // backgroundImage: NetworkImage(item.avatar ?? ''),
+                  ),
+              title: Text(e?.name ?? ''),
+              subtitle: Text(
+                e?.createdAt.toString() ?? '',
+              ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 

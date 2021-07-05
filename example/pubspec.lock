@@ -56,7 +56,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.6.3"
+    version: "1.0.0-beta"
   fake_async:
     dependency: transitive
     description:

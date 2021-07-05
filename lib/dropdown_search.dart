@@ -22,7 +22,7 @@ typedef bool DropdownSearchFilterFn<T>(T? item, String? filter);
 typedef bool DropdownSearchCompareFn<T>(T? item, T? selectedItem);
 typedef Widget DropdownSearchBuilder<T>(BuildContext context, T? selectedItem);
 typedef Widget DropdownSearchBuilderMultiSelection<T>(
-    BuildContext context, List<T?>? selectedItems);
+    BuildContext context, List<T?> selectedItems);
 typedef Widget DropdownSearchPopupItemBuilder<T>(
   BuildContext context,
   T? item,
@@ -117,7 +117,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final double? dialogMaxWidth;
 
   ///select the selected item in the menu/dialog/bottomSheet of items
-  final bool showSelectedItem;
+  final bool showSelectedItems;
 
   ///function that compares two object with the same type to detected if it's the selected item or not
   final DropdownSearchCompareFn<T?>? compareFn;
@@ -270,7 +270,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.maxHeight,
     this.filterFn,
     this.itemAsString,
-    this.showSelectedItem = false,
+    this.showSelectedItems = false,
     this.compareFn,
     this.dropdownSearchDecoration,
     this.emptyBuilder,
@@ -302,7 +302,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchBaseStyle,
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
-  })  : assert(!showSelectedItem || T == String || compareFn != null),
+  })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
         this.dropdownBuilderMultiSelection = null,
@@ -335,7 +335,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.maxHeight,
     this.filterFn,
     this.itemAsString,
-    this.showSelectedItem = false,
+    this.showSelectedItems = false,
     this.compareFn,
     this.dropdownSearchDecoration,
     this.emptyBuilder,
@@ -376,7 +376,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupOnItemRemoved,
     this.popupSelectionWidget,
     this.popupValidationMultiSelectionWidget,
-  })  : assert(!showSelectedItem || T == String || compareFn != null),
+  })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = true,
         this.dropdownBuilder = null,
@@ -399,7 +399,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   void initState() {
     super.initState();
     _selectedItemsNotifier.value = isMultiSelectionMode
-        ? widget.selectedItems
+        ? List.from(widget.selectedItems)
         : List.filled(1, widget.selectedItem);
   }
 
@@ -413,7 +413,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       ..add(widget.selectedItem);
 
     if (oldSelectedItems != newSelectedItems) {
-      _selectedItemsNotifier.value = newSelectedItems;
+      _selectedItemsNotifier.value = List.from(newSelectedItems);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -434,7 +434,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     );
   }
 
-  Widget _defaultSelectItemWidget() {
+  Widget _defaultSelectedItemWidget() {
     Widget defaultItemMultiSelectionMode(T? item) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
@@ -462,7 +462,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           getSelectedItems,
         );
       else if (isMultiSelectionMode) {
-        return Row(
+        return Wrap(
           children: getSelectedItems
               .map((e) => defaultItemMultiSelectionMode(e))
               .toList(),
@@ -512,7 +512,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                         widget.dropdownBuilderSupportsNullItem),
                 isFocused: isFocused,
                 decoration: _manageDropdownDecoration(state),
-                child: _defaultSelectItemWidget(),
+                child: _defaultSelectedItemWidget(),
               );
             });
       },
@@ -544,7 +544,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                         widget.dropdownBuilderSupportsNullItem),
                 isFocused: isFocused,
                 decoration: _manageDropdownDecoration(state),
-                child: _defaultSelectItemWidget(),
+                child: _defaultSelectedItemWidget(),
               );
             });
       },
@@ -745,7 +745,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       itemBuilder: widget.popupItemBuilder,
       selectedValues: getSelectedItems,
       onChanged: _handleOnChangeSelectedItem,
-      showSelectedItem: widget.showSelectedItem,
+      showSelectedItems: widget.showSelectedItems,
       compareFn: widget.compareFn,
       emptyBuilder: widget.emptyBuilder,
       loadingBuilder: widget.loadingBuilder,
@@ -782,7 +782,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///handle on change value , if the validation is active , we validate the new selected item
   void _handleOnChangeSelectedItem(List<T?> selectedItems) {
     final changeItem = () {
-      _selectedItemsNotifier.value = selectedItems;
+      _selectedItemsNotifier.value = List.from(selectedItems);
       if (widget.onChanged != null)
         widget.onChanged!(getSelectedItem);
       else if (widget.onChangedMultiSelection != null)
