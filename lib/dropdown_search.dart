@@ -20,6 +20,7 @@ typedef Future<List<T>> DropdownSearchOnFind<T>(String? text);
 typedef String DropdownSearchItemAsString<T>(T? item);
 typedef bool DropdownSearchFilterFn<T>(T? item, String? filter);
 typedef bool DropdownSearchCompareFn<T>(T? item, T? selectedItem);
+typedef void OnOpenBottomSheet<T>(BuildContext context);
 typedef Widget DropdownSearchBuilder<T>(BuildContext context, T? selectedItem);
 typedef Widget DropdownSearchBuilderMultiSelection<T>(
     BuildContext context, List<T?> selectedItems);
@@ -243,6 +244,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///widget used to show checked items in multiSelection mode
   final DropdownSearchPopupItemBuilder<T?>? popupSelectionWidget;
 
+  ///called when open bottomSheet
+  final OnOpenBottomSheet? onOpenBottomSheet;
+
   ///widget used to validate items in multiSelection mode
   final ValidationMultiSelectionBuilder<T?>?
       popupValidationMultiSelectionWidget;
@@ -302,6 +306,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchBaseStyle,
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
+    this.onOpenBottomSheet,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -376,6 +381,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupOnItemRemoved,
     this.popupSelectionWidget,
     this.popupValidationMultiSelectionWidget,
+    this.onOpenBottomSheet,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = true,
@@ -648,6 +654,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         shape: widget.popupShape,
         context: context,
         builder: (ctx) {
+          if (widget.onOpenBottomSheet != null) widget.onOpenBottomSheet!(ctx);
           final MediaQueryData mediaQueryData = MediaQuery.of(ctx);
           EdgeInsets padding = mediaQueryData.padding;
           if (mediaQueryData.padding.bottom == 0.0 &&
