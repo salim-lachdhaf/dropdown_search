@@ -131,6 +131,11 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
     super.initState();
     _debouncer = Debouncer(delay: widget.searchDelay);
     _selectedItemsNotifier.value = widget.selectedValues;
+    widget.searchFieldProps?.controller?.addListener(() {
+      _debouncer(() {
+        _onTextChanged(widget.searchFieldProps!.controller!.text);
+      });
+    });
 
     Future.delayed(
       Duration.zero,
@@ -493,9 +498,15 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                 style: widget.searchFieldProps?.style,
                 controller: widget.searchFieldProps?.controller,
                 focusNode: focusNode,
-                onChanged: (f) => _debouncer(() {
-                  _onTextChanged(f);
-                }),
+                onChanged: (f) {
+                  if (widget.searchFieldProps?.controller != null) {
+                    return;
+                  } else {
+                    _debouncer(() {
+                      _onTextChanged(f);
+                    });
+                  }
+                },
                 decoration: widget.searchFieldProps?.decoration ??
                     InputDecoration(
                       hintText: widget.hintText,
