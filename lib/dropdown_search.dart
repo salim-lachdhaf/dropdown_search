@@ -111,6 +111,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///MENU / DIALOG/ BOTTOM_SHEET
   final Mode mode;
 
+  ///clipBehavior for Mode.BOTTOM_SHEET
+  final Clip? clipBehavior;
+
   ///the max height for dialog/bottomSheet/Menu
   final double? maxHeight;
 
@@ -258,6 +261,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.autoValidateMode = AutovalidateMode.disabled,
     this.onChanged,
     this.mode = Mode.DIALOG,
+    this.clipBehavior,
     this.label,
     this.hint,
     this.isFilteredOnline = false,
@@ -326,6 +330,7 @@ class DropdownSearch<T> extends StatefulWidget {
     Key? key,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.mode = Mode.DIALOG,
+    this.clipBehavior,
     this.label,
     this.hint,
     this.isFilteredOnline = false,
@@ -653,6 +658,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         isScrollControlled: true,
         shape: widget.popupShape,
         context: context,
+        clipBehavior: widget.clipBehavior,
         builder: (ctx) {
           if (widget.onOpenBottomSheet != null) widget.onOpenBottomSheet!(ctx);
           final MediaQueryData mediaQueryData = MediaQuery.of(ctx);
