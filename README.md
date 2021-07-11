@@ -65,7 +65,8 @@ DropdownSearch<String>(
     onChanged: print,
     selectedItem: "Brazil"),
     
-    DropdownSearch<String>.multiSelection(
+    
+DropdownSearch<String>.multiSelection(
     mode: Mode.MENU,
     showSelectedItem: true,
     items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
