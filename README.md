@@ -33,6 +33,7 @@
 * Sync and/or Async items (online, offline, DB, ...)
 * Searchable dropdown
 * Three dropdown mode: Menu/ BottomSheet/ Dialog
+* Single & multi selection
 * Material dropdown
 * Easy customizable UI
 * Handle Light and Dark theme
@@ -63,6 +64,16 @@ DropdownSearch<String>(
     popupItemDisabled: (String s) => s.startsWith('I'),
     onChanged: print,
     selectedItem: "Brazil"),
+    
+    DropdownSearch<String>.multiSelection(
+    mode: Mode.MENU,
+    showSelectedItem: true,
+    items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+    label: "Menu mode",
+    hint: "country in menu mode",
+    popupItemDisabled: (String s) => s.startsWith('I'),
+    onChanged: print,
+    selectedItems: ["Brazil"]),
 ```
 
 ## customize showed field (itemAsString)
