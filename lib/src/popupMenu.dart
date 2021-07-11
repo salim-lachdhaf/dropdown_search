@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import './popup_safearea.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+
+import './popup_safearea.dart';
 
 const Duration _kMenuDuration = Duration(milliseconds: 300);
 const double _kMenuCloseIntervalEnd = 2.0 / 3.0;
@@ -106,7 +107,6 @@ class CustomPopupMenuItem<T> extends PopupMenuEntry<T> {
   const CustomPopupMenuItem({
     Key? key,
     this.value,
-    this.enabled = true,
     this.height = kMinInteractiveDimension,
     this.textStyle,
     required this.child,
@@ -119,7 +119,6 @@ class CustomPopupMenuItem<T> extends PopupMenuEntry<T> {
   ///
   /// Defaults to true. If this is false, then the item will not react to
   /// touches.
-  final bool enabled;
 
   /// The minimum height height of the menu item.
   ///
@@ -193,8 +192,6 @@ class PopupMenuItemState<T, W extends CustomPopupMenuItem<T>> extends State<W> {
         popupMenuTheme.textStyle ??
         theme.textTheme.subtitle1;
 
-    if (!widget.enabled) style = style!.copyWith(color: theme.disabledColor);
-
     Widget item = AnimatedDefaultTextStyle(
       style: style!,
       duration: kThemeChangeDuration,
@@ -207,17 +204,9 @@ class PopupMenuItemState<T, W extends CustomPopupMenuItem<T>> extends State<W> {
       ),
     );
 
-    if (!widget.enabled) {
-      final bool isDark = theme.brightness == Brightness.dark;
-      item = IconTheme.merge(
-        data: IconThemeData(opacity: isDark ? 0.5 : 0.38),
-        child: item,
-      );
-    }
-
     return InkWell(
-      onTap: widget.enabled ? handleTap : null,
-      canRequestFocus: widget.enabled,
+      onTap: null,
+      canRequestFocus: false,
       child: item,
     );
   }

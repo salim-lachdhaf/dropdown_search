@@ -16,7 +16,7 @@ class CheckBoxWidget extends StatefulWidget {
     this.isDisabled = false,
     this.layout,
     this.checkBox,
-    this.onChanged,
+    required this.onChanged,
   }) : super(key: key);
 
   @override

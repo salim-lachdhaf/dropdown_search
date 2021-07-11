@@ -40,8 +40,8 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.all(4),
             children: <Widget>[
               ///Menu Mode with no searchBox MultiSelection
-              DropdownSearch.multiSelection(
-                validatorMultiSelection: (List<String?>? v) {
+              DropdownSearch<String>.multiSelection(
+                validator: (List<String>? v) {
                   return v == null || v.isEmpty ? "required field" : null;
                 },
                 hint: "Select a country",
@@ -50,8 +50,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 label: "Menu mode multiSelection*",
                 showClearButton: true,
-                onChangedMultiSelection: print,
-                popupItemDisabled: (String? s) => s?.startsWith('I') ?? false,
+                onChange: print,
+                popupSelectionWidget: (cnt, String item, bool isSelected) {
+                  return isSelected
+                      ? Icon(
+                          Icons.check_circle,
+                          color: Colors.green[500],
+                        )
+                      : Container();
+                },
+                popupItemDisabled: (String s) => s.startsWith('I'),
                 clearButtonSplashRadius: 20,
                 selectedItems: ["Tunisia"],
               ),
@@ -180,14 +188,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                 ),
                 autoValidateMode: AutovalidateMode.onUserInteraction,
-                validatorMultiSelection: (u) =>
+                validator: (u) =>
                     u == null || u.isEmpty ? "user field is required " : null,
                 onFind: (String? filter) => getData(filter),
-                onChangedMultiSelection: (data) {
+                onChange: (data) {
                   print(data);
                 },
-                dropdownBuilderMultiSelection:
-                    _customDropDownExampleMultiSelection,
+                dropdownBuilder: _customDropDownExampleMultiSelection,
                 popupItemBuilder: _customPopupItemBuilderExample,
                 popupSafeArea: PopupSafeArea(top: true, bottom: true),
                 scrollbarProps: ScrollbarProps(
@@ -278,9 +285,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showFavoriteItems: true,
                 favoriteItemsAlignment: MainAxisAlignment.start,
                 favoriteItems: (items) {
-                  return items
-                      .where((e) => e?.name.contains("Mrs") ?? false)
-                      .toList();
+                  return items.where((e) => e.name.contains("Mrs")).toList();
                 },
                 favoriteItemBuilder: (context, item) {
                   return Container(
@@ -290,7 +295,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey[100]),
                     child: Text(
-                      "${item?.name ?? 'null'}",
+                      "${item.name}",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.indigo),
                     ),
