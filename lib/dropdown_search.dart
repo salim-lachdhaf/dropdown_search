@@ -657,7 +657,6 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         backgroundColor: Colors.transparent,
         isDismissible: widget.popupBarrierDismissible,
         isScrollControlled: true,
-        shape: widget.popupShape,
         context: context,
         builder: (ctx) {
           final MediaQueryData mediaQueryData = MediaQuery.of(ctx);
@@ -679,14 +678,18 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                   margin: EdgeInsets.only(
                     top: widget.popupSafeArea.top ? padding.top : 0,
                   ),
-                  color:
-                      widget.popupBackgroundColor ?? Theme.of(ctx).canvasColor,
-                  child: SafeArea(
-                    top: false,
-                    bottom: widget.popupSafeArea.bottom,
-                    left: widget.popupSafeArea.left,
-                    right: widget.popupSafeArea.right,
-                    child: _selectDialogInstance(defaultHeight: 350),
+                  child: Material(
+                    color: widget.popupBackgroundColor ??
+                        Theme.of(ctx).canvasColor,
+                    shape: widget.popupShape,
+                    clipBehavior: Clip.antiAlias,
+                    child: SafeArea(
+                      top: false,
+                      bottom: widget.popupSafeArea.bottom,
+                      left: widget.popupSafeArea.left,
+                      right: widget.popupSafeArea.right,
+                      child: _selectDialogInstance(defaultHeight: 350),
+                    ),
                   ),
                 ),
                 // this part makes top padding tappable to be able to
