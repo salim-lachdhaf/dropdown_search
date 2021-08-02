@@ -248,6 +248,9 @@ class DropdownSearch<T> extends StatefulWidget {
   final ValidationMultiSelectionBuilder<T?>?
       popupValidationMultiSelectionWidget;
 
+  /// elevation for popup items
+  final double popupElevation;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -303,6 +306,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchBaseStyle,
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
+    this.popupElevation = 8,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -377,6 +381,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupOnItemRemoved,
     this.popupSelectionWidget,
     this.popupValidationMultiSelectionWidget,
+    this.popupElevation = 8,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.onChangedMultiSelection = onChange,
@@ -640,6 +645,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           left: widget.popupSafeArea.left,
           right: widget.popupSafeArea.right,
           child: AlertDialog(
+            elevation: widget.popupElevation,
             contentPadding: EdgeInsets.all(0),
             shape: widget.popupShape,
             backgroundColor: widget.popupBackgroundColor,
@@ -683,6 +689,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                         Theme.of(ctx).canvasColor,
                     shape: widget.popupShape,
                     clipBehavior: Clip.antiAlias,
+                    elevation: widget.popupElevation,
                     child: SafeArea(
                       top: false,
                       bottom: widget.popupSafeArea.bottom,
@@ -734,7 +741,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         color: widget.popupBackgroundColor,
         context: context,
         position: position,
-        elevation: 8,
+        elevation: widget.popupElevation,
         barrierDismissible: widget.popupBarrierDismissible,
         items: [
           CustomPopupMenuItem(
