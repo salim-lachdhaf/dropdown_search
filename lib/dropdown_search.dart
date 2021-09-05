@@ -447,7 +447,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   List<T> _itemToList(T? item) {
-    List<T?> nullableList = List.filled(1, widget.selectedItem);
+    List<T?> nullableList = List.filled(1, item);
     return nullableList.whereType<T>().toList();
   }
 

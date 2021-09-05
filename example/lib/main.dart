@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 hint: "Select a country",
                 mode: Mode.MENU,
-                showSelectedItems: true,
+                showSelectedItems: false,
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 label: "Menu mode multiSelection*",
                 showClearButton: true,

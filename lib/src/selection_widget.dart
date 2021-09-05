@@ -418,7 +418,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         : ListTile(
             enabled: !_isDisabled(item),
             title: Text(_selectedItemAsString(item)),
-            selected: _isSelectedItem(item),
+            selected: !widget.showSelectedItems ? false : _isSelectedItem(item),
             onTap: _isDisabled(item) ? null : () => _handleSelectedItem(item),
           );
   }
@@ -591,7 +591,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
 
   void _handleSelectedItem(T newSelectedItem) {
     if (widget.isMultiSelectionMode) {
-      if (_selectedItems.contains(newSelectedItem)) {
+      if (_isSelectedItem(newSelectedItem)) {
         _selectedItemsNotifier.value = List.from(_selectedItems)
           ..remove(newSelectedItem);
         if (widget.popupOnItemRemoved != null)

@@ -1,7 +1,4 @@
-## [1.0.0-beta2] - 2021.07.11
-* fix bugs
-
-## [1.0.0-beta] - 2021.07.05
+## [1.0.0] - 2021.09.08
 * new feature : multiSelection mode
 * breaking changes :
         - searchBoxDecoration removed: replaced by searchFieldProps
