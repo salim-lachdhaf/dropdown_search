@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
 
+import 'package:dropdown_search/src/selection_list_view_props.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -75,6 +76,9 @@ class SelectionWidget<T> extends StatefulWidget {
   ///widget used to validate items in multiSelection mode
   final ValidationMultiSelectionBuilder<T>? popupValidationMultiSelectionWidget;
 
+  /// props for selection list view
+  final SelectionListViewProps selectionListViewProps;
+
   const SelectionWidget({
     Key? key,
     this.popupTitle,
@@ -109,6 +113,7 @@ class SelectionWidget<T> extends StatefulWidget {
     this.popupSelectionWidget,
     this.isMultiSelectionMode = false,
     this.popupValidationMultiSelectionWidget,
+    this.selectionListViewProps = const SelectionListViewProps(),
   }) : super(key: key);
 
   @override
@@ -205,8 +210,33 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                             widget.scrollbarProps?.notificationPredicate,
                         interactive: widget.scrollbarProps?.interactive,
                         child: ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.symmetric(vertical: 0),
+                          shrinkWrap: widget.selectionListViewProps.shrinkWrap,
+                          padding: widget.selectionListViewProps.padding,
+                          scrollDirection:
+                              widget.selectionListViewProps.scrollDirection,
+                          reverse: widget.selectionListViewProps.reverse,
+                          controller: widget.selectionListViewProps.controller,
+                          primary: widget.selectionListViewProps.primary,
+                          physics: widget.selectionListViewProps.physics,
+                          itemExtent: widget.selectionListViewProps.itemExtent,
+                          addAutomaticKeepAlives: widget
+                              .selectionListViewProps.addAutomaticKeepAlives,
+                          addRepaintBoundaries: widget
+                              .selectionListViewProps.addRepaintBoundaries,
+                          addSemanticIndexes:
+                              widget.selectionListViewProps.addSemanticIndexes,
+                          cacheExtent:
+                              widget.selectionListViewProps.cacheExtent,
+                          semanticChildCount:
+                              widget.selectionListViewProps.semanticChildCount,
+                          dragStartBehavior:
+                              widget.selectionListViewProps.dragStartBehavior,
+                          keyboardDismissBehavior: widget
+                              .selectionListViewProps.keyboardDismissBehavior,
+                          restorationId:
+                              widget.selectionListViewProps.restorationId,
+                          clipBehavior:
+                              widget.selectionListViewProps.clipBehavior,
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
                             var item = snapshot.data![index];

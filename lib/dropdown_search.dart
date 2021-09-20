@@ -2,6 +2,7 @@ library dropdown_search;
 
 import 'dart:async';
 
+import 'package:dropdown_search/src/selection_list_view_props.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -251,6 +252,9 @@ class DropdownSearch<T> extends StatefulWidget {
   /// elevation for popup items
   final double popupElevation;
 
+  /// props for selection list view
+  final SelectionListViewProps selectionListViewProps;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -307,6 +311,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
     this.popupElevation = 8,
+    this.selectionListViewProps = const SelectionListViewProps(),
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -382,6 +387,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupSelectionWidget,
     this.popupValidationMultiSelectionWidget,
     this.popupElevation = 8,
+    this.selectionListViewProps = const SelectionListViewProps(),
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.onChangedMultiSelection = onChange,
