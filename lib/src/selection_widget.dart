@@ -160,6 +160,8 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     double maxWidth = deviceSize.width * (isTablet ? .7 : .9);
 
     return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(),
       width: widget.dialogMaxWidth ?? maxWidth,
       constraints: BoxConstraints(maxHeight: widget.maxHeight ?? maxHeight),
       child: Column(
