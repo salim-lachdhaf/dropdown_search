@@ -204,6 +204,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`popupSafeArea`|set properties of popup safe area|
 |`scrollbarProps`|scrollbar properties|
 |`popupBarrierDismissible`|whether modal can be dismissed by tapping the modal barrier|
+|`selectionListViewProps`|props for selection list view|
 
 # Attention
 To use a template as an item type, and you don't want to use a custom function **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
