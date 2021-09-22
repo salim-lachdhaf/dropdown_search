@@ -125,7 +125,7 @@ class SelectionWidget<T> extends StatefulWidget {
 }
 
 class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
-  final FocusNode focusNode = new FocusNode();
+  // final FocusNode focusNode = new FocusNode();
   final StreamController<List<T>> _itemsStream = StreamController.broadcast();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
   final List<T> _syncItems = [];
@@ -152,7 +152,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (widget.searchFieldProps?.autofocus == true) //handle null and false
-      FocusScope.of(context).requestFocus(focusNode);
+      FocusScope.of(context).requestFocus(widget.focusNode);
   }
 
   @override
@@ -504,7 +504,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
               child: TextField(
                 style: widget.searchFieldProps?.style,
                 controller: widget.searchFieldProps?.controller,
-                focusNode: focusNode,
+                focusNode: widget.focusNode,
                 onChanged: (f) => _debouncer(() {
                   _onTextChanged(f);
                 }),
