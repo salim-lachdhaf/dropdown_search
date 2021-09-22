@@ -159,6 +159,18 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |  Properties |   Description|
 | ------------ | ------------ |
 |`label`|DropDownSearch label|
+|`hint`|DropDownSearch hint|
+|`showAsSuffixIcons`|whether to manage the clear and dropdown icons via InputDecoration suffixIcon|
+|`showSelectedItems`|select the selected item in the menu/dialog/bottomSheet of items|
+|`onPopupDismissed`|called when popup is dismissed|
+|`favoriteItemBuilder`|to customize favorites chips|
+|`favoriteItems`|favorites items list|
+|`showFavoriteItems`|show or hide favorites items|
+|`favoriteItemsAlignment`|favorite items alignment|
+|`searchFieldProps`|object that passes all props to search field|
+|`dropdownSearchBaseStyle`|style on which to base the label|
+|`dropdownSearchTextAlign`|How the text in the decoration should be aligned horizontally.|
+|`dropdownSearchTextAlignVertical`|How the text should be aligned vertically.|
 |`showSearchBox`|show/hide the search box|
 |`isFilteredOnline`|true if the filter on items is applied onlie (via API)|
 |`showClearButton`| show/hide clear selected item|
@@ -205,10 +217,10 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 |`scrollbarProps`|scrollbar properties|
 |`popupBarrierDismissible`|whether modal can be dismissed by tapping the modal barrier|
 |`selectionListViewProps`|props for selection list view|
+|`popupElevation`|elevation for popup items|
 
 # Attention
 To use a template as an item type, and you don't want to use a custom function **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
-
 
 ```dart
 class UserModel {
