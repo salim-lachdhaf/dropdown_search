@@ -79,6 +79,9 @@ class SelectionWidget<T> extends StatefulWidget {
   /// props for selection list view
   final SelectionListViewProps selectionListViewProps;
 
+  /// props for selection focus node
+  final FocusNode focusNode;
+
   const SelectionWidget({
     Key? key,
     this.popupTitle,
@@ -114,6 +117,7 @@ class SelectionWidget<T> extends StatefulWidget {
     this.isMultiSelectionMode = false,
     this.popupValidationMultiSelectionWidget,
     this.selectionListViewProps = const SelectionListViewProps(),
+    required this.focusNode,
   }) : super(key: key);
 
   @override
