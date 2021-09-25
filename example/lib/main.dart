@@ -44,11 +44,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 validator: (List<String>? v) {
                   return v == null || v.isEmpty ? "required field" : null;
                 },
-                hint: "Select a country",
+                dropdownSearchDecoration: InputDecoration(
+                  hintText: "Select a country",
+                  labelText: "Menu mode multiSelection*",
+                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                  border: OutlineInputBorder(),
+                ),
                 mode: Mode.MENU,
                 showSelectedItems: false,
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-                label: "Menu mode multiSelection*",
                 showClearButton: true,
                 onChange: print,
                 popupSelectionWidget: (cnt, String item, bool isSelected) {
@@ -68,11 +72,15 @@ class _MyHomePageState extends State<MyHomePage> {
               ///Menu Mode with no searchBox
               DropdownSearch<String>(
                 validator: (v) => v == null ? "required field" : null,
-                hint: "Select a country",
+                dropdownSearchDecoration: InputDecoration(
+                  hintText: "Select a country",
+                  labelText: "Menu mode *",
+                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                  border: OutlineInputBorder(),
+                ),
                 mode: Mode.MENU,
                 showSelectedItems: true,
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-                label: "Menu mode *",
                 showClearButton: true,
                 onChanged: print,
                 popupItemDisabled: (String? s) => s?.startsWith('I') ?? false,
@@ -118,9 +126,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     flex: 2,
                     child: DropdownSearch<String>(
                       validator: (v) => v == null ? "required field" : null,
-                      hint: "Select a country",
                       mode: Mode.MENU,
                       dropdownSearchDecoration: InputDecoration(
+                        hintText: "Select a country",
+                        labelText: "Menu mode *",
                         filled: true,
                         border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFF01689A)),
@@ -150,7 +159,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         "Tunisia",
                         'Canada'
                       ],
-                      label: "Menu mode *",
                       showClearButton: true,
                       onChanged: print,
                       popupItemDisabled: (String? s) =>
@@ -182,8 +190,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 showSelectedItems: true,
                 compareFn: (item, selectedItem) => item?.id == selectedItem?.id,
                 showSearchBox: true,
-                label: 'User *',
                 dropdownSearchDecoration: InputDecoration(
+                  labelText: 'User *',
                   filled: true,
                   fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                 ),
@@ -208,7 +216,11 @@ class _MyHomePageState extends State<MyHomePage> {
               DropdownSearch<UserModel>(
                 showSelectedItems: true,
                 compareFn: (i, s) => i?.isEqual(s) ?? false,
-                label: "Person",
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: "Person",
+                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                  border: OutlineInputBorder(),
+                ),
                 onFind: (String? filter) => getData(filter),
                 onChanged: (data) {
                   print(data);
@@ -230,7 +242,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   'France',
                   'Belgique'
                 ],
-                label: "Custom BottomShet mode",
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: "Custom BottomShet mode",
+                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                  border: OutlineInputBorder(),
+                ),
                 onChanged: print,
                 selectedItem: "Brazil",
                 showSearchBox: true,
@@ -275,7 +291,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 showSelectedItems: true,
                 showSearchBox: true,
                 compareFn: (i, s) => i?.isEqual(s) ?? false,
-                label: "Person with favorite option",
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: "Person with favorite option",
+                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                  border: OutlineInputBorder(),
+                ),
                 onFind: (filter) => getData(filter),
                 onChanged: (data) {
                   print(data);
@@ -312,7 +332,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
                 maxHeight: 300,
                 onFind: (String? filter) => getData(filter),
-                label: "choose a user",
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: "choose a user",
+                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                  border: OutlineInputBorder(),
+                ),
                 onChanged: print,
                 showSearchBox: true,
               ),
@@ -321,7 +345,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ///open dropdown programmatically
               DropdownSearch<String>(
                 items: ["no action", "confirm in the next dropdown"],
-                label: "open another dropdown programmatically",
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: "open another dropdown programmatically",
+                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                  border: OutlineInputBorder(),
+                ),
                 onChanged: (v) {
                   if (v == "confirm in the next dropdown") {
                     _openDropDownProgKey.currentState?.openDropDownSearch();
@@ -332,7 +360,11 @@ class _MyHomePageState extends State<MyHomePage> {
               DropdownSearch<String>(
                 key: _openDropDownProgKey,
                 items: ["Yes", "No"],
-                label: "confirm",
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: "confirm",
+                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                  border: OutlineInputBorder(),
+                ),
                 showSelectedItems: true,
                 dropdownButtonSplashRadius: 20,
               ),

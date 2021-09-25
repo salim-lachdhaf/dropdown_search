@@ -262,8 +262,8 @@ class DropdownSearch<T> extends StatefulWidget {
     this.autoValidateMode = AutovalidateMode.disabled,
     this.onChanged,
     this.mode = Mode.DIALOG,
-    this.label,
-    this.hint,
+    @Deprecated('Use labelText prop from dropdownSearchDecoration') this.label,
+    @Deprecated('Use hintText prop from dropdownSearchDecoration') this.hint,
     this.isFilteredOnline = false,
     this.popupTitle,
     this.items,
@@ -331,8 +331,8 @@ class DropdownSearch<T> extends StatefulWidget {
     Key? key,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.mode = Mode.DIALOG,
-    this.label,
-    this.hint,
+    @Deprecated('Use labelText prop from dropdownSearchDecoration') this.label,
+    @Deprecated('Use hintText prop from dropdownSearchDecoration') this.hint,
     this.isFilteredOnline = false,
     this.popupTitle,
     this.items,
@@ -583,8 +583,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         .applyDefaults(Theme.of(state.context).inputDecorationTheme)
         .copyWith(
             enabled: widget.enabled,
-            labelText: widget.label,
-            hintText: widget.hint,
+            labelText:
+                widget.label ?? widget.dropdownSearchDecoration?.labelText,
+            hintText: widget.hint ?? widget.dropdownSearchDecoration?.hintText,
             suffixIcon:
                 widget.showAsSuffixIcons ? _manageTrailingIcons() : null,
             errorText: state.errorText);
