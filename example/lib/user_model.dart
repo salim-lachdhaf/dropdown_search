@@ -9,15 +9,16 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json["id"],
-      createdAt:
-          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-      name: json["name"],
-      avatar: json["avatar"],
+      id: json["id"] as String,
+      createdAt: json["createdAt"] == null
+          ? null
+          : DateTime.parse(json["createdAt"] as String),
+      name: json["name"] as String,
+      avatar: json["avatar"] as String,
     );
   }
 
-  static List<UserModel> fromJsonList(List list) {
+  static List<UserModel> fromJsonList(List<Map<String, dynamic>> list) {
     return list.map((item) => UserModel.fromJson(item)).toList();
   }
 
