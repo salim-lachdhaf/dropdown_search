@@ -140,7 +140,9 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     _selectedItemsNotifier.value = widget.selectedValues;
 
     widget.searchFieldProps?.controller?.addListener(() {
-      _onTextChanged(widget.searchFieldProps!.controller!.text);
+      _debouncer(() {
+        _onTextChanged(widget.searchFieldProps!.controller!.text);
+      });
     });
 
     Future.delayed(
@@ -513,9 +515,14 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                 style: widget.searchFieldProps?.style,
                 controller: widget.searchFieldProps?.controller,
                 focusNode: widget.focusNode,
-                onChanged: (f) => _debouncer(() {
-                  _onTextChanged(f);
-                }),
+                onChanged: (f) {
+                  //if controller !=null , the change event will be handled by
+                  // the controller
+                  if (widget.searchFieldProps?.controller == null)
+                    _debouncer(() {
+                      _onTextChanged(f);
+                    });
+                },
                 decoration: widget.searchFieldProps?.decoration ??
                     InputDecoration(
                       hintText: widget.hintText,
