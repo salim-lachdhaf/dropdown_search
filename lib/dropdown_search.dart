@@ -43,6 +43,9 @@ typedef Widget FavoriteItemsBuilder<T>(BuildContext context, T item);
 typedef Widget ValidationMultiSelectionBuilder<T>(
     BuildContext context, List<T> item);
 
+typedef RelativeRect PositionCallback(
+    RenderBox popupButtonObject, RenderBox overlay);
+
 typedef void OnItemAdded<T>(List<T> selectedItem, T addedItem);
 typedef void OnItemRemoved<T>(List<T> selectedItem, T removedItem);
 
@@ -257,6 +260,9 @@ class DropdownSearch<T> extends StatefulWidget {
 
   /// props for selection focus node
   final FocusNode? focusNode;
+  
+  /// function to override position calculation
+  final PositionCallback? positionCallback;
 
   DropdownSearch({
     Key? key,
@@ -316,6 +322,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
+    this.positionCallback,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -393,6 +400,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
+    this.positionCallback,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.onChangedMultiSelection = onChange,
@@ -727,15 +735,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         });
   }
 
-  ///openMenu
-  Future _openMenu() {
-    // Here we get the render object of our physical button, later to get its size & position
-    final RenderBox popupButtonObject = context.findRenderObject() as RenderBox;
-    // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
-    final RenderBox overlay =
-        Overlay.of(context)!.context.findRenderObject() as RenderBox;
+  RelativeRect _position(RenderBox popupButtonObject, RenderBox overlay) {
     // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
-    final RelativeRect position = RelativeRect.fromSize(
+    return RelativeRect.fromSize(
       Rect.fromPoints(
         popupButtonObject.localToGlobal(
             popupButtonObject.size.bottomLeft(Offset.zero),
@@ -746,13 +748,24 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       ),
       Size(overlay.size.width, overlay.size.height),
     );
+  }
+
+  ///openMenu
+  Future _openMenu() {
+    // Here we get the render object of our physical button, later to get its size & position
+    final popupButtonObject = context.findRenderObject() as RenderBox;
+    // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
+    final overlay =
+        Overlay.of(context)!.context.findRenderObject() as RenderBox;
+
     return customShowMenu<T>(
         popupSafeArea: widget.popupSafeArea,
         barrierColor: widget.popupBarrierColor,
         shape: widget.popupShape,
         color: widget.popupBackgroundColor,
         context: context,
-        position: position,
+        position:
+            (widget.positionCallback ?? _position)(popupButtonObject, overlay),
         elevation: widget.popupElevation,
         barrierDismissible: widget.popupBarrierDismissible,
         items: [
