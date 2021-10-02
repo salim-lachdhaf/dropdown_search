@@ -260,7 +260,7 @@ class DropdownSearch<T> extends StatefulWidget {
 
   /// props for selection focus node
   final FocusNode? focusNode;
-  
+
   /// function to override position calculation
   final PositionCallback? positionCallback;
 
