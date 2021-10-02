@@ -2,9 +2,6 @@
 # Source of linter options:
 # http://dart-lang.github.io/linter/lints/options/options.html
 analyzer:
-  strong-mode:
-    implicit-casts: false
-    implicit-dynamic: false
   errors:
     # treat missing required parameters as a warning (not a hint)
     missing_required_param: warning

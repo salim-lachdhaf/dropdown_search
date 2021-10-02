@@ -198,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 autoValidateMode: AutovalidateMode.onUserInteraction,
                 validator: (u) =>
                     u == null || u.isEmpty ? "user field is required " : null,
-                onFind: (filter) => getData(filter),
+                onFind: (String? filter) => getData(filter),
                 onChange: (data) {
                   print(data);
                 },
@@ -510,10 +510,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<List<UserModel>> getData(String? filter) async {
-    var response = await Dio().get<List<Map<String, dynamic>>>(
+  Future<List<UserModel>> getData(filter) async {
+    var response = await Dio().get(
       "https://5d85ccfb1e61af001471bf60.mockapi.io/user",
-      queryParameters: <String, dynamic>{"filter": filter},
+      queryParameters: {"filter": filter},
     );
 
     final data = response.data;
