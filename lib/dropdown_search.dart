@@ -258,6 +258,9 @@ class DropdownSearch<T> extends StatefulWidget {
   /// props for selection list view
   final SelectionListViewProps selectionListViewProps;
 
+  /// props for selection focus node
+  final FocusNode? focusNode;
+  
   /// function to override position calculation
   final PositionCallback? positionCallback;
 
@@ -318,6 +321,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchTextAlignVertical,
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
+    this.focusNode,
     this.positionCallback,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
@@ -395,6 +399,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupValidationMultiSelectionWidget,
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
+    this.focusNode,
     this.positionCallback,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
@@ -807,6 +812,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       popupValidationMultiSelectionWidget:
           widget.popupValidationMultiSelectionWidget,
       isMultiSelectionMode: isMultiSelectionMode,
+      focusNode: widget.focusNode ?? FocusNode(),
     );
   }
 
