@@ -1,3 +1,7 @@
+## [1.0.1] - 2021.10.02
+* new feature : change searchBox query programmatically using EditTextController
+* fix some bugs
+
 ## [1.0.0] - 2021.09.08
 * new feature : multiSelection mode
 * breaking changes :
