@@ -182,15 +182,16 @@ class _MyHomePageState extends State<MyHomePage> {
               Divider(),
               DropdownSearch<UserModel>.multiSelection(
                 searchFieldProps: TextFieldProps(
-                    controller: _userEditTextController,
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          _userEditTextController.clear();
-                        },
-                      ),
-                    )),
+                  controller: _userEditTextController,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.clear),
+                      onPressed: () {
+                        _userEditTextController.clear();
+                      },
+                    ),
+                  ),
+                ),
                 mode: Mode.BOTTOM_SHEET,
                 maxHeight: 700,
                 isFilteredOnline: true,
