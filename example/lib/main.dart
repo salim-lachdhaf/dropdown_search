@@ -358,6 +358,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Padding(padding: EdgeInsets.all(4)),
               DropdownSearch<String>(
+                validator: (value) => value == null ? "empty" : null,
                 key: _openDropDownProgKey,
                 items: ["Yes", "No"],
                 dropdownSearchDecoration: InputDecoration(
@@ -394,7 +395,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ElevatedButton(
                       onPressed: () {
                         _openDropDownProgKey.currentState
-                            ?.changeSelectedItem("Blabla");
+                            ?.changeSelectedItem('Blabla');
                       },
                       child: Text("set to 'Blabla'")),
                 ],

@@ -5,10 +5,10 @@ import 'package:dropdown_search/src/selection_list_view_props.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import './scrollbar_props.dart';
-import './text_field_props.dart';
 import '../dropdown_search.dart';
 import 'checkbox_widget.dart';
+import 'scrollbar_props.dart';
+import 'text_field_props.dart';
 
 class SelectionWidget<T> extends StatefulWidget {
   final List<T> selectedValues;
@@ -125,7 +125,6 @@ class SelectionWidget<T> extends StatefulWidget {
 }
 
 class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
-  // final FocusNode focusNode = new FocusNode();
   final StreamController<List<T>> _itemsStream = StreamController.broadcast();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
   final List<T> _syncItems = [];
@@ -485,10 +484,15 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   /// selected item will be highlighted only when [widget.showSelectedItems] is true,
   /// if our object is String [widget.compareFn] is not required , other wises it's required
   bool _isSelectedItem(T item) {
+    return _selectedItems.where((i) => _isEqual(item, i)).isNotEmpty;
+  }
+
+  //compared two items base on user params
+  bool _isEqual(T i1, T i2) {
     if (widget.compareFn != null)
-      return _selectedItems.where((i) => widget.compareFn!(item, i)).isNotEmpty;
+      return widget.compareFn!(i1, i2);
     else
-      return _selectedItems.contains(item);
+      return i1 == i2;
   }
 
   Widget _searchField() {
@@ -629,7 +633,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     if (widget.isMultiSelectionMode) {
       if (_isSelectedItem(newSelectedItem)) {
         _selectedItemsNotifier.value = List.from(_selectedItems)
-          ..remove(newSelectedItem);
+          ..removeWhere((i) => _isEqual(newSelectedItem, i));
         if (widget.popupOnItemRemoved != null)
           widget.popupOnItemRemoved!(_selectedItems, newSelectedItem);
       } else {

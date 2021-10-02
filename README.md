@@ -155,56 +155,7 @@ DropdownSearch<UserModel>(
 ```
 ## Layout customization
 You can customize the layout of the DropdownSearch and its items. [EXAMPLE](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example#custom-layout-endpoint-example)
-
-|  Properties |   Description|
-| ------------ | ------------ |
-|`label`|DropDownSearch label|
-|`showSearchBox`|show/hide the search box|
-|`isFilteredOnline`|true if the filter on items is applied onlie (via API)|
-|`showClearButton`| show/hide clear selected item|
-|`items`| offline items list|
-|`selectedItem`| selected item|
-|`onFind`|function that returns item from API|
-|`onChanged`|called when a new item is selected|
-|`dropdownBuilder`|to customize list of items UI|
-|`popupItemBuilder`|to customize selected item|
-|`validator`|function to apply the validation formula|
-|`searchBoxDecoration`|decoration for the search box|
-|`popupBackgroundColor`|background color for the dialog/menu/bottomSheet|
-|`popupTitle`|Custom widget for the popup title|
-|`itemAsString`|customize the fields the be shown|
-|`filterFn`|custom filter function|
-|`enabled`|enable/disable dropdownSearch|
-|`mode`| MENU / DIALOG/ BOTTOM_SHEET|
-|`maxHeight`| the max height for dialog/bottomSheet/Menu|
-|`dialogMaxWidth`| the max width for the dialog|
-|`showSelectedItem`| manage selected item visibility (if true, the selected item will be highlighted)|
-|`compareFn`| Function(T item, T selectedItem), custom comparing function|
-|`dropdownSearchDecoration`| DropdownSearch input decoration|
-|`emptyBuilder`| custom layout for empty results|
-|`loadingBuilder`| custom layout for loading items|
-|`errorBuilder`| custom layout for error|
-|`autoFocusSearchBox`| the search box will be focused if true|
-|`popupShape`| custom shape for the popup|
-|`autoValidateMode`|handle auto validation mode|
-|`onSaved`|An optional method to call with the final value when the form is saved via|
-|`validator`|An optional method that validates an input. Returns an error string to display if the input is invalid, or null otherwise.|
-|`clearButton`|customize clear button widget|
-|`clearButtonSplashRadius`|customize clear button splash radius|
-|`dropDownButton`|customize dropdown button widget|
-|`dropDownButtonSplashRadius`|customize dropdown button splash radius|
-|`dropdownBuilderSupportsNullItem`|If true, the dropdownBuilder will continue the uses of material behavior. This will be useful if you want to handle a custom UI only if the item !=null|
-|`popupItemDisabled`|defines if an item of the popup is enabled or not, if the item is disabled, it cannot be clicked|
-|`popupBarrierColor`|set a custom color for the popup barrier|
-|`searchBoxController`|search box controller|
-|`clearButtonBuilder`|custom clear button builder|
-|`dropdownButtonBuilder`|custom dropdown button builder|
-|`onBeforeChange`|callback executed before applying value change|
-|`searchDelay`|delay before searching|
-|`popupSafeArea`|set properties of popup safe area|
-|`scrollbarProps`|scrollbar properties|
-|`popupBarrierDismissible`|whether modal can be dismissed by tapping the modal barrier|
-|`selectionListViewProps`|props for selection list view|
+Full documentation [here](https://pub.dev/documentation/dropdown_search/latest/dropdown_search/DropdownSearch-class.html)
 
 # Attention
 To use a template as an item type, and you don't want to use a custom function **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
