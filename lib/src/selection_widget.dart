@@ -139,6 +139,10 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     _debouncer = Debouncer(delay: widget.searchDelay);
     _selectedItemsNotifier.value = widget.selectedValues;
 
+    widget.searchFieldProps?.controller?.addListener(() {
+      _onTextChanged(widget.searchFieldProps!.controller!.text);
+    });
+
     Future.delayed(
       Duration.zero,
       () => _manageItemsByFilter(

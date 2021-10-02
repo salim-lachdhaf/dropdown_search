@@ -26,6 +26,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
   final _openDropDownProgKey = GlobalKey<DropdownSearchState<String>>();
+  final _userEditTextController = TextEditingController(text: 'Mrs');
 
   @override
   Widget build(BuildContext context) {
@@ -181,8 +182,15 @@ class _MyHomePageState extends State<MyHomePage> {
               Divider(),
               DropdownSearch<UserModel>.multiSelection(
                 searchFieldProps: TextFieldProps(
-                  controller: TextEditingController(text: 'Mrs'),
-                ),
+                    controller: _userEditTextController,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () {
+                          _userEditTextController.clear();
+                        },
+                      ),
+                    )),
                 mode: Mode.BOTTOM_SHEET,
                 maxHeight: 700,
                 isFilteredOnline: true,
