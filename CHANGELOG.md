@@ -1,3 +1,6 @@
+## [1.0.4] - 2021.10.06
+* fix some bugs
+
 ## [1.0.3] - 2021.10.02
 * new feature : change searchBox query programmatically using EditTextController
 * fix some bugs
