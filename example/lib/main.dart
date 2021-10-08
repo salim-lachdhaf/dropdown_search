@@ -133,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 mode: Mode.MENU,
                 showSelectedItems: true,
-                items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+                items: ["Brazil", "Italia", "Tunisia", 'Canada'],
                 onChanged: print,
                 selectedItem: "Tunisia",
                 positionCallback: (popupButtonObject, overlay) {
