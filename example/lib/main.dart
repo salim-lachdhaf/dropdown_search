@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'user_model.dart';
 
@@ -116,6 +117,52 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
 
                   return Future.value(true);
+                },
+              ),
+              Divider(),
+
+              ///Menu Mode with no searchBox
+              DropdownSearch<String>(
+                validator: (v) => v == null ? "required field" : null,
+                dropdownSearchDecoration: InputDecoration(
+                  hintText: "Select a country",
+                  labelText: "Menu mode with helper *",
+                  helperText: 'positionCallback example usage',
+                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                  border: OutlineInputBorder(),
+                ),
+                mode: Mode.MENU,
+                showSelectedItems: true,
+                items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+                onChanged: print,
+                selectedItem: "Tunisia",
+                positionCallback: (popupButtonObject, overlay) {
+                  final decorationBox = _findBorderBox(popupButtonObject);
+
+                  double translateOffset = 0;
+                  if (decorationBox != null) {
+                    translateOffset = decorationBox.size.height -
+                        popupButtonObject.size.height;
+                  }
+
+                  // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
+                  final RenderBox overlay = Overlay.of(context)!
+                      .context
+                      .findRenderObject() as RenderBox;
+                  // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
+                  return RelativeRect.fromSize(
+                    Rect.fromPoints(
+                      popupButtonObject
+                          .localToGlobal(
+                              popupButtonObject.size.bottomLeft(Offset.zero),
+                              ancestor: overlay)
+                          .translate(0, translateOffset),
+                      popupButtonObject.localToGlobal(
+                          popupButtonObject.size.bottomRight(Offset.zero),
+                          ancestor: overlay),
+                    ),
+                    Size(overlay.size.width, overlay.size.height),
+                  );
                 },
               ),
               Divider(),
@@ -446,6 +493,23 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }).toList(),
     );
+  }
+
+  RenderBox? _findBorderBox(RenderBox box) {
+    RenderBox? borderBox;
+
+    box.visitChildren((child) {
+      if (child is RenderCustomPaint) {
+        borderBox = child;
+      }
+
+      final box = _findBorderBox(child as RenderBox);
+      if (box != null) {
+        borderBox = box;
+      }
+    });
+
+    return borderBox;
   }
 
   Widget _customDropDownExample(BuildContext context, UserModel? item) {
