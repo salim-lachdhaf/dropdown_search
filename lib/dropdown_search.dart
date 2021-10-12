@@ -16,6 +16,7 @@ import 'src/text_field_props.dart';
 
 export 'src/popup_safearea.dart';
 export 'src/scrollbar_props.dart';
+export 'src/selection_list_view_props.dart';
 export 'src/text_field_props.dart';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String? text);
@@ -812,6 +813,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       popupValidationMultiSelectionWidget:
           widget.popupValidationMultiSelectionWidget,
       isMultiSelectionMode: isMultiSelectionMode,
+      selectionListViewProps: widget.selectionListViewProps,
       focusNode: widget.focusNode ?? FocusNode(),
     );
   }
