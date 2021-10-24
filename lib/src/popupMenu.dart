@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import './popup_safearea.dart';
+import 'properties/popup_safearea_props.dart';
 
 const Duration _kMenuDuration = Duration(milliseconds: 300);
 const double _kMenuCloseIntervalEnd = 2.0 / 3.0;
@@ -418,7 +418,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
     this.showMenuContext,
     this.captureInheritedThemes,
     this.barrierColor,
-    this.popupSafeArea = const PopupSafeArea(),
+    this.popupSafeArea = const PopupSafeAreaProps(),
     this.popupBarrierDismissible = true,
   }) : itemSizes = List<Size?>.filled(items.length, null, growable: false);
 
@@ -435,7 +435,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
   final BuildContext? showMenuContext;
   final bool? captureInheritedThemes;
   final Color? barrierColor;
-  final PopupSafeArea popupSafeArea;
+  final PopupSafeAreaProps popupSafeArea;
   final bool popupBarrierDismissible;
 
   @override
@@ -567,7 +567,7 @@ Future<T?> customShowMenu<T>({
   Color? color,
   bool captureInheritedThemes = true,
   bool useRootNavigator = false,
-  PopupSafeArea popupSafeArea = const PopupSafeArea(),
+  PopupSafeAreaProps popupSafeArea = const PopupSafeAreaProps(),
   bool barrierDismissible = true,
 }) {
   assert(items.isNotEmpty);

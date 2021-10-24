@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showSelectedItems: false,
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 showClearButton: true,
-                onChange: print,
+                onChanged: print,
                 popupSelectionWidget: (cnt, String item, bool isSelected) {
                   return isSelected
                       ? Icon(
@@ -255,12 +255,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 validator: (u) =>
                     u == null || u.isEmpty ? "user field is required " : null,
                 onFind: (String? filter) => getData(filter),
-                onChange: (data) {
+                onChanged: (data) {
                   print(data);
                 },
                 dropdownBuilder: _customDropDownExampleMultiSelection,
                 popupItemBuilder: _customPopupItemBuilderExample,
-                popupSafeArea: PopupSafeArea(top: true, bottom: true),
+                popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
                 scrollbarProps: ScrollbarProps(
                   isAlwaysShown: true,
                   thickness: 7,
@@ -343,7 +343,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Divider(),
 
               ///show favorites on top list
-              DropdownSearch<UserModel>(
+              DropdownSearch<UserModel>.multiSelection(
                 showSelectedItems: true,
                 showSearchBox: true,
                 compareFn: (i, s) => i?.isEqual(s) ?? false,
@@ -356,24 +356,32 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: (data) {
                   print(data);
                 },
-                dropdownBuilder: _customDropDownExample,
+                // dropdownBuilder: _customDropDownExample,
                 popupItemBuilder: _customPopupItemBuilderExample2,
                 showFavoriteItems: true,
                 favoriteItemsAlignment: MainAxisAlignment.start,
                 favoriteItems: (items) {
                   return items.where((e) => e.name.contains("Mrs")).toList();
                 },
-                favoriteItemBuilder: (context, item) {
+                favoriteItemBuilder: (context, item, isSelected) {
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey[100]),
-                    child: Text(
-                      "${item.name}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.indigo),
+                    child: Row(
+                      children: [
+                        Text(
+                          "${item.name}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.indigo),
+                        ),
+                        Padding(padding: EdgeInsets.only(left: 8)),
+                        isSelected
+                            ? Icon(Icons.check_box_outlined)
+                            : Container(),
+                      ],
                     ),
                   );
                 },

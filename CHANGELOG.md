@@ -1,3 +1,8 @@
+## [2.0.0]
+* fix bug [284](https://github.com/salim-lachdhaf/searchable_dropdown/issues/284)
+* breaking changes
+    - add "isSelected" option to FavoriteItemsBuilder
+    - change onChange to onChanged in multiSelection mode
 ## [1.0.4] - 2021.10.17
 * fix some bugs
 

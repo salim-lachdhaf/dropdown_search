@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
 
-import 'package:dropdown_search/src/selection_list_view_props.dart';
+import 'package:dropdown_search/src/properties/selection_list_view_props.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../dropdown_search.dart';
-import 'checkbox_widget.dart';
-import 'scrollbar_props.dart';
-import 'text_field_props.dart';
+import 'properties/scrollbar_props.dart';
+import 'properties/text_field_props.dart';
+import 'widgets/checkbox_widget.dart';
 
 class SelectionWidget<T> extends StatefulWidget {
   final List<T> selectedValues;
@@ -592,7 +592,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   Widget _favoriteItemsWidget() {
-    if (widget.showFavoriteItems == true) {
+    if (widget.showFavoriteItems == true && widget.favoriteItems != null) {
       return StreamBuilder<List<T>>(
           stream: _itemsStream.stream,
           builder: (context, snapshot) {
@@ -624,11 +624,19 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                 children: favoriteItems
                     .map(
                       (f) => InkWell(
-                        onTap: () => _handleSelectedItem(f),
+                        onTap: () {
+                          setState(() {
+                            _handleSelectedItem(f);
+                          });
+                        },
                         child: Container(
                           margin: EdgeInsets.only(right: 4),
                           child: widget.favoriteItemBuilder != null
-                              ? widget.favoriteItemBuilder!(context, f)
+                              ? widget.favoriteItemBuilder!(
+                                  context,
+                                  f,
+                                  _isSelectedItem(f),
+                                )
                               : _favoriteItemDefaultWidget(f),
                         ),
                       ),
@@ -666,10 +674,19 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Theme.of(context).primaryColorLight),
-      child: Text(
-        _selectedItemAsString(item),
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.subtitle1,
+      child: Row(
+        children: [
+          Text(
+            _selectedItemAsString(item),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
+          Padding(padding: EdgeInsets.only(left: 8)),
+          Visibility(
+            child: Icon(Icons.check_box_outlined),
+            visible: _isSelectedItem(item),
+          )
+        ],
       ),
     );
   }

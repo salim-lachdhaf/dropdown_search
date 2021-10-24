@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class PopupSafeArea {
+class PopupSafeAreaProps {
   /// Whether to avoid system intrusions on the left.
   final bool left;
 
@@ -32,7 +32,7 @@ class PopupSafeArea {
   /// avoid the UI shift.
   final bool maintainBottomViewPadding;
 
-  const PopupSafeArea({
+  const PopupSafeAreaProps({
     this.left = false,
     this.top = false,
     this.right = false,

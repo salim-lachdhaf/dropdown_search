@@ -2,22 +2,22 @@ library dropdown_search;
 
 import 'dart:async';
 
-import 'package:dropdown_search/src/selection_list_view_props.dart';
+import 'package:dropdown_search/src/properties/selection_list_view_props.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'src/modal_dialog.dart';
 import 'src/popupMenu.dart';
-import 'src/popup_safearea.dart';
-import 'src/scrollbar_props.dart';
+import 'src/properties/popup_safearea_props.dart';
+import 'src/properties/scrollbar_props.dart';
+import 'src/properties/text_field_props.dart';
 import 'src/selection_widget.dart';
-import 'src/text_field_props.dart';
 
-export 'src/popup_safearea.dart';
-export 'src/scrollbar_props.dart';
-export 'src/selection_list_view_props.dart';
-export 'src/text_field_props.dart';
+export 'src/properties/popup_safearea_props.dart';
+export 'src/properties/scrollbar_props.dart';
+export 'src/properties/selection_list_view_props.dart';
+export 'src/properties/text_field_props.dart';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String? text);
 typedef String DropdownSearchItemAsString<T>(T? item);
@@ -40,7 +40,8 @@ typedef Widget IconButtonBuilder(BuildContext context);
 typedef Future<bool?> BeforeChange<T>(T? prevItem, T? nextItem);
 typedef Future<bool?> BeforeChangeMultiSelection<T>(
     List<T> prevItems, List<T> nextItems);
-typedef Widget FavoriteItemsBuilder<T>(BuildContext context, T item);
+typedef Widget FavoriteItemsBuilder<T>(
+    BuildContext context, T item, bool isSelected);
 typedef Widget ValidationMultiSelectionBuilder<T>(
     BuildContext context, List<T> item);
 
@@ -226,7 +227,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final MainAxisAlignment? favoriteItemsAlignment;
 
   ///set properties of popup safe area
-  final PopupSafeArea popupSafeArea;
+  final PopupSafeAreaProps popupSafeArea;
 
   /// object that passes all props to search field
   final TextFieldProps? searchFieldProps;
@@ -313,7 +314,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.favoriteItems,
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
-    this.popupSafeArea = const PopupSafeArea(),
+    this.popupSafeArea = const PopupSafeAreaProps(),
     TextFieldProps? searchFieldProps,
     this.scrollbarProps,
     this.popupBarrierDismissible = true,
@@ -381,7 +382,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.favoriteItems,
     this.showFavoriteItems = false,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
-    this.popupSafeArea = const PopupSafeArea(),
+    this.popupSafeArea = const PopupSafeAreaProps(),
     TextFieldProps? searchFieldProps,
     this.scrollbarProps,
     this.popupBarrierDismissible = true,
@@ -390,7 +391,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchTextAlignVertical,
     this.selectedItems = const [],
     FormFieldSetter<List<T>>? onSaved,
-    ValueChanged<List<T>>? onChange,
+    ValueChanged<List<T>>? onChanged,
     BeforeChangeMultiSelection<T>? onBeforeChange,
     FormFieldValidator<List<T>>? validator,
     DropdownSearchBuilderMultiSelection<T>? dropdownBuilder,
@@ -404,7 +405,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.positionCallback,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
-        this.onChangedMultiSelection = onChange,
+        this.onChangedMultiSelection = onChanged,
         this.onSavedMultiSelection = onSaved,
         this.onBeforeChangeMultiSelection = onBeforeChange,
         this.validatorMultiSelection = validator,
@@ -472,7 +473,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   Widget _defaultSelectedItemWidget() {
-    Widget defaultItemMultiSelectionMode(T? item) {
+    Widget defaultItemMultiSelectionMode(T item) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
         margin: EdgeInsets.symmetric(horizontal: 2),
@@ -791,7 +792,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       showSearchBox: widget.showSearchBox,
       itemBuilder: widget.popupItemBuilder,
       selectedValues: getSelectedItems,
-      onChanged: _handleOnChangeSelectedItem,
+      onChanged: _handleOnChangeSelectedItems,
       showSelectedItems: widget.showSelectedItems,
       compareFn: widget.compareFn,
       emptyBuilder: widget.emptyBuilder,
@@ -829,7 +830,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   ///handle on change value , if the validation is active , we validate the new selected item
-  void _handleOnChangeSelectedItem(List<T> selectedItems) {
+  void _handleOnChangeSelectedItems(List<T> selectedItems) {
     final changeItem = () {
       _selectedItemsNotifier.value = List.from(selectedItems);
       if (widget.onChanged != null)
@@ -860,6 +861,14 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     _handleFocus(false);
   }
 
+  ///compared two items base on user params
+  bool _isEqual(T i1, T i2) {
+    if (widget.compareFn != null)
+      return widget.compareFn!(i1, i2);
+    else
+      return i1 == i2;
+  }
+
   ///Function that return then UI based on searchMode
   ///[data] selected item to be passed to the UI
   ///If we close the popup , or maybe we just selected
@@ -886,25 +895,25 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   void openDropDownSearch() => _selectSearchMode();
 
   ///Change selected Value; this function is public USED to change the selected
-  ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItem]
+  ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItems]
   ///for multiSelection mode you can use [changeSelectedItems]
   void changeSelectedItem(T? selectedItem) =>
-      _handleOnChangeSelectedItem(_itemToList(selectedItem));
+      _handleOnChangeSelectedItems(_itemToList(selectedItem));
 
   ///Change selected Value; this function is public USED to change the selected
-  ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItem]
+  ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItems]
   ///for SingleSelection mode you can use [changeSelectedItem]
   void changeSelectedItems(List<T> selectedItems) =>
-      _handleOnChangeSelectedItem(selectedItems);
+      _handleOnChangeSelectedItems(selectedItems);
 
   ///function to remove an item from the list
   ///Useful i multiSelection mode to delete an item
-  void removeItem(T? itemToRemove) =>
-      _handleOnChangeSelectedItem(getSelectedItems..remove(itemToRemove));
+  void removeItem(T itemToRemove) => _handleOnChangeSelectedItems(
+      getSelectedItems..removeWhere((i) => _isEqual(itemToRemove, i)));
 
   ///Change selected Value; this function is public USED to clear selected
-  ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItem]
-  void clear() => _handleOnChangeSelectedItem([]);
+  ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItems]
+  void clear() => _handleOnChangeSelectedItems([]);
 
   ///get selected value programmatically USED for SINGLE_SELECTION mode
   T? get getSelectedItem =>
