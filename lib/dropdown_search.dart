@@ -266,6 +266,9 @@ class DropdownSearch<T> extends StatefulWidget {
   /// function to override position calculation
   final PositionCallback? positionCallback;
 
+  /// hint text for search field
+  final String searchFieldHintText;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -324,7 +327,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
-    this.positionCallback,
+    this.positionCallback, this.searchFieldHintText = '',
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -402,6 +405,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
+    this.searchFieldHintText = '',
     this.positionCallback,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
@@ -789,6 +793,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       filterFn: widget.filterFn,
       items: widget.items,
       onFind: widget.onFind,
+      hintText: widget.searchFieldHintText,
       showSearchBox: widget.showSearchBox,
       itemBuilder: widget.popupItemBuilder,
       selectedValues: getSelectedItems,
