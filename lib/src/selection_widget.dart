@@ -21,7 +21,6 @@ class SelectionWidget<T> extends StatefulWidget {
   final DropdownSearchItemAsString<T>? itemAsString;
   final DropdownSearchFilterFn<T>? filterFn;
   final String? hintText;
-
   final double? maxHeight;
   final double? dialogMaxWidth;
   final Widget? popupTitle;
@@ -82,6 +81,9 @@ class SelectionWidget<T> extends StatefulWidget {
   /// props for selection focus node
   final FocusNode focusNode;
 
+  /// shown at the last of the list
+  final Widget Function(BuildContext context, String search)? addItemWidgetBuilder;
+
   const SelectionWidget({
     Key? key,
     this.popupTitle,
@@ -118,6 +120,7 @@ class SelectionWidget<T> extends StatefulWidget {
     this.popupValidationMultiSelectionWidget,
     this.selectionListViewProps = const SelectionListViewProps(),
     required this.focusNode,
+    this.addItemWidgetBuilder,
   }) : super(key: key);
 
   @override
@@ -147,9 +150,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
 
     Future.delayed(
       Duration.zero,
-      () => _manageItemsByFilter(
-          widget.searchFieldProps?.controller?.text ?? '',
-          isFistLoad: true),
+      () => _manageItemsByFilter(widget.searchFieldProps?.controller?.text ?? '', isFistLoad: true),
     );
   }
 
@@ -212,44 +213,42 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                       child: Scrollbar(
                         controller: widget.scrollbarProps?.controller,
                         isAlwaysShown: widget.scrollbarProps?.isAlwaysShown,
-                        showTrackOnHover:
-                            widget.scrollbarProps?.showTrackOnHover,
+                        showTrackOnHover: widget.scrollbarProps?.showTrackOnHover,
                         hoverThickness: widget.scrollbarProps?.hoverThickness,
                         thickness: widget.scrollbarProps?.thickness,
                         radius: widget.scrollbarProps?.radius,
-                        notificationPredicate:
-                            widget.scrollbarProps?.notificationPredicate,
+                        notificationPredicate: widget.scrollbarProps?.notificationPredicate,
                         interactive: widget.scrollbarProps?.interactive,
                         child: ListView.builder(
                           shrinkWrap: widget.selectionListViewProps.shrinkWrap,
                           padding: widget.selectionListViewProps.padding,
-                          scrollDirection:
-                              widget.selectionListViewProps.scrollDirection,
+                          scrollDirection: widget.selectionListViewProps.scrollDirection,
                           reverse: widget.selectionListViewProps.reverse,
                           controller: widget.selectionListViewProps.controller,
                           primary: widget.selectionListViewProps.primary,
                           physics: widget.selectionListViewProps.physics,
                           itemExtent: widget.selectionListViewProps.itemExtent,
-                          addAutomaticKeepAlives: widget
-                              .selectionListViewProps.addAutomaticKeepAlives,
-                          addRepaintBoundaries: widget
-                              .selectionListViewProps.addRepaintBoundaries,
-                          addSemanticIndexes:
-                              widget.selectionListViewProps.addSemanticIndexes,
-                          cacheExtent:
-                              widget.selectionListViewProps.cacheExtent,
-                          semanticChildCount:
-                              widget.selectionListViewProps.semanticChildCount,
-                          dragStartBehavior:
-                              widget.selectionListViewProps.dragStartBehavior,
-                          keyboardDismissBehavior: widget
-                              .selectionListViewProps.keyboardDismissBehavior,
-                          restorationId:
-                              widget.selectionListViewProps.restorationId,
-                          clipBehavior:
-                              widget.selectionListViewProps.clipBehavior,
-                          itemCount: snapshot.data!.length,
+                          addAutomaticKeepAlives:
+                              widget.selectionListViewProps.addAutomaticKeepAlives,
+                          addRepaintBoundaries: widget.selectionListViewProps.addRepaintBoundaries,
+                          addSemanticIndexes: widget.selectionListViewProps.addSemanticIndexes,
+                          cacheExtent: widget.selectionListViewProps.cacheExtent,
+                          semanticChildCount: widget.selectionListViewProps.semanticChildCount,
+                          dragStartBehavior: widget.selectionListViewProps.dragStartBehavior,
+                          keyboardDismissBehavior:
+                              widget.selectionListViewProps.keyboardDismissBehavior,
+                          restorationId: widget.selectionListViewProps.restorationId,
+                          clipBehavior: widget.selectionListViewProps.clipBehavior,
+                          itemCount: widget.emptyBuilder != null
+                              ? snapshot.data!.length + 1
+                              : snapshot.data!.length,
                           itemBuilder: (context, index) {
+                            if (widget.emptyBuilder != null &&
+                                index == snapshot.data!.length)
+                              return widget.emptyBuilder!(
+                                context,
+                                widget.searchFieldProps?.controller?.text ?? '',
+                              );
                             var item = snapshot.data![index];
                             return widget.isMultiSelectionMode
                                 ? _itemWidgetMultiSelection(item)
@@ -279,8 +278,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     };
     if (widget.popupValidationMultiSelectionWidget != null)
       return InkWell(
-        child: widget.popupValidationMultiSelectionWidget!(
-            context, _selectedItems),
+        child: widget.popupValidationMultiSelectionWidget!(context, _selectedItems),
         onTap: onValidate,
       );
 
@@ -373,15 +371,10 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       return _syncItems.where((i) {
         if (widget.filterFn != null)
           return (widget.filterFn!(i, filter));
-        else if (i
-            .toString()
-            .toLowerCase()
-            .contains(filter?.toLowerCase() ?? 'null'))
+        else if (i.toString().toLowerCase().contains(filter?.toLowerCase() ?? 'null'))
           return true;
         else if (widget.itemAsString != null) {
-          return (widget.itemAsString!(i))
-              .toLowerCase()
-              .contains(filter?.toLowerCase() ?? 'null');
+          return (widget.itemAsString!(i)).toLowerCase().contains(filter?.toLowerCase() ?? 'null');
         }
         return false;
       }).toList();
@@ -484,8 +477,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       );
   }
 
-  bool _isDisabled(T item) =>
-      widget.itemDisabled != null && (widget.itemDisabled!(item)) == true;
+  bool _isDisabled(T item) => widget.itemDisabled != null && (widget.itemDisabled!(item)) == true;
 
   /// selected item will be highlighted only when [widget.showSelectedItems] is true,
   /// if our object is String [widget.compareFn] is not required , other wises it's required
@@ -509,8 +501,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
           widget.popupTitle ?? const SizedBox.shrink(),
           if (widget.showSearchBox)
             Padding(
-              padding:
-                  widget.searchFieldProps?.padding ?? const EdgeInsets.all(8.0),
+              padding: widget.searchFieldProps?.padding ?? const EdgeInsets.all(8.0),
               child: TextField(
                 style: widget.searchFieldProps?.style,
                 controller: widget.searchFieldProps?.controller,
@@ -527,38 +518,31 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                     InputDecoration(
                       hintText: widget.hintText,
                       border: const OutlineInputBorder(),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                     ),
                 keyboardType: widget.searchFieldProps?.keyboardType,
                 textInputAction: widget.searchFieldProps?.textInputAction,
                 textCapitalization:
-                    widget.searchFieldProps?.textCapitalization ??
-                        TextCapitalization.none,
+                    widget.searchFieldProps?.textCapitalization ?? TextCapitalization.none,
                 strutStyle: widget.searchFieldProps?.strutStyle,
-                textAlign:
-                    widget.searchFieldProps?.textAlign ?? TextAlign.start,
+                textAlign: widget.searchFieldProps?.textAlign ?? TextAlign.start,
                 textAlignVertical: widget.searchFieldProps?.textAlignVertical,
                 textDirection: widget.searchFieldProps?.textDirection,
                 readOnly: widget.searchFieldProps?.readOnly ?? false,
                 toolbarOptions: widget.searchFieldProps?.toolbarOptions,
                 showCursor: widget.searchFieldProps?.showCursor,
-                obscuringCharacter:
-                    widget.searchFieldProps?.obscuringCharacter ?? '•',
+                obscuringCharacter: widget.searchFieldProps?.obscuringCharacter ?? '•',
                 obscureText: widget.searchFieldProps?.obscureText ?? false,
                 autocorrect: widget.searchFieldProps?.autocorrect ?? true,
                 smartDashesType: widget.searchFieldProps?.smartDashesType,
                 smartQuotesType: widget.searchFieldProps?.smartQuotesType,
-                enableSuggestions:
-                    widget.searchFieldProps?.enableSuggestions ?? true,
+                enableSuggestions: widget.searchFieldProps?.enableSuggestions ?? true,
                 maxLines: widget.searchFieldProps?.maxLines ?? 1,
                 minLines: widget.searchFieldProps?.minLines,
                 expands: widget.searchFieldProps?.expands ?? false,
-                maxLengthEnforcement:
-                    widget.searchFieldProps?.maxLengthEnforcement,
+                maxLengthEnforcement: widget.searchFieldProps?.maxLengthEnforcement,
                 maxLength: widget.searchFieldProps?.maxLength,
-                onAppPrivateCommand:
-                    widget.searchFieldProps?.onAppPrivateCommand,
+                onAppPrivateCommand: widget.searchFieldProps?.onAppPrivateCommand,
                 inputFormatters: widget.searchFieldProps?.inputFormatters,
                 enabled: widget.searchFieldProps?.enabled,
                 cursorWidth: widget.searchFieldProps?.cursorWidth ?? 2.0,
@@ -566,16 +550,13 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                 cursorRadius: widget.searchFieldProps?.cursorRadius,
                 cursorColor: widget.searchFieldProps?.cursorColor,
                 selectionHeightStyle:
-                    widget.searchFieldProps?.selectionHeightStyle ??
-                        ui.BoxHeightStyle.tight,
+                    widget.searchFieldProps?.selectionHeightStyle ?? ui.BoxHeightStyle.tight,
                 selectionWidthStyle:
-                    widget.searchFieldProps?.selectionWidthStyle ??
-                        ui.BoxWidthStyle.tight,
+                    widget.searchFieldProps?.selectionWidthStyle ?? ui.BoxWidthStyle.tight,
                 keyboardAppearance: widget.searchFieldProps?.keyboardAppearance,
-                scrollPadding: widget.searchFieldProps?.scrollPadding ??
-                    const EdgeInsets.all(20.0),
-                dragStartBehavior: widget.searchFieldProps?.dragStartBehavior ??
-                    DragStartBehavior.start,
+                scrollPadding: widget.searchFieldProps?.scrollPadding ?? const EdgeInsets.all(20.0),
+                dragStartBehavior:
+                    widget.searchFieldProps?.dragStartBehavior ?? DragStartBehavior.start,
                 enableInteractiveSelection:
                     widget.searchFieldProps?.enableInteractiveSelection ?? true,
                 selectionControls: widget.searchFieldProps?.selectionControls,
@@ -619,8 +600,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
             constraints: BoxConstraints(minWidth: constraints.maxWidth),
             child: Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment:
-                    widget.favoriteItemsAlignment ?? MainAxisAlignment.start,
+                mainAxisAlignment: widget.favoriteItemsAlignment ?? MainAxisAlignment.start,
                 children: favoriteItems
                     .map(
                       (f) => InkWell(
@@ -656,15 +636,13 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         if (widget.popupOnItemRemoved != null)
           widget.popupOnItemRemoved!(_selectedItems, newSelectedItem);
       } else {
-        _selectedItemsNotifier.value = List.from(_selectedItems)
-          ..add(newSelectedItem);
+        _selectedItemsNotifier.value = List.from(_selectedItems)..add(newSelectedItem);
         if (widget.popupOnItemAdded != null)
           widget.popupOnItemAdded!(_selectedItems, newSelectedItem);
       }
     } else {
       Navigator.pop(context);
-      if (widget.onChanged != null)
-        widget.onChanged!(List.filled(1, newSelectedItem));
+      if (widget.onChanged != null) widget.onChanged!(List.filled(1, newSelectedItem));
     }
   }
 
@@ -672,8 +650,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Theme.of(context).primaryColorLight),
+          borderRadius: BorderRadius.circular(10), color: Theme.of(context).primaryColorLight),
       child: Row(
         children: [
           Text(
@@ -711,7 +688,6 @@ class Debouncer {
 
   void call(Function action) {
     _timer?.cancel();
-    _timer = Timer(
-        delay ?? const Duration(milliseconds: 500), action as void Function());
+    _timer = Timer(delay ?? const Duration(milliseconds: 500), action as void Function());
   }
 }

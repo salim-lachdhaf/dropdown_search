@@ -269,6 +269,9 @@ class DropdownSearch<T> extends StatefulWidget {
   /// hint text for search field
   final String searchFieldHintText;
 
+  /// shown at the last of the list
+  final Widget Function(BuildContext context, String search)? addItemWidgetBuilder;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -327,7 +330,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
-    this.positionCallback, this.searchFieldHintText = '',
+    this.positionCallback, this.searchFieldHintText = '', this.addItemWidgetBuilder,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -406,7 +409,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
     this.searchFieldHintText = '',
-    this.positionCallback,
+    this.positionCallback, this.addItemWidgetBuilder,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.onChangedMultiSelection = onChanged,
@@ -787,6 +790,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Widget _selectDialogInstance({double? defaultHeight}) {
     return SelectionWidget<T>(
       popupTitle: widget.popupTitle,
+      addItemWidgetBuilder: widget.addItemWidgetBuilder,
       maxHeight: widget.maxHeight ?? defaultHeight,
       isFilteredOnline: widget.isFilteredOnline,
       itemAsString: widget.itemAsString,
