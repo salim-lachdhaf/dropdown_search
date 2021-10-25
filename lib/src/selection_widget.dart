@@ -196,15 +196,22 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                     } else if (!snapshot.hasData) {
                       return _loadingWidget();
                     } else if (snapshot.data!.isEmpty) {
-                      if (widget.emptyBuilder != null)
+                      if (widget.emptyBuilder != null) {
                         return widget.emptyBuilder!(
                           context,
                           widget.searchFieldProps?.controller?.text,
                         );
-                      else
+                      }
+                      if (widget.addItemWidgetBuilder != null) {
+                        return widget.addItemWidgetBuilder!(
+                          context,
+                          widget.searchFieldProps?.controller?.text ?? '',
+                        );
+                      } else {
                         return const Center(
                           child: const Text("No data found"),
                         );
+                      }
                     }
                     return MediaQuery.removePadding(
                       removeBottom: true,
@@ -239,13 +246,12 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                               widget.selectionListViewProps.keyboardDismissBehavior,
                           restorationId: widget.selectionListViewProps.restorationId,
                           clipBehavior: widget.selectionListViewProps.clipBehavior,
-                          itemCount: widget.emptyBuilder != null
+                          itemCount: widget.addItemWidgetBuilder != null
                               ? snapshot.data!.length + 1
                               : snapshot.data!.length,
                           itemBuilder: (context, index) {
-                            if (widget.emptyBuilder != null &&
-                                index == snapshot.data!.length)
-                              return widget.emptyBuilder!(
+                            if (widget.addItemWidgetBuilder != null && index == snapshot.data!.length)
+                              return widget.addItemWidgetBuilder!(
                                 context,
                                 widget.searchFieldProps?.controller?.text ?? '',
                               );
