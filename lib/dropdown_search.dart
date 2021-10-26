@@ -269,8 +269,11 @@ class DropdownSearch<T> extends StatefulWidget {
   /// hint text for search field
   final String searchFieldHintText;
 
-  /// shown at the last of the list
-  final Widget Function(BuildContext context, String search)? addItemWidgetBuilder;
+  /// called when add item is pressed
+  final T Function(BuildContext context, String search)? onAddItemPressed;
+
+  /// show option to add item at the end of list if true provide [onAddItemPressed] in parameters
+  final bool showAddItem;
 
   DropdownSearch({
     Key? key,
@@ -330,8 +333,12 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
-    this.positionCallback, this.searchFieldHintText = '', this.addItemWidgetBuilder,
+    this.positionCallback,
+    this.searchFieldHintText = '',
+    this.onAddItemPressed,
+    this.showAddItem = false,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
+        assert(!showAddItem || onAddItemPressed != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
         this.dropdownBuilderMultiSelection = null,
@@ -409,8 +416,11 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
     this.searchFieldHintText = '',
-    this.positionCallback, this.addItemWidgetBuilder,
+    this.positionCallback,
+    this.onAddItemPressed,
+    this.showAddItem = false,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
+        assert(!showAddItem || onAddItemPressed != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.onChangedMultiSelection = onChanged,
         this.onSavedMultiSelection = onSaved,
@@ -790,7 +800,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Widget _selectDialogInstance({double? defaultHeight}) {
     return SelectionWidget<T>(
       popupTitle: widget.popupTitle,
-      addItemWidgetBuilder: widget.addItemWidgetBuilder,
+      showAddItem: widget.showAddItem,
+      onAddItemPressed: widget.onAddItemPressed,
       maxHeight: widget.maxHeight ?? defaultHeight,
       isFilteredOnline: widget.isFilteredOnline,
       itemAsString: widget.itemAsString,
