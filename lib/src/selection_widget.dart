@@ -87,6 +87,9 @@ class SelectionWidget<T> extends StatefulWidget {
   /// called when pressed on add item widget
   final T Function(BuildContext context, String search)? onAddItemPressed;
 
+  /// builder for add item widget
+  final Widget Function(BuildContext context, String search)? addItemBuilder;
+
   const SelectionWidget({
     Key? key,
     this.popupTitle,
@@ -125,6 +128,7 @@ class SelectionWidget<T> extends StatefulWidget {
     required this.focusNode,
     this.showAddItem = false,
     this.onAddItemPressed,
+    this.addItemBuilder,
   }) : super(key: key);
 
   @override
@@ -173,6 +177,34 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     super.dispose();
   }
 
+  void _addItem(String searchText) {
+    var item = widget.onAddItemPressed!(context, searchText);
+    setState(() => _syncItems.add(item));
+    _addDataToStream([..._selectedItems, item]);
+  }
+
+  Widget _addItemWidget(String searchText) {
+    // show add item widget with builder
+    if (widget.showAddItem &&
+        searchText.isNotEmpty &&
+        widget.addItemBuilder != null)
+      return GestureDetector(
+        child: widget.addItemBuilder!(context, searchText),
+        onTap: () => _addItem(searchText),
+      );
+
+    // show add item widget with search text if addItemBuilder is not provided
+    if (widget.showAddItem &&
+        searchText.isNotEmpty &&
+        widget.addItemBuilder == null)
+      return ListTile(
+        title: Text('Add $searchText'),
+        onTap: () => _addItem(searchText),
+      );
+
+    return SizedBox.shrink();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
@@ -211,22 +243,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                         );
                       }
                       if (widget.showAddItem && searchText.isNotEmpty) {
-                        return ListTile(
-                          title: Text('Add $searchText'),
-                          onTap: () {
-                            setState(() {
-                              _syncItems.add(widget.onAddItemPressed!(
-                                  context, searchText));
-                            });
-                            _itemsStream.add([
-                              ..._selectedItems,
-                              widget.onAddItemPressed!(
-                                  context,
-                                  widget.searchFieldProps?.controller?.text ??
-                                      '')
-                            ]);
-                          },
-                        );
+                        return _addItemWidget(searchText);
                       } else {
                         return const Center(
                           child: const Text("No data found"),
@@ -248,7 +265,7 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                         notificationPredicate:
                             widget.scrollbarProps?.notificationPredicate,
                         interactive: widget.scrollbarProps?.interactive,
-                        child: ListView.builder(
+                        child: ListView(
                           shrinkWrap: widget.selectionListViewProps.shrinkWrap,
                           padding: widget.selectionListViewProps.padding,
                           scrollDirection:
@@ -276,37 +293,15 @@ class _SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                               widget.selectionListViewProps.restorationId,
                           clipBehavior:
                               widget.selectionListViewProps.clipBehavior,
-                          itemCount: widget.showAddItem
-                              ? snapshot.data!.length + 1
-                              : snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            if (widget.showAddItem &&
-                                index == snapshot.data!.length) {
-                              if (searchText.isEmpty) return SizedBox.shrink();
-                              return ListTile(
-                                title: Text(
-                                    'Add ${widget.searchFieldProps?.controller?.text ?? ''}'),
-                                onTap: () {
-                                  setState(() {
-                                    _syncItems.add(widget.onAddItemPressed!(
-                                        context, searchText));
-                                  });
-                                  _itemsStream.add([
-                                    ..._selectedItems,
-                                    widget.onAddItemPressed!(
-                                        context,
-                                        widget.searchFieldProps?.controller
-                                                ?.text ??
-                                            '')
-                                  ]);
-                                },
-                              );
-                            }
-                            var item = snapshot.data![index];
-                            return widget.isMultiSelectionMode
-                                ? _itemWidgetMultiSelection(item)
-                                : _itemWidgetSingleSelection(item);
-                          },
+                          children: [
+                            if (snapshot.data != null)
+                              ...snapshot.data!.map((item) {
+                                return widget.isMultiSelectionMode
+                                    ? _itemWidgetMultiSelection(item)
+                                    : _itemWidgetSingleSelection(item);
+                              }).toList(),
+                            _addItemWidget(searchText)
+                          ],
                         ),
                       ),
                     );

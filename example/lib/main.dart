@@ -28,7 +28,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
   final _openDropDownProgKey = GlobalKey<DropdownSearchState<String>>();
   final _userEditTextController = TextEditingController(text: 'Mrs');
-  var _items = ["Brazil", "Italia", "Tunisia", 'Canada'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,18 +130,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                   border: OutlineInputBorder(),
                 ),
-                mode: Mode.BOTTOM_SHEET,
+                mode: Mode.MENU,
                 searchDelay: Duration(milliseconds: 0),
                 showSearchBox: true,
-                showAddItem: true,
-                onAddItemPressed: (context, search) {
-                  setState(() {
-                    _items.add(search);
-                  });
-                  return search;
-                },
                 showSelectedItems: true,
-                items: _items,
+                items: ["Brazil", "Italia", "Tunisia", 'Canada'],
                 onChanged: print,
                 selectedItem: "Tunisia",
                 positionCallback: (popupButtonObject, overlay) {

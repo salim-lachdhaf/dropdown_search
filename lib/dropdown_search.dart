@@ -269,8 +269,11 @@ class DropdownSearch<T> extends StatefulWidget {
   /// hint text for search field
   final String searchFieldHintText;
 
-  /// called when add item is pressed
+  /// called when add item is pressed, should return new item to be added
   final T Function(BuildContext context, String search)? onAddItemPressed;
+
+  /// builder for add item widget
+  final Widget Function(BuildContext context, String search)? addItemBuilder;
 
   /// show option to add item at the end of list if true provide [onAddItemPressed] in parameters
   final bool showAddItem;
@@ -336,7 +339,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.positionCallback,
     this.searchFieldHintText = '',
     this.onAddItemPressed,
-    this.showAddItem = false,
+    this.showAddItem = false, this.addItemBuilder,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         assert(!showAddItem || onAddItemPressed != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
@@ -418,7 +421,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.searchFieldHintText = '',
     this.positionCallback,
     this.onAddItemPressed,
-    this.showAddItem = false,
+    this.showAddItem = false, this.addItemBuilder,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         assert(!showAddItem || onAddItemPressed != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
@@ -812,6 +815,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       showSearchBox: widget.showSearchBox,
       itemBuilder: widget.popupItemBuilder,
       selectedValues: getSelectedItems,
+      addItemBuilder: widget.addItemBuilder,
       onChanged: _handleOnChangeSelectedItems,
       showSelectedItems: widget.showSelectedItems,
       compareFn: widget.compareFn,
