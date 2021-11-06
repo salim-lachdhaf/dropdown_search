@@ -57,7 +57,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 ```dart
 DropdownSearch<String>(
     mode: Mode.MENU,
-    showSelectedItem: true,
+    showSelectedItems: true,
     items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
     label: "Menu mode",
     hint: "country in menu mode",
@@ -68,7 +68,7 @@ DropdownSearch<String>(
     
 DropdownSearch<String>.multiSelection(
     mode: Mode.MENU,
-    showSelectedItem: true,
+    showSelectedItems: true,
     items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
     label: "Menu mode",
     hint: "country in menu mode",
