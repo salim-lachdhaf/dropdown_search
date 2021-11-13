@@ -717,7 +717,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                       bottom: widget.popupSafeArea.bottom,
                       left: widget.popupSafeArea.left,
                       right: widget.popupSafeArea.right,
-                      child: _selectDialogInstance(defaultHeight: 350),
+                      child: _selectDialogInstance(defaultHeight: (((widget.items??[]).length<4)?160:224)),
                     ),
                   ),
                 ),
