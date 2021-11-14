@@ -1,3 +1,7 @@
+## [2.0.1] - 2021.11.15
+* improve performance
+* add "popupCustomMultiSelectionWidget" option
+
 ## [2.0.0]
 * fix bug [284](https://github.com/salim-lachdhaf/searchable_dropdown/issues/284)
 * breaking changes

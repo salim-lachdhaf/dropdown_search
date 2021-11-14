@@ -48,8 +48,8 @@ typedef Widget ValidationMultiSelectionBuilder<T>(
 typedef RelativeRect PositionCallback(
     RenderBox popupButtonObject, RenderBox overlay);
 
-typedef void OnItemAdded<T>(List<T> selectedItem, T addedItem);
-typedef void OnItemRemoved<T>(List<T> selectedItem, T removedItem);
+typedef void OnItemAdded<T>(List<T> selectedItems, T addedItem);
+typedef void OnItemRemoved<T>(List<T> selectedItems, T removedItem);
 
 ///[items] are the original item from [items] or/and [onFind]
 typedef List<T> FavoriteItems<T>(List<T> items);
@@ -251,8 +251,10 @@ class DropdownSearch<T> extends StatefulWidget {
   final DropdownSearchPopupItemBuilder<T>? popupSelectionWidget;
 
   ///widget used to validate items in multiSelection mode
-  final ValidationMultiSelectionBuilder<T?>?
-      popupValidationMultiSelectionWidget;
+  final ValidationMultiSelectionBuilder<T>? popupValidationMultiSelectionWidget;
+
+  ///widget to add custom widget like addAll/removeAll on popup multi selection mode
+  final ValidationMultiSelectionBuilder<T>? popupCustomMultiSelectionWidget;
 
   /// elevation for popup items
   final double popupElevation;
@@ -338,6 +340,7 @@ class DropdownSearch<T> extends StatefulWidget {
         this.popupOnItemRemoved = null,
         this.popupSelectionWidget = null,
         this.popupValidationMultiSelectionWidget = null,
+        this.popupCustomMultiSelectionWidget = null,
         super(key: key);
 
   DropdownSearch.multiSelection({
@@ -399,6 +402,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupOnItemRemoved,
     this.popupSelectionWidget,
     this.popupValidationMultiSelectionWidget,
+    this.popupCustomMultiSelectionWidget,
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
@@ -426,6 +430,7 @@ class DropdownSearch<T> extends StatefulWidget {
 class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   final ValueNotifier<List<T>> _selectedItemsNotifier = ValueNotifier([]);
   final ValueNotifier<bool> _isFocused = ValueNotifier(false);
+  final _popupStateKey = GlobalKey<SelectionWidgetState<T>>();
 
   @override
   void initState() {
@@ -782,6 +787,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   Widget _selectDialogInstance({double? defaultHeight}) {
     return SelectionWidget<T>(
+      key: _popupStateKey,
       popupTitle: widget.popupTitle,
       maxHeight: widget.maxHeight ?? defaultHeight,
       isFilteredOnline: widget.isFilteredOnline,
@@ -791,7 +797,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       onFind: widget.onFind,
       showSearchBox: widget.showSearchBox,
       itemBuilder: widget.popupItemBuilder,
-      selectedValues: getSelectedItems,
+      selectedValues: List.from(getSelectedItems),
       onChanged: _handleOnChangeSelectedItems,
       showSelectedItems: widget.showSelectedItems,
       compareFn: widget.compareFn,
@@ -813,6 +819,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       popupSelectionWidget: widget.popupSelectionWidget,
       popupValidationMultiSelectionWidget:
           widget.popupValidationMultiSelectionWidget,
+      popupCustomMultiSelectionWidget: widget.popupCustomMultiSelectionWidget,
       isMultiSelectionMode: isMultiSelectionMode,
       selectionListViewProps: widget.selectionListViewProps,
       focusNode: widget.focusNode ?? FocusNode(),
@@ -886,14 +893,6 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     widget.onPopupDismissed?.call();
   }
 
-  ///Public Function that return then UI based on searchMode
-  ///[data] selected item to be passed to the UI
-  ///If we close the popup , or maybe we just selected
-  ///another widget we should clear the focus
-  ///THIS USED FOR OPEN DROPDOWN_SEARCH PROGRAMMATICALLY,
-  ///otherwise you can you [_selectSearchMode]
-  void openDropDownSearch() => _selectSearchMode();
-
   ///Change selected Value; this function is public USED to change the selected
   ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItems]
   ///for multiSelection mode you can use [changeSelectedItems]
@@ -927,4 +926,40 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///return true if we are in multiSelection mode , false otherwise
   bool get isMultiSelectionMode => widget.isMultiSelectionMode;
+
+  ///Deselect items programmatically on the popup of selection
+  void popupDeselectItems(List<T> itemsToDeselect) {
+    _popupStateKey.currentState?.deselectItems(itemsToDeselect);
+  }
+
+  ///Deselect ALL items programmatically on the popup of selection
+  void popupDeselectAllItems() {
+    _popupStateKey.currentState?.deselectAllItems();
+  }
+
+  ///select ALL items programmatically on the popup of selection
+  void popupSelectAllItems() {
+    _popupStateKey.currentState?.selectAllItems();
+  }
+
+  ///select items programmatically on the popup of selection
+  void popupSelectItems(List<T> itemsToSelect) {
+    _popupStateKey.currentState?.deselectItems(itemsToSelect);
+  }
+
+  ///validate selected items programmatically on the popup of selection
+  void popupOnValidate() {
+    _popupStateKey.currentState?.onValidate();
+  }
+
+  ///Public Function that return then UI based on searchMode
+  ///[data] selected item to be passed to the UI
+  ///If we close the popup , or maybe we just selected
+  ///another widget we should clear the focus
+  ///THIS USED FOR OPEN DROPDOWN_SEARCH PROGRAMMATICALLY,
+  ///otherwise you can you [_selectSearchMode]
+  void openDropDownSearch() => _selectSearchMode();
+
+  ///close dropdownSearch popup if it's open
+  void closeDropDownSearch() => _popupStateKey.currentState?.closePopup();
 }

@@ -53,7 +53,6 @@ class _CheckBoxWidgetState extends State<CheckBoxWidget> {
                   },
             child: IgnorePointer(
               //to ignore inner clicks or custom clicks from custom layout
-              ignoring: true,
               child: Row(mainAxisSize: MainAxisSize.max, children: [
                 widget.layout != null
                     ? Expanded(child: widget.layout!(context, v == true))

@@ -1,6 +1,6 @@
 name: dropdown_search
 description: Simple and robust Searchable Dropdown with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
-version: 2.0.0
+version: 2.0.1
 homepage: https://github.com/salim-lachdhaf
 git: https://github.com/salim-lachdhaf/searchable_dropdown
 repository: https://github.com/salim-lachdhaf/searchable_dropdown

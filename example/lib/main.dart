@@ -27,6 +27,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
   final _openDropDownProgKey = GlobalKey<DropdownSearchState<String>>();
+  final _multiKey = GlobalKey<DropdownSearchState<String>>();
   final _userEditTextController = TextEditingController(text: 'Mrs');
 
   @override
@@ -43,8 +44,85 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               ///Menu Mode with no searchBox MultiSelection
               DropdownSearch<String>.multiSelection(
+                key: _multiKey,
                 validator: (List<String>? v) {
                   return v == null || v.isEmpty ? "required field" : null;
+                },
+                dropdownBuilder: (context, selectedItems) {
+                  Widget item(String i) => Container(
+                        padding: EdgeInsets.only(
+                            left: 6, bottom: 3, top: 3, right: 0),
+                        margin: EdgeInsets.symmetric(horizontal: 2),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Theme.of(context).primaryColorLight),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              i,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.subtitle2,
+                            ),
+                            MaterialButton(
+                              height: 20,
+                              shape: const CircleBorder(),
+                              focusColor: Colors.red[200],
+                              hoverColor: Colors.red[200],
+                              padding: EdgeInsets.all(0),
+                              minWidth: 34,
+                              onPressed: () {
+                                _multiKey.currentState?.removeItem(i);
+                              },
+                              child: Icon(
+                                Icons.close_outlined,
+                                size: 20,
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                  return Wrap(
+                    children: selectedItems.map((e) => item(e)).toList(),
+                  );
+                },
+                popupCustomMultiSelectionWidget: (context, list) {
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: OutlinedButton(
+                          onPressed: () {
+                            // How should I unselect all items in the list?
+                            _multiKey.currentState?.closeDropDownSearch();
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: OutlinedButton(
+                          onPressed: () {
+                            // How should I select all items in the list?
+                            _multiKey.currentState?.popupSelectAllItems();
+                          },
+                          child: const Text('All'),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: OutlinedButton(
+                          onPressed: () {
+                            // How should I unselect all items in the list?
+                            _multiKey.currentState?.popupDeselectAllItems();
+                          },
+                          child: const Text('None'),
+                        ),
+                      ),
+                    ],
+                  );
                 },
                 dropdownSearchDecoration: InputDecoration(
                   hintText: "Select a country",
@@ -53,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   border: OutlineInputBorder(),
                 ),
                 mode: Mode.MENU,
-                showSelectedItems: false,
+                showSelectedItems: true,
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 showClearButton: true,
                 onChanged: print,
