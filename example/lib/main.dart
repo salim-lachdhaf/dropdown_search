@@ -149,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Divider(),
 
-              ///Menu Mode with no searchBox
+              ///Menu Mode with searchBox
               DropdownSearch<String>(
                 validator: (v) => v == null ? "required field" : null,
                 dropdownSearchDecoration: InputDecoration(
@@ -160,6 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 mode: Mode.MENU,
                 showSelectedItems: true,
+                showSearchBox: true,
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 showClearButton: true,
                 onChanged: print,
