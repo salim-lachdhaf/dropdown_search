@@ -102,6 +102,8 @@ class DropdownSearch<T> extends StatefulWidget {
   ///the title for dialog/menu/bottomSheet
   final Color? popupBackgroundColor;
 
+  final InputBorder borderType;
+
   ///custom widget for the popup title
   final Widget? popupTitle;
 
@@ -326,7 +328,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
-    this.positionCallback,
+    this.positionCallback, this.borderType=const OutlineInputBorder(),
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -406,7 +408,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
-    this.positionCallback,
+    this.positionCallback, this.borderType=const OutlineInputBorder(),
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.onChangedMultiSelection = onChanged,
@@ -599,7 +601,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     return (widget.dropdownSearchDecoration ??
             InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                border: OutlineInputBorder()))
+                border: widget.borderType))
         .applyDefaults(Theme.of(state.context).inputDecorationTheme)
         .copyWith(
             enabled: widget.enabled,
