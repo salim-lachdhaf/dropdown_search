@@ -268,6 +268,12 @@ class DropdownSearch<T> extends StatefulWidget {
   /// function to override position calculation
   final PositionCallback? positionCallback;
 
+  /// padding of selected item
+  final EdgeInsetsGeometry contentPadding;
+
+  /// border of selected item
+  final InputBorder border;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -327,6 +333,8 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
     this.positionCallback,
+    this.contentPadding = const EdgeInsets.fromLTRB(12, 12, 0, 0),
+    this.border = const OutlineInputBorder(),
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -407,6 +415,8 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
     this.positionCallback,
+    this.contentPadding = const EdgeInsets.fromLTRB(12, 12, 0, 0),
+    this.border = const OutlineInputBorder(),
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.onChangedMultiSelection = onChanged,
@@ -598,8 +608,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   InputDecoration _manageDropdownDecoration(FormFieldState state) {
     return (widget.dropdownSearchDecoration ??
             InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                border: OutlineInputBorder()))
+              contentPadding: widget.contentPadding,
+              border: widget.border,
+            ))
         .applyDefaults(Theme.of(state.context).inputDecorationTheme)
         .copyWith(
             enabled: widget.enabled,
