@@ -80,6 +80,9 @@ class SelectionWidget<T> extends StatefulWidget {
   ///widget to add custom widget like addAll/removeAll on popup multi selection mode
   final ValidationMultiSelectionBuilder<T>? popupCustomMultiSelectionWidget;
 
+  //widget to place between popup content and buttons
+  final Widget? popupContentDivider;
+
   /// props for selection list view
   final SelectionListViewProps selectionListViewProps;
 
@@ -121,6 +124,7 @@ class SelectionWidget<T> extends StatefulWidget {
     this.isMultiSelectionMode = false,
     this.popupValidationMultiSelectionWidget,
     this.popupCustomMultiSelectionWidget,
+    this.popupContentDivider,
     this.selectionListViewProps = const SelectionListViewProps(),
     required this.focusNode,
   }) : super(key: key);
@@ -280,6 +284,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                     ],
                   ),
                 ),
+                _popupContentDivider(),
                 _multiSelectionValidation(),
               ],
             );
@@ -338,6 +343,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         popupValidationMultiSelectionWidget(),
       ],
     );
+  }
+
+  Widget _popupContentDivider() {
+    return widget.popupContentDivider ?? Container();
   }
 
   void _showErrorDialog(dynamic error) {

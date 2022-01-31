@@ -124,6 +124,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   );
                 },
+                popupContentDivider: Divider(
+                  color: Theme.of(context).primaryColor,
+                ),
                 dropdownSearchDecoration: InputDecoration(
                   hintText: "Select a country",
                   labelText: "Menu mode multiSelection*",

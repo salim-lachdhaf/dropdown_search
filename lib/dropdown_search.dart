@@ -256,6 +256,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///widget to add custom widget like addAll/removeAll on popup multi selection mode
   final ValidationMultiSelectionBuilder<T>? popupCustomMultiSelectionWidget;
 
+  //widget to place between popup content and buttons
+  final Widget? popupContentDivider;
+
   /// elevation for popup items
   final double popupElevation;
 
@@ -341,6 +344,7 @@ class DropdownSearch<T> extends StatefulWidget {
         this.popupSelectionWidget = null,
         this.popupValidationMultiSelectionWidget = null,
         this.popupCustomMultiSelectionWidget = null,
+        this.popupContentDivider = null,
         super(key: key);
 
   DropdownSearch.multiSelection({
@@ -403,6 +407,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.popupSelectionWidget,
     this.popupValidationMultiSelectionWidget,
     this.popupCustomMultiSelectionWidget,
+    this.popupContentDivider,
     this.popupElevation = 8,
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
@@ -820,6 +825,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       popupValidationMultiSelectionWidget:
           widget.popupValidationMultiSelectionWidget,
       popupCustomMultiSelectionWidget: widget.popupCustomMultiSelectionWidget,
+      popupContentDivider: widget.popupContentDivider,
       isMultiSelectionMode: isMultiSelectionMode,
       selectionListViewProps: widget.selectionListViewProps,
       focusNode: widget.focusNode ?? FocusNode(),
