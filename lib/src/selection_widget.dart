@@ -554,7 +554,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         children: <Widget>[
           widget.popupTitle ?? const SizedBox.shrink(),
           if (widget.showSearchBox)
-            Padding(
+            Container(
+              height: widget.searchFieldProps?.height,
               padding:
                   widget.searchFieldProps?.padding ?? const EdgeInsets.all(8.0),
               child: DefaultTextEditingShortcuts(
