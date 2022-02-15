@@ -192,7 +192,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
               children: <Widget>[
                 _searchField(),
                 _favoriteItemsWidget(),
-                Expanded(
+                Flexible(
                   child: Stack(
                     children: <Widget>[
                       StreamBuilder<List<T>>(
@@ -395,7 +395,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                 ),
               );
           }
-          return Container();
+          return const SizedBox.shrink();
         });
   }
 
