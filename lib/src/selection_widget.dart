@@ -159,13 +159,6 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (widget.searchFieldProps?.autofocus == true) //handle null and false
-      FocusScope.of(context).requestFocus(widget.focusNode);
-  }
-
-  @override
   void dispose() {
     _itemsStream.close();
     super.dispose();
@@ -568,6 +561,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                     style: widget.searchFieldProps?.style,
                     controller: widget.searchFieldProps?.controller,
                     focusNode: widget.focusNode,
+                    autofocus: widget.searchFieldProps?.autofocus ?? false,
                     onChanged: (f) {
                       //if controller !=null , the change event will be handled by
                       // the controller
