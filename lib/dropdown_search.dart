@@ -108,6 +108,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///customize the fields the be shown
   final DropdownSearchItemAsString<T>? itemAsString;
 
+  /// style on which to base customize the fields the be shown
+  final TextStyle? itemAsStringStyle;
+    
   ///	custom filter function
   final DropdownSearchFilterFn<T>? filterFn;
 
@@ -327,6 +330,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
     this.positionCallback,
+    this.itemAsStringStyle,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -407,6 +411,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
     this.positionCallback,
+    this.itemAsStringStyle,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.onChangedMultiSelection = onChanged,
@@ -488,7 +493,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         child: Text(
           _selectedItemAsString(item),
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.subtitle2,
+          style: widget.itemAsStringStyle ?? Theme.of(context).textTheme.subtitle2,
         ),
       );
     }
@@ -512,7 +517,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         );
       }
       return Text(_selectedItemAsString(getSelectedItem),
-          style: Theme.of(context).textTheme.subtitle1);
+          style: widget.itemAsStringStyle ?? Theme.of(context).textTheme.subtitle1);
     }
 
     return Row(
