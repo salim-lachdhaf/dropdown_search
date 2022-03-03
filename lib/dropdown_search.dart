@@ -491,7 +491,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             borderRadius: BorderRadius.circular(10),
             color: Theme.of(context).primaryColorLight),
         child: Text(
-          _selectedItemAsString(item),
+          "_selectedItemAsString(item)",
           textAlign: TextAlign.center,
           style: widget.dropdownSearchTextStyle ??
               Theme.of(context).textTheme.subtitle2,
@@ -517,7 +517,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               .toList(),
         );
       }
-      return Text(_selectedItemAsString(getSelectedItem),
+      return Text("_selectedItemAsString(getSelectedItem)",
           style: widget.dropdownSearchTextStyle ??
               Theme.of(context).textTheme.subtitle1);
     }
