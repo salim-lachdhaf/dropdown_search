@@ -270,6 +270,9 @@ class DropdownSearch<T> extends StatefulWidget {
 
   /// function to override position calculation
   final PositionCallback? positionCallback;
+  
+  /// Max lines for the search field button text
+  final int? dropdownSearchTextMaxLines;
 
   DropdownSearch({
     Key? key,
@@ -330,7 +333,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
     this.positionCallback,
-    this.dropdownSearchTextStyle,
+    this.dropdownSearchTextStyle, this.dropdownSearchTextMaxLines,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -411,7 +414,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
     this.positionCallback,
-    this.dropdownSearchTextStyle,
+    this.dropdownSearchTextStyle, this.dropdownSearchTextMaxLines,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.onChangedMultiSelection = onChanged,
@@ -491,7 +494,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             borderRadius: BorderRadius.circular(10),
             color: Theme.of(context).primaryColorLight),
         child: Text(
-          "_selectedItemAsString(item)",
+          _selectedItemAsString(item),
+          maxLines: widget.dropdownSearchTextMaxLines,
           textAlign: TextAlign.center,
           style: widget.dropdownSearchTextStyle ??
               Theme.of(context).textTheme.subtitle2,
@@ -517,7 +521,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               .toList(),
         );
       }
-      return Text("_selectedItemAsString(getSelectedItem)",
+      return Text(_selectedItemAsString(getSelectedItem),
+      maxLines: widget.dropdownSearchTextMaxLines,
           style: widget.dropdownSearchTextStyle ??
               Theme.of(context).textTheme.subtitle1);
     }
