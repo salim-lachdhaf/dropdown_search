@@ -86,6 +86,12 @@ class SelectionWidget<T> extends StatefulWidget {
   /// props for selection focus node
   final FocusNode focusNode;
 
+  /// set to `true` if you want to have pullToRefresh ability on the list
+  final bool pullToRefresh;
+
+  /// allows to override wrapper for pullToRefresh functionality
+  final PullToRefreshBuilder? pullToRefreshBuilder;
+
   const SelectionWidget({
     Key? key,
     this.popupTitle,
@@ -123,6 +129,8 @@ class SelectionWidget<T> extends StatefulWidget {
     this.popupCustomMultiSelectionWidget,
     this.selectionListViewProps = const SelectionListViewProps(),
     required this.focusNode,
+    this.pullToRefresh = false,
+    this.pullToRefreshBuilder,
   }) : super(key: key);
 
   @override
@@ -171,6 +179,24 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     super.dispose();
   }
 
+  Widget _pullToRefresh({
+    required Widget child,
+    required RefreshCallback onRefresh,
+  }) {
+    if (widget.pullToRefresh) {
+      if (widget.pullToRefreshBuilder != null) {
+        return widget.pullToRefreshBuilder!(
+          child: child,
+          onRefresh: onRefresh,
+        );
+      }
+
+      return RefreshIndicator(child: child, onRefresh: onRefresh);
+    }
+
+    return child;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
@@ -217,60 +243,72 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                             removeBottom: true,
                             removeTop: true,
                             context: context,
-                            child: Scrollbar(
-                              controller: widget.scrollbarProps?.controller,
-                              isAlwaysShown:
-                                  widget.scrollbarProps?.isAlwaysShown,
-                              showTrackOnHover:
-                                  widget.scrollbarProps?.showTrackOnHover,
-                              hoverThickness:
-                                  widget.scrollbarProps?.hoverThickness,
-                              thickness: widget.scrollbarProps?.thickness,
-                              radius: widget.scrollbarProps?.radius,
-                              notificationPredicate:
-                                  widget.scrollbarProps?.notificationPredicate,
-                              interactive: widget.scrollbarProps?.interactive,
-                              child: ListView.builder(
-                                shrinkWrap:
-                                    widget.selectionListViewProps.shrinkWrap,
-                                padding: widget.selectionListViewProps.padding,
-                                scrollDirection: widget
-                                    .selectionListViewProps.scrollDirection,
-                                reverse: widget.selectionListViewProps.reverse,
-                                controller:
-                                    widget.selectionListViewProps.controller,
-                                primary: widget.selectionListViewProps.primary,
-                                physics: widget.selectionListViewProps.physics,
-                                itemExtent:
-                                    widget.selectionListViewProps.itemExtent,
-                                addAutomaticKeepAlives: widget
-                                    .selectionListViewProps
-                                    .addAutomaticKeepAlives,
-                                addRepaintBoundaries: widget
-                                    .selectionListViewProps
-                                    .addRepaintBoundaries,
-                                addSemanticIndexes: widget
-                                    .selectionListViewProps.addSemanticIndexes,
-                                cacheExtent:
-                                    widget.selectionListViewProps.cacheExtent,
-                                semanticChildCount: widget
-                                    .selectionListViewProps.semanticChildCount,
-                                dragStartBehavior: widget
-                                    .selectionListViewProps.dragStartBehavior,
-                                keyboardDismissBehavior: widget
-                                    .selectionListViewProps
-                                    .keyboardDismissBehavior,
-                                restorationId:
-                                    widget.selectionListViewProps.restorationId,
-                                clipBehavior:
-                                    widget.selectionListViewProps.clipBehavior,
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) {
-                                  var item = snapshot.data![index];
-                                  return widget.isMultiSelectionMode
-                                      ? _itemWidgetMultiSelection(item)
-                                      : _itemWidgetSingleSelection(item);
-                                },
+                            child: _pullToRefresh(
+                              onRefresh: () => _manageItemsByFilter(
+                                widget.searchFieldProps?.controller?.text ?? '',
+                                isFistLoad: false,
+                              ),
+                              child: Scrollbar(
+                                controller: widget.scrollbarProps?.controller,
+                                isAlwaysShown:
+                                    widget.scrollbarProps?.isAlwaysShown,
+                                showTrackOnHover:
+                                    widget.scrollbarProps?.showTrackOnHover,
+                                hoverThickness:
+                                    widget.scrollbarProps?.hoverThickness,
+                                thickness: widget.scrollbarProps?.thickness,
+                                radius: widget.scrollbarProps?.radius,
+                                notificationPredicate: widget
+                                    .scrollbarProps?.notificationPredicate,
+                                interactive: widget.scrollbarProps?.interactive,
+                                child: ListView.builder(
+                                  shrinkWrap:
+                                      widget.selectionListViewProps.shrinkWrap,
+                                  padding:
+                                      widget.selectionListViewProps.padding,
+                                  scrollDirection: widget
+                                      .selectionListViewProps.scrollDirection,
+                                  reverse:
+                                      widget.selectionListViewProps.reverse,
+                                  controller:
+                                      widget.selectionListViewProps.controller,
+                                  primary:
+                                      widget.selectionListViewProps.primary,
+                                  physics:
+                                      widget.selectionListViewProps.physics,
+                                  itemExtent:
+                                      widget.selectionListViewProps.itemExtent,
+                                  addAutomaticKeepAlives: widget
+                                      .selectionListViewProps
+                                      .addAutomaticKeepAlives,
+                                  addRepaintBoundaries: widget
+                                      .selectionListViewProps
+                                      .addRepaintBoundaries,
+                                  addSemanticIndexes: widget
+                                      .selectionListViewProps
+                                      .addSemanticIndexes,
+                                  cacheExtent:
+                                      widget.selectionListViewProps.cacheExtent,
+                                  semanticChildCount: widget
+                                      .selectionListViewProps
+                                      .semanticChildCount,
+                                  dragStartBehavior: widget
+                                      .selectionListViewProps.dragStartBehavior,
+                                  keyboardDismissBehavior: widget
+                                      .selectionListViewProps
+                                      .keyboardDismissBehavior,
+                                  restorationId: widget
+                                      .selectionListViewProps.restorationId,
+                                  clipBehavior: widget
+                                      .selectionListViewProps.clipBehavior,
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder: (context, index) {
+                                    var item = snapshot.data![index];
+                                    return widget.isMultiSelectionMode
+                                        ? _itemWidgetMultiSelection(item)
+                                        : _itemWidgetSingleSelection(item);
+                                  },
+                                ),
                               ),
                             ),
                           );
@@ -405,8 +443,9 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
 
   ///Function that filter item (online and offline) base on user filter
   ///[filter] is the filter keyword
-  ///[isFirstLoad] true if it's the first time we load data from online, false other wises
-  void _manageItemsByFilter(String filter, {bool isFistLoad = false}) async {
+  ///[isFirstLoad] true if it's the first time we load data from online, false otherwise
+  Future<void> _manageItemsByFilter(String filter,
+      {bool isFistLoad = false}) async {
     _loadingNotifier.value = true;
 
     List<T> applyFilter(String? filter) {

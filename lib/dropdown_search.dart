@@ -54,6 +54,11 @@ typedef void OnItemRemoved<T>(List<T> selectedItems, T removedItem);
 ///[items] are the original item from [items] or/and [onFind]
 typedef List<T> FavoriteItems<T>(List<T> items);
 
+typedef Widget PullToRefreshBuilder<T>({
+  Widget child,
+  RefreshCallback onRefresh,
+});
+
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
 class DropdownSearch<T> extends StatefulWidget {
@@ -268,6 +273,12 @@ class DropdownSearch<T> extends StatefulWidget {
   /// function to override position calculation
   final PositionCallback? positionCallback;
 
+  /// set to `true` if you want to have pullToRefresh ability on the list
+  final bool pullToRefresh;
+
+  /// allows to override wrapper for pullToRefresh functionality
+  final PullToRefreshBuilder? pullToRefreshBuilder;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -327,6 +338,8 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
     this.positionCallback,
+    this.pullToRefresh = false,
+    this.pullToRefreshBuilder,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.isMultiSelectionMode = false,
@@ -407,6 +420,8 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectionListViewProps = const SelectionListViewProps(),
     this.focusNode,
     this.positionCallback,
+    this.pullToRefresh = false,
+    this.pullToRefreshBuilder,
   })  : assert(!showSelectedItems || T == String || compareFn != null),
         this.searchFieldProps = searchFieldProps ?? TextFieldProps(),
         this.onChangedMultiSelection = onChanged,
@@ -791,6 +806,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       popupTitle: widget.popupTitle,
       maxHeight: widget.maxHeight ?? defaultHeight,
       isFilteredOnline: widget.isFilteredOnline,
+      pullToRefresh: widget.pullToRefresh,
+      pullToRefreshBuilder: widget.pullToRefreshBuilder,
       itemAsString: widget.itemAsString,
       filterFn: widget.filterFn,
       items: widget.items,

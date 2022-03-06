@@ -306,6 +306,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Divider(),
               DropdownSearch<UserModel>.multiSelection(
+                pullToRefresh: true,
                 searchFieldProps: TextFieldProps(
                   controller: _userEditTextController,
                   decoration: InputDecoration(
