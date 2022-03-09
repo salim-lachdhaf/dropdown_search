@@ -1,3 +1,8 @@
+## [3.0.0] - 2022.03.09
+* breaking changes:
+  * migrating to dart >= 2.15
+* removing useless null safety that triggered warning messages on any project with dart >= 2.15.
+
 ## [2.0.1] - 2021.11.15
 * improve performance
 * add "popupCustomMultiSelectionWidget" option

@@ -539,7 +539,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       initialValue: widget.selectedItem,
       builder: (FormFieldState<T> state) {
         if (state.value != getSelectedItem) {
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             state.didChange(getSelectedItem);
           });
         }
@@ -571,7 +571,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       initialValue: widget.selectedItems,
       builder: (FormFieldState<List<T>> state) {
         if (state.value != getSelectedItems) {
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             state.didChange(getSelectedItems);
           });
         }
