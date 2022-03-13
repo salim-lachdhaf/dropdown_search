@@ -2,6 +2,8 @@
 * breaking changes:
   * migrating to dart >= 2.15
 * removing useless null safety that triggered warning messages on any project with dart >= 2.15.
+* removing unused imports
+* removing deprecated feature -> hoverThickness
 
 ## [2.0.1] - 2021.11.15
 * improve performance

@@ -1,14 +1,11 @@
 import 'dart:async';
 import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
 
-import 'package:dropdown_search/src/properties/selection_list_view_props.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../dropdown_search.dart';
-import 'properties/scrollbar_props.dart';
-import 'properties/text_field_props.dart';
 import 'widgets/checkbox_widget.dart';
 
 class SelectionWidget<T> extends StatefulWidget {
@@ -219,12 +216,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                             context: context,
                             child: Scrollbar(
                               controller: widget.scrollbarProps?.controller,
-                              isAlwaysShown:
-                                  widget.scrollbarProps?.isAlwaysShown,
-                              showTrackOnHover:
-                                  widget.scrollbarProps?.showTrackOnHover,
-                              hoverThickness:
-                                  widget.scrollbarProps?.hoverThickness,
+                              thumbVisibility: widget.scrollbarProps?.isAlwaysShown,
+                              trackVisibility: widget.scrollbarProps?.showTrackOnHover,
                               thickness: widget.scrollbarProps?.thickness,
                               radius: widget.scrollbarProps?.radius,
                               notificationPredicate:

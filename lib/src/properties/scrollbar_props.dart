@@ -7,8 +7,6 @@ class ScrollbarProps {
 
   final bool? showTrackOnHover;
 
-  final double? hoverThickness;
-
   final double? thickness;
 
   final Radius? radius;
@@ -21,7 +19,6 @@ class ScrollbarProps {
     this.controller,
     this.isAlwaysShown,
     this.showTrackOnHover,
-    this.hoverThickness,
     this.thickness,
     this.radius,
     this.interactive,
