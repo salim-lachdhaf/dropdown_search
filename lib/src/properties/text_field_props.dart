@@ -7,7 +7,7 @@ import 'package:flutter/gestures.dart';
 
 class TextFieldProps {
   TextFieldProps({
-    TextEditingController? controller,
+    this.controller,
     this.decoration,
     this.keyboardType,
     this.textInputAction,
@@ -54,7 +54,7 @@ class TextFieldProps {
     this.scrollPhysics,
     this.autofillHints,
     this.restorationId,
-  }) : this.controller = controller ?? TextEditingController();
+  });
 
   final TextEditingController? controller;
 
