@@ -1,4 +1,4 @@
-## [3.0.0] - 2022.04.15
+## [3.0.1] - 2022.04.15
 * breaking changes:
     - remove 'hint' and 'label' properties, use 'dropdownSearchDecoration' instead
     - remove 'showAsSuffixIcons' property, now always are as suffixIcon
