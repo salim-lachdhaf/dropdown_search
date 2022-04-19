@@ -617,7 +617,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             splashColor: widget.clearButtonProps?.splashColor,
             color: widget.clearButtonProps?.color,
             focusColor: widget.clearButtonProps?.focusColor,
-            iconSize: widget.clearButtonProps?.iconSize,
+            iconSize: widget.clearButtonProps?.iconSize ?? 24.0,
             padding:
                 widget.clearButtonProps?.padding ?? const EdgeInsets.all(8.0),
             splashRadius: widget.clearButtonProps?.splashRadius,
@@ -626,7 +626,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             disabledColor: widget.clearButtonProps?.disabledColor,
             enableFeedback: widget.clearButtonProps?.enableFeedback ?? false,
             focusNode: widget.clearButtonProps?.focusNode,
-            mouseCursor: widget.clearButtonProps?.mouseCursor,
+            mouseCursor: widget.clearButtonProps?.mouseCursor ??
+                SystemMouseCursors.click,
             tooltip: widget.clearButtonProps?.tooltip,
             visualDensity: widget.clearButtonProps?.visualDensity,
           ),
@@ -640,7 +641,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           splashColor: widget.dropdownButtonProps?.splashColor,
           color: widget.dropdownButtonProps?.color,
           focusColor: widget.dropdownButtonProps?.focusColor,
-          iconSize: widget.dropdownButtonProps?.iconSize,
+          iconSize: widget.dropdownButtonProps?.iconSize ?? 24.0,
           padding:
               widget.dropdownButtonProps?.padding ?? const EdgeInsets.all(8.0),
           splashRadius: widget.dropdownButtonProps?.splashRadius,
@@ -649,7 +650,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           disabledColor: widget.dropdownButtonProps?.disabledColor,
           enableFeedback: widget.dropdownButtonProps?.enableFeedback ?? false,
           focusNode: widget.dropdownButtonProps?.focusNode,
-          mouseCursor: widget.dropdownButtonProps?.mouseCursor,
+          mouseCursor: widget.dropdownButtonProps?.mouseCursor ??
+              SystemMouseCursors.click,
           tooltip: widget.dropdownButtonProps?.tooltip,
           visualDensity: widget.dropdownButtonProps?.visualDensity,
         ),

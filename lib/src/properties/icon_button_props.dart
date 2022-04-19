@@ -158,7 +158,7 @@ class IconButtonProps {
 
   const IconButtonProps({
     required this.icon,
-    this.iconSize,
+    this.iconSize = 24.0,
     this.visualDensity,
     this.padding = const EdgeInsets.all(8.0),
     this.alignment = Alignment.center,
@@ -169,7 +169,7 @@ class IconButtonProps {
     this.highlightColor,
     this.splashColor,
     this.disabledColor,
-    this.mouseCursor,
+    this.mouseCursor = SystemMouseCursors.click,
     this.focusNode,
     this.autofocus = false,
     this.tooltip,
