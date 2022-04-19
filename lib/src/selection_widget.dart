@@ -3,6 +3,7 @@ import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../dropdown_search.dart';
 import 'widgets/checkbox_widget.dart';
@@ -553,81 +554,94 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
             Padding(
               padding:
                   widget.searchFieldProps?.padding ?? const EdgeInsets.all(8.0),
-              child: TextField(
-                style: widget.searchFieldProps?.style,
-                controller: widget.searchFieldProps?.controller,
-                focusNode: widget.focusNode,
-                onChanged: (f) {
-                  //if controller !=null , the change event will be handled by
-                  // the controller
-                  if (widget.searchFieldProps?.controller == null)
-                    _debouncer(() {
-                      _onTextChanged(f);
-                    });
-                },
-                decoration: widget.searchFieldProps?.decoration ??
-                    InputDecoration(
-                      hintText: widget.hintText,
-                      border: const OutlineInputBorder(),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16),
-                    ),
-                keyboardType: widget.searchFieldProps?.keyboardType,
-                textInputAction: widget.searchFieldProps?.textInputAction,
-                textCapitalization:
-                    widget.searchFieldProps?.textCapitalization ??
-                        TextCapitalization.none,
-                strutStyle: widget.searchFieldProps?.strutStyle,
-                textAlign:
-                    widget.searchFieldProps?.textAlign ?? TextAlign.start,
-                textAlignVertical: widget.searchFieldProps?.textAlignVertical,
-                textDirection: widget.searchFieldProps?.textDirection,
-                readOnly: widget.searchFieldProps?.readOnly ?? false,
-                toolbarOptions: widget.searchFieldProps?.toolbarOptions,
-                showCursor: widget.searchFieldProps?.showCursor,
-                obscuringCharacter:
-                    widget.searchFieldProps?.obscuringCharacter ?? '•',
-                obscureText: widget.searchFieldProps?.obscureText ?? false,
-                autocorrect: widget.searchFieldProps?.autocorrect ?? true,
-                smartDashesType: widget.searchFieldProps?.smartDashesType,
-                smartQuotesType: widget.searchFieldProps?.smartQuotesType,
-                enableSuggestions:
-                    widget.searchFieldProps?.enableSuggestions ?? true,
-                maxLines: widget.searchFieldProps?.maxLines ?? 1,
-                minLines: widget.searchFieldProps?.minLines,
-                expands: widget.searchFieldProps?.expands ?? false,
-                maxLengthEnforcement:
-                    widget.searchFieldProps?.maxLengthEnforcement,
-                maxLength: widget.searchFieldProps?.maxLength,
-                onAppPrivateCommand:
-                    widget.searchFieldProps?.onAppPrivateCommand,
-                inputFormatters: widget.searchFieldProps?.inputFormatters,
-                enabled: widget.searchFieldProps?.enabled,
-                cursorWidth: widget.searchFieldProps?.cursorWidth ?? 2.0,
-                cursorHeight: widget.searchFieldProps?.cursorHeight,
-                cursorRadius: widget.searchFieldProps?.cursorRadius,
-                cursorColor: widget.searchFieldProps?.cursorColor,
-                selectionHeightStyle:
-                    widget.searchFieldProps?.selectionHeightStyle ??
-                        ui.BoxHeightStyle.tight,
-                selectionWidthStyle:
-                    widget.searchFieldProps?.selectionWidthStyle ??
-                        ui.BoxWidthStyle.tight,
-                keyboardAppearance: widget.searchFieldProps?.keyboardAppearance,
-                scrollPadding: widget.searchFieldProps?.scrollPadding ??
-                    const EdgeInsets.all(20.0),
-                dragStartBehavior: widget.searchFieldProps?.dragStartBehavior ??
-                    DragStartBehavior.start,
-                enableInteractiveSelection:
-                    widget.searchFieldProps?.enableInteractiveSelection ?? true,
-                selectionControls: widget.searchFieldProps?.selectionControls,
-                onTap: widget.searchFieldProps?.onTap,
-                mouseCursor: widget.searchFieldProps?.mouseCursor,
-                buildCounter: widget.searchFieldProps?.buildCounter,
-                scrollController: widget.searchFieldProps?.scrollController,
-                scrollPhysics: widget.searchFieldProps?.scrollPhysics,
-                autofillHints: widget.searchFieldProps?.autofillHints,
-                restorationId: widget.searchFieldProps?.restorationId,
+              child: DefaultTextEditingShortcuts(
+                child: Shortcuts(
+                  shortcuts: const <ShortcutActivator, Intent>{
+                    SingleActivator(LogicalKeyboardKey.space):
+                        DoNothingAndStopPropagationTextIntent(),
+                  },
+                  child: TextField(
+                    style: widget.searchFieldProps?.style,
+                    controller: widget.searchFieldProps?.controller,
+                    focusNode: widget.focusNode,
+                    onChanged: (f) {
+                      //if controller !=null , the change event will be handled by
+                      // the controller
+                      if (widget.searchFieldProps?.controller == null)
+                        _debouncer(() {
+                          _onTextChanged(f);
+                        });
+                    },
+                    decoration: widget.searchFieldProps?.decoration ??
+                        InputDecoration(
+                          hintText: widget.hintText,
+                          border: const OutlineInputBorder(),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                    keyboardType: widget.searchFieldProps?.keyboardType,
+                    textInputAction: widget.searchFieldProps?.textInputAction,
+                    textCapitalization:
+                        widget.searchFieldProps?.textCapitalization ??
+                            TextCapitalization.none,
+                    strutStyle: widget.searchFieldProps?.strutStyle,
+                    textAlign:
+                        widget.searchFieldProps?.textAlign ?? TextAlign.start,
+                    textAlignVertical:
+                        widget.searchFieldProps?.textAlignVertical,
+                    textDirection: widget.searchFieldProps?.textDirection,
+                    readOnly: widget.searchFieldProps?.readOnly ?? false,
+                    toolbarOptions: widget.searchFieldProps?.toolbarOptions,
+                    showCursor: widget.searchFieldProps?.showCursor,
+                    obscuringCharacter:
+                        widget.searchFieldProps?.obscuringCharacter ?? '•',
+                    obscureText: widget.searchFieldProps?.obscureText ?? false,
+                    autocorrect: widget.searchFieldProps?.autocorrect ?? true,
+                    smartDashesType: widget.searchFieldProps?.smartDashesType,
+                    smartQuotesType: widget.searchFieldProps?.smartQuotesType,
+                    enableSuggestions:
+                        widget.searchFieldProps?.enableSuggestions ?? true,
+                    maxLines: widget.searchFieldProps?.maxLines ?? 1,
+                    minLines: widget.searchFieldProps?.minLines,
+                    expands: widget.searchFieldProps?.expands ?? false,
+                    maxLengthEnforcement:
+                        widget.searchFieldProps?.maxLengthEnforcement,
+                    maxLength: widget.searchFieldProps?.maxLength,
+                    onAppPrivateCommand:
+                        widget.searchFieldProps?.onAppPrivateCommand,
+                    inputFormatters: widget.searchFieldProps?.inputFormatters,
+                    enabled: widget.searchFieldProps?.enabled,
+                    cursorWidth: widget.searchFieldProps?.cursorWidth ?? 2.0,
+                    cursorHeight: widget.searchFieldProps?.cursorHeight,
+                    cursorRadius: widget.searchFieldProps?.cursorRadius,
+                    cursorColor: widget.searchFieldProps?.cursorColor,
+                    selectionHeightStyle:
+                        widget.searchFieldProps?.selectionHeightStyle ??
+                            ui.BoxHeightStyle.tight,
+                    selectionWidthStyle:
+                        widget.searchFieldProps?.selectionWidthStyle ??
+                            ui.BoxWidthStyle.tight,
+                    keyboardAppearance:
+                        widget.searchFieldProps?.keyboardAppearance,
+                    scrollPadding: widget.searchFieldProps?.scrollPadding ??
+                        const EdgeInsets.all(20.0),
+                    dragStartBehavior:
+                        widget.searchFieldProps?.dragStartBehavior ??
+                            DragStartBehavior.start,
+                    enableInteractiveSelection:
+                        widget.searchFieldProps?.enableInteractiveSelection ??
+                            true,
+                    selectionControls:
+                        widget.searchFieldProps?.selectionControls,
+                    onTap: widget.searchFieldProps?.onTap,
+                    mouseCursor: widget.searchFieldProps?.mouseCursor,
+                    buildCounter: widget.searchFieldProps?.buildCounter,
+                    scrollController: widget.searchFieldProps?.scrollController,
+                    scrollPhysics: widget.searchFieldProps?.scrollPhysics,
+                    autofillHints: widget.searchFieldProps?.autofillHints,
+                    restorationId: widget.searchFieldProps?.restorationId,
+                  ),
+                ),
               ),
             )
         ]);
