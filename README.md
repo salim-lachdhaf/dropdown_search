@@ -57,38 +57,44 @@ import 'package:dropdown_search/dropdown_search.dart';
 ```dart
 DropdownSearch<String>(
     mode: Mode.MENU,
-    showSelectedItem: true,
+    showSelectedItems: true,
     items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-    label: "Menu mode",
-    hint: "country in menu mode",
+    dropdownSearchDecoration: InputDecoration(
+      labelText: "Menu mode",
+      hintText: "country in menu mode",
+    ),
     popupItemDisabled: (String s) => s.startsWith('I'),
     onChanged: print,
-    selectedItem: "Brazil"),
+    selectedItem: "Brazil",
+),
     
     
 DropdownSearch<String>.multiSelection(
     mode: Mode.MENU,
-    showSelectedItem: true,
+    showSelectedItems: true,
     items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-    label: "Menu mode",
-    hint: "country in menu mode",
+    dropdownSearchDecoration: InputDecoration(
+      labelText: "Menu mode",
+      hintText: "country in menu mode",
+    ),
     popupItemDisabled: (String s) => s.startsWith('I'),
     onChanged: print,
-    selectedItems: ["Brazil"]),
+    selectedItems: ["Brazil"],
+),
 ```
 
 ## customize showed field (itemAsString)
 
 ```dart
 DropdownSearch<UserModel>(
-  label: "Name",
+  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
   onFind: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringByName(),
   onChanged: (UserModel data) => print(data),
 ),
 
 DropdownSearch<UserModel>(
-  label: "Name",
+  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
   onFind: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringById(),
   onChanged: (UserModel data) => print(data),
@@ -98,7 +104,7 @@ DropdownSearch<UserModel>(
 ## customize Filter Function
 ```dart
 DropdownSearch<UserModel>(
-  label: "Name",
+  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
   filterFn: (user, filter) => user.userFilterByCreationDate(filter),
   onFind: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringByName(),
@@ -110,7 +116,7 @@ DropdownSearch<UserModel>(
 ```dart
 DropdownSearch<UserModel>(
   mode: Mode.BOTTOM_SHEET,
-  label: "Name",
+  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
   onFind: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsString(),
   onChanged: (UserModel data) => print(data),
@@ -121,7 +127,7 @@ DropdownSearch<UserModel>(
 ```dart
 DropdownSearch(
   items: ["Brazil", "France", "Tunisia", "Canada"],
-  label: "Country",
+  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
   onChanged: print,
   selectedItem: "Tunisia",
   validator: (String item) {
@@ -139,7 +145,7 @@ DropdownSearch(
 ## Endpoint implementation (using [Dio package](https://pub.dev/packages/dio))
 ```dart
 DropdownSearch<UserModel>(
-  label: "Name",
+  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
   onFind: (String filter) async {
     var response = await Dio().get(
         "http://5d85ccfb1e61af001471bf60.mockapi.io/user",

@@ -17,7 +17,7 @@ class ScrollbarProps {
 
   final ScrollNotificationPredicate? notificationPredicate;
 
-  ScrollbarProps({
+  const ScrollbarProps({
     this.controller,
     this.isAlwaysShown,
     this.showTrackOnHover,

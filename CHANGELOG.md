@@ -1,3 +1,12 @@
+## [3.0.0] - 2022.04.15
+* breaking changes:
+    - remove 'hint' and 'label' properties, use 'dropdownSearchDecoration' instead
+    - remove 'showAsSuffixIcons' property, now always are as suffixIcon
+    - replace 'clearButtonSplashRadius' and 'clearButtonBuilder' into one property 'IconButtonProps'
+    - replace 'dropdownButtonSplashRadius' and 'dropdownButtonBuilder' into one property 'IconButtonProps'
+    - fix issue [380](https://github.com/salim-lachdhaf/searchable_dropdown/issues/380)
+
+
 ## [2.0.1] - 2021.11.15
 * improve performance
 * add "popupCustomMultiSelectionWidget" option

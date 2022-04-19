@@ -2,10 +2,10 @@ library dropdown_search;
 
 import 'dart:async';
 
+import 'package:dropdown_search/src/properties/icon_button_props.dart';
 import 'package:dropdown_search/src/properties/selection_list_view_props.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'src/modal_dialog.dart';
 import 'src/popupMenu.dart';
@@ -14,6 +14,7 @@ import 'src/properties/scrollbar_props.dart';
 import 'src/properties/text_field_props.dart';
 import 'src/selection_widget.dart';
 
+export 'src/properties/icon_button_props.dart';
 export 'src/properties/popup_safearea_props.dart';
 export 'src/properties/scrollbar_props.dart';
 export 'src/properties/selection_list_view_props.dart';
@@ -36,7 +37,6 @@ typedef Widget ErrorBuilder<T>(
     BuildContext context, String? searchEntry, dynamic exception);
 typedef Widget EmptyBuilder<T>(BuildContext context, String? searchEntry);
 typedef Widget LoadingBuilder<T>(BuildContext context, String? searchEntry);
-typedef Widget IconButtonBuilder(BuildContext context);
 typedef Future<bool?> BeforeChange<T>(T? prevItem, T? nextItem);
 typedef Future<bool?> BeforeChangeMultiSelection<T>(
     List<T> prevItems, List<T> nextItems);
@@ -57,12 +57,6 @@ typedef List<T> FavoriteItems<T>(List<T> items);
 enum Mode { DIALOG, BOTTOM_SHEET, MENU }
 
 class DropdownSearch<T> extends StatefulWidget {
-  ///DropDownSearch label
-  final String? label;
-
-  ///DropDownSearch hint
-  final String? hint;
-
   ///show/hide the search box
   final bool showSearchBox;
 
@@ -166,29 +160,6 @@ class DropdownSearch<T> extends StatefulWidget {
   final FormFieldValidator<T>? validator;
   final FormFieldValidator<List<T>>? validatorMultiSelection;
 
-  ///custom dropdown clear button icon widget
-  final Widget? clearButton;
-
-  ///custom clear button widget builder
-  final IconButtonBuilder? clearButtonBuilder;
-
-  ///custom splash radius for the clear button
-  ///If null, default splash radius of [icon_button] is used.
-  final double? clearButtonSplashRadius;
-
-  ///custom dropdown icon button widget
-  final Widget? dropDownButton;
-
-  ///custom dropdown button widget builder
-  final IconButtonBuilder? dropdownButtonBuilder;
-
-  ///custom splash radius for the dropdown button
-  ///If null, default splash radius of [icon_button] is used.
-  final double? dropdownButtonSplashRadius;
-
-  ///whether to manage the clear and dropdown icons via InputDecoration suffixIcon
-  final bool showAsSuffixIcons;
-
   ///If true, the dropdownBuilder will continue the uses of material behavior
   ///This will be useful if you want to handle a custom UI only if the item !=null
   final bool dropdownBuilderSupportsNullItem;
@@ -268,6 +239,12 @@ class DropdownSearch<T> extends StatefulWidget {
   /// function to override position calculation
   final PositionCallback? positionCallback;
 
+  ///custom dropdown clear button icon properties
+  final IconButtonProps? clearButtonProps;
+
+  ///custom dropdown icon button properties
+  final IconButtonProps? dropdownButtonProps;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -275,8 +252,6 @@ class DropdownSearch<T> extends StatefulWidget {
     this.autoValidateMode = AutovalidateMode.disabled,
     this.onChanged,
     this.mode = Mode.DIALOG,
-    @Deprecated('Use labelText prop from dropdownSearchDecoration') this.label,
-    @Deprecated('Use hintText prop from dropdownSearchDecoration') this.hint,
     this.isFilteredOnline = false,
     this.popupTitle,
     this.items,
@@ -284,6 +259,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.onFind,
     this.dropdownBuilder,
     this.popupItemBuilder,
+    this.clearButtonProps,
     this.showSearchBox = false,
     this.showClearButton = false,
     this.popupBackgroundColor,
@@ -298,18 +274,12 @@ class DropdownSearch<T> extends StatefulWidget {
     this.loadingBuilder,
     this.errorBuilder,
     this.dialogMaxWidth,
-    this.clearButton,
-    this.clearButtonBuilder,
-    this.clearButtonSplashRadius,
-    this.dropDownButton,
-    this.dropdownButtonBuilder,
-    this.dropdownButtonSplashRadius,
-    this.showAsSuffixIcons = false,
     this.dropdownBuilderSupportsNullItem = false,
     this.popupShape,
     this.popupItemDisabled,
     this.popupBarrierColor,
     this.onPopupDismissed,
+    this.dropdownButtonProps,
     this.searchDelay,
     this.onBeforeChange,
     this.favoriteItemBuilder,
@@ -347,8 +317,6 @@ class DropdownSearch<T> extends StatefulWidget {
     Key? key,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.mode = Mode.DIALOG,
-    @Deprecated('Use labelText prop from dropdownSearchDecoration') this.label,
-    @Deprecated('Use hintText prop from dropdownSearchDecoration') this.hint,
     this.isFilteredOnline = false,
     this.popupTitle,
     this.items,
@@ -357,6 +325,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.showSearchBox = false,
     this.showClearButton = false,
     this.popupBackgroundColor,
+    this.clearButtonProps,
     this.enabled = true,
     this.maxHeight,
     this.filterFn,
@@ -367,14 +336,8 @@ class DropdownSearch<T> extends StatefulWidget {
     this.emptyBuilder,
     this.loadingBuilder,
     this.errorBuilder,
+    this.dropdownButtonProps,
     this.dialogMaxWidth,
-    this.clearButton,
-    this.clearButtonBuilder,
-    this.clearButtonSplashRadius,
-    this.dropDownButton,
-    this.dropdownButtonBuilder,
-    this.dropdownButtonSplashRadius,
-    this.showAsSuffixIcons = false,
     this.dropdownBuilderSupportsNullItem = false,
     this.popupShape,
     this.popupItemDisabled,
@@ -480,15 +443,35 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Widget _defaultSelectedItemWidget() {
     Widget defaultItemMultiSelectionMode(T item) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+        height: 40,
+        padding: EdgeInsets.only(left: 8, bottom: 3, top: 3),
         margin: EdgeInsets.symmetric(horizontal: 2),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Theme.of(context).primaryColorLight),
-        child: Text(
-          _selectedItemAsString(item),
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.subtitle2,
+          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).primaryColorLight,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              _selectedItemAsString(item),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.subtitle2,
+            ),
+            MaterialButton(
+              height: 20,
+              shape: const CircleBorder(),
+              padding: EdgeInsets.all(0),
+              minWidth: 20,
+              onPressed: () {
+                removeItem(item);
+              },
+              child: Icon(
+                Icons.close_outlined,
+                size: 20,
+              ),
+            )
+          ],
         ),
       );
     }
@@ -515,13 +498,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           style: Theme.of(context).textTheme.subtitle1);
     }
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Expanded(child: selectedItemWidget()),
-        if (!widget.showAsSuffixIcons) _manageTrailingIcons(),
-      ],
-    );
+    return selectedItemWidget();
   }
 
   Widget _formField() {
@@ -539,7 +516,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       initialValue: widget.selectedItem,
       builder: (FormFieldState<T> state) {
         if (state.value != getSelectedItem) {
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
+          WidgetsBinding.instance?.addPostFrameCallback((_) {
             state.didChange(getSelectedItem);
           });
         }
@@ -571,7 +548,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       initialValue: widget.selectedItems,
       builder: (FormFieldState<List<T>> state) {
         if (state.value != getSelectedItems) {
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
+          WidgetsBinding.instance?.addPostFrameCallback((_) {
             state.didChange(getSelectedItems);
           });
         }
@@ -598,17 +575,15 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   InputDecoration _manageDropdownDecoration(FormFieldState state) {
     return (widget.dropdownSearchDecoration ??
             InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                border: OutlineInputBorder()))
+              contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+              border: OutlineInputBorder(),
+            ))
         .applyDefaults(Theme.of(state.context).inputDecorationTheme)
         .copyWith(
-            enabled: widget.enabled,
-            labelText:
-                widget.label ?? widget.dropdownSearchDecoration?.labelText,
-            hintText: widget.hint ?? widget.dropdownSearchDecoration?.hintText,
-            suffixIcon:
-                widget.showAsSuffixIcons ? _manageTrailingIcons() : null,
-            errorText: state.errorText);
+          enabled: widget.enabled,
+          suffixIcon: _manageSuffixIcons(),
+          errorText: state.errorText,
+        );
   }
 
   ///function that return the String value of an object
@@ -623,7 +598,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   ///function that manage Trailing icons(close, dropDown)
-  Widget _manageTrailingIcons() {
+  Widget _manageSuffixIcons() {
     final clearButtonPressed = () => clear();
     final dropdownButtonPressed = () => _selectSearchMode();
 
@@ -631,28 +606,53 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        if (getSelectedItems.isNotEmpty && widget.showClearButton == true)
-          widget.clearButtonBuilder != null
-              ? InkWell(
-                  onTap: clearButtonPressed,
-                  child: widget.clearButtonBuilder!(context),
-                )
-              : IconButton(
-                  icon: widget.clearButton ?? const Icon(Icons.clear, size: 24),
-                  onPressed: clearButtonPressed,
-                  splashRadius: widget.clearButtonSplashRadius ?? null,
-                ),
-        widget.dropdownButtonBuilder != null
-            ? InkWell(
-                onTap: dropdownButtonPressed,
-                child: widget.dropdownButtonBuilder!(context),
-              )
-            : IconButton(
-                icon: widget.dropDownButton ??
-                    const Icon(Icons.arrow_drop_down, size: 24),
-                onPressed: dropdownButtonPressed,
-                splashRadius: widget.dropdownButtonSplashRadius ?? null,
-              ),
+        if (widget.showClearButton == true && getSelectedItems.isNotEmpty)
+          IconButton(
+            icon: widget.clearButtonProps?.icon ??
+                const Icon(Icons.clear, size: 24),
+            onPressed: clearButtonPressed,
+            constraints: widget.clearButtonProps?.constraints,
+            hoverColor: widget.clearButtonProps?.hoverColor,
+            highlightColor: widget.clearButtonProps?.highlightColor,
+            splashColor: widget.clearButtonProps?.splashColor,
+            color: widget.clearButtonProps?.color,
+            focusColor: widget.clearButtonProps?.focusColor,
+            iconSize: widget.clearButtonProps?.iconSize,
+            padding:
+                widget.clearButtonProps?.padding ?? const EdgeInsets.all(8.0),
+            splashRadius: widget.clearButtonProps?.splashRadius,
+            alignment: widget.clearButtonProps?.alignment ?? Alignment.center,
+            autofocus: widget.clearButtonProps?.autofocus ?? false,
+            disabledColor: widget.clearButtonProps?.disabledColor,
+            enableFeedback: widget.clearButtonProps?.enableFeedback ?? false,
+            focusNode: widget.clearButtonProps?.focusNode,
+            mouseCursor: widget.clearButtonProps?.mouseCursor,
+            tooltip: widget.clearButtonProps?.tooltip,
+            visualDensity: widget.clearButtonProps?.visualDensity,
+          ),
+        IconButton(
+          icon: widget.dropdownButtonProps?.icon ??
+              const Icon(Icons.arrow_drop_down, size: 24),
+          onPressed: dropdownButtonPressed,
+          constraints: widget.dropdownButtonProps?.constraints,
+          hoverColor: widget.dropdownButtonProps?.hoverColor,
+          highlightColor: widget.dropdownButtonProps?.highlightColor,
+          splashColor: widget.dropdownButtonProps?.splashColor,
+          color: widget.dropdownButtonProps?.color,
+          focusColor: widget.dropdownButtonProps?.focusColor,
+          iconSize: widget.dropdownButtonProps?.iconSize,
+          padding:
+              widget.dropdownButtonProps?.padding ?? const EdgeInsets.all(8.0),
+          splashRadius: widget.dropdownButtonProps?.splashRadius,
+          alignment: widget.dropdownButtonProps?.alignment ?? Alignment.center,
+          autofocus: widget.dropdownButtonProps?.autofocus ?? false,
+          disabledColor: widget.dropdownButtonProps?.disabledColor,
+          enableFeedback: widget.dropdownButtonProps?.enableFeedback ?? false,
+          focusNode: widget.dropdownButtonProps?.focusNode,
+          mouseCursor: widget.dropdownButtonProps?.mouseCursor,
+          tooltip: widget.dropdownButtonProps?.tooltip,
+          visualDensity: widget.dropdownButtonProps?.visualDensity,
+        ),
       ],
     );
   }

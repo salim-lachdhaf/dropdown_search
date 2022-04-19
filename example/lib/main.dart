@@ -42,6 +42,20 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
             padding: EdgeInsets.all(4),
             children: <Widget>[
+              DropdownSearch<String>(
+                mode: Mode.MENU,
+                showSelectedItems: true,
+                items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: "Menu mode",
+                  hintText: "country in menu mode",
+                ),
+                popupItemDisabled: (String s) => s.startsWith('I'),
+                onChanged: print,
+                selectedItem: "Brazil",
+              ),
+              Divider(),
+
               ///Menu Mode with no searchBox MultiSelection
               DropdownSearch<String>.multiSelection(
                 key: _multiKey,
@@ -50,12 +64,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 dropdownBuilder: (context, selectedItems) {
                   Widget item(String i) => Container(
-                        padding: EdgeInsets.only(
-                            left: 6, bottom: 3, top: 3, right: 0),
+                        height: 38,
+                        padding: EdgeInsets.only(left: 6, bottom: 3, top: 3),
                         margin: EdgeInsets.symmetric(horizontal: 2),
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Theme.of(context).primaryColorLight),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Theme.of(context).primaryColorLight,
+                        ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -67,16 +82,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             MaterialButton(
                               height: 20,
                               shape: const CircleBorder(),
-                              focusColor: Colors.red[200],
-                              hoverColor: Colors.red[200],
                               padding: EdgeInsets.all(0),
-                              minWidth: 34,
+                              color: Colors.red[200],
+                              minWidth: 20,
                               onPressed: () {
                                 _multiKey.currentState?.removeItem(i);
                               },
                               child: Icon(
                                 Icons.close_outlined,
-                                size: 20,
+                                size: 18,
                               ),
                             )
                           ],
@@ -144,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       : Container();
                 },
                 popupItemDisabled: (String s) => s.startsWith('I'),
-                clearButtonSplashRadius: 20,
+                //clearButtonSplashRadius: 20,
                 selectedItems: ["Tunisia"],
               ),
               Divider(),
@@ -164,7 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showClearButton: true,
                 onChanged: print,
                 popupItemDisabled: (String? s) => s?.startsWith('I') ?? false,
-                clearButtonSplashRadius: 20,
+                //clearButtonSplashRadius: 20,
                 selectedItem: "Tunisia",
                 onBeforeChange: (a, b) {
                   if (b == null) {
@@ -261,22 +275,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           borderSide: BorderSide(color: Color(0xFF01689A)),
                         ),
                       ),
-                      showAsSuffixIcons: true,
-                      clearButtonBuilder: (_) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: const Icon(
-                          Icons.clear,
-                          size: 24,
-                          color: Colors.black,
-                        ),
+                      clearButtonProps: IconButtonProps(
+                        icon: Icon(Icons.cancel),
                       ),
-                      dropdownButtonBuilder: (_) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: const Icon(
-                          Icons.arrow_drop_down,
-                          size: 24,
-                          color: Colors.black,
-                        ),
+                      dropdownButtonProps: IconButtonProps(
+                        icon: Icon(Icons.arrow_circle_down_outlined),
                       ),
                       showSelectedItems: true,
                       items: [
@@ -293,15 +296,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   Expanded(
-                      child: TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      labelText: "Menu mode *",
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF01689A)),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.image),
+                        filled: true,
+                        labelText: "Menu mode *",
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xFF01689A),
+                          ),
+                        ),
                       ),
                     ),
-                  ))
+                  )
                 ],
               ),
               Divider(),
@@ -509,7 +516,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   border: OutlineInputBorder(),
                 ),
                 showSelectedItems: true,
-                dropdownButtonSplashRadius: 20,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

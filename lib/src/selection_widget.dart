@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
 
-import 'package:dropdown_search/src/properties/selection_list_view_props.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../dropdown_search.dart';
-import 'properties/scrollbar_props.dart';
-import 'properties/text_field_props.dart';
 import 'widgets/checkbox_widget.dart';
 
 class SelectionWidget<T> extends StatefulWidget {
