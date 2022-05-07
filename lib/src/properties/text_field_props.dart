@@ -43,6 +43,7 @@ class TextFieldProps {
     this.keyboardAppearance,
     this.scrollPadding = const EdgeInsets.all(20.0),
     this.padding = const EdgeInsets.all(8.0),
+    this.height,
     this.dragStartBehavior = DragStartBehavior.start,
     this.enableInteractiveSelection = true,
     this.selectionControls,
@@ -131,6 +132,9 @@ class TextFieldProps {
 
   // padding for the search field
   final EdgeInsets padding;
+
+  /// Height of the search field
+  final double? height;
 
   final bool enableInteractiveSelection;
 

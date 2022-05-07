@@ -156,13 +156,6 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (widget.searchFieldProps?.autofocus == true) //handle null and false
-      FocusScope.of(context).requestFocus(widget.focusNode);
-  }
-
-  @override
   void dispose() {
     _itemsStream.close();
     super.dispose();
@@ -189,7 +182,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
               children: <Widget>[
                 _searchField(),
                 _favoriteItemsWidget(),
-                Expanded(
+                Flexible(
                   child: Stack(
                     children: <Widget>[
                       StreamBuilder<List<T>>(
@@ -392,7 +385,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                 ),
               );
           }
-          return Container();
+          return const SizedBox.shrink();
         });
   }
 
@@ -551,7 +544,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         children: <Widget>[
           widget.popupTitle ?? const SizedBox.shrink(),
           if (widget.showSearchBox)
-            Padding(
+            Container(
+              height: widget.searchFieldProps?.height,
               padding:
                   widget.searchFieldProps?.padding ?? const EdgeInsets.all(8.0),
               child: DefaultTextEditingShortcuts(
@@ -564,6 +558,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                     style: widget.searchFieldProps?.style,
                     controller: widget.searchFieldProps?.controller,
                     focusNode: widget.focusNode,
+                    autofocus: widget.searchFieldProps?.autofocus ?? false,
                     onChanged: (f) {
                       //if controller !=null , the change event will be handled by
                       // the controller

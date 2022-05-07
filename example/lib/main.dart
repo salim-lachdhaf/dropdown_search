@@ -392,6 +392,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 selectedItem: "Brazil",
                 showSearchBox: true,
                 searchFieldProps: TextFieldProps(
+                  padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  height: 40,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
