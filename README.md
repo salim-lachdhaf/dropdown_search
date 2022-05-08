@@ -70,14 +70,16 @@ DropdownSearch<String>(
     
     
 DropdownSearch<String>.multiSelection(
-    mode: Mode.MENU,
-    showSelectedItems: true,
     items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
     dropdownSearchDecoration: InputDecoration(
       labelText: "Menu mode",
       hintText: "country in menu mode",
     ),
-    popupItemDisabled: (String s) => s.startsWith('I'),
+    popupProps: PopupProps(
+        mode: Mode.MENU,
+        showSelectedItems: true,
+        popupItemDisabled: (String s) => s.startsWith('I'),
+    )
     onChanged: print,
     selectedItems: ["Brazil"],
 ),
@@ -88,14 +90,14 @@ DropdownSearch<String>.multiSelection(
 ```dart
 DropdownSearch<UserModel>(
   dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  onFind: (String filter) => getData(filter),
+  asyncItems: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringByName(),
   onChanged: (UserModel data) => print(data),
 ),
 
 DropdownSearch<UserModel>(
   dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  onFind: (String filter) => getData(filter),
+  asyncItems: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringById(),
   onChanged: (UserModel data) => print(data),
 ),
@@ -106,7 +108,7 @@ DropdownSearch<UserModel>(
 DropdownSearch<UserModel>(
   dropdownSearchDecoration: InputDecoration(labelText: "Name"),
   filterFn: (user, filter) => user.userFilterByCreationDate(filter),
-  onFind: (String filter) => getData(filter),
+  asyncItems: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsStringByName(),
   onChanged: (UserModel data) => print(data),
 ),
@@ -115,9 +117,9 @@ DropdownSearch<UserModel>(
 ## customize Search Mode
 ```dart
 DropdownSearch<UserModel>(
-  mode: Mode.BOTTOM_SHEET,
+  popupProps: PopupProps(mode: Mode.BOTTOM_SHEET)
   dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  onFind: (String filter) => getData(filter),
+  asyncItems: (String filter) => getData(filter),
   itemAsString: (UserModel u) => u.userAsString(),
   onChanged: (UserModel data) => print(data),
 ),

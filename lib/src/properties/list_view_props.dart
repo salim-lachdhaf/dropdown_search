@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class SelectionListViewProps {
+class ListViewProps {
   final Axis scrollDirection;
   final bool reverse;
   final ScrollController? controller;
@@ -20,7 +20,7 @@ class SelectionListViewProps {
   final double? itemExtent;
   final Clip clipBehavior;
 
-  const SelectionListViewProps({
+  const ListViewProps({
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,

@@ -30,6 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final _multiKey = GlobalKey<DropdownSearchState<String>>();
   final _userEditTextController = TextEditingController(text: 'Mrs');
 
+  var mySelectedItems = ["Brazil", "Tunisia", 'Canada'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,15 +44,30 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
             padding: EdgeInsets.all(4),
             children: <Widget>[
+              DropdownSearch<String>.multiSelection(
+                popupProps: PopupProps.multiSelection(
+                  mode: Mode.BOTTOM_SHEET,
+                  color: Colors.red,
+                  showSearchBox: true,
+                  maxHeight: 500,
+                  searchFieldProps: TextFieldProps(
+                      //autofocus: true,
+                      ),
+                ),
+                items: List.generate(10, (index) => "$index"),
+              ),
+              Divider(),
               DropdownSearch<String>(
-                mode: Mode.MENU,
-                showSelectedItems: true,
+                popupProps: PopupProps(
+                  mode: Mode.MENU,
+                  showSelectedItems: true,
+                  popupItemDisabled: (String s) => s.startsWith('I'),
+                ),
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "Menu mode",
                   hintText: "country in menu mode",
                 ),
-                popupItemDisabled: (String s) => s.startsWith('I'),
                 onChanged: print,
                 selectedItem: "Brazil",
               ),
@@ -62,11 +79,64 @@ class _MyHomePageState extends State<MyHomePage> {
                 validator: (List<String>? v) {
                   return v == null || v.isEmpty ? "required field" : null;
                 },
+                popupProps: PopupProps.multiSelection(
+                  showSelectedItems: true,
+                  popupSelectionWidget: (cnt, String item, bool isSelected) {
+                    return isSelected
+                        ? Icon(
+                            Icons.check_circle,
+                            color: Colors.green[500],
+                          )
+                        : Container();
+                  },
+                  popupCustomMultiSelectionWidget: (context, list) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(8),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              // How should I unselect all items in the list?
+                              _multiKey.currentState?.closeDropDownSearch();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              // How should I select all items in the list?
+                              _multiKey.currentState?.popupSelectAllItems();
+                            },
+                            child: const Text('All'),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              // How should I unselect all items in the list?
+                              _multiKey.currentState?.popupDeselectAllItems();
+                            },
+                            child: const Text('None'),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                  popupItemDisabled: (String s) => s.startsWith('I'),
+                ),
                 dropdownBuilder: (context, selectedItems) {
                   Widget item(String i) => Container(
-                        height: 38,
-                        padding: EdgeInsets.only(left: 6, bottom: 3, top: 3),
-                        margin: EdgeInsets.symmetric(horizontal: 2),
+                        height: 32,
+                        padding: EdgeInsets.only(left: 6),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 2,
+                          vertical: 1,
+                        ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: Theme.of(context).primaryColorLight,
@@ -100,64 +170,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: selectedItems.map((e) => item(e)).toList(),
                   );
                 },
-                popupCustomMultiSelectionWidget: (context, list) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: OutlinedButton(
-                          onPressed: () {
-                            // How should I unselect all items in the list?
-                            _multiKey.currentState?.closeDropDownSearch();
-                          },
-                          child: const Text('Cancel'),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: OutlinedButton(
-                          onPressed: () {
-                            // How should I select all items in the list?
-                            _multiKey.currentState?.popupSelectAllItems();
-                          },
-                          child: const Text('All'),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: OutlinedButton(
-                          onPressed: () {
-                            // How should I unselect all items in the list?
-                            _multiKey.currentState?.popupDeselectAllItems();
-                          },
-                          child: const Text('None'),
-                        ),
-                      ),
-                    ],
-                  );
-                },
                 dropdownSearchDecoration: InputDecoration(
                   hintText: "Select a country",
                   labelText: "Menu mode multiSelection*",
                   contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                   border: OutlineInputBorder(),
                 ),
-                mode: Mode.MENU,
-                showSelectedItems: true,
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 showClearButton: true,
                 onChanged: print,
-                popupSelectionWidget: (cnt, String item, bool isSelected) {
-                  return isSelected
-                      ? Icon(
-                          Icons.check_circle,
-                          color: Colors.green[500],
-                        )
-                      : Container();
-                },
-                popupItemDisabled: (String s) => s.startsWith('I'),
+
                 //clearButtonSplashRadius: 20,
                 selectedItems: ["Tunisia"],
               ),
@@ -172,12 +194,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                   border: OutlineInputBorder(),
                 ),
-                mode: Mode.MENU,
-                showSelectedItems: true,
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 showClearButton: true,
                 onChanged: print,
-                popupItemDisabled: (String? s) => s?.startsWith('I') ?? false,
+                popupProps: PopupProps(
+                  showSelectedItems: true,
+                  popupItemDisabled: (String? s) => s?.startsWith('I') ?? false,
+                ),
                 //clearButtonSplashRadius: 20,
                 selectedItem: "Tunisia",
                 onBeforeChange: (a, b) {
@@ -223,39 +246,40 @@ class _MyHomePageState extends State<MyHomePage> {
                   contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                   border: OutlineInputBorder(),
                 ),
-                mode: Mode.MENU,
-                showSelectedItems: true,
                 items: ["Brazil", "Italia", "Tunisia", 'Canada'],
                 onChanged: print,
                 selectedItem: "Tunisia",
-                positionCallback: (popupButtonObject, overlay) {
-                  final decorationBox = _findBorderBox(popupButtonObject);
+                popupProps: PopupProps(
+                  showSelectedItems: true,
+                  positionCallback: (popupButtonObject, overlay) {
+                    final decorationBox = _findBorderBox(popupButtonObject);
 
-                  double translateOffset = 0;
-                  if (decorationBox != null) {
-                    translateOffset = decorationBox.size.height -
-                        popupButtonObject.size.height;
-                  }
+                    double translateOffset = 0;
+                    if (decorationBox != null) {
+                      translateOffset = decorationBox.size.height -
+                          popupButtonObject.size.height;
+                    }
 
-                  // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
-                  final RenderBox overlay = Overlay.of(context)!
-                      .context
-                      .findRenderObject() as RenderBox;
-                  // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
-                  return RelativeRect.fromSize(
-                    Rect.fromPoints(
-                      popupButtonObject
-                          .localToGlobal(
-                              popupButtonObject.size.bottomLeft(Offset.zero),
-                              ancestor: overlay)
-                          .translate(0, translateOffset),
-                      popupButtonObject.localToGlobal(
-                          popupButtonObject.size.bottomRight(Offset.zero),
-                          ancestor: overlay),
-                    ),
-                    Size(overlay.size.width, overlay.size.height),
-                  );
-                },
+                    // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
+                    final RenderBox overlay = Overlay.of(context)!
+                        .context
+                        .findRenderObject() as RenderBox;
+                    // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
+                    return RelativeRect.fromSize(
+                      Rect.fromPoints(
+                        popupButtonObject
+                            .localToGlobal(
+                                popupButtonObject.size.bottomLeft(Offset.zero),
+                                ancestor: overlay)
+                            .translate(0, translateOffset),
+                        popupButtonObject.localToGlobal(
+                            popupButtonObject.size.bottomRight(Offset.zero),
+                            ancestor: overlay),
+                      ),
+                      Size(overlay.size.width, overlay.size.height),
+                    );
+                  },
+                ),
               ),
               Divider(),
 
@@ -266,7 +290,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     flex: 2,
                     child: DropdownSearch<String>(
                       validator: (v) => v == null ? "required field" : null,
-                      mode: Mode.MENU,
+                      popupProps: PopupProps(
+                        showSelectedItems: true,
+                        popupItemDisabled: (String? s) =>
+                            s?.startsWith('I') ?? true,
+                      ),
                       dropdownSearchDecoration: InputDecoration(
                         hintText: "Select a country",
                         labelText: "Menu mode *",
@@ -281,7 +309,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       dropdownButtonProps: IconButtonProps(
                         icon: Icon(Icons.arrow_circle_down_outlined),
                       ),
-                      showSelectedItems: true,
                       items: [
                         "Brazil",
                         "Italia (Disabled)",
@@ -290,8 +317,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                       showClearButton: true,
                       onChanged: print,
-                      popupItemDisabled: (String? s) =>
-                          s?.startsWith('I') ?? true,
                       selectedItem: "Tunisia",
                     ),
                   ),
@@ -313,24 +338,31 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Divider(),
               DropdownSearch<UserModel>.multiSelection(
-                searchFieldProps: TextFieldProps(
-                  controller: _userEditTextController,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.clear),
-                      onPressed: () {
-                        _userEditTextController.clear();
-                      },
+                popupProps: PopupProps.multiSelection(
+                  mode: Mode.BOTTOM_SHEET,
+                  showSelectedItems: true,
+                  popupItemBuilder: _customPopupItemBuilderExample2,
+                  scrollbarProps: ScrollbarProps(
+                    isAlwaysShown: true,
+                    thickness: 7,
+                  ),
+                  showSearchBox: true,
+                  maxHeight: 700,
+                  searchFieldProps: TextFieldProps(
+                    controller: _userEditTextController,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () {
+                          _userEditTextController.clear();
+                        },
+                      ),
                     ),
                   ),
                 ),
-                mode: Mode.BOTTOM_SHEET,
-                maxHeight: 700,
                 isFilteredOnline: true,
                 showClearButton: true,
-                showSelectedItems: true,
                 compareFn: (item, selectedItem) => item?.id == selectedItem?.id,
-                showSearchBox: true,
                 dropdownSearchDecoration: InputDecoration(
                   labelText: 'User *',
                   filled: true,
@@ -339,41 +371,36 @@ class _MyHomePageState extends State<MyHomePage> {
                 autoValidateMode: AutovalidateMode.onUserInteraction,
                 validator: (u) =>
                     u == null || u.isEmpty ? "user field is required " : null,
-                onFind: (String? filter) => getData(filter),
+                asyncItems: (String? filter) => getData(filter),
                 onChanged: (data) {
                   print(data);
                 },
                 dropdownBuilder: _customDropDownExampleMultiSelection,
-                popupItemBuilder: _customPopupItemBuilderExample,
                 popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
-                scrollbarProps: ScrollbarProps(
-                  isAlwaysShown: true,
-                  thickness: 7,
-                ),
               ),
               Divider(),
 
               ///custom itemBuilder and dropDownBuilder
               DropdownSearch<UserModel>(
-                showSelectedItems: true,
+                popupProps: PopupProps(
+                  showSelectedItems: true,
+                ),
                 compareFn: (i, s) => i?.isEqual(s) ?? false,
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "Person",
                   contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                   border: OutlineInputBorder(),
                 ),
-                onFind: (String? filter) => getData(filter),
+                asyncItems: (String? filter) => getData(filter),
                 onChanged: (data) {
                   print(data);
                 },
                 dropdownBuilder: _customDropDownExample,
-                popupItemBuilder: _customPopupItemBuilderExample2,
               ),
               Divider(),
 
               ///BottomSheet Mode with no searchBox
               DropdownSearch<String>(
-                mode: Mode.BOTTOM_SHEET,
                 items: [
                   "Brazil",
                   "Italia",
@@ -390,87 +417,91 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 onChanged: print,
                 selectedItem: "Brazil",
-                showSearchBox: true,
-                searchFieldProps: TextFieldProps(
-                  padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
-                  height: 40,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
-                    labelText: "Search a country1",
-                  ),
-                ),
-                popupTitle: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColorDark,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
+                popupProps: PopupProps(
+                  mode: Mode.BOTTOM_SHEET,
+                  searchFieldProps: TextFieldProps(
+                    padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+                    height: 40,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
+                      labelText: "Search a country1",
                     ),
                   ),
-                  child: Center(
-                    child: Text(
-                      'Country',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                  title: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColorDark,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Country',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                popupShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
+                    ),
                   ),
+                  showSearchBox: true,
                 ),
               ),
               Divider(),
 
               ///show favorites on top list
               DropdownSearch<UserModel>.multiSelection(
-                showSelectedItems: true,
-                showSearchBox: true,
+                popupProps: PopupProps.multiSelection(
+                  showSelectedItems: true,
+                  showSearchBox: true,
+                  popupItemBuilder: _customPopupItemBuilderExample2,
+                  showFavoriteItems: true,
+                  favoriteItemsAlignment: MainAxisAlignment.start,
+                  favoriteItems: (items) {
+                    return items.where((e) => e.name.contains("Mrs")).toList();
+                  },
+                  favoriteItemBuilder: (context, item, isSelected) {
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey[100]),
+                      child: Row(
+                        children: [
+                          Text(
+                            "${item.name}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.indigo),
+                          ),
+                          Padding(padding: EdgeInsets.only(left: 8)),
+                          isSelected
+                              ? Icon(Icons.check_box_outlined)
+                              : Container(),
+                        ],
+                      ),
+                    );
+                  },
+                ),
                 compareFn: (i, s) => i?.isEqual(s) ?? false,
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "Person with favorite option",
                   contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                   border: OutlineInputBorder(),
                 ),
-                onFind: (filter) => getData(filter),
+                asyncItems: (filter) => getData(filter),
                 onChanged: (data) {
                   print(data);
-                },
-                // dropdownBuilder: _customDropDownExample,
-                popupItemBuilder: _customPopupItemBuilderExample2,
-                showFavoriteItems: true,
-                favoriteItemsAlignment: MainAxisAlignment.start,
-                favoriteItems: (items) {
-                  return items.where((e) => e.name.contains("Mrs")).toList();
-                },
-                favoriteItemBuilder: (context, item, isSelected) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[100]),
-                    child: Row(
-                      children: [
-                        Text(
-                          "${item.name}",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.indigo),
-                        ),
-                        Padding(padding: EdgeInsets.only(left: 8)),
-                        isSelected
-                            ? Icon(Icons.check_box_outlined)
-                            : Container(),
-                      ],
-                    ),
-                  );
                 },
               ),
               Divider(),
@@ -481,15 +512,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   UserModel(name: "Offline name1", id: "999"),
                   UserModel(name: "Offline name2", id: "0101")
                 ],
-                maxHeight: 300,
-                onFind: (String? filter) => getData(filter),
+                popupProps: PopupProps(showSearchBox: true, maxHeight: 300),
+                asyncItems: (String? filter) => getData(filter),
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "choose a user",
                   contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                   border: OutlineInputBorder(),
                 ),
                 onChanged: print,
-                showSearchBox: true,
               ),
               Divider(),
 
@@ -509,6 +539,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Padding(padding: EdgeInsets.all(4)),
               DropdownSearch<String>(
+                popupProps: PopupProps(
+                  showSelectedItems: true,
+                ),
                 validator: (value) => value == null ? "empty" : null,
                 key: _openDropDownProgKey,
                 items: ["Yes", "No"],
@@ -517,7 +550,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                   border: OutlineInputBorder(),
                 ),
-                showSelectedItems: true,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -549,7 +581,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                       child: Text("set to 'Blabla'")),
                 ],
-              )
+              ),
             ],
           ),
         ),

@@ -1,10 +1,19 @@
+* Breaking changes:
+ - onFind to AsyncItem
+ - isFilteredOnline to isFilterOnline
+ - replace all popup customization with popupProps
+ - change default mode to MENU
+* improve menu mode
+* fix large text in chips in multiSelection mode
+* fix bug [84] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/84)
+
 ## [3.0.1] - 2022.04.15
 * breaking changes:
     - remove 'hint' and 'label' properties, use 'dropdownSearchDecoration' instead
     - remove 'showAsSuffixIcons' property, now always are as suffixIcon
     - replace 'clearButtonSplashRadius' and 'clearButtonBuilder' into one property 'IconButtonProps'
     - replace 'dropdownButtonSplashRadius' and 'dropdownButtonBuilder' into one property 'IconButtonProps'
-    - fix issue [380](https://github.com/salim-lachdhaf/searchable_dropdown/issues/380)
+* fix issue [380](https://github.com/salim-lachdhaf/searchable_dropdown/issues/380)
 
 
 ## [2.0.1] - 2021.11.15
