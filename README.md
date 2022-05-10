@@ -88,16 +88,16 @@ DropdownSearch<String>.multiSelection(
 ```dart
 DropdownSearch<UserModel>(
   dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  onFind: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsStringByName(),
-  onChanged: (UserModel data) => print(data),
+  onFind: (String> filter) => getData(filter),
+  itemAsString: (UserModel? u) => u.userAsStringByName(),
+  onChanged: (UserModel? data) => print(data),
 ),
 
 DropdownSearch<UserModel>(
   dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  onFind: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsStringById(),
-  onChanged: (UserModel data) => print(data),
+  onFind: (String? filter) => getData(filter),
+  itemAsString: (UserModel? u) => u.userAsStringById(),
+  onChanged: (UserModel? data) => print(data),
 ),
 ```
 
@@ -106,9 +106,9 @@ DropdownSearch<UserModel>(
 DropdownSearch<UserModel>(
   dropdownSearchDecoration: InputDecoration(labelText: "Name"),
   filterFn: (user, filter) => user.userFilterByCreationDate(filter),
-  onFind: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsStringByName(),
-  onChanged: (UserModel data) => print(data),
+  onFind: (String? filter) => getData(filter),
+  itemAsString: (UserModel? u) => u.userAsStringByName(),
+  onChanged: (UserModel? data) => print(data),
 ),
 ```
 
@@ -117,9 +117,9 @@ DropdownSearch<UserModel>(
 DropdownSearch<UserModel>(
   mode: Mode.BOTTOM_SHEET,
   dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  onFind: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsString(),
-  onChanged: (UserModel data) => print(data),
+  onFind: (String? filter) => getData(filter),
+  itemAsString: (UserModel? u) => u.userAsString(),
+  onChanged: (UserModel? data) => print(data),
 ),
 ```
 
@@ -146,7 +146,7 @@ DropdownSearch(
 ```dart
 DropdownSearch<UserModel>(
   dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  onFind: (String filter) async {
+  onFind: (String? filter) async {
     var response = await Dio().get(
         "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
         queryParameters: {"filter": filter},
