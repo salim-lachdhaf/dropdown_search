@@ -12,7 +12,7 @@ class PopupProps<T> {
   final Color? color;
   final bool barrierDismissible;
   final Duration transitionDuration;
-  final Animation<double>? animation;
+  final AnimationController? animation;
   final Curve? barrierCurve;
   final bool borderOnForeground;
   final Clip clipBehavior;
@@ -23,6 +23,8 @@ class PopupProps<T> {
   final Widget? title;
   final bool showSearchBox;
   final double? dialogMaxWidth;
+  final bool useRootNavigator;
+  final BoxConstraints? boxConstraints;
 
   ///defines if an item of the popup is enabled or not, if the item is disabled,
   ///it cannot be clicked
@@ -127,6 +129,8 @@ class PopupProps<T> {
     this.loadingBuilder,
     this.popupItemBuilder,
     this.showSelectedItems = false,
+    this.useRootNavigator = false,
+    this.boxConstraints,
   })  : this.popupOnItemAdded = null,
         this.popupOnItemRemoved = null,
         this.popupSelectionWidget = null,
@@ -175,5 +179,7 @@ class PopupProps<T> {
     this.loadingBuilder,
     this.popupItemBuilder,
     this.showSelectedItems = false,
+    this.useRootNavigator = false,
+    this.boxConstraints,
   });
 }

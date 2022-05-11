@@ -52,7 +52,7 @@ typedef void OnItemRemoved<T>(List<T> selectedItems, T removedItem);
 ///[items] are the original item from [items] or/and [asyncItems]
 typedef List<T> FavoriteItems<T>(List<T> items);
 
-enum Mode { DIALOG, BOTTOM_SHEET, MENU }
+enum Mode { DIALOG, MODAL_BOTTOM_SHEET, MENU, BOTTOM_SHEET }
 
 class DropdownSearch<T> extends StatefulWidget {
   ///true if the filter on items is applied onlie (via API)
@@ -122,10 +122,6 @@ class DropdownSearch<T> extends StatefulWidget {
   final FormFieldValidator<T>? validator;
   final FormFieldValidator<List<T>>? validatorMultiSelection;
 
-  ///If true, the dropdownBuilder will continue the uses of material behavior
-  ///This will be useful if you want to handle a custom UI only if the item !=null
-  final bool dropdownBuilderSupportsNullItem;
-
   /// callback executed before applying value change
   final BeforeChange<T>? onBeforeChange;
 
@@ -168,7 +164,6 @@ class DropdownSearch<T> extends StatefulWidget {
     this.itemAsString,
     this.compareFn,
     this.dropdownSearchDecoration,
-    this.dropdownBuilderSupportsNullItem = false,
     this.dropdownButtonProps,
     this.onBeforeChange,
     this.popupSafeArea = const PopupSafeAreaProps(),
@@ -203,7 +198,6 @@ class DropdownSearch<T> extends StatefulWidget {
     this.compareFn,
     this.dropdownSearchDecoration,
     this.dropdownButtonProps,
-    this.dropdownBuilderSupportsNullItem = false,
     this.popupSafeArea = const PopupSafeAreaProps(),
     this.dropdownSearchTextStyle,
     this.dropdownSearchTextAlign,
@@ -377,9 +371,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 baseStyle: widget.dropdownSearchTextStyle,
                 textAlign: widget.dropdownSearchTextAlign,
                 textAlignVertical: widget.dropdownSearchTextAlignVertical,
-                isEmpty: getSelectedItem == null &&
-                    (widget.dropdownBuilder == null ||
-                        widget.dropdownBuilderSupportsNullItem),
+                isEmpty:
+                    getSelectedItem == null && widget.dropdownBuilder == null,
                 isFocused: isFocused,
                 decoration: _manageDropdownDecoration(state),
                 child: _defaultSelectedItemWidget(),
@@ -410,8 +403,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 textAlign: widget.dropdownSearchTextAlign,
                 textAlignVertical: widget.dropdownSearchTextAlignVertical,
                 isEmpty: getSelectedItems.isEmpty &&
-                    (widget.dropdownBuilderMultiSelection == null ||
-                        widget.dropdownBuilderSupportsNullItem),
+                    widget.dropdownBuilderMultiSelection == null,
                 isFocused: isFocused,
                 decoration: _manageDropdownDecoration(state),
                 child: _defaultSelectedItemWidget(),
@@ -536,8 +528,23 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     );
   }
 
+  //todo handle max height
+  _openBottomSheet() {
+    return showBottomSheet(
+        context: context,
+        backgroundColor: widget.popupProps.color ?? Colors.transparent,
+        clipBehavior: widget.popupProps.clipBehavior,
+        elevation: widget.popupProps.elevation,
+        shape: widget.popupProps.shape,
+        transitionAnimationController: widget.popupProps.animation,
+        constraints: widget.popupProps.boxConstraints,
+        builder: (ctx) {
+          return _selectDialogInstance();
+        });
+  }
+
   ///open BottomSheet (Dialog mode)
-  Future _openBottomSheet() {
+  Future _openModalBottomSheet() {
     return showModalBottomSheet<T>(
         context: context,
         enableDrag: false,
@@ -548,6 +555,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         clipBehavior: widget.popupProps.clipBehavior,
         elevation: widget.popupProps.elevation,
         shape: widget.popupProps.shape,
+        useRootNavigator: widget.popupProps.useRootNavigator,
+        transitionAnimationController: widget.popupProps.animation,
+        constraints: widget.popupProps.boxConstraints,
         builder: (ctx) {
           final MediaQueryData mediaQueryData = MediaQuery.of(ctx);
           EdgeInsets padding = mediaQueryData.padding;
@@ -699,11 +709,14 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     _handleFocus(true);
     if (widget.popupProps.mode == Mode.MENU) {
       await _openMenu();
+    } else if (widget.popupProps.mode == Mode.MODAL_BOTTOM_SHEET) {
+      await _openModalBottomSheet();
     } else if (widget.popupProps.mode == Mode.BOTTOM_SHEET) {
-      await _openBottomSheet();
+      Future.value(_openBottomSheet());
     } else {
       await _openSelectDialog();
     }
+    //todo pass these to popup
     _handleFocus(false);
     widget.popupProps.onDismissed?.call();
   }

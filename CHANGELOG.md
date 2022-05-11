@@ -3,9 +3,12 @@
  - isFilteredOnline to isFilterOnline
  - replace all popup customization with popupProps
  - change default mode to MENU
+ - remove 'dropdownBuilderSupportsNullItem' because now we support nullSafety
+
 * improve menu mode
 * fix large text in chips in multiSelection mode
 * fix bug [84] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/84)
+* add new mode BOTTOM_SHEET
 
 ## [3.0.1] - 2022.04.15
 * breaking changes:
