@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 class TextFieldProps {
   const TextFieldProps({
     this.controller,
-    this.decoration,
+    this.decoration = const InputDecoration(),
     this.keyboardType,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
@@ -27,7 +27,7 @@ class TextFieldProps {
     this.smartQuotesType,
     this.enableSuggestions = true,
     this.maxLines = 1,
-    this.minLines,
+    this.minLines = 1,
     this.expands = false,
     this.maxLength,
     this.maxLengthEnforcement,
@@ -43,7 +43,6 @@ class TextFieldProps {
     this.keyboardAppearance,
     this.scrollPadding = const EdgeInsets.all(20.0),
     this.padding = const EdgeInsets.all(8.0),
-    this.height,
     this.dragStartBehavior = DragStartBehavior.start,
     this.enableInteractiveSelection = true,
     this.selectionControls,
@@ -54,105 +53,57 @@ class TextFieldProps {
     this.scrollPhysics,
     this.autofillHints,
     this.restorationId,
+    this.clipBehavior = Clip.hardEdge,
+    this.enableIMEPersonalizedLearning = true,
   });
 
+  final bool enableIMEPersonalizedLearning;
+  final Clip clipBehavior;
   final TextEditingController? controller;
-
   final SmartDashesType? smartDashesType;
-
   final SmartQuotesType? smartQuotesType;
-
   final ToolbarOptions? toolbarOptions;
-
-  final InputDecoration? decoration;
-
+  final InputDecoration decoration;
   final TextInputType? keyboardType;
-
   final TextInputAction? textInputAction;
-
   final TextCapitalization textCapitalization;
-
   final TextStyle? style;
-
   final StrutStyle? strutStyle;
-
   final TextAlign textAlign;
-
   final TextAlignVertical? textAlignVertical;
-
   final TextDirection? textDirection;
-
   final bool autofocus;
-
   final String obscuringCharacter;
-
   final bool obscureText;
-
   final bool autocorrect;
-
   final bool enableSuggestions;
-
-  final int? maxLines;
-
-  final int? minLines;
-
+  final int maxLines;
+  final int minLines;
   final bool expands;
-
   final bool readOnly;
-
   final bool? showCursor;
-
-  static const int noMaxLength = -1;
-
   final int? maxLength;
-
   final MaxLengthEnforcement? maxLengthEnforcement;
-
   final AppPrivateCommandCallback? onAppPrivateCommand;
-
   final List<TextInputFormatter>? inputFormatters;
-
   final bool? enabled;
-
   final double cursorWidth;
-
   final double? cursorHeight;
-
   final Radius? cursorRadius;
-
   final Color? cursorColor;
-
   final ui.BoxHeightStyle selectionHeightStyle;
-
   final ui.BoxWidthStyle selectionWidthStyle;
-
   final Brightness? keyboardAppearance;
-
   final EdgeInsets scrollPadding;
-
-  // padding for the search field
   final EdgeInsets padding;
-
-  /// Height of the search field
-  final double? height;
-
   final bool enableInteractiveSelection;
-
   final TextSelectionControls? selectionControls;
-
   final DragStartBehavior dragStartBehavior;
-
   final GestureTapCallback? onTap;
-
   final MouseCursor? mouseCursor;
-
   final InputCounterWidgetBuilder? buildCounter;
-
   final ScrollPhysics? scrollPhysics;
-
   final ScrollController? scrollController;
-
   final Iterable<String>? autofillHints;
-
   final String? restorationId;
 }

@@ -19,16 +19,12 @@ class PopupProps<T> {
   final BorderRadiusGeometry? borderRadius;
   final TextStyle? textStyle;
   final Color? shadowColor;
-  final double maxHeight;
   final Widget? title;
   final bool showSearchBox;
-  final double? dialogMaxWidth;
   final bool useRootNavigator;
-  final BoxConstraints? boxConstraints;
+  final BoxConstraints? constraints;
 
-  ///defines if an item of the popup is enabled or not, if the item is disabled,
-  ///it cannot be clicked
-  final DropdownSearchPopupItemEnabled<T>? popupItemDisabled;
+  final DropdownSearchPopupItemBuilder<T>? itemBuilder;
 
   /// object that passes all props to search field
   final TextFieldProps searchFieldProps;
@@ -86,16 +82,28 @@ class PopupProps<T> {
   ///to customize selected item
   final DropdownSearchPopupItemBuilder<T>? popupItemBuilder;
 
+  ///defines if an item of the popup is enabled or not, if the item is disabled,
+  ///it cannot be clicked
+  final DropdownSearchPopupItemEnabled<T>? DisabledItemFn;
+
   ///MENU / DIALOG/ BOTTOM_SHEET
   final Mode mode;
 
   ///select the selected item in the menu/dialog/bottomSheet of items
   final bool showSelectedItems;
 
+  final bool isFilterOnline;
+
+  /// props for selection focus node
+  final FocusNode? focusNode;
+
   const PopupProps({
     this.mode = Mode.MENU,
     this.title,
+    this.focusNode,
+    this.isFilterOnline = false,
     this.positionCallback,
+    this.itemBuilder,
     this.elevation,
     this.semanticLabel,
     this.shape,
@@ -104,6 +112,7 @@ class PopupProps<T> {
     this.color,
     this.barrierDismissible = true,
     this.transitionDuration = kThemeChangeDuration,
+    this.DisabledItemFn,
     this.animation,
     this.barrierCurve,
     this.shadowColor,
@@ -111,10 +120,7 @@ class PopupProps<T> {
     this.borderRadius,
     this.borderOnForeground = true,
     this.clipBehavior = Clip.none,
-    this.maxHeight = 320,
     this.showSearchBox = false,
-    this.dialogMaxWidth,
-    this.popupItemDisabled,
     this.searchFieldProps = const TextFieldProps(),
     this.scrollbarProps,
     this.listViewProps = const ListViewProps(),
@@ -130,7 +136,7 @@ class PopupProps<T> {
     this.popupItemBuilder,
     this.showSelectedItems = false,
     this.useRootNavigator = false,
-    this.boxConstraints,
+    this.constraints,
   })  : this.popupOnItemAdded = null,
         this.popupOnItemRemoved = null,
         this.popupSelectionWidget = null,
@@ -145,6 +151,7 @@ class PopupProps<T> {
     this.semanticLabel,
     this.shape,
     this.barrierColor,
+    this.focusNode,
     this.barrierLabel = '',
     this.color,
     this.barrierDismissible = true,
@@ -156,10 +163,7 @@ class PopupProps<T> {
     this.borderRadius,
     this.borderOnForeground = true,
     this.clipBehavior = Clip.none,
-    this.maxHeight = 320,
     this.showSearchBox = false,
-    this.dialogMaxWidth,
-    this.popupItemDisabled,
     this.searchFieldProps = const TextFieldProps(),
     this.scrollbarProps,
     this.listViewProps = const ListViewProps(),
@@ -175,11 +179,14 @@ class PopupProps<T> {
     this.searchDelay,
     this.onDismissed,
     this.emptyBuilder,
+    this.itemBuilder,
     this.errorBuilder,
     this.loadingBuilder,
     this.popupItemBuilder,
     this.showSelectedItems = false,
     this.useRootNavigator = false,
-    this.boxConstraints,
+    this.constraints,
+    this.DisabledItemFn,
+    this.isFilterOnline = false,
   });
 }

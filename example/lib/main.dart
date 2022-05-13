@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'dropdownSearch Demo',
       //enable this line if you want test Dark Mode
-      //theme: ThemeData.dark(),
+      theme: ThemeData.dark(),
       home: MyHomePage(),
     );
   }
@@ -46,10 +46,11 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               DropdownSearch<String>.multiSelection(
                 popupProps: PopupProps.multiSelection(
-                  mode: Mode.BOTTOM_SHEET,
+                  mode: Mode.MENU,
                   color: Colors.red,
                   showSearchBox: true,
-                  maxHeight: 500,
+                  //constraints: BoxConstraints.tight(Size(500,150)),
+                  constraints: BoxConstraints.expand(height: 300),
                   searchFieldProps: TextFieldProps(
                       //autofocus: true,
                       ),
@@ -61,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 popupProps: PopupProps(
                   mode: Mode.MENU,
                   showSelectedItems: true,
-                  popupItemDisabled: (String s) => s.startsWith('I'),
+                  DisabledItemFn: (String s) => s.startsWith('I'),
                 ),
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 dropdownSearchDecoration: InputDecoration(
@@ -127,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     );
                   },
-                  popupItemDisabled: (String s) => s.startsWith('I'),
+                  DisabledItemFn: (String s) => s.startsWith('I'),
                 ),
                 dropdownBuilder: (context, selectedItems) {
                   Widget item(String i) => Container(
@@ -199,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: print,
                 popupProps: PopupProps(
                   showSelectedItems: true,
-                  popupItemDisabled: (String? s) => s?.startsWith('I') ?? false,
+                  DisabledItemFn: (String s) => s.startsWith('I'),
                 ),
                 //clearButtonSplashRadius: 20,
                 selectedItem: "Tunisia",
@@ -292,8 +293,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       validator: (v) => v == null ? "required field" : null,
                       popupProps: PopupProps(
                         showSelectedItems: true,
-                        popupItemDisabled: (String? s) =>
-                            s?.startsWith('I') ?? true,
+                        DisabledItemFn: (String s) => s.startsWith('I'),
                       ),
                       dropdownSearchDecoration: InputDecoration(
                         hintText: "Select a country",
@@ -343,11 +343,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   showSelectedItems: true,
                   popupItemBuilder: _customPopupItemBuilderExample2,
                   scrollbarProps: ScrollbarProps(
-                    isAlwaysShown: true,
+                    thumbVisibility: true,
                     thickness: 7,
                   ),
                   showSearchBox: true,
-                  maxHeight: 700,
                   searchFieldProps: TextFieldProps(
                     controller: _userEditTextController,
                     decoration: InputDecoration(
@@ -421,7 +420,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   mode: Mode.BOTTOM_SHEET,
                   searchFieldProps: TextFieldProps(
                     padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
-                    height: 40,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
@@ -512,7 +510,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   UserModel(name: "Offline name1", id: "999"),
                   UserModel(name: "Offline name2", id: "0101")
                 ],
-                popupProps: PopupProps(showSearchBox: true, maxHeight: 300),
+                popupProps: PopupProps(showSearchBox: true),
                 asyncItems: (String? filter) => getData(filter),
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "choose a user",
@@ -540,6 +538,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(padding: EdgeInsets.all(4)),
               DropdownSearch<String>(
                 popupProps: PopupProps(
+                  mode: Mode.DIALOG,
                   showSelectedItems: true,
                 ),
                 validator: (value) => value == null ? "empty" : null,
@@ -661,29 +660,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 item.createdAt.toString(),
               ),
             ),
-    );
-  }
-
-  Widget _customPopupItemBuilderExample(
-      BuildContext context, UserModel? item, bool isSelected) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
-      decoration: !isSelected
-          ? null
-          : BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor),
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white,
-            ),
-      child: ListTile(
-        selected: isSelected,
-        title: Text(item?.name ?? ''),
-        subtitle: Text(item?.createdAt?.toString() ?? ''),
-        leading: CircleAvatar(
-            // this does not work - throws 404 error
-            // backgroundImage: NetworkImage(item.avatar ?? ''),
-            ),
-      ),
     );
   }
 

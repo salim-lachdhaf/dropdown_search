@@ -360,7 +360,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       initialValue: widget.selectedItem,
       builder: (FormFieldState<T> state) {
         if (state.value != getSelectedItem) {
-          WidgetsBinding.instance?.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             state.didChange(getSelectedItem);
           });
         }
@@ -391,7 +391,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       initialValue: widget.selectedItems,
       builder: (FormFieldState<List<T>> state) {
         if (state.value != getSelectedItems) {
-          WidgetsBinding.instance?.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             state.didChange(getSelectedItems);
           });
         }
@@ -416,7 +416,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///manage dropdownSearch field decoration
   InputDecoration _manageDropdownDecoration(FormFieldState state) {
     return (widget.dropdownSearchDecoration ??
-            InputDecoration(
+            const InputDecoration(
               contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
               border: OutlineInputBorder(),
             ))
@@ -509,6 +509,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       transitionDuration: widget.popupProps.transitionDuration,
       barrierColor: widget.popupProps.barrierColor ?? const Color(0x80000000),
       context: context,
+      useRootNavigator: widget.popupProps.useRootNavigator,
       pageBuilder: (context, animation, secondaryAnimation) {
         return SafeArea(
           top: widget.popupSafeArea.top,
@@ -521,7 +522,12 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             contentPadding: EdgeInsets.all(0),
             shape: widget.popupProps.shape,
             backgroundColor: widget.popupProps.color,
-            content: _selectDialogInstance(),
+            semanticLabel: widget.popupProps.semanticLabel,
+            contentTextStyle: widget.popupProps.textStyle,
+            content: Container(
+              child: _selectDialogInstance(),
+              constraints: widget.popupProps.constraints,
+            ),
           ),
         );
       },
@@ -537,7 +543,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         elevation: widget.popupProps.elevation,
         shape: widget.popupProps.shape,
         transitionAnimationController: widget.popupProps.animation,
-        constraints: widget.popupProps.boxConstraints,
+        constraints: widget.popupProps.constraints,
         builder: (ctx) {
           return _selectDialogInstance();
         });
@@ -557,7 +563,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         shape: widget.popupProps.shape,
         useRootNavigator: widget.popupProps.useRootNavigator,
         transitionAnimationController: widget.popupProps.animation,
-        constraints: widget.popupProps.boxConstraints,
+        constraints: widget.popupProps.constraints,
         builder: (ctx) {
           final MediaQueryData mediaQueryData = MediaQuery.of(ctx);
           EdgeInsets padding = mediaQueryData.padding;
@@ -605,49 +611,25 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         popupButtonObject,
         overlay,
       ),
-      child: _selectDialogInstance(),
+      child: Container(
+        child: _selectDialogInstance(),
+        constraints: widget.popupProps.constraints,
+      ),
     );
   }
 
   Widget _selectDialogInstance() {
     return SelectionWidget<T>(
       key: _popupStateKey,
-      popupTitle: widget.popupProps.title,
-      popMaxHeight: widget.popupProps.maxHeight,
-      isFilterOnline: widget.isFilteredOnline,
+      popupProps: widget.popupProps,
       itemAsString: widget.itemAsString,
       filterFn: widget.filterFn,
       items: widget.items,
       asyncItems: widget.asyncItems,
-      showSearchBox: widget.popupProps.showSearchBox,
-      itemBuilder: widget.popupProps.popupItemBuilder,
-      selectedValues: List.from(getSelectedItems),
       onChanged: _handleOnChangeSelectedItems,
-      showSelectedItems: widget.popupProps.showSelectedItems,
       compareFn: widget.compareFn,
-      emptyBuilder: widget.popupProps.emptyBuilder,
-      loadingBuilder: widget.popupProps.loadingBuilder,
-      errorBuilder: widget.popupProps.errorBuilder,
-      dialogMaxWidth: widget.popupProps.dialogMaxWidth,
-      itemDisabled: widget.popupProps.popupItemDisabled,
-      searchDelay: widget.popupProps.searchDelay,
-      showFavoriteItems: widget.popupProps.showFavoriteItems,
-      favoriteItems: widget.popupProps.favoriteItems,
-      favoriteItemBuilder: widget.popupProps.favoriteItemBuilder,
-      favoriteItemsAlignment: widget.popupProps.favoriteItemsAlignment,
-      searchFieldProps: widget.popupProps.searchFieldProps,
-      scrollbarProps: widget.popupProps.scrollbarProps,
-      onBeforeChangeMultiSelection: widget.onBeforeChangeMultiSelection,
-      popupOnItemAdded: widget.popupProps.popupOnItemAdded,
-      popupOnItemRemoved: widget.popupProps.popupOnItemRemoved,
-      popupSelectionWidget: widget.popupProps.popupSelectionWidget,
-      popupValidationMultiSelectionWidget:
-          widget.popupProps.popupValidationMultiSelectionWidget,
-      popupCustomMultiSelectionWidget:
-          widget.popupProps.popupCustomMultiSelectionWidget,
       isMultiSelectionMode: isMultiSelectionMode,
-      selectionListViewProps: widget.popupProps.listViewProps,
-      focusNode: widget.focusNode ?? FocusNode(),
+      defaultSelectedItems: List.from(getSelectedItems),
     );
   }
 
