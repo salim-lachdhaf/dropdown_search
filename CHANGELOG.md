@@ -1,14 +1,18 @@
+## [4.0.0] - 2022.05.15
 * Breaking changes:
- - onFind to AsyncItem
- - isFilteredOnline to isFilterOnline
- - replace all popup customization with popupProps
- - change default mode to MENU
- - remove 'dropdownBuilderSupportsNullItem' because now we support nullSafety
+  - onFind to AsyncItem
+  - isFilteredOnline to isFilterOnline
+  - replace all popup customization with popupProps
+  - change default mode to MENU
+  - remove 'dropdownBuilderSupportsNullItem' because now we support nullSafety
+  - remove safeArea settings, the popup should always shown in safeArea
 
 * improve menu mode
+* improve dialog mode
 * fix large text in chips in multiSelection mode
 * fix bug [84] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/84)
 * add new mode BOTTOM_SHEET
+* support Flutter v3
 
 ## [3.0.1] - 2022.04.15
 * breaking changes:

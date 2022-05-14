@@ -42,9 +42,7 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
     double safeAreaTop = MediaQuery.of(context).padding.top;
     double safeAreaBottom = MediaQuery.of(context).padding.bottom;
     double totalSafeArea = safeAreaTop + safeAreaBottom;
-    double maxHeight = keyBoardHeight > 0
-        ? constraints.minHeight - keyBoardHeight - totalSafeArea
-        : constraints.minHeight;
+    double maxHeight = constraints.minHeight - keyBoardHeight - totalSafeArea;
     return BoxConstraints.loose(
       Size(
         parentRenderBox.size.width - position.right - position.left,
@@ -120,7 +118,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
     final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
     final menu = Material(
       shape: menuModeProps.shape ?? popupMenuTheme.shape,
-      color: menuModeProps.color ?? popupMenuTheme.color,
+      color: menuModeProps.backgroundColor ?? popupMenuTheme.color,
       type: MaterialType.card,
       elevation: menuModeProps.elevation ?? popupMenuTheme.elevation ?? 8.0,
       clipBehavior: menuModeProps.clipBehavior,

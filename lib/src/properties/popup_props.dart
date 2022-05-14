@@ -9,7 +9,8 @@ class PopupProps<T> {
   final ShapeBorder? shape;
   final Color? barrierColor;
   final String barrierLabel;
-  final Color? color;
+  final Color? backgroundColor;
+  final bool enableDrag;
   final bool barrierDismissible;
   final Duration transitionDuration;
   final AnimationController? animation;
@@ -84,7 +85,7 @@ class PopupProps<T> {
 
   ///defines if an item of the popup is enabled or not, if the item is disabled,
   ///it cannot be clicked
-  final DropdownSearchPopupItemEnabled<T>? DisabledItemFn;
+  final DropdownSearchPopupItemEnabled<T>? disabledItemFn;
 
   ///MENU / DIALOG/ BOTTOM_SHEET
   final Mode mode;
@@ -99,6 +100,7 @@ class PopupProps<T> {
 
   const PopupProps({
     this.mode = Mode.MENU,
+    this.enableDrag = true,
     this.title,
     this.focusNode,
     this.isFilterOnline = false,
@@ -109,10 +111,10 @@ class PopupProps<T> {
     this.shape,
     this.barrierColor,
     this.barrierLabel = '',
-    this.color,
+    this.backgroundColor,
     this.barrierDismissible = true,
     this.transitionDuration = kThemeChangeDuration,
-    this.DisabledItemFn,
+    this.disabledItemFn,
     this.animation,
     this.barrierCurve,
     this.shadowColor,
@@ -147,13 +149,14 @@ class PopupProps<T> {
     this.mode = Mode.MENU,
     this.title,
     this.positionCallback,
+    this.enableDrag = true,
     this.elevation,
     this.semanticLabel,
     this.shape,
     this.barrierColor,
     this.focusNode,
     this.barrierLabel = '',
-    this.color,
+    this.backgroundColor,
     this.barrierDismissible = true,
     this.transitionDuration = kThemeChangeDuration,
     this.animation,
@@ -186,7 +189,7 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.useRootNavigator = false,
     this.constraints,
-    this.DisabledItemFn,
+    this.disabledItemFn,
     this.isFilterOnline = false,
   });
 }

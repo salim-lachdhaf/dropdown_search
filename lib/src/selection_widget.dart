@@ -439,8 +439,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   bool _isDisabled(T item) =>
-      widget.popupProps.DisabledItemFn != null &&
-      (widget.popupProps.DisabledItemFn!(item)) == true;
+      widget.popupProps.disabledItemFn != null &&
+      (widget.popupProps.disabledItemFn!(item)) == true;
 
   /// selected item will be highlighted only when [widget.showSelectedItems] is true,
   /// if our object is String [widget.compareFn] is not required , other wises it's required

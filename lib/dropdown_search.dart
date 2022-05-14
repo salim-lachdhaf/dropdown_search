@@ -8,13 +8,11 @@ import 'package:dropdown_search/src/properties/popup_props.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'src/properties/popup_safearea_props.dart';
 import 'src/selection_widget.dart';
 
 export 'src/properties/icon_button_props.dart';
 export 'src/properties/list_view_props.dart';
 export 'src/properties/popup_props.dart';
-export 'src/properties/popup_safearea_props.dart';
 export 'src/properties/scrollbar_props.dart';
 export 'src/properties/text_field_props.dart';
 
@@ -128,9 +126,6 @@ class DropdownSearch<T> extends StatefulWidget {
   /// callback executed before applying values changes
   final BeforeChangeMultiSelection<T>? onBeforeChangeMultiSelection;
 
-  ///set properties of popup safe area
-  final PopupSafeAreaProps popupSafeArea;
-
   ///define whatever we are in multi selection mode or single selection mode
   final bool isMultiSelectionMode;
 
@@ -166,7 +161,6 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchDecoration,
     this.dropdownButtonProps,
     this.onBeforeChange,
-    this.popupSafeArea = const PopupSafeAreaProps(),
     this.dropdownSearchTextStyle,
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
@@ -198,7 +192,6 @@ class DropdownSearch<T> extends StatefulWidget {
     this.compareFn,
     this.dropdownSearchDecoration,
     this.dropdownButtonProps,
-    this.popupSafeArea = const PopupSafeAreaProps(),
     this.dropdownSearchTextStyle,
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
@@ -450,9 +443,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       children: <Widget>[
         if (widget.showClearButton == true && getSelectedItems.isNotEmpty)
           IconButton(
+            onPressed: clearButtonPressed,
             icon: widget.clearButtonProps?.icon ??
                 const Icon(Icons.clear, size: 24),
-            onPressed: clearButtonPressed,
             constraints: widget.clearButtonProps?.constraints,
             hoverColor: widget.clearButtonProps?.hoverColor,
             highlightColor: widget.clearButtonProps?.highlightColor,
@@ -507,27 +500,21 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       barrierDismissible: widget.popupProps.barrierDismissible,
       barrierLabel: widget.popupProps.barrierLabel,
       transitionDuration: widget.popupProps.transitionDuration,
-      barrierColor: widget.popupProps.barrierColor ?? const Color(0x80000000),
+      barrierColor: widget.popupProps.barrierColor ?? Colors.black54,
       context: context,
       useRootNavigator: widget.popupProps.useRootNavigator,
       pageBuilder: (context, animation, secondaryAnimation) {
-        return SafeArea(
-          top: widget.popupSafeArea.top,
-          bottom: widget.popupSafeArea.bottom,
-          left: widget.popupSafeArea.left,
-          right: widget.popupSafeArea.right,
-          child: AlertDialog(
-            clipBehavior: widget.popupProps.clipBehavior,
-            elevation: widget.popupProps.elevation,
-            contentPadding: EdgeInsets.all(0),
-            shape: widget.popupProps.shape,
-            backgroundColor: widget.popupProps.color,
-            semanticLabel: widget.popupProps.semanticLabel,
-            contentTextStyle: widget.popupProps.textStyle,
-            content: Container(
-              child: _selectDialogInstance(),
-              constraints: widget.popupProps.constraints,
-            ),
+        return AlertDialog(
+          clipBehavior: widget.popupProps.clipBehavior,
+          elevation: widget.popupProps.elevation,
+          contentPadding: EdgeInsets.all(0),
+          shape: widget.popupProps.shape,
+          backgroundColor: widget.popupProps.backgroundColor,
+          semanticLabel: widget.popupProps.semanticLabel,
+          contentTextStyle: widget.popupProps.textStyle,
+          content: Container(
+            child: _selectDialogInstance(),
+            constraints: widget.popupProps.constraints,
           ),
         );
       },
@@ -538,7 +525,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   _openBottomSheet() {
     return showBottomSheet(
         context: context,
-        backgroundColor: widget.popupProps.color ?? Colors.transparent,
+        enableDrag: widget.popupProps.enableDrag,
+        backgroundColor: widget.popupProps.backgroundColor,
         clipBehavior: widget.popupProps.clipBehavior,
         elevation: widget.popupProps.elevation,
         shape: widget.popupProps.shape,
@@ -553,29 +541,34 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Future _openModalBottomSheet() {
     return showModalBottomSheet<T>(
         context: context,
-        enableDrag: false,
         barrierColor: widget.popupProps.barrierColor,
-        backgroundColor: widget.popupProps.color ?? Colors.transparent,
+        backgroundColor: widget.popupProps.backgroundColor,
         isDismissible: widget.popupProps.barrierDismissible,
         isScrollControlled: true,
+        enableDrag: widget.popupProps.enableDrag,
         clipBehavior: widget.popupProps.clipBehavior,
         elevation: widget.popupProps.elevation,
         shape: widget.popupProps.shape,
         useRootNavigator: widget.popupProps.useRootNavigator,
         transitionAnimationController: widget.popupProps.animation,
-        constraints: widget.popupProps.constraints,
         builder: (ctx) {
-          final MediaQueryData mediaQueryData = MediaQuery.of(ctx);
-          EdgeInsets padding = mediaQueryData.padding;
-          if (mediaQueryData.padding.bottom == 0.0 &&
-              mediaQueryData.viewInsets.bottom != 0.0)
-            padding =
-                padding.copyWith(bottom: mediaQueryData.viewPadding.bottom);
+          final viewInsetsBottom = EdgeInsets.fromWindowPadding(
+            WidgetsBinding.instance.window.viewInsets,
+            WidgetsBinding.instance.window.devicePixelRatio,
+          ).bottom;
 
-          return SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+          final viewPaddingTop = EdgeInsets.fromWindowPadding(
+            WidgetsBinding.instance.window.padding,
+            WidgetsBinding.instance.window.devicePixelRatio,
+          ).top;
+
+          return SafeArea(
+            top: true,
+            child: Container(
+              color: Colors.red,
+              margin: EdgeInsets.only(bottom: viewInsetsBottom),
+              padding: EdgeInsets.only(top: viewPaddingTop),
+              constraints: widget.popupProps.constraints,
               child: _selectDialogInstance(),
             ),
           );
@@ -687,16 +680,16 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///[data] selected item to be passed to the UI
   ///If we close the popup , or maybe we just selected
   ///another widget we should clear the focus
-  Future _selectSearchMode() async {
+  void _selectSearchMode() {
     _handleFocus(true);
     if (widget.popupProps.mode == Mode.MENU) {
-      await _openMenu();
+      _openMenu();
     } else if (widget.popupProps.mode == Mode.MODAL_BOTTOM_SHEET) {
-      await _openModalBottomSheet();
+      _openModalBottomSheet();
     } else if (widget.popupProps.mode == Mode.BOTTOM_SHEET) {
-      Future.value(_openBottomSheet());
+      _openBottomSheet();
     } else {
-      await _openSelectDialog();
+      _openSelectDialog();
     }
     //todo pass these to popup
     _handleFocus(false);

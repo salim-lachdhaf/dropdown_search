@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'dropdownSearch Demo',
       //enable this line if you want test Dark Mode
-      theme: ThemeData.dark(),
+      //theme: ThemeData.dark(),
       home: MyHomePage(),
     );
   }
@@ -47,22 +47,21 @@ class _MyHomePageState extends State<MyHomePage> {
               DropdownSearch<String>.multiSelection(
                 popupProps: PopupProps.multiSelection(
                   mode: Mode.MENU,
-                  color: Colors.red,
+                  //backgroundColor: Colors.red,
                   showSearchBox: true,
-                  //constraints: BoxConstraints.tight(Size(500,150)),
-                  constraints: BoxConstraints.expand(height: 300),
+                  constraints: BoxConstraints.tight(Size(500,400)),
                   searchFieldProps: TextFieldProps(
                       //autofocus: true,
                       ),
                 ),
-                items: List.generate(10, (index) => "$index"),
+                items: List.generate(20, (index) => "$index"),
               ),
               Divider(),
               DropdownSearch<String>(
                 popupProps: PopupProps(
                   mode: Mode.MENU,
                   showSelectedItems: true,
-                  DisabledItemFn: (String s) => s.startsWith('I'),
+                  disabledItemFn: (String s) => s.startsWith('I'),
                 ),
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 dropdownSearchDecoration: InputDecoration(
@@ -128,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     );
                   },
-                  DisabledItemFn: (String s) => s.startsWith('I'),
+                  disabledItemFn: (String s) => s.startsWith('I'),
                 ),
                 dropdownBuilder: (context, selectedItems) {
                   Widget item(String i) => Container(
@@ -200,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: print,
                 popupProps: PopupProps(
                   showSelectedItems: true,
-                  DisabledItemFn: (String s) => s.startsWith('I'),
+                  disabledItemFn: (String s) => s.startsWith('I'),
                 ),
                 //clearButtonSplashRadius: 20,
                 selectedItem: "Tunisia",
@@ -293,7 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       validator: (v) => v == null ? "required field" : null,
                       popupProps: PopupProps(
                         showSelectedItems: true,
-                        DisabledItemFn: (String s) => s.startsWith('I'),
+                        disabledItemFn: (String s) => s.startsWith('I'),
                       ),
                       dropdownSearchDecoration: InputDecoration(
                         hintText: "Select a country",
@@ -375,7 +374,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   print(data);
                 },
                 dropdownBuilder: _customDropDownExampleMultiSelection,
-                popupSafeArea: PopupSafeAreaProps(top: true, bottom: true),
               ),
               Divider(),
 
