@@ -45,21 +45,22 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.all(4),
             children: <Widget>[
               DropdownSearch<String>.multiSelection(
-                popupProps: PopupProps.multiSelection(
-                  mode: Mode.MENU,
+                popupProps: PopupPropsMultiSelection.dialog(
                   //backgroundColor: Colors.red,
                   showSearchBox: true,
-                  constraints: BoxConstraints.tight(Size(500,400)),
                   searchFieldProps: TextFieldProps(
-                      //autofocus: true,
-                      ),
+                    autofocus: true,
+                  ),
+                  dialogProps: DialogProps(
+                    constraints: BoxConstraints.tight(Size(500, 400)),
+                  ),
                 ),
+                showClearButton: true,
                 items: List.generate(20, (index) => "$index"),
               ),
               Divider(),
               DropdownSearch<String>(
-                popupProps: PopupProps(
-                  mode: Mode.MENU,
+                popupProps: PopupProps.menu(
                   showSelectedItems: true,
                   disabledItemFn: (String s) => s.startsWith('I'),
                 ),
@@ -79,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 validator: (List<String>? v) {
                   return v == null || v.isEmpty ? "required field" : null;
                 },
-                popupProps: PopupProps.multiSelection(
+                popupProps: PopupPropsMultiSelection.menu(
                   showSelectedItems: true,
                   popupSelectionWidget: (cnt, String item, bool isSelected) {
                     return isSelected
@@ -197,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
                 showClearButton: true,
                 onChanged: print,
-                popupProps: PopupProps(
+                popupProps: PopupProps.menu(
                   showSelectedItems: true,
                   disabledItemFn: (String s) => s.startsWith('I'),
                 ),
@@ -249,36 +250,39 @@ class _MyHomePageState extends State<MyHomePage> {
                 items: ["Brazil", "Italia", "Tunisia", 'Canada'],
                 onChanged: print,
                 selectedItem: "Tunisia",
-                popupProps: PopupProps(
+                popupProps: PopupProps.menu(
                   showSelectedItems: true,
-                  positionCallback: (popupButtonObject, overlay) {
-                    final decorationBox = _findBorderBox(popupButtonObject);
+                  menuProps: MenuProps(
+                    positionCallback: (popupButtonObject, overlay) {
+                      final decorationBox = _findBorderBox(popupButtonObject);
 
-                    double translateOffset = 0;
-                    if (decorationBox != null) {
-                      translateOffset = decorationBox.size.height -
-                          popupButtonObject.size.height;
-                    }
+                      double translateOffset = 0;
+                      if (decorationBox != null) {
+                        translateOffset = decorationBox.size.height -
+                            popupButtonObject.size.height;
+                      }
 
-                    // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
-                    final RenderBox overlay = Overlay.of(context)!
-                        .context
-                        .findRenderObject() as RenderBox;
-                    // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
-                    return RelativeRect.fromSize(
-                      Rect.fromPoints(
-                        popupButtonObject
-                            .localToGlobal(
-                                popupButtonObject.size.bottomLeft(Offset.zero),
-                                ancestor: overlay)
-                            .translate(0, translateOffset),
-                        popupButtonObject.localToGlobal(
-                            popupButtonObject.size.bottomRight(Offset.zero),
-                            ancestor: overlay),
-                      ),
-                      Size(overlay.size.width, overlay.size.height),
-                    );
-                  },
+                      // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
+                      final RenderBox overlay = Overlay.of(context)!
+                          .context
+                          .findRenderObject() as RenderBox;
+                      // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
+                      return RelativeRect.fromSize(
+                        Rect.fromPoints(
+                          popupButtonObject
+                              .localToGlobal(
+                                  popupButtonObject.size
+                                      .bottomLeft(Offset.zero),
+                                  ancestor: overlay)
+                              .translate(0, translateOffset),
+                          popupButtonObject.localToGlobal(
+                              popupButtonObject.size.bottomRight(Offset.zero),
+                              ancestor: overlay),
+                        ),
+                        Size(overlay.size.width, overlay.size.height),
+                      );
+                    },
+                  ),
                 ),
               ),
               Divider(),
@@ -290,7 +294,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     flex: 2,
                     child: DropdownSearch<String>(
                       validator: (v) => v == null ? "required field" : null,
-                      popupProps: PopupProps(
+                      popupProps: PopupProps.menu(
                         showSelectedItems: true,
                         disabledItemFn: (String s) => s.startsWith('I'),
                       ),
@@ -337,10 +341,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Divider(),
               DropdownSearch<UserModel>.multiSelection(
-                popupProps: PopupProps.multiSelection(
-                  mode: Mode.BOTTOM_SHEET,
+                popupProps: PopupPropsMultiSelection.bottomSheet(
                   showSelectedItems: true,
-                  popupItemBuilder: _customPopupItemBuilderExample2,
+                  itemBuilder: _customPopupItemBuilderExample2,
                   scrollbarProps: ScrollbarProps(
                     thumbVisibility: true,
                     thickness: 7,
@@ -360,7 +363,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 isFilteredOnline: true,
                 showClearButton: true,
-                compareFn: (item, selectedItem) => item?.id == selectedItem?.id,
+                compareFn: (item, selectedItem) => item.id == selectedItem.id,
                 dropdownSearchDecoration: InputDecoration(
                   labelText: 'User *',
                   filled: true,
@@ -379,16 +382,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
               ///custom itemBuilder and dropDownBuilder
               DropdownSearch<UserModel>(
-                popupProps: PopupProps(
+                popupProps: PopupProps.menu(
                   showSelectedItems: true,
                 ),
-                compareFn: (i, s) => i?.isEqual(s) ?? false,
+                itemAsString: (i) => i.name,
+                showClearButton: true,
+                compareFn: (i, s) => i.isEqual(s),
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "Person",
                   contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
                   border: OutlineInputBorder(),
                 ),
-                asyncItems: (String? filter) => getData(filter),
+                asyncItems: (String filter) => getData(filter),
                 onChanged: (data) {
                   print(data);
                 },
@@ -414,8 +419,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 onChanged: print,
                 selectedItem: "Brazil",
-                popupProps: PopupProps(
-                  mode: Mode.BOTTOM_SHEET,
+                popupProps: PopupProps.bottomSheet(
                   searchFieldProps: TextFieldProps(
                     padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
                     decoration: InputDecoration(
@@ -444,10 +448,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
+                  bottomSheetProps: BottomSheetProps(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
+                      ),
                     ),
                   ),
                   showSearchBox: true,
@@ -457,39 +463,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
               ///show favorites on top list
               DropdownSearch<UserModel>.multiSelection(
-                popupProps: PopupProps.multiSelection(
-                  showSelectedItems: true,
-                  showSearchBox: true,
-                  popupItemBuilder: _customPopupItemBuilderExample2,
-                  showFavoriteItems: true,
-                  favoriteItemsAlignment: MainAxisAlignment.start,
-                  favoriteItems: (items) {
-                    return items.where((e) => e.name.contains("Mrs")).toList();
-                  },
-                  favoriteItemBuilder: (context, item, isSelected) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey[100]),
-                      child: Row(
-                        children: [
-                          Text(
-                            "${item.name}",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.indigo),
+                popupProps: PopupPropsMultiSelection.menu(
+                    showSelectedItems: true,
+                    showSearchBox: true,
+                    itemBuilder: _customPopupItemBuilderExample2,
+                    favoriteItemProps: FavoriteItemProps(
+                      showFavoriteItems: true,
+                      favoriteItemsAlignment: MainAxisAlignment.start,
+                      favoriteItems: (items) {
+                        return items
+                            .where((e) => e.name.contains("Mrs"))
+                            .toList();
+                      },
+                      favoriteItemBuilder: (context, item, isSelected) {
+                        return Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.grey[100]),
+                          child: Row(
+                            children: [
+                              Text(
+                                "${item.name}",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.indigo),
+                              ),
+                              Padding(padding: EdgeInsets.only(left: 8)),
+                              isSelected
+                                  ? Icon(Icons.check_box_outlined)
+                                  : Container(),
+                            ],
                           ),
-                          Padding(padding: EdgeInsets.only(left: 8)),
-                          isSelected
-                              ? Icon(Icons.check_box_outlined)
-                              : Container(),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-                compareFn: (i, s) => i?.isEqual(s) ?? false,
+                        );
+                      },
+                    )),
+                compareFn: (i, s) => i.isEqual(s),
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "Person with favorite option",
                   contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
@@ -508,7 +518,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   UserModel(name: "Offline name1", id: "999"),
                   UserModel(name: "Offline name2", id: "0101")
                 ],
-                popupProps: PopupProps(showSearchBox: true),
+                popupProps: PopupProps.menu(showSearchBox: true),
                 asyncItems: (String? filter) => getData(filter),
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "choose a user",
@@ -535,8 +545,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Padding(padding: EdgeInsets.all(4)),
               DropdownSearch<String>(
-                popupProps: PopupProps(
-                  mode: Mode.DIALOG,
+                popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
                 ),
                 validator: (value) => value == null ? "empty" : null,

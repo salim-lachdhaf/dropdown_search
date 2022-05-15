@@ -56,110 +56,106 @@ import 'package:dropdown_search/dropdown_search.dart';
 
 ```dart
 DropdownSearch<String>(
-    mode: Mode.MENU,
-    showSelectedItems: true,
+    popupProps: PopupProps.menu(
+        showSelectedItems: true,
+        disabledItemFn: (String s) => s.startsWith('I'),
+    ),
     items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
     dropdownSearchDecoration: InputDecoration(
-      labelText: "Menu mode",
-      hintText: "country in menu mode",
+        labelText: "Menu mode",
+        hintText: "country in menu mode",
     ),
-    popupItemDisabled: (String s) => s.startsWith('I'),
     onChanged: print,
     selectedItem: "Brazil",
-),
-    
-    
+)
+
 DropdownSearch<String>.multiSelection(
     items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-    dropdownSearchDecoration: InputDecoration(
-      labelText: "Menu mode",
-      hintText: "country in menu mode",
-    ),
-    popupProps: PopupProps(
-        mode: Mode.MENU,
+    popupProps: PopupPropsMultiSelection.menu(
         showSelectedItems: true,
-        popupItemDisabled: (String s) => s.startsWith('I'),
-    )
+        disabledItemFn: (String s) => s.startsWith('I'),
+    ),
     onChanged: print,
     selectedItems: ["Brazil"],
-),
+)
 ```
 
 ## customize showed field (itemAsString)
 
 ```dart
 DropdownSearch<UserModel>(
-  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  asyncItems: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsStringByName(),
-  onChanged: (UserModel data) => print(data),
-),
+    asyncItems: (String filter) => getData(filter),
+    itemAsString: (UserModel u) => u.userAsStringByName(),
+    onChanged: (UserModel? data) => print(data),
+    dropdownSearchDecoration: InputDecoration(labelText: "User by name"),
+)
 
 DropdownSearch<UserModel>(
-  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  asyncItems: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsStringById(),
-  onChanged: (UserModel data) => print(data),
-),
+    asyncItems: (String filter) => getData(filter),
+    itemAsString: (UserModel u) => u.userAsStringById(),
+    onChanged: (UserModel? data) => print(data),
+    dropdownSearchDecoration: InputDecoration(labelText: "User by id"),
+)
 ```
 
 ## customize Filter Function
 ```dart
 DropdownSearch<UserModel>(
-  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  filterFn: (user, filter) => user.userFilterByCreationDate(filter),
-  asyncItems: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsStringByName(),
-  onChanged: (UserModel data) => print(data),
-),
+    dropdownSearchDecoration: InputDecoration(labelText: "Name"),
+    filterFn: (user, filter) =>
+    user.userFilterByCreationDate(filter),
+    asyncItems: (String filter) => getData(filter),
+    itemAsString: (UserModel u) => u.userAsStringByName(),
+    onChanged: (UserModel? data) => print(data),
+)
 ```
 
 ## customize Search Mode
 ```dart
 DropdownSearch<UserModel>(
-  popupProps: PopupProps(mode: Mode.BOTTOM_SHEET)
-  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  asyncItems: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsString(),
-  onChanged: (UserModel data) => print(data),
-),
+    popupProps: PopupProps.bottomSheet(),
+    dropdownSearchDecoration: InputDecoration(labelText: "Name"),
+    asyncItems: (String filter) => getData(filter),
+    itemAsString: (UserModel u) => u.userAsString(),
+    onChanged: (UserModel? data) => print(data),
+)
 ```
 
 ## Validation
 ```dart
 DropdownSearch(
-  items: ["Brazil", "France", "Tunisia", "Canada"],
-  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  onChanged: print,
-  selectedItem: "Tunisia",
-  validator: (String item) {
+    items: ["Brazil", "France", "Tunisia", "Canada"],
+    dropdownSearchDecoration: InputDecoration(labelText: "Name"),
+    onChanged: print,
+    selectedItem: "Tunisia",
+    validator: (String? item) {
     if (item == null)
-      return "Required field";
+    return "Required field";
     else if (item == "Brazil")
-      return "Invalid item";
+    return "Invalid item";
     else
-      return null;
-  },
-);
+    return null;
+    },
+)
 ```
 
 
 ## Endpoint implementation (using [Dio package](https://pub.dev/packages/dio))
 ```dart
 DropdownSearch<UserModel>(
-  dropdownSearchDecoration: InputDecoration(labelText: "Name"),
-  onFind: (String filter) async {
-    var response = await Dio().get(
-        "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
-        queryParameters: {"filter": filter},
-    );
-    var models = UserModel.fromJsonList(response.data);
-    return models;
-  },
-  onChanged: (UserModel data) {
-    print(data);
-  },
-);
+    dropdownSearchDecoration: InputDecoration(labelText: "Name"),
+    asyncItems: (String filter) async {
+        var response = await Dio().get(
+            "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
+            queryParameters: {"filter": filter},
+        );
+        var models = UserModel.fromJsonList(response.data);
+        return models;
+    },
+    onChanged: (UserModel? data) {
+      print(data);
+    },
+)
 ```
 ## Layout customization
 You can customize the layout of the DropdownSearch and its items. [EXAMPLE](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example#custom-layout-endpoint-example)
@@ -202,7 +198,7 @@ class UserModel {
 
   ///this method will prevent the override of toString
   bool userFilterByCreationDate(String filter) {
-    return this?.createdAt?.toString()?.contains(filter);
+    return this.createdAt?.toString().contains(filter) ?? false;
   }
 
   ///custom comparing function to check if two users are equal

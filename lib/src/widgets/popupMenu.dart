@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'properties/popup_props.dart';
+import '../properties/menu_props.dart';
 
 Future<T?> showMenuTest<T>({
   required BuildContext context,
-  required PopupProps menuModeProps,
+  required MenuProps menuModeProps,
   required RelativeRect position,
   required Widget child,
 }) {
@@ -79,7 +79,7 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
 }
 
 class _PopupMenuRoute<T> extends PopupRoute<T> {
-  final PopupProps menuModeProps;
+  final MenuProps menuModeProps;
   final BuildContext context;
   final RelativeRect position;
   final Widget child;
@@ -94,7 +94,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
   });
 
   @override
-  Duration get transitionDuration => menuModeProps.transitionDuration;
+  Duration get transitionDuration => menuModeProps.animationDuration;
 
   @override
   bool get barrierDismissible => menuModeProps.barrierDismissible;
@@ -123,7 +123,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
       elevation: menuModeProps.elevation ?? popupMenuTheme.elevation ?? 8.0,
       clipBehavior: menuModeProps.clipBehavior,
       borderRadius: menuModeProps.borderRadius,
-      animationDuration: menuModeProps.transitionDuration,
+      animationDuration: menuModeProps.animationDuration,
       shadowColor: menuModeProps.shadowColor,
       textStyle: menuModeProps.textStyle ?? popupMenuTheme.textStyle,
       borderOnForeground: menuModeProps.borderOnForeground,

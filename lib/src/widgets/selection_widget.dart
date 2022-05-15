@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../dropdown_search.dart';
-import 'widgets/checkbox_widget.dart';
+import '../../dropdown_search.dart';
+import 'checkbox_widget.dart';
 
 class SelectionWidget<T> extends StatefulWidget {
   final List<T>? items;
@@ -15,12 +15,12 @@ class SelectionWidget<T> extends StatefulWidget {
   final DropdownSearchFilterFn<T>? filterFn;
   final DropdownSearchCompareFn<T>? compareFn;
   final List<T> defaultSelectedItems;
-  final PopupProps<T> popupProps;
+  final PopupPropsMultiSelection<T> popupProps;
   final bool isMultiSelectionMode;
 
   const SelectionWidget({
     Key? key,
-    this.popupProps = const PopupProps(),
+    required this.popupProps,
     this.defaultSelectedItems = const [],
     this.isMultiSelectionMode = false,
     this.items,
@@ -110,21 +110,28 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                             } else if (snapshot.data!.isEmpty) {
                               return _noDataWidget();
                             }
+                            final controller = ScrollController();
                             return Scrollbar(
                               controller:
-                                  widget.popupProps.scrollbarProps?.controller,
+                                  widget.popupProps.listViewProps.controller ??
+                                      controller,
                               thumbVisibility: widget
-                                  .popupProps.scrollbarProps?.thumbVisibility,
+                                  .popupProps.scrollbarProps.thumbVisibility,
                               trackVisibility: widget
-                                  .popupProps.scrollbarProps?.trackVisibility,
+                                  .popupProps.scrollbarProps.trackVisibility,
                               thickness:
-                                  widget.popupProps.scrollbarProps?.thickness,
-                              radius: widget.popupProps.scrollbarProps?.radius,
+                                  widget.popupProps.scrollbarProps.thickness,
+                              radius: widget.popupProps.scrollbarProps.radius,
                               notificationPredicate: widget.popupProps
-                                  .scrollbarProps?.notificationPredicate,
+                                  .scrollbarProps.notificationPredicate,
                               interactive:
-                                  widget.popupProps.scrollbarProps?.interactive,
+                                  widget.popupProps.scrollbarProps.interactive,
+                              scrollbarOrientation: widget.popupProps
+                                  .scrollbarProps.scrollbarOrientation,
                               child: ListView.builder(
+                                controller: widget
+                                        .popupProps.listViewProps.controller ??
+                                    controller,
                                 shrinkWrap:
                                     widget.popupProps.listViewProps.shrinkWrap,
                                 padding:
@@ -133,8 +140,6 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                                     .popupProps.listViewProps.scrollDirection,
                                 reverse:
                                     widget.popupProps.listViewProps.reverse,
-                                controller:
-                                    widget.popupProps.listViewProps.controller,
                                 primary:
                                     widget.popupProps.listViewProps.primary,
                                 physics:
@@ -191,6 +196,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   ///close popup
   void closePopup() {
     Navigator.pop(context);
+
+    widget.popupProps.onDismissed?.call();
   }
 
   Widget _multiSelectionValidation() {
@@ -261,7 +268,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     if (widget.popupProps.emptyBuilder != null)
       return widget.popupProps.emptyBuilder!(
         context,
-        widget.popupProps.searchFieldProps.controller?.text,
+        widget.popupProps.searchFieldProps.controller?.text ?? '',
       );
     else
       return const Center(
@@ -273,7 +280,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     if (widget.popupProps.errorBuilder != null)
       return widget.popupProps.errorBuilder!(
         context,
-        widget.popupProps.searchFieldProps.controller?.text,
+        widget.popupProps.searchFieldProps.controller?.text ?? '',
         error,
       );
     else
@@ -293,7 +300,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
             if (widget.popupProps.loadingBuilder != null)
               return widget.popupProps.loadingBuilder!(
                 context,
-                widget.popupProps.searchFieldProps.controller?.text,
+                widget.popupProps.searchFieldProps.controller?.text ?? '',
               );
             else
               return Padding(
@@ -317,19 +324,16 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   void _manageItemsByFilter(String filter, {bool isFirstLoad = false}) async {
     _loadingNotifier.value = true;
 
-    List<T> applyFilter(String? filter) {
+    List<T> applyFilter(String filter) {
       return _cachedItems.where((i) {
         if (widget.filterFn != null)
           return (widget.filterFn!(i, filter));
-        else if (i
-            .toString()
-            .toLowerCase()
-            .contains(filter?.toLowerCase() ?? 'null'))
+        else if (i.toString().toLowerCase().contains(filter.toLowerCase()))
           return true;
         else if (widget.itemAsString != null) {
           return (widget.itemAsString!(i))
               .toLowerCase()
-              .contains(filter?.toLowerCase() ?? 'null');
+              .contains(filter.toLowerCase());
         }
         return false;
       }).toList();
@@ -492,7 +496,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                         widget.popupProps.searchFieldProps.clipBehavior,
                     style: widget.popupProps.searchFieldProps.style,
                     controller: widget.popupProps.searchFieldProps.controller,
-                    focusNode: widget.popupProps.focusNode,
+                    focusNode: widget.popupProps.searchFieldProps.focusNode,
                     autofocus: widget.popupProps.searchFieldProps.autofocus,
                     decoration: widget.popupProps.searchFieldProps.decoration,
                     keyboardType:
@@ -572,14 +576,14 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   Widget _favoriteItemsWidget() {
-    if (widget.popupProps.showFavoriteItems == true &&
-        widget.popupProps.favoriteItems != null) {
+    if (widget.popupProps.favoriteItemProps.showFavoriteItems &&
+        widget.popupProps.favoriteItemProps.favoriteItems != null) {
       return StreamBuilder<List<T>>(
           stream: _itemsStream.stream,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return _buildFavoriteItems(
-                  widget.popupProps.favoriteItems!(snapshot.data!));
+              return _buildFavoriteItems(widget
+                  .popupProps.favoriteItemProps.favoriteItems!(snapshot.data!));
             } else {
               return Container();
             }
@@ -601,15 +605,19 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
             constraints: BoxConstraints(minWidth: constraints.maxWidth),
             child: Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: widget.popupProps.favoriteItemsAlignment,
+                mainAxisAlignment:
+                    widget.popupProps.favoriteItemProps.favoriteItemsAlignment,
                 children: favoriteItems
                     .map(
                       (f) => InkWell(
                         onTap: () => _handleSelectedItem(f),
                         child: Container(
                           margin: EdgeInsets.only(right: 4),
-                          child: widget.popupProps.favoriteItemBuilder != null
-                              ? widget.popupProps.favoriteItemBuilder!(
+                          child: widget.popupProps.favoriteItemProps
+                                      .favoriteItemBuilder !=
+                                  null
+                              ? widget.popupProps.favoriteItemProps
+                                  .favoriteItemBuilder!(
                                   context,
                                   f,
                                   _isSelectedItem(f),

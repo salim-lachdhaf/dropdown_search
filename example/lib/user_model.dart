@@ -27,13 +27,13 @@ class UserModel {
   }
 
   ///this method will prevent the override of toString
-  bool? userFilterByCreationDate(String filter) {
-    return this.createdAt?.toString().contains(filter);
+  bool userFilterByCreationDate(String filter) {
+    return this.createdAt?.toString().contains(filter) ?? false;
   }
 
   ///custom comparing function to check if two users are equal
-  bool isEqual(UserModel? model) {
-    return this.id == model?.id;
+  bool isEqual(UserModel model) {
+    return this.id == model.id;
   }
 
   @override

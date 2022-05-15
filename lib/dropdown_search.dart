@@ -2,24 +2,29 @@ library dropdown_search;
 
 import 'dart:async';
 
-import 'package:dropdown_search/src/popupMenu.dart';
 import 'package:dropdown_search/src/properties/icon_button_props.dart';
 import 'package:dropdown_search/src/properties/popup_props.dart';
+import 'package:dropdown_search/src/widgets/popupMenu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'src/selection_widget.dart';
+import 'src/widgets/selection_widget.dart';
 
+export 'src/properties/bottom_sheet_props.dart';
+export 'src/properties/dialog_props.dart';
+export 'src/properties/favorite_item_props.dart';
 export 'src/properties/icon_button_props.dart';
 export 'src/properties/list_view_props.dart';
+export 'src/properties/menu_props.dart';
+export 'src/properties/modal_bottom_sheet_props.dart';
 export 'src/properties/popup_props.dart';
 export 'src/properties/scrollbar_props.dart';
 export 'src/properties/text_field_props.dart';
 
-typedef Future<List<T>> DropdownSearchOnFind<T>(String? text);
-typedef String DropdownSearchItemAsString<T>(T? item);
-typedef bool DropdownSearchFilterFn<T>(T? item, String? filter);
-typedef bool DropdownSearchCompareFn<T>(T? item, T? selectedItem);
+typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
+typedef String DropdownSearchItemAsString<T>(T item);
+typedef bool DropdownSearchFilterFn<T>(T item, String filter);
+typedef bool DropdownSearchCompareFn<T>(T item1, T item2);
 typedef Widget DropdownSearchBuilder<T>(BuildContext context, T? selectedItem);
 typedef Widget DropdownSearchBuilderMultiSelection<T>(
     BuildContext context, List<T> selectedItems);
@@ -30,9 +35,9 @@ typedef Widget DropdownSearchPopupItemBuilder<T>(
 );
 typedef bool DropdownSearchPopupItemEnabled<T>(T item);
 typedef Widget ErrorBuilder<T>(
-    BuildContext context, String? searchEntry, dynamic exception);
-typedef Widget EmptyBuilder<T>(BuildContext context, String? searchEntry);
-typedef Widget LoadingBuilder<T>(BuildContext context, String? searchEntry);
+    BuildContext context, String searchEntry, dynamic exception);
+typedef Widget EmptyBuilder<T>(BuildContext context, String searchEntry);
+typedef Widget LoadingBuilder<T>(BuildContext context, String searchEntry);
 typedef Future<bool?> BeforeChange<T>(T? prevItem, T? nextItem);
 typedef Future<bool?> BeforeChangeMultiSelection<T>(
     List<T> prevItems, List<T> nextItems);
@@ -138,8 +143,8 @@ class DropdownSearch<T> extends StatefulWidget {
   ///custom dropdown icon button properties
   final IconButtonProps? dropdownButtonProps;
 
-  ///custom props to menu mode
-  final PopupProps<T> popupProps;
+  ///custom props to single mode popup
+  final PopupPropsMultiSelection<T> popupProps;
 
   DropdownSearch({
     Key? key,
@@ -165,10 +170,11 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
     this.focusNode,
-    this.popupProps = const PopupProps(),
+    PopupProps<T> popupProps = const PopupProps.menu(),
   })  : assert(
           !popupProps.showSelectedItems || T == String || compareFn != null,
         ),
+        this.popupProps = PopupPropsMultiSelection.from(popupProps),
         this.isMultiSelectionMode = false,
         this.dropdownBuilderMultiSelection = null,
         this.validatorMultiSelection = null,
@@ -196,13 +202,13 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
     this.selectedItems = const [],
+    this.focusNode,
+    this.popupProps = const PopupPropsMultiSelection.menu(),
     FormFieldSetter<List<T>>? onSaved,
     ValueChanged<List<T>>? onChanged,
     BeforeChangeMultiSelection<T>? onBeforeChange,
     FormFieldValidator<List<T>>? validator,
     DropdownSearchBuilderMultiSelection<T>? dropdownBuilder,
-    this.focusNode,
-    this.popupProps = const PopupProps.multiSelection(),
   })  : assert(
           !popupProps.showSelectedItems || T == String || compareFn != null,
         ),
@@ -497,61 +503,82 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///open dialog
   Future _openSelectDialog() {
     return showGeneralDialog(
-      barrierDismissible: widget.popupProps.barrierDismissible,
-      barrierLabel: widget.popupProps.barrierLabel,
-      transitionDuration: widget.popupProps.transitionDuration,
-      barrierColor: widget.popupProps.barrierColor ?? Colors.black54,
       context: context,
-      useRootNavigator: widget.popupProps.useRootNavigator,
+      barrierDismissible: widget.popupProps.dialogProps.barrierDismissible,
+      barrierLabel: widget.popupProps.dialogProps.barrierLabel,
+      transitionDuration: widget.popupProps.dialogProps.transitionDuration,
+      barrierColor:
+          widget.popupProps.dialogProps.barrierColor ?? Colors.black54,
+      useRootNavigator: widget.popupProps.dialogProps.useRootNavigator,
+      anchorPoint: widget.popupProps.dialogProps.anchorPoint,
+      transitionBuilder: widget.popupProps.dialogProps.transitionBuilder,
       pageBuilder: (context, animation, secondaryAnimation) {
         return AlertDialog(
-          clipBehavior: widget.popupProps.clipBehavior,
-          elevation: widget.popupProps.elevation,
-          contentPadding: EdgeInsets.all(0),
-          shape: widget.popupProps.shape,
-          backgroundColor: widget.popupProps.backgroundColor,
-          semanticLabel: widget.popupProps.semanticLabel,
-          contentTextStyle: widget.popupProps.textStyle,
+          buttonPadding: widget.popupProps.dialogProps.buttonPadding,
+          actionsOverflowButtonSpacing:
+              widget.popupProps.dialogProps.actionsOverflowButtonSpacing,
+          insetPadding: widget.popupProps.dialogProps.insetPadding,
+          actionsPadding: widget.popupProps.dialogProps.actionsPadding,
+          actionsOverflowDirection:
+              widget.popupProps.dialogProps.actionsOverflowDirection,
+          actionsOverflowAlignment:
+              widget.popupProps.dialogProps.actionsOverflowAlignment,
+          actionsAlignment: widget.popupProps.dialogProps.actionsAlignment,
+          actions: widget.popupProps.dialogProps.actions,
+          alignment: widget.popupProps.dialogProps.alignment,
+          clipBehavior: widget.popupProps.dialogProps.clipBehavior,
+          elevation: widget.popupProps.dialogProps.elevation,
+          contentPadding: widget.popupProps.dialogProps.contentPadding,
+          shape: widget.popupProps.dialogProps.shape,
+          backgroundColor: widget.popupProps.dialogProps.backgroundColor,
+          semanticLabel: widget.popupProps.dialogProps.semanticLabel,
+          contentTextStyle: widget.popupProps.dialogProps.contentTextStyle,
           content: Container(
             child: _selectDialogInstance(),
-            constraints: widget.popupProps.constraints,
+            constraints: widget.popupProps.dialogProps.constraints,
           ),
         );
       },
     );
   }
 
-  //todo handle max height
-  _openBottomSheet() {
+  Future _openBottomSheet() {
     return showBottomSheet(
         context: context,
-        enableDrag: widget.popupProps.enableDrag,
-        backgroundColor: widget.popupProps.backgroundColor,
-        clipBehavior: widget.popupProps.clipBehavior,
-        elevation: widget.popupProps.elevation,
-        shape: widget.popupProps.shape,
-        transitionAnimationController: widget.popupProps.animation,
-        constraints: widget.popupProps.constraints,
+        enableDrag: widget.popupProps.bottomSheetProps.enableDrag,
+        backgroundColor: widget.popupProps.bottomSheetProps.backgroundColor,
+        clipBehavior: widget.popupProps.bottomSheetProps.clipBehavior,
+        elevation: widget.popupProps.bottomSheetProps.elevation,
+        shape: widget.popupProps.bottomSheetProps.shape,
+        transitionAnimationController:
+            widget.popupProps.bottomSheetProps.animation,
+        constraints: widget.popupProps.bottomSheetProps.constraints,
         builder: (ctx) {
           return _selectDialogInstance();
-        });
+        }).closed;
   }
 
   ///open BottomSheet (Dialog mode)
   Future _openModalBottomSheet() {
     return showModalBottomSheet<T>(
         context: context,
-        barrierColor: widget.popupProps.barrierColor,
-        backgroundColor: widget.popupProps.backgroundColor,
-        isDismissible: widget.popupProps.barrierDismissible,
+        barrierColor: widget.popupProps.modalBottomSheetProps.barrierColor,
+        backgroundColor: Colors.transparent,
+        isDismissible:
+            widget.popupProps.modalBottomSheetProps.barrierDismissible,
         isScrollControlled: true,
-        enableDrag: widget.popupProps.enableDrag,
-        clipBehavior: widget.popupProps.clipBehavior,
-        elevation: widget.popupProps.elevation,
-        shape: widget.popupProps.shape,
-        useRootNavigator: widget.popupProps.useRootNavigator,
-        transitionAnimationController: widget.popupProps.animation,
+        enableDrag: widget.popupProps.modalBottomSheetProps.enableDrag,
+        clipBehavior: widget.popupProps.modalBottomSheetProps.clipBehavior,
+        elevation: widget.popupProps.modalBottomSheetProps.elevation,
+        shape: widget.popupProps.modalBottomSheetProps.shape,
+        anchorPoint: widget.popupProps.modalBottomSheetProps.anchorPoint,
+        useRootNavigator:
+            widget.popupProps.modalBottomSheetProps.useRootNavigator,
+        transitionAnimationController:
+            widget.popupProps.modalBottomSheetProps.animation,
         builder: (ctx) {
+          final sheetTheme = Theme.of(context).bottomSheetTheme;
+
           final viewInsetsBottom = EdgeInsets.fromWindowPadding(
             WidgetsBinding.instance.window.viewInsets,
             WidgetsBinding.instance.window.devicePixelRatio,
@@ -562,15 +589,17 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             WidgetsBinding.instance.window.devicePixelRatio,
           ).top;
 
-          return SafeArea(
-            top: true,
-            child: Container(
-              color: Colors.red,
-              margin: EdgeInsets.only(bottom: viewInsetsBottom),
-              padding: EdgeInsets.only(top: viewPaddingTop),
-              constraints: widget.popupProps.constraints,
-              child: _selectDialogInstance(),
+          return Container(
+            constraints: widget.popupProps.modalBottomSheetProps.constraints,
+            color: widget.popupProps.modalBottomSheetProps.backgroundColor ??
+                sheetTheme.modalBackgroundColor ??
+                sheetTheme.backgroundColor ??
+                Colors.white,
+            margin: EdgeInsets.only(
+              bottom: viewInsetsBottom,
+              top: viewPaddingTop,
             ),
+            child: _selectDialogInstance(),
           );
         });
   }
@@ -598,15 +627,15 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     var overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
 
     return showMenuTest<T>(
-      menuModeProps: widget.popupProps,
+      menuModeProps: widget.popupProps.menuProps,
       context: context,
-      position: (widget.popupProps.positionCallback ?? _position)(
+      position: (widget.popupProps.menuProps.positionCallback ?? _position)(
         popupButtonObject,
         overlay,
       ),
       child: Container(
         child: _selectDialogInstance(),
-        constraints: widget.popupProps.constraints,
+        constraints: widget.popupProps.menuProps.constraints,
       ),
     );
   }
@@ -680,20 +709,19 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///[data] selected item to be passed to the UI
   ///If we close the popup , or maybe we just selected
   ///another widget we should clear the focus
-  void _selectSearchMode() {
+  Future<void> _selectSearchMode() async {
     _handleFocus(true);
     if (widget.popupProps.mode == Mode.MENU) {
-      _openMenu();
+      await _openMenu();
     } else if (widget.popupProps.mode == Mode.MODAL_BOTTOM_SHEET) {
-      _openModalBottomSheet();
+      await _openModalBottomSheet();
     } else if (widget.popupProps.mode == Mode.BOTTOM_SHEET) {
-      _openBottomSheet();
+      await _openBottomSheet();
     } else {
-      _openSelectDialog();
+      await _openSelectDialog();
     }
-    //todo pass these to popup
+
     _handleFocus(false);
-    widget.popupProps.onDismissed?.call();
   }
 
   ///Change selected Value; this function is public USED to change the selected

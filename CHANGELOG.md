@@ -1,4 +1,4 @@
-## [4.0.0] - 2022.05.15
+## [4.0.0] - 2022.05.16
 * Breaking changes:
   - onFind to AsyncItem
   - isFilteredOnline to isFilterOnline
@@ -7,6 +7,7 @@
   - remove 'dropdownBuilderSupportsNullItem' because now we support nullSafety
   - remove safeArea settings, the popup should always shown in safeArea
 
+* update readme.md
 * improve menu mode
 * improve dialog mode
 * fix large text in chips in multiSelection mode
