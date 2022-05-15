@@ -84,10 +84,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          color: Colors.orange,
-          child: Text('test'),
-        ),
+        //todo here add bg widget in v 4.0.1
         ValueListenableBuilder(
             valueListenable: _selectedItemsNotifier,
             builder: (ctx, value, wdgt) {
