@@ -62,8 +62,12 @@ class PopupProps<T> {
   ///Menu mode props
   final MenuProps menuProps;
 
+  ///fit height depending on nb of result or keep height fix.
+  final FlexFit fit;
+
   const PopupProps._({
     this.mode = Mode.MENU,
+    this.fit = FlexFit.tight,
     this.title,
     this.textStyle,
     this.showSearchBox = false,
@@ -88,6 +92,7 @@ class PopupProps<T> {
 
   const PopupProps.menu({
     this.title,
+    this.fit = FlexFit.tight,
     this.textStyle,
     this.showSearchBox = false,
     this.menuProps = const MenuProps(),
@@ -111,6 +116,7 @@ class PopupProps<T> {
 
   const PopupProps.dialog({
     this.textStyle,
+    this.fit = FlexFit.tight,
     this.title,
     this.showSearchBox = false,
     this.dialogProps = const DialogProps(),
@@ -134,6 +140,7 @@ class PopupProps<T> {
 
   const PopupProps.bottomSheet({
     this.textStyle,
+    this.fit = FlexFit.tight,
     this.title,
     this.showSearchBox = false,
     this.bottomSheetProps = const BottomSheetProps(),
@@ -158,6 +165,7 @@ class PopupProps<T> {
   const PopupProps.modalBottomSheet({
     this.title,
     this.textStyle,
+    this.fit = FlexFit.tight,
     this.showSearchBox = false,
     this.modalBottomSheetProps = const ModalBottomSheetProps(),
     this.searchFieldProps = const TextFieldProps(),
@@ -197,6 +205,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
 
   const PopupPropsMultiSelection._({
     super.mode = Mode.MENU,
+    super.fit = FlexFit.tight,
     super.title,
     super.isFilterOnline,
     super.itemBuilder,
@@ -227,6 +236,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   const PopupPropsMultiSelection.menu({
     super.title,
     super.textStyle,
+    super.fit = FlexFit.tight,
     super.showSearchBox = false,
     super.searchFieldProps = const TextFieldProps(),
     super.menuProps = const MenuProps(),
@@ -252,6 +262,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   const PopupPropsMultiSelection.dialog({
     super.title,
     super.textStyle,
+    super.fit = FlexFit.tight,
     super.showSearchBox = false,
     super.searchFieldProps = const TextFieldProps(),
     super.scrollbarProps = const ScrollbarProps(),
@@ -277,6 +288,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   const PopupPropsMultiSelection.bottomSheet({
     super.title,
     super.textStyle,
+    super.fit = FlexFit.tight,
     super.showSearchBox = false,
     super.searchFieldProps = const TextFieldProps(),
     super.listViewProps = const ListViewProps(),
@@ -302,6 +314,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   const PopupPropsMultiSelection.modalBottomSheet({
     super.title,
     super.isFilterOnline,
+    super.fit = FlexFit.tight,
     super.itemBuilder,
     super.disabledItemFn,
     super.textStyle,
@@ -327,6 +340,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   PopupPropsMultiSelection.from(PopupProps<T> popupProps)
       : this._(
           title: popupProps.title,
+          fit: FlexFit.tight,
           favoriteItemProps: popupProps.favoriteItemProps,
           disabledItemFn: popupProps.disabledItemFn,
           emptyBuilder: popupProps.emptyBuilder,

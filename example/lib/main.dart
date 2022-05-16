@@ -45,18 +45,15 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.all(4),
             children: <Widget>[
               DropdownSearch<String>.multiSelection(
-                popupProps: PopupPropsMultiSelection.dialog(
+                popupProps: PopupPropsMultiSelection.menu(
                   //backgroundColor: Colors.red,
                   showSearchBox: true,
                   searchFieldProps: TextFieldProps(
                     autofocus: true,
                   ),
-                  dialogProps: DialogProps(
-                    constraints: BoxConstraints.tight(Size(500, 400)),
-                  ),
                 ),
                 showClearButton: true,
-                items: List.generate(20, (index) => "$index"),
+                items: List.generate(10, (index) => "$index"),
               ),
               Divider(),
               DropdownSearch<String>(

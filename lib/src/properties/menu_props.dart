@@ -31,7 +31,7 @@ class MenuProps {
     this.barrierDismissible = true,
     this.animation,
     this.clipBehavior = Clip.none,
-    this.constraints = const BoxConstraints(maxHeight: 400),
+    this.constraints = const BoxConstraints(maxHeight: 350),
     this.animationDuration = const Duration(milliseconds: 300),
     this.textStyle,
     this.borderOnForeground = false,

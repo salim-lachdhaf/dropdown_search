@@ -95,6 +95,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                   _searchField(),
                   _favoriteItemsWidget(),
                   Flexible(
+                    fit: widget.popupProps.fit,
                     child: Stack(
                       children: <Widget>[
                         StreamBuilder<List<T>>(
@@ -198,7 +199,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   Widget _multiSelectionValidation() {
-    if (!widget.isMultiSelectionMode) return Container();
+    if (!widget.isMultiSelectionMode) return SizedBox.shrink();
 
     Widget defaultValidation = Padding(
       padding: EdgeInsets.all(8),
@@ -213,7 +214,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         return widget.popupProps.popupCustomMultiSelectionWidget!(
             context, _selectedItems);
       }
-      return Container();
+      return SizedBox.shrink();
     }
 
     Widget popupValidationMultiSelectionWidget() {
@@ -269,7 +270,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       );
     else
       return const Center(
-        child: const Text("No data found"),
+        child: Text("No data found"),
       );
   }
 
