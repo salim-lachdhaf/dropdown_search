@@ -358,7 +358,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                isFilteredOnline: true,
                 showClearButton: true,
                 compareFn: (item, selectedItem) => item.id == selectedItem.id,
                 dropdownSearchDecoration: InputDecoration(
@@ -461,6 +460,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ///show favorites on top list
               DropdownSearch<UserModel>.multiSelection(
                 popupProps: PopupPropsMultiSelection.menu(
+                    isFilterOnline:true,
                     showSelectedItems: true,
                     showSearchBox: true,
                     itemBuilder: _customPopupItemBuilderExample2,

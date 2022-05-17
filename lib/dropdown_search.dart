@@ -58,14 +58,11 @@ typedef List<T> FavoriteItems<T>(List<T> items);
 enum Mode { DIALOG, MODAL_BOTTOM_SHEET, MENU, BOTTOM_SHEET }
 
 class DropdownSearch<T> extends StatefulWidget {
-  ///true if the filter on items is applied onlie (via API)
-  final bool isFilteredOnline;
-
   ///show/hide clear selected item
   final bool showClearButton;
 
   ///offline items list
-  final List<T>? items;
+  final List<T> items;
 
   ///selected item
   final T? selectedItem;
@@ -134,9 +131,6 @@ class DropdownSearch<T> extends StatefulWidget {
   ///define whatever we are in multi selection mode or single selection mode
   final bool isMultiSelectionMode;
 
-  /// props for selection focus node
-  final FocusNode? focusNode;
-
   ///custom dropdown clear button icon properties
   final IconButtonProps? clearButtonProps;
 
@@ -152,8 +146,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.validator,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.onChanged,
-    this.isFilteredOnline = false,
-    this.items,
+    this.items = const [],
     this.selectedItem,
     this.asyncItems,
     this.dropdownBuilder,
@@ -169,7 +162,6 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchTextStyle,
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
-    this.focusNode,
     PopupProps<T> popupProps = const PopupProps.menu(),
   })  : assert(
           !popupProps.showSelectedItems || T == String || compareFn != null,
@@ -187,8 +179,7 @@ class DropdownSearch<T> extends StatefulWidget {
   DropdownSearch.multiSelection({
     Key? key,
     this.autoValidateMode = AutovalidateMode.disabled,
-    this.isFilteredOnline = false,
-    this.items,
+    this.items = const [],
     this.asyncItems,
     this.showClearButton = false,
     this.clearButtonProps,
@@ -202,7 +193,6 @@ class DropdownSearch<T> extends StatefulWidget {
     this.dropdownSearchTextAlign,
     this.dropdownSearchTextAlignVertical,
     this.selectedItems = const [],
-    this.focusNode,
     this.popupProps = const PopupPropsMultiSelection.menu(),
     FormFieldSetter<List<T>>? onSaved,
     ValueChanged<List<T>>? onChanged,
@@ -366,6 +356,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         return ValueListenableBuilder<bool>(
             valueListenable: _isFocused,
             builder: (context, isFocused, w) {
+              //todo add full props to input decorator
               return InputDecorator(
                 baseStyle: widget.dropdownSearchTextStyle,
                 textAlign: widget.dropdownSearchTextAlign,

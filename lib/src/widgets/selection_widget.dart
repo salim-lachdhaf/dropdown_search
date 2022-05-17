@@ -269,7 +269,9 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         widget.popupProps.searchFieldProps.controller?.text ?? '',
       );
     else
-      return const Center(
+      return Container(
+        height: 70,
+        alignment: Alignment.center,
         child: Text("No data found"),
       );
   }
@@ -282,10 +284,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         error,
       );
     else
-      return Padding(
-        padding: EdgeInsets.all(8),
+      return Container(
+        alignment: Alignment.center,
         child: Text(
-          error?.toString() ?? 'Error',
+          error?.toString() ?? 'Unknown Error',
         ),
       );
   }
@@ -301,11 +303,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                 widget.popupProps.searchFieldProps.controller?.text ?? '',
               );
             else
-              return Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: const Center(
-                  child: const CircularProgressIndicator(),
-                ),
+              return Container(
+                height: 70,
+                alignment: Alignment.center,
+                child: const CircularProgressIndicator(),
               );
           }
           return const SizedBox.shrink();

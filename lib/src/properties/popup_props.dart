@@ -45,6 +45,7 @@ class PopupProps<T> {
   ///select the selected item in the menu/dialog/bottomSheet of items
   final bool showSelectedItems;
 
+  ///true if the filter on items is applied onlie (via API/DB/...)
   final bool isFilterOnline;
 
   ///favorite items props
@@ -340,7 +341,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   PopupPropsMultiSelection.from(PopupProps<T> popupProps)
       : this._(
           title: popupProps.title,
-          fit: FlexFit.tight,
+          fit: popupProps.fit,
           favoriteItemProps: popupProps.favoriteItemProps,
           disabledItemFn: popupProps.disabledItemFn,
           emptyBuilder: popupProps.emptyBuilder,

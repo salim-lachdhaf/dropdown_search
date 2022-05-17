@@ -1,3 +1,6 @@
+## [4.0.1] - 2022.05.17
+* fix fit issue in single Selection mode
+* fix isOnlineFilter issue
 ## [4.0.0] - 2022.05.16
 * Breaking changes:
   - onFind to AsyncItem
