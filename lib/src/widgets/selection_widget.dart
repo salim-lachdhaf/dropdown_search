@@ -8,7 +8,7 @@ import '../../dropdown_search.dart';
 import 'checkbox_widget.dart';
 
 class SelectionWidget<T> extends StatefulWidget {
-  final List<T>? items;
+  final List<T> items;
   final ValueChanged<List<T>>? onChanged;
   final DropdownSearchOnFind<T>? asyncItems;
   final DropdownSearchItemAsString<T>? itemAsString;
@@ -23,7 +23,7 @@ class SelectionWidget<T> extends StatefulWidget {
     required this.popupProps,
     this.defaultSelectedItems = const [],
     this.isMultiSelectionMode = false,
-    this.items,
+    this.items = const [],
     this.onChanged,
     this.asyncItems,
     this.itemAsString,
@@ -339,7 +339,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     }
 
     //load offline data for the first time
-    if (isFirstLoad && widget.items != null) _cachedItems.addAll(widget.items!);
+    if (isFirstLoad) _cachedItems.addAll(widget.items);
 
     //manage offline items
     if (widget.asyncItems != null &&
@@ -351,15 +351,14 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         //Remove all old data
         _cachedItems.clear();
         //add offline items
-        if (widget.items != null) {
-          _cachedItems.addAll(widget.items!);
-          //if filter online we filter only local list based on entered keyword (filter)
-          if (widget.popupProps.isFilterOnline == true) {
-            var filteredLocalList = applyFilter(filter);
-            _cachedItems.clear();
-            _cachedItems.addAll(filteredLocalList);
-          }
+        _cachedItems.addAll(widget.items);
+        //if filter online we filter only local list based on entered keyword (filter)
+        if (widget.popupProps.isFilterOnline == true) {
+          var filteredLocalList = applyFilter(filter);
+          _cachedItems.clear();
+          _cachedItems.addAll(filteredLocalList);
         }
+
         //add new online items to list
         _cachedItems.addAll(onlineItems);
 
@@ -372,7 +371,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         _addErrorToStream(e);
         //if offline items count > 0 , the error will be not visible for the user
         //As solution we show it in dialog
-        if (widget.items != null && widget.items!.isNotEmpty) {
+        if (widget.items.isNotEmpty) {
           _showErrorDialog(e);
           _addDataToStream(applyFilter(filter));
         }
