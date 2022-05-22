@@ -1,6 +1,15 @@
+## [4.0.2] - 2022.05.17
+* Replace ScrollBar with RawScrollBar (adding new properties)
+* place 'showClearButton' into 
+* place all dropdownDecoration props into 'dropdownDecoratorProps' 
+* replace 'IconButtonProps' with 'DropdownButtonProps' and 'ClearButtonProps' for clearButtonProps and dropdownButtonProps
+* add a full custom container for the pop 'containerBuilder' to 'popup_props'
+* add 'isVisible' prop to 'DropdownButtonProps'
+
 ## [4.0.1] - 2022.05.17
 * fix fit issue in single Selection mode
 * fix isOnlineFilter issue
+
 ## [4.0.0] - 2022.05.16
 * Breaking changes:
   - onFind to AsyncItem
@@ -26,7 +35,6 @@
     - replace 'dropdownButtonSplashRadius' and 'dropdownButtonBuilder' into one property 'IconButtonProps'
 * fix issue [380](https://github.com/salim-lachdhaf/searchable_dropdown/issues/380)
 
-
 ## [2.0.1] - 2021.11.15
 * improve performance
 * add "popupCustomMultiSelectionWidget" option
@@ -36,6 +44,7 @@
 * breaking changes
     - add "isSelected" option to FavoriteItemsBuilder
     - change onChange to onChanged in multiSelection mode
+  
 ## [1.0.4] - 2021.10.17
 * fix some bugs
 

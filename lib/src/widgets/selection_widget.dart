@@ -40,6 +40,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
   final List<T> _cachedItems = [];
   final ValueNotifier<List<T>> _selectedItemsNotifier = ValueNotifier([]);
+  final List<T> _currentShowedItems = [];
   late Debouncer _debouncer;
 
   List<T> get _selectedItems => _selectedItemsNotifier.value;
@@ -84,7 +85,6 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        //todo here add bg widget in v 4.0.1
         ValueListenableBuilder(
             valueListenable: _selectedItemsNotifier,
             builder: (ctx, value, wdgt) {
@@ -108,8 +108,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                             } else if (snapshot.data!.isEmpty) {
                               return _noDataWidget();
                             }
+                            _currentShowedItems.clear();
+                            _currentShowedItems.addAll(snapshot.data!);
                             final controller = ScrollController();
-                            return Scrollbar(
+                            return RawScrollbar(
                               controller:
                                   widget.popupProps.listViewProps.controller ??
                                       controller,
@@ -126,6 +128,29 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                                   widget.popupProps.scrollbarProps.interactive,
                               scrollbarOrientation: widget.popupProps
                                   .scrollbarProps.scrollbarOrientation,
+                              thumbColor:
+                                  widget.popupProps.scrollbarProps.thumbColor,
+                              fadeDuration:
+                                  widget.popupProps.scrollbarProps.fadeDuration,
+                              crossAxisMargin: widget
+                                  .popupProps.scrollbarProps.crossAxisMargin,
+                              mainAxisMargin: widget
+                                  .popupProps.scrollbarProps.mainAxisMargin,
+                              minOverscrollLength: widget.popupProps
+                                  .scrollbarProps.minOverscrollLength,
+                              minThumbLength: widget
+                                  .popupProps.scrollbarProps.minThumbLength,
+                              pressDuration: widget
+                                  .popupProps.scrollbarProps.pressDuration,
+                              shape: widget.popupProps.scrollbarProps.shape,
+                              timeToFade:
+                                  widget.popupProps.scrollbarProps.timeToFade,
+                              trackBorderColor: widget
+                                  .popupProps.scrollbarProps.trackBorderColor,
+                              trackColor:
+                                  widget.popupProps.scrollbarProps.trackColor,
+                              trackRadius:
+                                  widget.popupProps.scrollbarProps.trackRadius,
                               child: ListView.builder(
                                 controller: widget
                                         .popupProps.listViewProps.controller ??
@@ -210,19 +235,19 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     );
 
     Widget popupCustomMultiSelectionWidget() {
-      if (widget.popupProps.popupCustomMultiSelectionWidget != null) {
-        return widget.popupProps.popupCustomMultiSelectionWidget!(
+      if (widget.popupProps.customMultiSelectionWidget != null) {
+        return widget.popupProps.customMultiSelectionWidget!(
             context, _selectedItems);
       }
       return SizedBox.shrink();
     }
 
     Widget popupValidationMultiSelectionWidget() {
-      if (widget.popupProps.popupValidationMultiSelectionWidget != null) {
+      if (widget.popupProps.validationMultiSelectionWidget != null) {
         return InkWell(
           child: IgnorePointer(
             ignoring: true,
-            child: widget.popupProps.popupValidationMultiSelectionWidget!(
+            child: widget.popupProps.validationMultiSelectionWidget!(
                 context, _selectedItems),
           ),
           onTap: onValidate,
@@ -420,11 +445,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   Widget _itemWidgetMultiSelection(T item) {
-    if (widget.popupProps.popupSelectionWidget != null)
+    if (widget.popupProps.selectionWidget != null)
       return CheckBoxWidget(
         checkBox: (cnt, checked) {
-          return widget.popupProps.popupSelectionWidget!(
-              context, item, checked);
+          return widget.popupProps.selectionWidget!(context, item, checked);
         },
         layout: (context, isChecked) => _itemWidgetSingleSelection(item),
         isChecked: _isSelectedItem(item),
@@ -636,14 +660,13 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       if (_isSelectedItem(newSelectedItem)) {
         _selectedItemsNotifier.value = List.from(_selectedItems)
           ..removeWhere((i) => _isEqual(newSelectedItem, i));
-        if (widget.popupProps.popupOnItemRemoved != null)
-          widget.popupProps.popupOnItemRemoved!(
-              _selectedItems, newSelectedItem);
+        if (widget.popupProps.onItemRemoved != null)
+          widget.popupProps.onItemRemoved!(_selectedItems, newSelectedItem);
       } else {
         _selectedItemsNotifier.value = List.from(_selectedItems)
           ..add(newSelectedItem);
-        if (widget.popupProps.popupOnItemAdded != null)
-          widget.popupProps.popupOnItemAdded!(_selectedItems, newSelectedItem);
+        if (widget.popupProps.onItemAdded != null)
+          widget.popupProps.onItemAdded!(_selectedItems, newSelectedItem);
       }
     } else {
       closePopup();
@@ -692,8 +715,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       if (!_isSelectedItem(i) /*check if the item is already selected*/ &&
           !_isDisabled(i) /*escape disabled items*/) {
         newSelectedItems.add(i);
-        if (widget.popupProps.popupOnItemAdded != null)
-          widget.popupProps.popupOnItemAdded!(_selectedItems, i);
+        if (widget.popupProps.onItemAdded != null)
+          widget.popupProps.onItemAdded!(_selectedItems, i);
       }
     });
     _selectedItemsNotifier.value = List.from(newSelectedItems);
@@ -709,8 +732,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       var index = _itemIndexInList(newSelectedItems, i);
       if (index > -1) /*check if the item is already selected*/ {
         newSelectedItems.removeAt(index);
-        if (widget.popupProps.popupOnItemRemoved != null)
-          widget.popupProps.popupOnItemRemoved!(_selectedItems, i);
+        if (widget.popupProps.onItemRemoved != null)
+          widget.popupProps.onItemRemoved!(_selectedItems, i);
       }
     });
     _selectedItemsNotifier.value = List.from(newSelectedItems);
@@ -719,6 +742,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   void deselectAllItems() {
     deselectItems(_cachedItems);
   }
+
+  bool get isAllItemSelected => _selectedItems.length >= _currentShowedItems.length;
+
+  List<T> get getSelectedItem => List.from(_selectedItems);
 }
 
 class Debouncer {

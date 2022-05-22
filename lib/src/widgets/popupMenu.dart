@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../properties/menu_props.dart';
 
-Future<T?> showMenuTest<T>({
+Future<T?> showCustomMenu<T>({
   required BuildContext context,
   required MenuProps menuModeProps,
   required RelativeRect position,
