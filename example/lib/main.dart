@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'dropdownSearch Demo',
       //enable this line if you want test Dark Mode
       //theme: ThemeData.dark(),
@@ -35,7 +36,22 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("DropdownSearch Demo")),
+      appBar: AppBar(
+        title: Text("DropdownSearch Demo"),
+        actions: [
+          DropdownSearch<String>(
+            isIconBased: true,
+            icon: Icon(Icons.location_on_rounded),
+            popupProps: PopupProps.bottomSheet(
+              showSelectedItems: true,
+              disabledItemFn: (String s) => s.startsWith('I'),
+            ),
+            items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+            onChanged: print,
+            selectedItem: "Brazil",
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(25),
         child: Form(
@@ -460,7 +476,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ///show favorites on top list
               DropdownSearch<UserModel>.multiSelection(
                 popupProps: PopupPropsMultiSelection.menu(
-                    isFilterOnline:true,
+                    isFilterOnline: true,
                     showSelectedItems: true,
                     showSearchBox: true,
                     itemBuilder: _customPopupItemBuilderExample2,

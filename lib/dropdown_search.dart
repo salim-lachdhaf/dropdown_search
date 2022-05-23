@@ -58,6 +58,12 @@ typedef List<T> FavoriteItems<T>(List<T> items);
 enum Mode { DIALOG, MODAL_BOTTOM_SHEET, MENU, BOTTOM_SHEET }
 
 class DropdownSearch<T> extends StatefulWidget {
+  ///true if dropdown should be opened by clicking on Icon
+  final bool isIconBased;
+
+  ///Icon, By Pressing on which DIALOG, BOTTOM_SHEET, MENU will open
+  final Widget? icon;
+
   ///show/hide clear selected item
   final bool showClearButton;
 
@@ -142,6 +148,8 @@ class DropdownSearch<T> extends StatefulWidget {
 
   DropdownSearch({
     Key? key,
+    this.isIconBased = false,
+    this.icon,
     this.onSaved,
     this.validator,
     this.autoValidateMode = AutovalidateMode.disabled,
@@ -178,6 +186,8 @@ class DropdownSearch<T> extends StatefulWidget {
 
   DropdownSearch.multiSelection({
     Key? key,
+    this.isIconBased = false,
+    this.icon,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.items = const [],
     this.asyncItems,
@@ -258,7 +268,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           ignoring: !widget.enabled,
           child: InkWell(
             onTap: () => _selectSearchMode(),
-            child: _formField(),
+            child: widget.isIconBased ? widget.icon : _formField(),
           ),
         );
       },
