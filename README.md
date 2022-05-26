@@ -32,7 +32,7 @@
 
 * Sync and/or Async items (online, offline, DB, ...)
 * Searchable dropdown
-* Three dropdown mode: Menu/ BottomSheet/ Dialog
+* Three dropdown mode: Menu/ BottomSheet/ ModalBottomSheet / Dialog
 * Single & multi selection
 * Material dropdown
 * Easy customizable UI
@@ -130,11 +130,11 @@ DropdownSearch(
     selectedItem: "Tunisia",
     validator: (String? item) {
     if (item == null)
-    return "Required field";
+      return "Required field";
     else if (item == "Brazil")
-    return "Invalid item";
+      return "Invalid item";
     else
-    return null;
+      return null;
     },
 )
 ```

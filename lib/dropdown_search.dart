@@ -32,7 +32,9 @@ typedef bool DropdownSearchFilterFn<T>(T item, String filter);
 typedef bool DropdownSearchCompareFn<T>(T item1, T item2);
 typedef Widget DropdownSearchBuilder<T>(BuildContext context, T? selectedItem);
 typedef Widget DropdownSearchBuilderMultiSelection<T>(
-    BuildContext context, List<T> selectedItems);
+  BuildContext context,
+  List<T> selectedItems,
+);
 typedef Widget DropdownSearchPopupItemBuilder<T>(
   BuildContext context,
   T item,
@@ -40,19 +42,33 @@ typedef Widget DropdownSearchPopupItemBuilder<T>(
 );
 typedef bool DropdownSearchPopupItemEnabled<T>(T item);
 typedef Widget ErrorBuilder<T>(
-    BuildContext context, String searchEntry, dynamic exception);
+  BuildContext context,
+  String searchEntry,
+  dynamic exception,
+);
 typedef Widget EmptyBuilder<T>(BuildContext context, String searchEntry);
 typedef Widget LoadingBuilder<T>(BuildContext context, String searchEntry);
 typedef Future<bool?> BeforeChange<T>(T? prevItem, T? nextItem);
+typedef Future<bool?> BeforePopupOpening<T>(T? selectedItem);
+typedef Future<bool?> BeforePopupOpeningMultiSelection<T>(List<T> selItems);
 typedef Future<bool?> BeforeChangeMultiSelection<T>(
-    List<T> prevItems, List<T> nextItems);
+  List<T> prevItems,
+  List<T> nextItems,
+);
 typedef Widget FavoriteItemsBuilder<T>(
-    BuildContext context, T item, bool isSelected);
+  BuildContext context,
+  T item,
+  bool isSelected,
+);
 typedef Widget ValidationMultiSelectionBuilder<T>(
-    BuildContext context, List<T> item);
+  BuildContext context,
+  List<T> item,
+);
 
 typedef RelativeRect PositionCallback(
-    RenderBox popupButtonObject, RenderBox overlay);
+  RenderBox popupButtonObject,
+  RenderBox overlay,
+);
 
 typedef void OnItemAdded<T>(List<T> selectedItems, T addedItem);
 typedef void OnItemRemoved<T>(List<T> selectedItems, T removedItem);
@@ -138,6 +154,14 @@ class DropdownSearch<T> extends StatefulWidget {
   ///dropdown decoration props
   final DropDownDecoratorProps dropdownDecoratorProps;
 
+  ///a callBack will be called before opening le popup
+  ///if the callBack return FALSE, the opening of the popup will be cancelled
+  final BeforePopupOpening<T>? onBeforePopupOpening;
+
+  ///a callBack will be called before opening le popup
+  ///if the callBack return FALSE, the opening of the popup will be cancelled
+  final BeforePopupOpeningMultiSelection<T>? onBeforePopupOpeningMultiSelection;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -156,6 +180,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.itemAsString,
     this.compareFn,
     this.onBeforeChange,
+    this.onBeforePopupOpening,
     PopupProps<T> popupProps = const PopupProps.menu(),
   })  : assert(
           !popupProps.showSelectedItems || T == String || compareFn != null,
@@ -168,6 +193,7 @@ class DropdownSearch<T> extends StatefulWidget {
         this.selectedItems = const [],
         this.onSavedMultiSelection = null,
         this.onChangedMultiSelection = null,
+        this.onBeforePopupOpeningMultiSelection = null,
         super(key: key);
 
   DropdownSearch.multiSelection({
@@ -187,12 +213,14 @@ class DropdownSearch<T> extends StatefulWidget {
     FormFieldSetter<List<T>>? onSaved,
     ValueChanged<List<T>>? onChanged,
     BeforeChangeMultiSelection<T>? onBeforeChange,
+    BeforePopupOpeningMultiSelection<T>? onBeforePopupOpening,
     FormFieldValidator<List<T>>? validator,
     DropdownSearchBuilderMultiSelection<T>? dropdownBuilder,
   })  : assert(
           !popupProps.showSelectedItems || T == String || compareFn != null,
         ),
         this.onChangedMultiSelection = onChanged,
+        this.onBeforePopupOpeningMultiSelection = onBeforePopupOpening,
         this.onSavedMultiSelection = onSaved,
         this.onBeforeChangeMultiSelection = onBeforeChange,
         this.validatorMultiSelection = validator,
@@ -204,6 +232,7 @@ class DropdownSearch<T> extends StatefulWidget {
         this.selectedItem = null,
         this.onSaved = null,
         this.onChanged = null,
+        this.onBeforePopupOpening = null,
         super(key: key);
 
   @override
@@ -236,6 +265,16 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     if (!listEquals(oldSelectedItems, newSelectedItems)) {
       _selectedItemsNotifier.value = List.from(newSelectedItems);
     }
+
+    ///this code check if we need to refresh the popup widget to update
+    ///containerBuilder widget
+    if (widget.popupProps.containerBuilder !=
+        oldWidget.popupProps.containerBuilder) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _popupStateKey.currentState?.setState(() {});
+      });
+    }
+
     super.didUpdateWidget(oldWidget);
   }
 
@@ -525,7 +564,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           backgroundColor: widget.popupProps.dialogProps.backgroundColor,
           semanticLabel: widget.popupProps.dialogProps.semanticLabel,
           contentTextStyle: widget.popupProps.dialogProps.contentTextStyle,
-          content: _popupWidget(),
+          content: _popupWidgetInstance(),
         );
       },
     );
@@ -543,7 +582,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             widget.popupProps.bottomSheetProps.animation,
         constraints: widget.popupProps.bottomSheetProps.constraints,
         builder: (ctx) {
-          return _popupWidget();
+          return _popupWidgetInstance();
         }).closed;
   }
 
@@ -588,7 +627,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               bottom: viewInsetsBottom,
               top: viewPaddingTop,
             ),
-            child: _popupWidget(),
+            child: _popupWidgetInstance(),
           );
         });
   }
@@ -607,35 +646,22 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         popupButtonObject,
         overlay,
       ),
-      child: _popupWidget(),
+      child: _popupWidgetInstance(),
     );
   }
 
-  Widget _popupWidget() {
-    if (widget.popupProps.containerBuilder == null) {
-      return _selectionWidgetInstance();
-    } else {
-      return widget.popupProps.containerBuilder!(
-          context, _selectionWidgetInstance());
-    }
-  }
-
-  Widget _selectionWidgetInstance() {
-    print(widget.popupProps.constraints);
-    return Container(
-      constraints: widget.popupProps.constraints,
-      child: SelectionWidget<T>(
-        key: _popupStateKey,
-        popupProps: widget.popupProps,
-        itemAsString: widget.itemAsString,
-        filterFn: widget.filterFn,
-        items: widget.items,
-        asyncItems: widget.asyncItems,
-        onChanged: _handleOnChangeSelectedItems,
-        compareFn: widget.compareFn,
-        isMultiSelectionMode: isMultiSelectionMode,
-        defaultSelectedItems: List.from(getSelectedItems),
-      ),
+  Widget _popupWidgetInstance() {
+    return SelectionWidget<T>(
+      key: _popupStateKey,
+      popupProps: widget.popupProps,
+      itemAsString: widget.itemAsString,
+      filterFn: widget.filterFn,
+      items: widget.items,
+      asyncItems: widget.asyncItems,
+      onChanged: _handleOnChangeSelectedItems,
+      compareFn: widget.compareFn,
+      isMultiSelectionMode: isMultiSelectionMode,
+      defaultSelectedItems: List.from(getSelectedItems),
     );
   }
 
@@ -694,6 +720,14 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///If we close the popup , or maybe we just selected
   ///another widget we should clear the focus
   Future<void> _selectSearchMode() async {
+    //handle onBefore popupOpening
+    if (widget.onBeforePopupOpening != null) {
+      if (await widget.onBeforePopupOpening!(getSelectedItem) == false) return;
+    } else if (widget.onBeforePopupOpeningMultiSelection != null) {
+      if (await widget.onBeforePopupOpeningMultiSelection!(getSelectedItems) ==
+          false) return;
+    }
+
     _handleFocus(true);
     if (widget.popupProps.mode == Mode.MENU) {
       await _openMenu();
@@ -785,4 +819,6 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///returns popup selected items
   List<T> get popupGetSelectedItems =>
       _popupStateKey.currentState?.getSelectedItem ?? [];
+
+  void updatePopupState() => _popupStateKey.currentState?.setState(() {});
 }

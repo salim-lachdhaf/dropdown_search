@@ -83,131 +83,130 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ValueListenableBuilder(
-            valueListenable: _selectedItemsNotifier,
-            builder: (ctx, value, wdgt) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  _searchField(),
-                  _favoriteItemsWidget(),
-                  Flexible(
-                    fit: widget.popupProps.fit,
-                    child: Stack(
-                      children: <Widget>[
-                        StreamBuilder<List<T>>(
-                          stream: _itemsStream.stream,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasError) {
-                              return _errorWidget(snapshot.error);
-                            } else if (!snapshot.hasData) {
-                              return _loadingWidget();
-                            } else if (snapshot.data!.isEmpty) {
-                              return _noDataWidget();
-                            }
-                            _currentShowedItems.clear();
-                            _currentShowedItems.addAll(snapshot.data!);
-                            final controller = ScrollController();
-                            return RawScrollbar(
-                              controller:
-                                  widget.popupProps.listViewProps.controller ??
-                                      controller,
-                              thumbVisibility: widget
-                                  .popupProps.scrollbarProps.thumbVisibility,
-                              trackVisibility: widget
-                                  .popupProps.scrollbarProps.trackVisibility,
-                              thickness:
-                                  widget.popupProps.scrollbarProps.thickness,
-                              radius: widget.popupProps.scrollbarProps.radius,
-                              notificationPredicate: widget.popupProps
-                                  .scrollbarProps.notificationPredicate,
-                              interactive:
-                                  widget.popupProps.scrollbarProps.interactive,
-                              scrollbarOrientation: widget.popupProps
-                                  .scrollbarProps.scrollbarOrientation,
-                              thumbColor:
-                                  widget.popupProps.scrollbarProps.thumbColor,
-                              fadeDuration:
-                                  widget.popupProps.scrollbarProps.fadeDuration,
-                              crossAxisMargin: widget
-                                  .popupProps.scrollbarProps.crossAxisMargin,
-                              mainAxisMargin: widget
-                                  .popupProps.scrollbarProps.mainAxisMargin,
-                              minOverscrollLength: widget.popupProps
-                                  .scrollbarProps.minOverscrollLength,
-                              minThumbLength: widget
-                                  .popupProps.scrollbarProps.minThumbLength,
-                              pressDuration: widget
-                                  .popupProps.scrollbarProps.pressDuration,
-                              shape: widget.popupProps.scrollbarProps.shape,
-                              timeToFade:
-                                  widget.popupProps.scrollbarProps.timeToFade,
-                              trackBorderColor: widget
-                                  .popupProps.scrollbarProps.trackBorderColor,
-                              trackColor:
-                                  widget.popupProps.scrollbarProps.trackColor,
-                              trackRadius:
-                                  widget.popupProps.scrollbarProps.trackRadius,
-                              child: ListView.builder(
-                                controller: widget
-                                        .popupProps.listViewProps.controller ??
-                                    controller,
-                                shrinkWrap:
-                                    widget.popupProps.listViewProps.shrinkWrap,
-                                padding:
-                                    widget.popupProps.listViewProps.padding,
-                                scrollDirection: widget
-                                    .popupProps.listViewProps.scrollDirection,
-                                reverse:
-                                    widget.popupProps.listViewProps.reverse,
-                                primary:
-                                    widget.popupProps.listViewProps.primary,
-                                physics:
-                                    widget.popupProps.listViewProps.physics,
-                                itemExtent:
-                                    widget.popupProps.listViewProps.itemExtent,
-                                addAutomaticKeepAlives: widget.popupProps
-                                    .listViewProps.addAutomaticKeepAlives,
-                                addRepaintBoundaries: widget.popupProps
-                                    .listViewProps.addRepaintBoundaries,
-                                addSemanticIndexes: widget.popupProps
-                                    .listViewProps.addSemanticIndexes,
-                                cacheExtent:
-                                    widget.popupProps.listViewProps.cacheExtent,
-                                semanticChildCount: widget.popupProps
-                                    .listViewProps.semanticChildCount,
-                                dragStartBehavior: widget
-                                    .popupProps.listViewProps.dragStartBehavior,
-                                keyboardDismissBehavior: widget.popupProps
-                                    .listViewProps.keyboardDismissBehavior,
-                                restorationId: widget
-                                    .popupProps.listViewProps.restorationId,
-                                clipBehavior: widget
-                                    .popupProps.listViewProps.clipBehavior,
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) {
-                                  var item = snapshot.data![index];
-                                  return widget.isMultiSelectionMode
-                                      ? _itemWidgetMultiSelection(item)
-                                      : _itemWidgetSingleSelection(item);
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                        _loadingWidget()
-                      ],
-                    ),
-                  ),
-                  _multiSelectionValidation(),
-                ],
-              );
-            }),
-      ],
+    return Container(
+      constraints: widget.popupProps.constraints,
+      child: widget.popupProps.containerBuilder == null
+          ? _defaultWidget()
+          : widget.popupProps.containerBuilder!(context, _defaultWidget()),
     );
+  }
+
+  Widget _defaultWidget() {
+    return ValueListenableBuilder(
+        valueListenable: _selectedItemsNotifier,
+        builder: (ctx, value, wdgt) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _searchField(),
+              _favoriteItemsWidget(),
+              Flexible(
+                fit: widget.popupProps.fit,
+                child: Stack(
+                  children: <Widget>[
+                    StreamBuilder<List<T>>(
+                      stream: _itemsStream.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return _errorWidget(snapshot.error);
+                        } else if (!snapshot.hasData) {
+                          return _loadingWidget();
+                        } else if (snapshot.data!.isEmpty) {
+                          return _noDataWidget();
+                        }
+
+                        final controller = ScrollController();
+                        return RawScrollbar(
+                          controller:
+                              widget.popupProps.listViewProps.controller ??
+                                  controller,
+                          thumbVisibility:
+                              widget.popupProps.scrollbarProps.thumbVisibility,
+                          trackVisibility:
+                              widget.popupProps.scrollbarProps.trackVisibility,
+                          thickness: widget.popupProps.scrollbarProps.thickness,
+                          radius: widget.popupProps.scrollbarProps.radius,
+                          notificationPredicate: widget
+                              .popupProps.scrollbarProps.notificationPredicate,
+                          interactive:
+                              widget.popupProps.scrollbarProps.interactive,
+                          scrollbarOrientation: widget
+                              .popupProps.scrollbarProps.scrollbarOrientation,
+                          thumbColor:
+                              widget.popupProps.scrollbarProps.thumbColor,
+                          fadeDuration:
+                              widget.popupProps.scrollbarProps.fadeDuration,
+                          crossAxisMargin:
+                              widget.popupProps.scrollbarProps.crossAxisMargin,
+                          mainAxisMargin:
+                              widget.popupProps.scrollbarProps.mainAxisMargin,
+                          minOverscrollLength: widget
+                              .popupProps.scrollbarProps.minOverscrollLength,
+                          minThumbLength:
+                              widget.popupProps.scrollbarProps.minThumbLength,
+                          pressDuration:
+                              widget.popupProps.scrollbarProps.pressDuration,
+                          shape: widget.popupProps.scrollbarProps.shape,
+                          timeToFade:
+                              widget.popupProps.scrollbarProps.timeToFade,
+                          trackBorderColor:
+                              widget.popupProps.scrollbarProps.trackBorderColor,
+                          trackColor:
+                              widget.popupProps.scrollbarProps.trackColor,
+                          trackRadius:
+                              widget.popupProps.scrollbarProps.trackRadius,
+                          child: ListView.builder(
+                            controller:
+                                widget.popupProps.listViewProps.controller ??
+                                    controller,
+                            shrinkWrap:
+                                widget.popupProps.listViewProps.shrinkWrap,
+                            padding: widget.popupProps.listViewProps.padding,
+                            scrollDirection:
+                                widget.popupProps.listViewProps.scrollDirection,
+                            reverse: widget.popupProps.listViewProps.reverse,
+                            primary: widget.popupProps.listViewProps.primary,
+                            physics: widget.popupProps.listViewProps.physics,
+                            itemExtent:
+                                widget.popupProps.listViewProps.itemExtent,
+                            addAutomaticKeepAlives: widget.popupProps
+                                .listViewProps.addAutomaticKeepAlives,
+                            addRepaintBoundaries: widget
+                                .popupProps.listViewProps.addRepaintBoundaries,
+                            addSemanticIndexes: widget
+                                .popupProps.listViewProps.addSemanticIndexes,
+                            cacheExtent:
+                                widget.popupProps.listViewProps.cacheExtent,
+                            semanticChildCount: widget
+                                .popupProps.listViewProps.semanticChildCount,
+                            dragStartBehavior: widget
+                                .popupProps.listViewProps.dragStartBehavior,
+                            keyboardDismissBehavior: widget.popupProps
+                                .listViewProps.keyboardDismissBehavior,
+                            restorationId:
+                                widget.popupProps.listViewProps.restorationId,
+                            clipBehavior:
+                                widget.popupProps.listViewProps.clipBehavior,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              var item = snapshot.data![index];
+                              return widget.isMultiSelectionMode
+                                  ? _itemWidgetMultiSelection(item)
+                                  : _itemWidgetSingleSelection(item);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    _loadingWidget()
+                  ],
+                ),
+              ),
+              _multiSelectionValidation(),
+            ],
+          );
+        });
   }
 
   ///validation of selected items
@@ -234,20 +233,12 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       ),
     );
 
-    Widget popupCustomMultiSelectionWidget() {
-      if (widget.popupProps.customMultiSelectionWidget != null) {
-        return widget.popupProps.customMultiSelectionWidget!(
-            context, _selectedItems);
-      }
-      return SizedBox.shrink();
-    }
-
     Widget popupValidationMultiSelectionWidget() {
-      if (widget.popupProps.validationMultiSelectionWidget != null) {
+      if (widget.popupProps.validationWidget != null) {
         return InkWell(
           child: IgnorePointer(
             ignoring: true,
-            child: widget.popupProps.validationMultiSelectionWidget!(
+            child: widget.popupProps.validationWidget!(
                 context, _selectedItems),
           ),
           onTap: onValidate,
@@ -260,7 +251,6 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.max,
       children: [
-        popupCustomMultiSelectionWidget(),
         popupValidationMultiSelectionWidget(),
       ],
     );
@@ -411,6 +401,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   void _addDataToStream(List<T> data) {
     if (_itemsStream.isClosed) return;
     _itemsStream.add(data);
+
+    //update showed data list
+    _currentShowedItems.clear();
+    _currentShowedItems.addAll(data);
   }
 
   void _addErrorToStream(Object error, [StackTrace? stackTrace]) {
@@ -723,7 +717,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   void selectAllItems() {
-    selectItems(_cachedItems);
+    selectItems(_currentShowedItems);
   }
 
   void deselectItems(List<T> itemsToDeselect) {
@@ -743,7 +737,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     deselectItems(_cachedItems);
   }
 
-  bool get isAllItemSelected => _selectedItems.length >= _currentShowedItems.length;
+  bool get isAllItemSelected =>
+      _selectedItems.length >= _currentShowedItems.length;
 
   List<T> get getSelectedItem => List.from(_selectedItems);
 }

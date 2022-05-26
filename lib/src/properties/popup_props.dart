@@ -221,10 +221,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   final DropdownSearchPopupItemBuilder<T>? selectionWidget;
 
   ///widget used to validate items in multiSelection mode
-  final ValidationMultiSelectionBuilder<T>? validationMultiSelectionWidget;
-
-  ///widget to add custom widget like addAll/removeAll on popup multi selection mode
-  final ValidationMultiSelectionBuilder<T>? customMultiSelectionWidget;
+  final ValidationMultiSelectionBuilder<T>? validationWidget;
 
   const PopupPropsMultiSelection._({
     super.mode = Mode.MENU,
@@ -255,7 +252,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
-    this.validationMultiSelectionWidget,
+    this.validationWidget,
   }) : super._();
 
   const PopupPropsMultiSelection.menu({
@@ -283,7 +280,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
-    this.validationMultiSelectionWidget,
+    this.validationWidget,
   }) : super.menu();
 
   const PopupPropsMultiSelection.dialog({
@@ -315,7 +312,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
-    this.validationMultiSelectionWidget,
+    this.validationWidget,
   }) : super.dialog();
 
   const PopupPropsMultiSelection.bottomSheet({
@@ -343,7 +340,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
-    this.validationMultiSelectionWidget,
+    this.validationWidget,
   }) : super.bottomSheet();
 
   const PopupPropsMultiSelection.modalBottomSheet({
@@ -371,7 +368,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
-    this.validationMultiSelectionWidget,
+    this.validationWidget,
   }) : super.modalBottomSheet();
 
   PopupPropsMultiSelection.from(PopupProps<T> popupProps)
@@ -404,6 +401,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           onItemAdded: null,
           onItemRemoved: null,
           selectionWidget: null,
-          validationMultiSelectionWidget: null,
+          validationWidget: null,
         );
 }
