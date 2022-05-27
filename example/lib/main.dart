@@ -26,7 +26,7 @@ class MyHomePage extends StatefulWidget {
 /// TODO add multiSelection validation bg
 class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
-  final _openDropDownProgKey = GlobalKey<DropdownSearchState<String>>();
+  final _openDropDownProgKey = GlobalKey<DropdownSearchState<int>>();
   final _multiKey = GlobalKey<DropdownSearchState<String>>();
   final _popupBuilderKey = GlobalKey<DropdownSearchState<String>>();
   final _userEditTextController = TextEditingController(text: 'Mrs');
@@ -240,72 +240,40 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
 
-              ///************************[dropdownBuilder examples]********************************///
-              Padding(padding: EdgeInsets.all(8)),
-              Text("[DropDownSearch builder examples]"),
-              Divider(),
-              Row(
-                children: [
-                  Expanded(
-                    child: DropdownSearch<UserModel>.multiSelection(
-                      asyncItems: (String? filter) => getData(filter),
-                      clearButtonProps: ClearButtonProps(isVisible: true),
-                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
-                        showSelectedItems: true,
-                        itemBuilder: _customPopupItemBuilderExample2,
-                        showSearchBox: true,
-                        searchFieldProps: TextFieldProps(
-                          controller: _userEditTextController,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.clear),
-                              onPressed: () {
-                                _userEditTextController.clear();
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                      compareFn: (item, selectedItem) =>
-                          item.id == selectedItem.id,
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                          labelText: 'Users *',
-                          filled: true,
-                          fillColor:
-                              Theme.of(context).inputDecorationTheme.fillColor,
-                        ),
-                      ),
-                      dropdownBuilder: _customDropDownExampleMultiSelection,
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.all(4)),
-                  Expanded(
-                    child: DropdownSearch<UserModel>(
-                      asyncItems: (String? filter) => getData(filter),
-                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
-                        showSelectedItems: true,
-                        itemBuilder: _customPopupItemBuilderExample2,
-                        showSearchBox: true,
-                      ),
-                      compareFn: (item, sItem) => item.id == sItem.id,
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                          labelText: 'User *',
-                          filled: true,
-                          fillColor:
-                              Theme.of(context).inputDecorationTheme.fillColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
               ///************************[custom popup background examples]********************************///
               Padding(padding: EdgeInsets.all(8)),
               Text("[custom popup background examples]"),
               Divider(),
+              DropdownSearch<String>(
+                items: List.generate(5, (index) => "$index"),
+                popupProps: PopupProps.menu(
+                  fit: FlexFit.loose,
+                  menuProps: MenuProps(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                  ),
+                  containerBuilder: (ctx, popupWidget) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/arrow-up.png',
+                          color: Color(0xFF2A5B77),
+                          height: 16,
+                        ),
+                        Flexible(
+                          child: Container(
+                            child: popupWidget,
+                            color: Color(0xFF2A5B77),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              Padding(padding: EdgeInsets.all(4)),
               Row(
                 children: [
                   Expanded(
@@ -395,155 +363,152 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
 
-              ///todo add dynamic size example
 
-              ///Menu Mode with no searchBox
-              DropdownSearch<String>(
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    hintText: "Select a country",
-                    labelText: "Menu mode *",
-                    contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                validator: (v) => v == null ? "required field" : null,
-                items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-                onChanged: print,
-                popupProps: PopupProps.menu(
-                  showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
-                ),
-                //clearButtonSplashRadius: 20,
-                selectedItem: "Tunisia",
-                onBeforeChange: (a, b) {
-                  if (b == null) {
-                    AlertDialog alert = AlertDialog(
-                      title: Text("Are you sure..."),
-                      content: Text("...you want to clear the selection"),
-                      actions: [
-                        TextButton(
-                          child: Text("OK"),
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                          },
-                        ),
-                        TextButton(
-                          child: Text("NOT OK"),
-                          onPressed: () {
-                            Navigator.of(context).pop(false);
-                          },
-                        ),
-                      ],
-                    );
-
-                    return showDialog<bool>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return alert;
-                        });
-                  }
-
-                  return Future.value(true);
-                },
-              ),
+              ///************************[dropdownBuilder examples]********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[DropDownSearch builder examples]"),
               Divider(),
-
-              ///custom itemBuilder and dropDownBuilder
-              DropdownSearch<UserModel>(
-                popupProps: PopupProps.menu(
-                  showSelectedItems: true,
-                ),
-                itemAsString: (i) => i.name,
-                compareFn: (i, s) => i.isEqual(s),
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Person",
-                    contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                    border: OutlineInputBorder(),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<UserModel>.multiSelection(
+                      asyncItems: (String? filter) => getData(filter),
+                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
+                        showSelectedItems: true,
+                        itemBuilder: _customPopupItemBuilderExample2,
+                        showSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          controller: _userEditTextController,
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                _userEditTextController.clear();
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      compareFn: (item, selectedItem) =>
+                          item.id == selectedItem.id,
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: 'Users *',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).inputDecorationTheme.fillColor,
+                        ),
+                      ),
+                      dropdownBuilder: _customDropDownExampleMultiSelection,
+                    ),
                   ),
-                ),
-                asyncItems: (String filter) => getData(filter),
-                onChanged: (data) {
-                  print(data);
-                },
-                dropdownBuilder: _customDropDownExample,
-              ),
-              Divider(),
-
-              ///merge online and offline data in the same list and set custom max Height
-              DropdownSearch<UserModel>(
-                items: [
-                  UserModel(name: "Offline name1", id: "999"),
-                  UserModel(name: "Offline name2", id: "0101")
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<UserModel>(
+                      asyncItems: (String? filter) => getData(filter),
+                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
+                        showSelectedItems: true,
+                        itemBuilder: _customPopupItemBuilderExample2,
+                        showSearchBox: true,
+                      ),
+                      compareFn: (item, sItem) => item.id == sItem.id,
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: 'User *',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).inputDecorationTheme.fillColor,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
-                asyncItems: (String? filter) => getData(filter),
-                popupProps: PopupProps.menu(showSearchBox: true),
               ),
-              Divider(),
 
-              ///open dropdown programmatically
-              DropdownSearch<String>(
-                items: ["no action", "confirm in the next dropdown"],
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "open another dropdown programmatically",
-                    contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                    border: OutlineInputBorder(),
+              ///************************[Dynamic height depending on items number]********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[popup dynamic height examples]"),
+              Divider(),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: List.generate(50, (i) => i),
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        title: Text('default fit'),
+                      ),
+                    ),
                   ),
-                ),
-                onChanged: (v) {
-                  if (v == "confirm in the next dropdown") {
-                    _openDropDownProgKey.currentState?.openDropDownSearch();
-                  }
-                },
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: List.generate(50, (i) => i),
+                      popupProps: PopupProps.menu(
+                        title: Text('With fit to loose and no constraints'),
+                        showSearchBox: true,
+                        fit: FlexFit.loose,
+                        //comment this if you want that the items do not takes all available height
+                        constraints: BoxConstraints.tightFor(),
+                      ),
+                    ),
+                  )
+                ],
               ),
               Padding(padding: EdgeInsets.all(4)),
-              DropdownSearch<String>(
-                popupProps: PopupProps.modalBottomSheet(
-                  showSelectedItems: true,
-                ),
-                validator: (value) => value == null ? "empty" : null,
-                key: _openDropDownProgKey,
-                items: ["Yes", "No"],
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "confirm",
-                    contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
+              Row(
                 children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        _openDropDownProgKey.currentState?.openDropDownSearch();
-                      },
-                      child: Text("Open dropdownSearch")),
-                  ElevatedButton(
-                      onPressed: () {
-                        _openDropDownProgKey.currentState
-                            ?.changeSelectedItem("No");
-                      },
-                      child: Text("set to 'NO'")),
-                  Material(
-                    child: ElevatedButton(
-                        onPressed: () {
-                          _openDropDownProgKey.currentState
-                              ?.changeSelectedItem("Yes");
-                        },
-                        child: Text("set to 'YES'")),
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: List.generate(50, (i) => i),
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        fit: FlexFit.loose,
+                        title: Text('fit to a specific max height'),
+                        constraints: BoxConstraints(maxHeight: 300),
+                      ),
+                    ),
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        _openDropDownProgKey.currentState
-                            ?.changeSelectedItem('Blabla');
-                      },
-                      child: Text("set to 'Blabla'")),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: List.generate(50, (i) => i),
+                      popupProps: PopupProps.menu(
+                        title: Text('fit to a specific width and height'),
+                        showSearchBox: true,
+                        fit: FlexFit.loose,
+                        constraints: BoxConstraints.tightFor(
+                          width: 300,
+                          height: 300,
+                        ),
+                      ),
+                    ),
+                  )
                 ],
+              ),
+
+              ///************************[Handle dropdown programmatically]********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[handle dropdown programmatically]"),
+              Divider(),
+              DropdownSearch<int>(
+                key: _openDropDownProgKey,
+                items: [1, 2, 3],
+              ),
+              Padding(padding: EdgeInsets.all(4)),
+              ElevatedButton(
+                onPressed: () {
+                  _openDropDownProgKey.currentState?.changeSelectedItem(100);
+                },
+                child: Text('set to 100'),
+              ),
+              Padding(padding: EdgeInsets.all(4)),
+              ElevatedButton(
+                onPressed: () {
+                  _openDropDownProgKey.currentState?.openDropDownSearch();
+                },
+                child: Text('open popup'),
               ),
             ],
           ),
@@ -584,34 +549,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _customDropDownExample(BuildContext context, UserModel? item) {
-    if (item == null) {
-      return Container();
-    }
-
-    return Container(
-      child: (item.avatar == null)
-          ? ListTile(
-              contentPadding: EdgeInsets.all(0),
-              leading: CircleAvatar(),
-              title: Text("No item selected"),
-            )
-          : ListTile(
-              contentPadding: EdgeInsets.all(0),
-              leading: CircleAvatar(
-                  // this does not work - throws 404 error
-                  // backgroundImage: NetworkImage(item.avatar ?? ''),
-                  ),
-              title: Text(item.name),
-              subtitle: Text(
-                item.createdAt.toString(),
-              ),
-            ),
-    );
-  }
-
   Widget _customPopupItemBuilderExample2(
-      BuildContext context, UserModel? item, bool isSelected) {
+    BuildContext context,
+    UserModel? item,
+    bool isSelected,
+  ) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -682,7 +624,7 @@ class CheckBoxState extends State<_CheckBoxWidget> {
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
           colors: [
-            Colors.red,
+            Color(0x88F44336),
             Colors.blue,
           ],
         ),

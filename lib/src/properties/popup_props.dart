@@ -223,6 +223,8 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   ///widget used to validate items in multiSelection mode
   final ValidationMultiSelectionBuilder<T>? validationWidget;
 
+  final Widget? validationBarBackground;
+
   const PopupPropsMultiSelection._({
     super.mode = Mode.MENU,
     super.fit = FlexFit.tight,
@@ -248,7 +250,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.menuProps = const MenuProps(),
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 350),
-    this.customMultiSelectionWidget,
+    this.validationBarBackground,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -276,7 +278,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.isFilterOnline = false,
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 350),
-    this.customMultiSelectionWidget,
+    this.validationBarBackground,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -308,7 +310,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
       maxWidth: 500,
       maxHeight: 600,
     ),
-    this.customMultiSelectionWidget,
+    this.validationBarBackground,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -336,7 +338,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.isFilterOnline = false,
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 500),
-    this.customMultiSelectionWidget,
+    this.validationBarBackground,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -364,7 +366,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.showSelectedItems,
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 500),
-    this.customMultiSelectionWidget,
+    this.validationBarBackground,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -397,7 +399,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           menuProps: popupProps.menuProps,
           containerBuilder: popupProps.containerBuilder,
           constraints: popupProps.constraints,
-          customMultiSelectionWidget: null,
+          validationBarBackground: null,
           onItemAdded: null,
           onItemRemoved: null,
           selectionWidget: null,

@@ -238,8 +238,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         return InkWell(
           child: IgnorePointer(
             ignoring: true,
-            child: widget.popupProps.validationWidget!(
-                context, _selectedItems),
+            child: widget.popupProps.validationWidget!(context, _selectedItems),
           ),
           onTap: onValidate,
         );
