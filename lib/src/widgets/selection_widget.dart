@@ -227,32 +227,20 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
 
     Widget defaultValidation = Padding(
       padding: EdgeInsets.all(8),
-      child: ElevatedButton(
-        onPressed: onValidate,
-        child: Text("OK"),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: ElevatedButton(
+          onPressed: onValidate,
+          child: Text("OK"),
+        ),
       ),
     );
 
-    Widget popupValidationMultiSelectionWidget() {
-      if (widget.popupProps.validationWidget != null) {
-        return InkWell(
-          child: IgnorePointer(
-            ignoring: true,
-            child: widget.popupProps.validationWidget!(context, _selectedItems),
-          ),
-          onTap: onValidate,
-        );
-      }
-      return defaultValidation;
+    if (widget.popupProps.validationWidgetBuilder != null) {
+      return widget.popupProps.validationWidgetBuilder!(context, _selectedItems);
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        popupValidationMultiSelectionWidget(),
-      ],
-    );
+    return defaultValidation;
   }
 
   void _showErrorDialog(dynamic error) {

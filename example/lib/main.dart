@@ -23,12 +23,12 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-/// TODO add multiSelection validation bg
 class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
   final _openDropDownProgKey = GlobalKey<DropdownSearchState<int>>();
   final _multiKey = GlobalKey<DropdownSearchState<String>>();
   final _popupBuilderKey = GlobalKey<DropdownSearchState<String>>();
+  final _popupCustomValidationKey = GlobalKey<DropdownSearchState<int>>();
   final _userEditTextController = TextEditingController(text: 'Mrs');
   bool? _popupBuilderSelection = false;
 
@@ -91,8 +91,26 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<int>.multiSelection(
+                      key: _popupCustomValidationKey,
                       items: [1, 2, 3, 4, 5, 6, 7],
-                      popupProps: PopupPropsMultiSelection.dialog(),
+                      popupProps: PopupPropsMultiSelection.dialog(
+                        validationWidgetBuilder: (ctx, selectedItems) {
+                          return Container(
+                            color: Colors.blue[200],
+                            height: 56,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: MaterialButton(
+                                child: Text('OK'),
+                                onPressed: () {
+                                  _popupCustomValidationKey.currentState
+                                      ?.popupOnValidate();
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   )
                 ],
@@ -362,7 +380,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
-
 
               ///************************[dropdownBuilder examples]********************************///
               Padding(padding: EdgeInsets.all(8)),
