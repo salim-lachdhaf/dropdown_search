@@ -237,7 +237,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     );
 
     if (widget.popupProps.validationWidgetBuilder != null) {
-      return widget.popupProps.validationWidgetBuilder!(context, _selectedItems);
+      return widget.popupProps.validationWidgetBuilder!(
+          context, _selectedItems);
     }
 
     return defaultValidation;
