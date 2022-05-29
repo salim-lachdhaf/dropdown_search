@@ -1,14 +1,13 @@
-## [5.0.0] - 2022.05.17
+## [5.0.0] - 2022.05.29
 
 * Replace ScrollBar with RawScrollBar (adding new properties)
-* place 'showClearButton' into
-* place all dropdownDecoration props into 'dropdownDecoratorProps'
+* move 'showClearButton' into 'ClearButtonProps'
+* move all dropdownDecoration props into 'dropdownDecoratorProps'
 * replace 'IconButtonProps' with 'DropdownButtonProps' and 'ClearButtonProps' for clearButtonProps
   and dropdownButtonProps
 * add a full custom container for the pop 'containerBuilder' to 'popup_props'
 * add 'isVisible' prop to 'DropdownButtonProps'
-* Break Changes:
-    - change 'validationMultiSelectionWidget' to 'validationWidget'
+* change 'validationMultiSelectionWidget' to 'validationWidgetBuilder'
 
 ## [4.0.1] - 2022.05.17
 

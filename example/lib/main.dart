@@ -273,17 +273,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   containerBuilder: (ctx, popupWidget) {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Image.asset(
-                          'assets/images/arrow-up.png',
-                          color: Color(0xFF2A5B77),
-                          height: 16,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: Image.asset(
+                            'assets/images/arrow-up.png',
+                            color: Color(0xFF2F772A),
+                            height: 12,
+                          ),
                         ),
                         Flexible(
                           child: Container(
                             child: popupWidget,
-                            color: Color(0xFF2A5B77),
+                            color: Color(0xFF2F772A),
                           ),
                         ),
                       ],
@@ -291,7 +294,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
               ),
-              Padding(padding: EdgeInsets.all(4)),
+              Padding(padding: EdgeInsets.all(8)),
               Row(
                 children: [
                   Expanded(
