@@ -30,14 +30,33 @@
 
 ## Key Features
 
-* Online and offline items
+* Sync and/or Async items (online, offline, DB, ...)
 * Searchable dropdown
-* Three dropdown mode: Menu/ BottomSheet/ Dialog
+* Three dropdown mode: Menu/ BottomSheet/ ModalBottomSheet / Dialog
+* Single & multi selection
 * Material dropdown
 * Easy customizable UI
+* Handle Light and Dark theme
 * Easy implementation into statelessWidget
 
-![](https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_4.png?raw=true)
+<table>
+    <tr>
+        <td>
+            <img height="254" src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex4.png?raw=true" alt="Dropdown search" />
+        </td>
+        <td>
+            <img height="254" src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex1.png?raw=true" alt="Dropdown search" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img height="254" src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex2.png?raw=true" alt="Dropdown search" />
+        </td>
+        <td>
+            <img height="254" src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex3.png?raw=true" alt="Dropdown search" />
+        </td>
+    </tr>
+</table>
 
 ## packages.yaml
 ```yaml
@@ -46,7 +65,7 @@ dropdown_search: <lastest version>
 
 ## Import
 ```dart
-import 'package:dropdown_search/dropdownSearch.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 ```
 
 
@@ -54,132 +73,114 @@ import 'package:dropdown_search/dropdownSearch.dart';
 
 ```dart
 DropdownSearch<String>(
-    mode: Mode.MENU,
-    showSelectedItem: true,
-    items: ["Brazil", "Italia", "Tunisia", 'Canada'],
-    label: "Menu mode",
-    hint: "country in menu mode",
+    popupProps: PopupProps.menu(
+        showSelectedItems: true,
+        disabledItemFn: (String s) => s.startsWith('I'),
+    ),
+    items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+    dropdownSearchDecoration: InputDecoration(
+        labelText: "Menu mode",
+        hintText: "country in menu mode",
+    ),
     onChanged: print,
-    selectedItem: "Brazil"),
+    selectedItem: "Brazil",
+)
+
+DropdownSearch<String>.multiSelection(
+    items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+    popupProps: PopupPropsMultiSelection.menu(
+        showSelectedItems: true,
+        disabledItemFn: (String s) => s.startsWith('I'),
+    ),
+    onChanged: print,
+    selectedItems: ["Brazil"],
+)
 ```
 
 ## customize showed field (itemAsString)
 
 ```dart
 DropdownSearch<UserModel>(
-  label: "Name",
-  onFind: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsStringByName(),
-  onChanged: (UserModel data) => print(data),
-),
+    asyncItems: (String filter) => getData(filter),
+    itemAsString: (UserModel u) => u.userAsStringByName(),
+    onChanged: (UserModel? data) => print(data),
+    dropdownSearchDecoration: InputDecoration(labelText: "User by name"),
+)
 
 DropdownSearch<UserModel>(
-  label: "Name",
-  onFind: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsStringById(),
-  onChanged: (UserModel data) => print(data),
-),
+    asyncItems: (String filter) => getData(filter),
+    itemAsString: (UserModel u) => u.userAsStringById(),
+    onChanged: (UserModel? data) => print(data),
+    dropdownSearchDecoration: InputDecoration(labelText: "User by id"),
+)
 ```
 
 ## customize Filter Function
 ```dart
 DropdownSearch<UserModel>(
-  label: "Name",
-  filterFn: (user, filter) => user.userFilterByCreationDate(filter),
-  onFind: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsStringByName(),
-  onChanged: (UserModel data) => print(data),
-),
+    dropdownSearchDecoration: InputDecoration(labelText: "Name"),
+    filterFn: (user, filter) =>
+    user.userFilterByCreationDate(filter),
+    asyncItems: (String filter) => getData(filter),
+    itemAsString: (UserModel u) => u.userAsStringByName(),
+    onChanged: (UserModel? data) => print(data),
+)
 ```
 
 ## customize Search Mode
 ```dart
 DropdownSearch<UserModel>(
-  mode: Mode.BOTTOM_SHEET,
-  label: "Name",
-  onFind: (String filter) => getData(filter),
-  itemAsString: (UserModel u) => u.userAsString(),
-  onChanged: (UserModel data) => print(data),
-),
+    popupProps: PopupProps.bottomSheet(),
+    dropdownSearchDecoration: InputDecoration(labelText: "Name"),
+    asyncItems: (String filter) => getData(filter),
+    itemAsString: (UserModel u) => u.userAsString(),
+    onChanged: (UserModel? data) => print(data),
+)
 ```
 
 ## Validation
 ```dart
 DropdownSearch(
-  items: ["Brazil", "France", "Tunisia", "Canada"],
-  label: "Country",
-  onChanged: print,
-  selectedItem: "Tunisia",
-  validator: (String item) {
+    items: ["Brazil", "France", "Tunisia", "Canada"],
+    dropdownSearchDecoration: InputDecoration(labelText: "Name"),
+    onChanged: print,
+    selectedItem: "Tunisia",
+    validator: (String? item) {
     if (item == null)
       return "Required field";
     else if (item == "Brazil")
       return "Invalid item";
     else
       return null;
-  },
-);
+    },
+)
 ```
 
 
 ## Endpoint implementation (using [Dio package](https://pub.dev/packages/dio))
 ```dart
 DropdownSearch<UserModel>(
-  label: "Name",
-  onFind: (String filter) async {
-    var response = await Dio().get(
-        "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
-        queryParameters: {"filter": filter},
-    );
-    var models = UserModel.fromJsonList(response.data);
-    return models;
-  },
-  onChanged: (UserModel data) {
-    print(data);
-  },
-);
+    dropdownSearchDecoration: InputDecoration(labelText: "Name"),
+    asyncItems: (String filter) async {
+        var response = await Dio().get(
+            "http://5d85ccfb1e61af001471bf60.mockapi.io/user",
+            queryParameters: {"filter": filter},
+        );
+        var models = UserModel.fromJsonList(response.data);
+        return models;
+    },
+    onChanged: (UserModel? data) {
+      print(data);
+    },
+)
 ```
 ## Layout customization
 You can customize the layout of the DropdownSearch and its items. [EXAMPLE](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example#custom-layout-endpoint-example)
 
-|  Properties |   Description|
-| ------------ | ------------ |
-|`label`|DropDownSearch label|
-|`showSearchBox`|show/hide the search box|
-|`isFilteredOnline`|true if the filter on items is applied onlie (via API)|
-|`showClearButton`| show/hide clear selected item|
-|`items`| offline items list|
-|`selectedItem`| selected item|
-|`onFind`|function that returns item from API|
-|`onChanged`|called when a new item is selected|
-|`dropdownBuilder`|to customize list of items UI|
-|`popupItemBuilder`|to customize selected item|
-|`validator`|function to apply the validation formula|
-|`searchBoxDecoration`|decoration for the search box|
-|`popupBackgroundColor`|background color for the dialog/menu/bottomSheet|
-|`popupTitle`|Custom widget for the popup title|
-|`itemAsString`|customize the fields the be shown|
-|`filterFn`|custom filter function|
-|`enabled`|enable/disable dropdownSearch|
-|`mode`| MENU / DIALOG/ BOTTOM_SHEET|
-|`maxHeight`| the max height for dialog/bottomSheet/Menu|
-|`dialogMaxWidth`| the max width for the dialog|
-|`showSelectedItem`| manage selected item visibility (if true, the selected item will be highlighted)|
-|`compareFn`| Function(T item, T selectedItem), custom comparing function|
-|`dropdownSearchDecoration`| DropdownSearch input decoration|
-|`emptyBuilder`| custom layout for empty results|
-|`loadingBuilder`| custom layout for loading items|
-|`errorBuilder`| custom layout for error|
-|`autoFocusSearchBox`| the search box will be focused if true|
-|`popupShape`| custom shape for the popup|
-|`autoValidate`|handle auto validation|
-|`onSaved`|An optional method to call with the final value when the form is saved via|
-|`validator`|An optional method that validates an input. Returns an error string to display if the input is invalid, or null otherwise.|
-|`clearButton`|customize clear button widget|
-|`dropDownButton`|customize dropdown button widget|
+Full documentation [here](https://pub.dev/documentation/dropdown_search/latest/dropdown_search/DropdownSearch-class.html)
 
 # Attention
-To use a template as an item type, and you don't want to use a custom fonction **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
+To use a template as an item type, and you don't want to use a custom function **itemAsString** and **compareFn** you **need** to implement **toString**, **equals** and **hashcode**, as shown below:
 
 
 ```dart
@@ -196,7 +197,7 @@ class UserModel {
     return UserModel(
       id: json["id"],
       createdAt:
-          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
       name: json["name"],
       avatar: json["avatar"],
     );
@@ -214,12 +215,12 @@ class UserModel {
 
   ///this method will prevent the override of toString
   bool userFilterByCreationDate(String filter) {
-    return this?.createdAt?.toString()?.contains(filter);
+    return this.createdAt.toString().contains(filter);
   }
 
   ///custom comparing function to check if two users are equal
   bool isEqual(UserModel model) {
-    return this?.id == model?.id;
+    return this.id == model.id;
   }
 
   @override
