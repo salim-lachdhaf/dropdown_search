@@ -801,6 +801,12 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     _popupStateKey.currentState?.onValidate();
   }
 
+  ///validate selected items programmatically passed in param [itemsToValidate]
+  void popupValidate(List<T> itemsToValidate) {
+    closeDropDownSearch();
+    changeSelectedItems(itemsToValidate);
+  }
+
   ///Public Function that return then UI based on searchMode
   ///[data] selected item to be passed to the UI
   ///If we close the popup , or maybe we just selected

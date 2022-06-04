@@ -401,29 +401,31 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   Widget _itemWidgetSingleSelection(T item) {
-    return (widget.popupProps.itemBuilder != null)
-        ? InkWell(
-            // ignore pointers in itemBuilder
-            child: IgnorePointer(
-              ignoring: true,
-              child: widget.popupProps.itemBuilder!(
-                context,
-                item,
-                !widget.popupProps.showSelectedItems
-                    ? false
-                    : _isSelectedItem(item),
-              ),
-            ),
-            onTap: _isDisabled(item) ? null : () => _handleSelectedItem(item),
-          )
-        : ListTile(
-            enabled: !_isDisabled(item),
-            title: Text(_selectedItemAsString(item)),
-            selected: !widget.popupProps.showSelectedItems
-                ? false
-                : _isSelectedItem(item),
-            onTap: _isDisabled(item) ? null : () => _handleSelectedItem(item),
-          );
+    if (widget.popupProps.itemBuilder != null) {
+      var w = widget.popupProps.itemBuilder!(
+        context,
+        item,
+        !widget.popupProps.showSelectedItems ? false : _isSelectedItem(item),
+      );
+
+      if (widget.popupProps.interceptCallBacks)
+        return w;
+      else
+        return InkWell(
+          // ignore pointers in itemBuilder
+          child: IgnorePointer(child: w),
+          onTap: _isDisabled(item) ? null : () => _handleSelectedItem(item),
+        );
+    } else {
+      return ListTile(
+        enabled: !_isDisabled(item),
+        title: Text(_selectedItemAsString(item)),
+        selected: !widget.popupProps.showSelectedItems
+            ? false
+            : _isSelectedItem(item),
+        onTap: _isDisabled(item) ? null : () => _handleSelectedItem(item),
+      );
+    }
   }
 
   Widget _itemWidgetMultiSelection(T item) {
@@ -432,6 +434,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         checkBox: (cnt, checked) {
           return widget.popupProps.selectionWidget!(context, item, checked);
         },
+        interceptCallBacks: widget.popupProps.interceptCallBacks,
         layout: (context, isChecked) => _itemWidgetSingleSelection(item),
         isChecked: _isSelectedItem(item),
         isDisabled: _isDisabled(item),
@@ -439,6 +442,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       );
     else
       return CheckBoxWidget(
+        interceptCallBacks: widget.popupProps.interceptCallBacks,
         layout: (context, isChecked) => _itemWidgetSingleSelection(item),
         isChecked: _isSelectedItem(item),
         isDisabled: _isDisabled(item),

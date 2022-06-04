@@ -1,6 +1,11 @@
-## [5.0.1] - 2022.05.29
+## [5.0.2] - 2022.06.04
+
+* add 'interceptCallBacks' for popupProps
+
+* ## [5.0.1] - 2022.05.29
 
 * Fix code format
+
 ## [5.0.0] - 2022.05.29
 
 * Replace ScrollBar with RawScrollBar (adding new properties)
