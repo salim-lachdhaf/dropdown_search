@@ -623,9 +623,12 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           ).top;
 
           return Container(
+            constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(ctx).size.height -
+                    viewPaddingTop -
+                    viewInsetsBottom),
             margin: EdgeInsets.only(
               bottom: viewInsetsBottom,
-              top: viewPaddingTop,
             ),
             child: _popupWidgetInstance(),
           );
