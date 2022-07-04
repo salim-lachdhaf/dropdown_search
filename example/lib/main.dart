@@ -314,6 +314,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: DropdownSearch<String>.multiSelection(
                       key: _popupBuilderKey,
                       items: List.generate(30, (index) => "$index"),
+                      aboveItemsWidget: Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        child: Text('Select Items'),
+                      ),
                       popupProps: PopupPropsMultiSelection.dialog(
                         onItemAdded: (l, s) => _handleCheckBoxState(),
                         onItemRemoved: (l, s) => _handleCheckBoxState(),

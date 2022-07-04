@@ -17,6 +17,7 @@ class SelectionWidget<T> extends StatefulWidget {
   final List<T> defaultSelectedItems;
   final PopupPropsMultiSelection<T> popupProps;
   final bool isMultiSelectionMode;
+  final Widget? aboveItemsWidget;
 
   const SelectionWidget({
     Key? key,
@@ -29,6 +30,7 @@ class SelectionWidget<T> extends StatefulWidget {
     this.itemAsString,
     this.filterFn,
     this.compareFn,
+    this.aboveItemsWidget,
   }) : super(key: key);
 
   @override
@@ -100,6 +102,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               _searchField(),
+              if (widget.aboveItemsWidget != null) widget.aboveItemsWidget!,
               _favoriteItemsWidget(),
               Flexible(
                 fit: widget.popupProps.fit,
