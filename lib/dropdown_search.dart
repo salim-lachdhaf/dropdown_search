@@ -419,6 +419,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             builder: (context, isFocused, w) {
               return InputDecorator(
                 baseStyle: widget.dropdownDecoratorProps.baseStyle,
+                expands: widget.dropdownDecoratorProps.expands,
                 textAlign: widget.dropdownDecoratorProps.textAlign,
                 textAlignVertical:
                     widget.dropdownDecoratorProps.textAlignVertical,
