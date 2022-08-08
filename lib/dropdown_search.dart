@@ -2,8 +2,6 @@ library dropdown_search;
 
 import 'dart:async';
 
-// import 'package:platz_bank/dds/src/properties/clear_button_props.dart';
-// import 'package:platz_bank/dds/src/properties/dropdown_button_props.dart';
 import 'package:dropdown_search/src/properties/clear_button_props.dart';
 import 'package:dropdown_search/src/properties/dropdown_button_props.dart';
 import 'package:flutter/foundation.dart';
