@@ -162,8 +162,20 @@ class DropdownSearch<T> extends StatefulWidget {
   ///if the callBack return FALSE, the opening of the popup will be cancelled
   final BeforePopupOpeningMultiSelection<T>? onBeforePopupOpeningMultiSelection;
 
+  ///if showSearchBox is true, message shown when the searched item is not found
+  final String? notFoundMsgText;
+
+  ///Error message to be given if an error occurs while fetching async items
+  final String? asyncItemErrorMsg;
+
+  ///Multi selection button text
+  final String? multiSelectionBtnText;
+
   DropdownSearch({
     Key? key,
+    this.notFoundMsgText,
+    this.asyncItemErrorMsg,
+    this.multiSelectionBtnText,
     this.onSaved,
     this.validator,
     this.autoValidateMode = AutovalidateMode.disabled,
@@ -198,6 +210,9 @@ class DropdownSearch<T> extends StatefulWidget {
 
   DropdownSearch.multiSelection({
     Key? key,
+    this.notFoundMsgText,
+    this.asyncItemErrorMsg,
+    this.multiSelectionBtnText,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.items = const [],
     this.asyncItems,
@@ -662,6 +677,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       compareFn: widget.compareFn,
       isMultiSelectionMode: isMultiSelectionMode,
       defaultSelectedItems: List.from(getSelectedItems),
+      notFoundMsgText: widget.notFoundMsgText,
+      asyncItemErrorMsg: widget.asyncItemErrorMsg,
+      multiSelectionBtnText: widget.multiSelectionBtnText,
     );
   }
 

@@ -17,6 +17,9 @@ class SelectionWidget<T> extends StatefulWidget {
   final List<T> defaultSelectedItems;
   final PopupPropsMultiSelection<T> popupProps;
   final bool isMultiSelectionMode;
+  final String? notFoundMsgText;
+  final String? asyncItemErrorMsg;
+  final String? multiSelectionBtnText;
 
   const SelectionWidget({
     Key? key,
@@ -29,6 +32,9 @@ class SelectionWidget<T> extends StatefulWidget {
     this.itemAsString,
     this.filterFn,
     this.compareFn,
+    this.notFoundMsgText,
+    this.asyncItemErrorMsg,
+    this.multiSelectionBtnText,
   }) : super(key: key);
 
   @override
@@ -231,7 +237,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         alignment: Alignment.centerRight,
         child: ElevatedButton(
           onPressed: onValidate,
-          child: Text("OK"),
+          child: Text(widget.multiSelectionBtnText ?? 'OK'),
         ),
       ),
     );
@@ -250,7 +256,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Error while getting online items"),
+          title: Text(widget.asyncItemErrorMsg ?? 'Error while getting online items'),
           content: _errorWidget(error),
           actions: <Widget>[
             TextButton(
@@ -275,7 +281,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       return Container(
         height: 70,
         alignment: Alignment.center,
-        child: Text("No data found"),
+        child: Text(widget.notFoundMsgText ?? 'No data found'),
       );
   }
 
