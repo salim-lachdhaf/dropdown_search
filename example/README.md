@@ -73,27 +73,29 @@ import 'package:dropdown_search/dropdown_search.dart';
 
 ```dart
 DropdownSearch<String>(
-    popupProps: PopupProps.menu(
-        showSelectedItems: true,
-        disabledItemFn: (String s) => s.startsWith('I'),
-    ),
-    items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-    dropdownSearchDecoration: InputDecoration(
-        labelText: "Menu mode",
-        hintText: "country in menu mode",
-    ),
-    onChanged: print,
-    selectedItem: "Brazil",
+popupProps: PopupProps.menu(
+showSelectedItems: true,
+disabledItemFn: (String s) => s.startsWith('I'),
+),
+items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+dropdownDecoratorProps: DropDownDecoratorProps(
+dropdownSearchDecoration: InputDecoration(
+labelText: "Menu mode",
+hintText: "country in menu mode",
+),
+),
+onChanged: print,
+selectedItem: "Brazil",
 )
 
 DropdownSearch<String>.multiSelection(
-    items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-    popupProps: PopupPropsMultiSelection.menu(
-        showSelectedItems: true,
-        disabledItemFn: (String s) => s.startsWith('I'),
-    ),
-    onChanged: print,
-    selectedItems: ["Brazil"],
+items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+popupProps: PopupPropsMultiSelection.menu(
+showSelectedItems: true,
+disabledItemFn: (String s) => s.startsWith('I'),
+),
+onChanged: print,
+selectedItems: ["Brazil"],
 )
 ```
 
@@ -104,26 +106,32 @@ DropdownSearch<UserModel>(
     asyncItems: (String filter) => getData(filter),
     itemAsString: (UserModel u) => u.userAsStringByName(),
     onChanged: (UserModel? data) => print(data),
-    dropdownSearchDecoration: InputDecoration(labelText: "User by name"),
+    dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(labelText: "User by name"),
+    ),
 )
 
 DropdownSearch<UserModel>(
     asyncItems: (String filter) => getData(filter),
     itemAsString: (UserModel u) => u.userAsStringById(),
     onChanged: (UserModel? data) => print(data),
-    dropdownSearchDecoration: InputDecoration(labelText: "User by id"),
+    dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(labelText: "User by id"),
+    ),
 )
 ```
 
 ## customize Filter Function
 ```dart
 DropdownSearch<UserModel>(
-    dropdownSearchDecoration: InputDecoration(labelText: "Name"),
     filterFn: (user, filter) =>
     user.userFilterByCreationDate(filter),
     asyncItems: (String filter) => getData(filter),
     itemAsString: (UserModel u) => u.userAsStringByName(),
     onChanged: (UserModel? data) => print(data),
+    dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(labelText: "Name"),
+    ),
 )
 ```
 
