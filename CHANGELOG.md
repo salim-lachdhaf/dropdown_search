@@ -1,13 +1,14 @@
-## [5.0.2] - 2022.06.04
+## [5.0.3] - 2022.09.22
+* fix bugs
+* update Readme file
 
+## [5.0.2] - 2022.06.04
 * add 'interceptCallBacks' for popupProps
 
 * ## [5.0.1] - 2022.05.29
-
 * Fix code format
 
 ## [5.0.0] - 2022.05.29
-
 * Replace ScrollBar with RawScrollBar (adding new properties)
 * move 'showClearButton' into 'ClearButtonProps'
 * move all dropdownDecoration props into 'dropdownDecoratorProps'
