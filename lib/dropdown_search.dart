@@ -738,7 +738,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     } else {
       await _openSelectDialog();
     }
-
+    //dismiss either by selecting items OR clicking outside the popup
+    widget.popupProps.onDismissed?.call();
     _handleFocus(false);
   }
 

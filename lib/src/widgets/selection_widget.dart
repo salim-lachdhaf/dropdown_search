@@ -223,11 +223,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   ///close popup
-  void closePopup() {
-    Navigator.pop(context);
-
-    widget.popupProps.onDismissed?.call();
-  }
+  void closePopup() => Navigator.pop(context);
 
   Widget _multiSelectionValidation() {
     if (!widget.isMultiSelectionMode) return SizedBox.shrink();
