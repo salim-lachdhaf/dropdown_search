@@ -125,7 +125,6 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
       borderRadius: menuModeProps.borderRadius,
       animationDuration: menuModeProps.animationDuration,
       shadowColor: menuModeProps.shadowColor,
-      textStyle: menuModeProps.textStyle ?? popupMenuTheme.textStyle,
       borderOnForeground: menuModeProps.borderOnForeground,
       child: child,
     );
