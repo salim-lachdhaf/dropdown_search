@@ -40,7 +40,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
   final List<T> _cachedItems = [];
   final ValueNotifier<List<T>> _selectedItemsNotifier = ValueNotifier([]);
+  final ScrollController scrollController = ScrollController();
   final List<T> _currentShowedItems = [];
+  late TextEditingController searchBoxController;
+
   late Debouncer _debouncer;
 
   List<T> get _selectedItems => _selectedItemsNotifier.value;
@@ -51,16 +54,18 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     _debouncer = Debouncer(delay: widget.popupProps.searchDelay);
     _selectedItemsNotifier.value = widget.defaultSelectedItems;
 
-    widget.popupProps.searchFieldProps.controller?.addListener(() {
+    searchBoxController = widget.popupProps.searchFieldProps.controller ??
+        TextEditingController();
+    searchBoxController.addListener(() {
       _debouncer(() {
-        _onTextChanged(widget.popupProps.searchFieldProps.controller!.text);
+        _onTextChanged(searchBoxController.text);
       });
     });
 
     Future.delayed(
       Duration.zero,
       () => _manageItemsByFilter(
-        widget.popupProps.searchFieldProps.controller?.text ?? '',
+        searchBoxController.text,
         isFirstLoad: true,
       ),
     );
@@ -78,6 +83,9 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   @override
   void dispose() {
     _itemsStream.close();
+    searchBoxController.dispose();
+    widget.popupProps.listViewProps.controller?.dispose();
+    widget.popupProps.searchFieldProps.scrollController?.dispose();
     super.dispose();
   }
 
@@ -116,11 +124,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                           return _noDataWidget();
                         }
 
-                        final controller = ScrollController();
                         return RawScrollbar(
                           controller:
                               widget.popupProps.listViewProps.controller ??
-                                  controller,
+                                  scrollController,
                           thumbVisibility:
                               widget.popupProps.scrollbarProps.thumbVisibility,
                           trackVisibility:
@@ -159,7 +166,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                           child: ListView.builder(
                             controller:
                                 widget.popupProps.listViewProps.controller ??
-                                    controller,
+                                    scrollController,
                             shrinkWrap:
                                 widget.popupProps.listViewProps.shrinkWrap,
                             padding: widget.popupProps.listViewProps.padding,
@@ -269,7 +276,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     if (widget.popupProps.emptyBuilder != null)
       return widget.popupProps.emptyBuilder!(
         context,
-        widget.popupProps.searchFieldProps.controller?.text ?? '',
+        searchBoxController.text,
       );
     else
       return Container(
@@ -283,7 +290,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     if (widget.popupProps.errorBuilder != null)
       return widget.popupProps.errorBuilder!(
         context,
-        widget.popupProps.searchFieldProps.controller?.text ?? '',
+        searchBoxController.text,
         error,
       );
     else
@@ -303,7 +310,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
             if (widget.popupProps.loadingBuilder != null)
               return widget.popupProps.loadingBuilder!(
                 context,
-                widget.popupProps.searchFieldProps.controller?.text ?? '',
+                searchBoxController.text,
               );
             else
               return Container(
@@ -490,20 +497,12 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                         DoNothingAndStopPropagationTextIntent(),
                   },
                   child: TextField(
-                    onChanged: (f) {
-                      //if controller !=null , the change event will be handled by
-                      // the controller
-                      if (widget.popupProps.searchFieldProps.controller == null)
-                        _debouncer(() {
-                          _onTextChanged(f);
-                        });
-                    },
                     enableIMEPersonalizedLearning: widget.popupProps
                         .searchFieldProps.enableIMEPersonalizedLearning,
                     clipBehavior:
                         widget.popupProps.searchFieldProps.clipBehavior,
                     style: widget.popupProps.searchFieldProps.style,
-                    controller: widget.popupProps.searchFieldProps.controller,
+                    controller: searchBoxController,
                     focusNode: widget.popupProps.searchFieldProps.focusNode,
                     autofocus: widget.popupProps.searchFieldProps.autofocus,
                     decoration: widget.popupProps.searchFieldProps.decoration,
