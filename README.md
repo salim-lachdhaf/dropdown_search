@@ -38,6 +38,7 @@
 * Easy customizable UI
 * Handle Light and Dark theme
 * Easy implementation into statelessWidget
+* Support multi level items
 
 <table>
     <tr>

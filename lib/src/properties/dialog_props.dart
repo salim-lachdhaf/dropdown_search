@@ -24,10 +24,8 @@ class DialogProps {
   final Clip clipBehavior;
   final AnimationController? animation;
   final AlignmentGeometry? alignment;
-  final TextStyle? contentTextStyle;
 
   const DialogProps({
-    this.contentTextStyle,
     this.alignment,
     this.elevation,
     this.semanticLabel,

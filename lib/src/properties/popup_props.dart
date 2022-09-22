@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../dropdown_search.dart';
 
 class PopupProps<T> {
-  final TextStyle? textStyle;
+  ///popup title
   final Widget? title;
+
+  ///the search box will be shown if true, hidden otherwise
   final bool showSearchBox;
 
   final DropdownSearchPopupItemBuilder<T>? itemBuilder;
@@ -81,7 +83,6 @@ class PopupProps<T> {
     this.mode = Mode.MENU,
     this.fit = FlexFit.tight,
     this.title,
-    this.textStyle,
     this.showSearchBox = false,
     this.bottomSheetProps = const BottomSheetProps(),
     this.dialogProps = const DialogProps(),
@@ -108,7 +109,6 @@ class PopupProps<T> {
   const PopupProps.menu({
     this.title,
     this.fit = FlexFit.tight,
-    this.textStyle,
     this.showSearchBox = false,
     this.menuProps = const MenuProps(),
     this.searchFieldProps = const TextFieldProps(),
@@ -133,7 +133,6 @@ class PopupProps<T> {
         this.modalBottomSheetProps = const ModalBottomSheetProps();
 
   const PopupProps.dialog({
-    this.textStyle,
     this.fit = FlexFit.tight,
     this.title,
     this.showSearchBox = false,
@@ -164,7 +163,6 @@ class PopupProps<T> {
         this.modalBottomSheetProps = const ModalBottomSheetProps();
 
   const PopupProps.bottomSheet({
-    this.textStyle,
     this.fit = FlexFit.tight,
     this.title,
     this.showSearchBox = false,
@@ -192,7 +190,6 @@ class PopupProps<T> {
 
   const PopupProps.modalBottomSheet({
     this.title,
-    this.textStyle,
     this.fit = FlexFit.tight,
     this.showSearchBox = false,
     this.modalBottomSheetProps = const ModalBottomSheetProps(),
@@ -238,7 +235,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.isFilterOnline,
     super.itemBuilder,
     super.disabledItemFn,
-    super.textStyle,
     super.showSearchBox,
     super.searchFieldProps = const TextFieldProps(),
     super.favoriteItemProps = const FavoriteItemProps(),
@@ -265,7 +261,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
 
   const PopupPropsMultiSelection.menu({
     super.title,
-    super.textStyle,
     super.fit = FlexFit.tight,
     super.showSearchBox = false,
     super.searchFieldProps = const TextFieldProps(),
@@ -293,7 +288,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
 
   const PopupPropsMultiSelection.dialog({
     super.title,
-    super.textStyle,
     super.fit = FlexFit.tight,
     super.showSearchBox = false,
     super.searchFieldProps = const TextFieldProps(),
@@ -325,7 +319,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
 
   const PopupPropsMultiSelection.bottomSheet({
     super.title,
-    super.textStyle,
     super.fit = FlexFit.tight,
     super.showSearchBox = false,
     super.searchFieldProps = const TextFieldProps(),
@@ -357,7 +350,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.fit = FlexFit.tight,
     super.itemBuilder,
     super.disabledItemFn,
-    super.textStyle,
     super.showSearchBox,
     super.searchFieldProps = const TextFieldProps(),
     super.favoriteItemProps = const FavoriteItemProps(),
@@ -398,7 +390,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           searchFieldProps: popupProps.searchFieldProps,
           showSearchBox: popupProps.showSearchBox,
           showSelectedItems: popupProps.showSelectedItems,
-          textStyle: popupProps.textStyle,
           mode: popupProps.mode,
           bottomSheetProps: popupProps.bottomSheetProps,
           dialogProps: popupProps.dialogProps,

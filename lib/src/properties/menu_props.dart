@@ -13,7 +13,6 @@ class MenuProps {
   final BorderRadiusGeometry? borderRadius;
   final Duration animationDuration;
   final Color? shadowColor;
-  final TextStyle? textStyle;
   final bool borderOnForeground;
   final Curve? barrierCurve;
   final String? barrierLabel;
@@ -31,7 +30,6 @@ class MenuProps {
     this.animation,
     this.clipBehavior = Clip.none,
     this.animationDuration = const Duration(milliseconds: 300),
-    this.textStyle,
     this.borderOnForeground = false,
     this.borderRadius,
     this.shadowColor,
