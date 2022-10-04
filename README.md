@@ -32,14 +32,32 @@
 
 * Sync and/or Async items (online, offline, DB, ...)
 * Searchable dropdown
-* Three dropdown mode: Menu/ BottomSheet/ Dialog
+* Three dropdown mode: Menu/ BottomSheet/ ModalBottomSheet / Dialog
 * Single & multi selection
 * Material dropdown
 * Easy customizable UI
 * Handle Light and Dark theme
 * Easy implementation into statelessWidget
+* Support multi level items
 
-![](https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/Screenshot_4.png?raw=true)
+<table>
+    <tr>
+        <td>
+            <img height="254" src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex4.png?raw=true" alt="Dropdown search" />
+        </td>
+        <td>
+            <img height="254" src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex1.png?raw=true" alt="Dropdown search" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img height="254" src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex2.png?raw=true" alt="Dropdown search" />
+        </td>
+        <td>
+            <img height="254" src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex3.png?raw=true" alt="Dropdown search" />
+        </td>
+    </tr>
+</table>
 
 ## packages.yaml
 ```yaml
@@ -61,9 +79,11 @@ DropdownSearch<String>(
         disabledItemFn: (String s) => s.startsWith('I'),
     ),
     items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-    dropdownSearchDecoration: InputDecoration(
-        labelText: "Menu mode",
-        hintText: "country in menu mode",
+    dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(
+            labelText: "Menu mode",
+            hintText: "country in menu mode",
+        ),
     ),
     onChanged: print,
     selectedItem: "Brazil",
@@ -87,26 +107,32 @@ DropdownSearch<UserModel>(
     asyncItems: (String filter) => getData(filter),
     itemAsString: (UserModel u) => u.userAsStringByName(),
     onChanged: (UserModel? data) => print(data),
-    dropdownSearchDecoration: InputDecoration(labelText: "User by name"),
+    dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(labelText: "User by name"),
+    ),
 )
 
 DropdownSearch<UserModel>(
     asyncItems: (String filter) => getData(filter),
     itemAsString: (UserModel u) => u.userAsStringById(),
     onChanged: (UserModel? data) => print(data),
-    dropdownSearchDecoration: InputDecoration(labelText: "User by id"),
+    dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(labelText: "User by id"),
+    ),
 )
 ```
 
 ## customize Filter Function
 ```dart
 DropdownSearch<UserModel>(
-    dropdownSearchDecoration: InputDecoration(labelText: "Name"),
     filterFn: (user, filter) =>
     user.userFilterByCreationDate(filter),
     asyncItems: (String filter) => getData(filter),
     itemAsString: (UserModel u) => u.userAsStringByName(),
     onChanged: (UserModel? data) => print(data),
+    dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(labelText: "Name"),
+    ),
 )
 ```
 
@@ -130,11 +156,11 @@ DropdownSearch(
     selectedItem: "Tunisia",
     validator: (String? item) {
     if (item == null)
-    return "Required field";
+      return "Required field";
     else if (item == "Brazil")
-    return "Invalid item";
+      return "Invalid item";
     else
-    return null;
+      return null;
     },
 )
 ```

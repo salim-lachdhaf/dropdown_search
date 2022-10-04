@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../properties/menu_props.dart';
 
-Future<T?> showMenuTest<T>({
+Future<T?> showCustomMenu<T>({
   required BuildContext context,
   required MenuProps menuModeProps,
   required RelativeRect position,
@@ -125,7 +125,6 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
       borderRadius: menuModeProps.borderRadius,
       animationDuration: menuModeProps.animationDuration,
       shadowColor: menuModeProps.shadowColor,
-      textStyle: menuModeProps.textStyle ?? popupMenuTheme.textStyle,
       borderOnForeground: menuModeProps.borderOnForeground,
       child: child,
     );

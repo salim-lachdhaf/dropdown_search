@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'user_model.dart';
 
@@ -11,7 +10,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'dropdownSearch Demo',
       //enable this line if you want test Dark Mode
       //theme: ThemeData.dark(),
@@ -27,31 +25,43 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
-  final _openDropDownProgKey = GlobalKey<DropdownSearchState<String>>();
+  final _openDropDownProgKey = GlobalKey<DropdownSearchState<int>>();
   final _multiKey = GlobalKey<DropdownSearchState<String>>();
+  final _popupBuilderKey = GlobalKey<DropdownSearchState<String>>();
+  final _popupCustomValidationKey = GlobalKey<DropdownSearchState<int>>();
   final _userEditTextController = TextEditingController(text: 'Mrs');
-
-  var mySelectedItems = ["Brazil", "Tunisia", 'Canada'];
+  final myKey = GlobalKey<DropdownSearchState<MultiLevelString>>();
+  final List<MultiLevelString> myItems = [
+    MultiLevelString(level1: "1"),
+    MultiLevelString(level1: "2"),
+    MultiLevelString(
+      level1: "3",
+      subLevel: [
+        MultiLevelString(level1: "sub3-1"),
+        MultiLevelString(level1: "sub3-2"),
+      ],
+    ),
+    MultiLevelString(level1: "4")
+  ];
+  bool? _popupBuilderSelection = false;
 
   @override
   Widget build(BuildContext context) {
+    void _handleCheckBoxState({bool updateState = true}) {
+      var selectedItem =
+          _popupBuilderKey.currentState?.popupGetSelectedItems ?? [];
+      var isAllSelected =
+          _popupBuilderKey.currentState?.popupIsAllItemSelected ?? false;
+      _popupBuilderSelection =
+          selectedItem.isEmpty ? false : (isAllSelected ? true : null);
+
+      if (updateState) setState(() {});
+    }
+
+    _handleCheckBoxState(updateState: false);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text("DropdownSearch Demo"),
-        actions: [
-          DropdownSearch<String>(
-            isIconBased: true,
-            icon: Icon(Icons.location_on_rounded),
-            popupProps: PopupProps.bottomSheet(
-              showSelectedItems: true,
-              disabledItemFn: (String s) => s.startsWith('I'),
-            ),
-            items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-            onChanged: print,
-            selectedItem: "Brazil",
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text("DropdownSearch Demo")),
       body: Padding(
         padding: const EdgeInsets.all(25),
         child: Form(
@@ -60,546 +70,537 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
             padding: EdgeInsets.all(4),
             children: <Widget>[
-              DropdownSearch<String>.multiSelection(
-                popupProps: PopupPropsMultiSelection.menu(
-                  //backgroundColor: Colors.red,
-                  showSearchBox: true,
-                  searchFieldProps: TextFieldProps(
-                    autofocus: true,
-                  ),
-                ),
-                showClearButton: true,
-                items: List.generate(10, (index) => "$index"),
-              ),
+              ///************************[simple examples for single and multi selection]************///
+              Text("[simple examples for single and multi selection]"),
               Divider(),
-              DropdownSearch<String>(
-                popupProps: PopupProps.menu(
-                  showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
-                ),
-                items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-                dropdownSearchDecoration: InputDecoration(
-                  labelText: "Menu mode",
-                  hintText: "country in menu mode",
-                ),
-                onChanged: print,
-                selectedItem: "Brazil",
-              ),
-              Divider(),
-
-              ///Menu Mode with no searchBox MultiSelection
-              DropdownSearch<String>.multiSelection(
-                key: _multiKey,
-                validator: (List<String>? v) {
-                  return v == null || v.isEmpty ? "required field" : null;
-                },
-                popupProps: PopupPropsMultiSelection.menu(
-                  showSelectedItems: true,
-                  popupSelectionWidget: (cnt, String item, bool isSelected) {
-                    return isSelected
-                        ? Icon(
-                            Icons.check_circle,
-                            color: Colors.green[500],
-                          )
-                        : Container();
-                  },
-                  popupCustomMultiSelectionWidget: (context, list) {
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(8),
-                          child: OutlinedButton(
-                            onPressed: () {
-                              // How should I unselect all items in the list?
-                              _multiKey.currentState?.closeDropDownSearch();
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8),
-                          child: OutlinedButton(
-                            onPressed: () {
-                              // How should I select all items in the list?
-                              _multiKey.currentState?.popupSelectAllItems();
-                            },
-                            child: const Text('All'),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8),
-                          child: OutlinedButton(
-                            onPressed: () {
-                              // How should I unselect all items in the list?
-                              _multiKey.currentState?.popupDeselectAllItems();
-                            },
-                            child: const Text('None'),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                  disabledItemFn: (String s) => s.startsWith('I'),
-                ),
-                dropdownBuilder: (context, selectedItems) {
-                  Widget item(String i) => Container(
-                        height: 32,
-                        padding: EdgeInsets.only(left: 6),
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 2,
-                          vertical: 1,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Theme.of(context).primaryColorLight,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              i,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.subtitle2,
-                            ),
-                            MaterialButton(
-                              height: 20,
-                              shape: const CircleBorder(),
-                              padding: EdgeInsets.all(0),
-                              color: Colors.red[200],
-                              minWidth: 20,
-                              onPressed: () {
-                                _multiKey.currentState?.removeItem(i);
-                              },
-                              child: Icon(
-                                Icons.close_outlined,
-                                size: 18,
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                  return Wrap(
-                    children: selectedItems.map((e) => item(e)).toList(),
-                  );
-                },
-                dropdownSearchDecoration: InputDecoration(
-                  hintText: "Select a country",
-                  labelText: "Menu mode multiSelection*",
-                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                  border: OutlineInputBorder(),
-                ),
-                items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-                showClearButton: true,
-                onChanged: print,
-
-                //clearButtonSplashRadius: 20,
-                selectedItems: ["Tunisia"],
-              ),
-              Divider(),
-
-              ///Menu Mode with no searchBox
-              DropdownSearch<String>(
-                validator: (v) => v == null ? "required field" : null,
-                dropdownSearchDecoration: InputDecoration(
-                  hintText: "Select a country",
-                  labelText: "Menu mode *",
-                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                  border: OutlineInputBorder(),
-                ),
-                items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-                showClearButton: true,
-                onChanged: print,
-                popupProps: PopupProps.menu(
-                  showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
-                ),
-                //clearButtonSplashRadius: 20,
-                selectedItem: "Tunisia",
-                onBeforeChange: (a, b) {
-                  if (b == null) {
-                    AlertDialog alert = AlertDialog(
-                      title: Text("Are you sure..."),
-                      content: Text("...you want to clear the selection"),
-                      actions: [
-                        TextButton(
-                          child: Text("OK"),
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                          },
-                        ),
-                        TextButton(
-                          child: Text("NOT OK"),
-                          onPressed: () {
-                            Navigator.of(context).pop(false);
-                          },
-                        ),
-                      ],
-                    );
-
-                    return showDialog<bool>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return alert;
-                        });
-                  }
-
-                  return Future.value(true);
-                },
-              ),
-              Divider(),
-
-              ///Menu Mode with no searchBox
-              DropdownSearch<String>(
-                validator: (v) => v == null ? "required field" : null,
-                dropdownSearchDecoration: InputDecoration(
-                  hintText: "Select a country",
-                  labelText: "Menu mode with helper *",
-                  helperText: 'positionCallback example usage',
-                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                  border: OutlineInputBorder(),
-                ),
-                items: ["Brazil", "Italia", "Tunisia", 'Canada'],
-                onChanged: print,
-                selectedItem: "Tunisia",
-                popupProps: PopupProps.menu(
-                  showSelectedItems: true,
-                  menuProps: MenuProps(
-                    positionCallback: (popupButtonObject, overlay) {
-                      final decorationBox = _findBorderBox(popupButtonObject);
-
-                      double translateOffset = 0;
-                      if (decorationBox != null) {
-                        translateOffset = decorationBox.size.height -
-                            popupButtonObject.size.height;
-                      }
-
-                      // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
-                      final RenderBox overlay = Overlay.of(context)!
-                          .context
-                          .findRenderObject() as RenderBox;
-                      // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
-                      return RelativeRect.fromSize(
-                        Rect.fromPoints(
-                          popupButtonObject
-                              .localToGlobal(
-                                  popupButtonObject.size
-                                      .bottomLeft(Offset.zero),
-                                  ancestor: overlay)
-                              .translate(0, translateOffset),
-                          popupButtonObject.localToGlobal(
-                              popupButtonObject.size.bottomRight(Offset.zero),
-                              ancestor: overlay),
-                        ),
-                        Size(overlay.size.width, overlay.size.height),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Divider(),
-
-              ///Menu Mode with overriden icon and dropdown buttons
               Row(
                 children: [
                   Expanded(
-                    flex: 2,
-                    child: DropdownSearch<String>(
-                      validator: (v) => v == null ? "required field" : null,
-                      popupProps: PopupProps.menu(
-                        showSelectedItems: true,
-                        disabledItemFn: (String s) => s.startsWith('I'),
-                      ),
-                      dropdownSearchDecoration: InputDecoration(
-                        hintText: "Select a country",
-                        labelText: "Menu mode *",
-                        filled: true,
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF01689A)),
-                        ),
-                      ),
-                      clearButtonProps: IconButtonProps(
-                        icon: Icon(Icons.cancel),
-                      ),
-                      dropdownButtonProps: IconButtonProps(
-                        icon: Icon(Icons.arrow_circle_down_outlined),
-                      ),
-                      items: [
-                        "Brazil",
-                        "Italia (Disabled)",
-                        "Tunisia",
-                        'Canada'
-                      ],
-                      showClearButton: true,
-                      onChanged: print,
-                      selectedItem: "Tunisia",
+                    child: DropdownSearch<int>(
+                      items: [1, 2, 3, 4, 5, 6, 7],
                     ),
                   ),
+                  Padding(padding: EdgeInsets.all(4)),
                   Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        suffixIcon: Icon(Icons.image),
-                        filled: true,
-                        labelText: "Menu mode *",
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xFF01689A),
+                    child: DropdownSearch<int>.multiSelection(
+                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      items: [1, 2, 3, 4, 5, 6, 7],
+                    ),
+                  )
+                ],
+              ),
+
+              ///************************[simple examples for each mode]*************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[simple examples for each mode]"),
+              Divider(),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: [1, 2, 3, 4, 5, 6, 7],
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<int>.multiSelection(
+                      key: _popupCustomValidationKey,
+                      items: [1, 2, 3, 4, 5, 6, 7],
+                      popupProps: PopupPropsMultiSelection.dialog(
+                        validationWidgetBuilder: (ctx, selectedItems) {
+                          return Container(
+                            color: Colors.blue[200],
+                            height: 56,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: MaterialButton(
+                                child: Text('OK'),
+                                onPressed: () {
+                                  _popupCustomValidationKey.currentState
+                                      ?.popupOnValidate();
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Padding(padding: EdgeInsets.all(4)),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: [1, 2, 3, 4, 5, 6, 7],
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: "BottomSheet mode",
+                          hintText: "Select an Int",
+                        ),
+                      ),
+                      popupProps: PopupProps.bottomSheet(
+                          bottomSheetProps: BottomSheetProps(
+                              elevation: 16,
+                              backgroundColor: Color(0xFFAADCEE))),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: [1, 2, 3, 4, 5, 6, 7],
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: "Modal mode",
+                          hintText: "Select an Int",
+                          filled: true,
+                        ),
+                      ),
+                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
+                        disabledItemFn: (int i) => i <= 3,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+
+              ///************************[Favorites examples]**********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[Favorites examples]"),
+              Divider(),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<UserModel>(
+                      asyncItems: (filter) => getData(filter),
+                      compareFn: (i, s) => i.isEqual(s),
+                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
+                        isFilterOnline: true,
+                        showSelectedItems: true,
+                        showSearchBox: true,
+                        itemBuilder: _customPopupItemBuilderExample2,
+                        favoriteItemProps: FavoriteItemProps(
+                          showFavoriteItems: true,
+                          favoriteItems: (us) {
+                            return us
+                                .where((e) => e.name.contains("Mrs"))
+                                .toList();
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<UserModel>.multiSelection(
+                      asyncItems: (filter) => getData(filter),
+                      compareFn: (i, s) => i.isEqual(s),
+                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
+                        showSearchBox: true,
+                        itemBuilder: _customPopupItemBuilderExample2,
+                        favoriteItemProps: FavoriteItemProps(
+                          showFavoriteItems: true,
+                          favoriteItems: (us) {
+                            return us
+                                .where((e) => e.name.contains("Mrs"))
+                                .toList();
+                          },
+                          favoriteItemBuilder: (context, item, isSelected) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 6),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.grey[100]),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "${item.name}",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.indigo),
+                                  ),
+                                  Padding(padding: EdgeInsets.only(left: 8)),
+                                  isSelected
+                                      ? Icon(Icons.check_box_outlined)
+                                      : SizedBox.shrink(),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              ///************************[validation examples]********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[validation examples]"),
+              Divider(),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: [1, 2, 3, 4, 5, 6, 7],
+                      autoValidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (int? i) {
+                        if (i == null)
+                          return 'required filed';
+                        else if (i >= 5) return 'value should be < 5';
+                        return null;
+                      },
+                      clearButtonProps: ClearButtonProps(isVisible: true),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<int>.multiSelection(
+                      items: [1, 2, 3, 4, 5, 6, 7],
+                      validator: (List<int>? items) {
+                        if (items == null || items.isEmpty)
+                          return 'required filed';
+                        else if (items.length > 3)
+                          return 'only 1 to 3 items are allowed';
+                        return null;
+                      },
+                    ),
+                  )
+                ],
+              ),
+
+              ///************************[custom popup background examples]********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[custom popup background examples]"),
+              Divider(),
+              DropdownSearch<String>(
+                items: List.generate(5, (index) => "$index"),
+                popupProps: PopupProps.menu(
+                  fit: FlexFit.loose,
+                  menuProps: MenuProps(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                  ),
+                  containerBuilder: (ctx, popupWidget) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: Image.asset(
+                            'assets/images/arrow-up.png',
+                            color: Color(0xFF2F772A),
+                            height: 12,
                           ),
+                        ),
+                        Flexible(
+                          child: Container(
+                            child: popupWidget,
+                            color: Color(0xFF2F772A),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              Padding(padding: EdgeInsets.all(8)),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<String>.multiSelection(
+                      key: _popupBuilderKey,
+                      items: List.generate(30, (index) => "$index"),
+                      popupProps: PopupPropsMultiSelection.dialog(
+                        onItemAdded: (l, s) => _handleCheckBoxState(),
+                        onItemRemoved: (l, s) => _handleCheckBoxState(),
+                        showSearchBox: true,
+                        containerBuilder: (ctx, popupWidget) {
+                          return _CheckBoxWidget(
+                            child: popupWidget,
+                            isSelected: _popupBuilderSelection,
+                            onChanged: (v) {
+                              if (v == true)
+                                _popupBuilderKey.currentState!
+                                    .popupSelectAllItems();
+                              else if (v == false)
+                                _popupBuilderKey.currentState!
+                                    .popupDeselectAllItems();
+                              _handleCheckBoxState();
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<String>.multiSelection(
+                      key: _multiKey,
+                      items: List.generate(30, (index) => "$index"),
+                      popupProps: PopupPropsMultiSelection.dialog(
+                        onItemAdded: (l, s) => _handleCheckBoxState(),
+                        onItemRemoved: (l, s) => _handleCheckBoxState(),
+                        showSearchBox: true,
+                        containerBuilder: (ctx, popupWidget) {
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        // How should I unselect all items in the list?
+                                        _multiKey.currentState
+                                            ?.closeDropDownSearch();
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        // How should I select all items in the list?
+                                        _multiKey.currentState
+                                            ?.popupSelectAllItems();
+                                      },
+                                      child: const Text('All'),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        // How should I unselect all items in the list?
+                                        _multiKey.currentState
+                                            ?.popupDeselectAllItems();
+                                      },
+                                      child: const Text('None'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Expanded(child: popupWidget),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              ///************************[dropdownBuilder examples]********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[DropDownSearch builder examples]"),
+              Divider(),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<UserModel>.multiSelection(
+                      asyncItems: (String? filter) => getData(filter),
+                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
+                        showSelectedItems: true,
+                        itemBuilder: _customPopupItemBuilderExample2,
+                        showSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          controller: _userEditTextController,
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                _userEditTextController.clear();
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      compareFn: (item, selectedItem) =>
+                          item.id == selectedItem.id,
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: 'Users *',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).inputDecorationTheme.fillColor,
+                        ),
+                      ),
+                      dropdownBuilder: _customDropDownExampleMultiSelection,
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<UserModel>(
+                      asyncItems: (String? filter) => getData(filter),
+                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
+                        showSelectedItems: true,
+                        itemBuilder: _customPopupItemBuilderExample2,
+                        showSearchBox: true,
+                      ),
+                      compareFn: (item, sItem) => item.id == sItem.id,
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: 'User *',
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).inputDecorationTheme.fillColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              ///************************[Dynamic height depending on items number]********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[popup dynamic height examples]"),
+              Divider(),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: List.generate(50, (i) => i),
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        title: Text('default fit'),
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: List.generate(50, (i) => i),
+                      popupProps: PopupProps.menu(
+                        title: Text('With fit to loose and no constraints'),
+                        showSearchBox: true,
+                        fit: FlexFit.loose,
+                        //comment this if you want that the items do not takes all available height
+                        constraints: BoxConstraints.tightFor(),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Padding(padding: EdgeInsets.all(4)),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: List.generate(50, (i) => i),
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        fit: FlexFit.loose,
+                        title: Text('fit to a specific max height'),
+                        constraints: BoxConstraints(maxHeight: 300),
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: List.generate(50, (i) => i),
+                      popupProps: PopupProps.menu(
+                        title: Text('fit to a specific width and height'),
+                        showSearchBox: true,
+                        fit: FlexFit.loose,
+                        constraints: BoxConstraints.tightFor(
+                          width: 300,
+                          height: 300,
                         ),
                       ),
                     ),
                   )
                 ],
               ),
-              Divider(),
-              DropdownSearch<UserModel>.multiSelection(
-                popupProps: PopupPropsMultiSelection.bottomSheet(
-                  showSelectedItems: true,
-                  itemBuilder: _customPopupItemBuilderExample2,
-                  scrollbarProps: ScrollbarProps(
-                    thumbVisibility: true,
-                    thickness: 7,
-                  ),
-                  showSearchBox: true,
-                  searchFieldProps: TextFieldProps(
-                    controller: _userEditTextController,
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          _userEditTextController.clear();
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                showClearButton: true,
-                compareFn: (item, selectedItem) => item.id == selectedItem.id,
-                dropdownSearchDecoration: InputDecoration(
-                  labelText: 'User *',
-                  filled: true,
-                  fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-                ),
-                autoValidateMode: AutovalidateMode.onUserInteraction,
-                validator: (u) =>
-                    u == null || u.isEmpty ? "user field is required " : null,
-                asyncItems: (String? filter) => getData(filter),
-                onChanged: (data) {
-                  print(data);
-                },
-                dropdownBuilder: _customDropDownExampleMultiSelection,
-              ),
-              Divider(),
 
-              ///custom itemBuilder and dropDownBuilder
-              DropdownSearch<UserModel>(
-                popupProps: PopupProps.menu(
-                  showSelectedItems: true,
-                ),
-                itemAsString: (i) => i.name,
-                showClearButton: true,
-                compareFn: (i, s) => i.isEqual(s),
-                dropdownSearchDecoration: InputDecoration(
-                  labelText: "Person",
-                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                  border: OutlineInputBorder(),
-                ),
-                asyncItems: (String filter) => getData(filter),
-                onChanged: (data) {
-                  print(data);
-                },
-                dropdownBuilder: _customDropDownExample,
-              ),
+              ///************************[Handle dropdown programmatically]********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[handle dropdown programmatically]"),
               Divider(),
-
-              ///BottomSheet Mode with no searchBox
-              DropdownSearch<String>(
-                items: [
-                  "Brazil",
-                  "Italia",
-                  "Tunisia",
-                  'Canada',
-                  'Zraoua',
-                  'France',
-                  'Belgique'
-                ],
-                dropdownSearchDecoration: InputDecoration(
-                  labelText: "Custom BottomShet mode",
-                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: print,
-                selectedItem: "Brazil",
-                popupProps: PopupProps.bottomSheet(
-                  searchFieldProps: TextFieldProps(
-                    padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
-                      labelText: "Search a country1",
-                    ),
-                  ),
-                  title: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColorDark,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Country',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  bottomSheetProps: BottomSheetProps(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24),
-                      ),
-                    ),
-                  ),
-                  showSearchBox: true,
-                ),
-              ),
-              Divider(),
-
-              ///show favorites on top list
-              DropdownSearch<UserModel>.multiSelection(
-                popupProps: PopupPropsMultiSelection.menu(
-                    isFilterOnline: true,
-                    showSelectedItems: true,
-                    showSearchBox: true,
-                    itemBuilder: _customPopupItemBuilderExample2,
-                    favoriteItemProps: FavoriteItemProps(
-                      showFavoriteItems: true,
-                      favoriteItemsAlignment: MainAxisAlignment.start,
-                      favoriteItems: (items) {
-                        return items
-                            .where((e) => e.name.contains("Mrs"))
-                            .toList();
-                      },
-                      favoriteItemBuilder: (context, item, isSelected) {
-                        return Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey[100]),
-                          child: Row(
-                            children: [
-                              Text(
-                                "${item.name}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.indigo),
-                              ),
-                              Padding(padding: EdgeInsets.only(left: 8)),
-                              isSelected
-                                  ? Icon(Icons.check_box_outlined)
-                                  : Container(),
-                            ],
-                          ),
-                        );
-                      },
-                    )),
-                compareFn: (i, s) => i.isEqual(s),
-                dropdownSearchDecoration: InputDecoration(
-                  labelText: "Person with favorite option",
-                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                  border: OutlineInputBorder(),
-                ),
-                asyncItems: (filter) => getData(filter),
-                onChanged: (data) {
-                  print(data);
-                },
-              ),
-              Divider(),
-
-              ///merge online and offline data in the same list and set custom max Height
-              DropdownSearch<UserModel>(
-                items: [
-                  UserModel(name: "Offline name1", id: "999"),
-                  UserModel(name: "Offline name2", id: "0101")
-                ],
-                popupProps: PopupProps.menu(showSearchBox: true),
-                asyncItems: (String? filter) => getData(filter),
-                dropdownSearchDecoration: InputDecoration(
-                  labelText: "choose a user",
-                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: print,
-              ),
-              Divider(),
-
-              ///open dropdown programmatically
-              DropdownSearch<String>(
-                items: ["no action", "confirm in the next dropdown"],
-                dropdownSearchDecoration: InputDecoration(
-                  labelText: "open another dropdown programmatically",
-                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (v) {
-                  if (v == "confirm in the next dropdown") {
-                    _openDropDownProgKey.currentState?.openDropDownSearch();
-                  }
-                },
+              DropdownSearch<int>(
+                key: _openDropDownProgKey,
+                items: [1, 2, 3],
               ),
               Padding(padding: EdgeInsets.all(4)),
-              DropdownSearch<String>(
-                popupProps: PopupProps.modalBottomSheet(
-                  showSelectedItems: true,
-                ),
-                validator: (value) => value == null ? "empty" : null,
-                key: _openDropDownProgKey,
-                items: ["Yes", "No"],
-                dropdownSearchDecoration: InputDecoration(
-                  labelText: "confirm",
-                  contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-                  border: OutlineInputBorder(),
-                ),
+              ElevatedButton(
+                onPressed: () {
+                  _openDropDownProgKey.currentState?.changeSelectedItem(100);
+                },
+                child: Text('set to 100'),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        _openDropDownProgKey.currentState?.openDropDownSearch();
-                      },
-                      child: Text("Open dropdownSearch")),
-                  ElevatedButton(
-                      onPressed: () {
-                        _openDropDownProgKey.currentState
-                            ?.changeSelectedItem("No");
-                      },
-                      child: Text("set to 'NO'")),
-                  Material(
-                    child: ElevatedButton(
-                        onPressed: () {
-                          _openDropDownProgKey.currentState
-                              ?.changeSelectedItem("Yes");
-                        },
-                        child: Text("set to 'YES'")),
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        _openDropDownProgKey.currentState
-                            ?.changeSelectedItem('Blabla');
-                      },
-                      child: Text("set to 'Blabla'")),
-                ],
+              Padding(padding: EdgeInsets.all(4)),
+              ElevatedButton(
+                onPressed: () {
+                  _openDropDownProgKey.currentState?.openDropDownSearch();
+                },
+                child: Text('open popup'),
+              ),
+
+              ///************************[multiLevel items example]********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[multiLevel items example]"),
+              Divider(),
+              DropdownSearch<MultiLevelString>(
+                key: myKey,
+                items: myItems,
+                compareFn: (i1, i2) => i1.level1 == i2.level1,
+                popupProps: PopupProps.menu(
+                  showSelectedItems: true,
+                  interceptCallBacks: true, //important line
+                  itemBuilder: (ctx, item, isSelected) {
+                    return ListTile(
+                      selected: isSelected,
+                      title: Text(item.level1),
+                      trailing: item.subLevel.isEmpty
+                          ? null
+                          : (item.isExpanded
+                              ? IconButton(
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  onPressed: () {
+                                    item.isExpanded = !item.isExpanded;
+                                    myKey.currentState?.updatePopupState();
+                                  },
+                                )
+                              : IconButton(
+                                  icon: Icon(Icons.arrow_right),
+                                  onPressed: () {
+                                    item.isExpanded = !item.isExpanded;
+                                    myKey.currentState?.updatePopupState();
+                                  },
+                                )),
+                      subtitle: item.subLevel.isNotEmpty && item.isExpanded
+                          ? Container(
+                              height: item.subLevel.length * 50,
+                              child: ListView(
+                                children: item.subLevel
+                                    .map(
+                                      (e) => ListTile(
+                                        selected: myKey.currentState
+                                                ?.getSelectedItem?.level1 ==
+                                            e.level1,
+                                        title: Text(e.level1),
+                                        onTap: () {
+                                          myKey.currentState
+                                              ?.popupValidate([e]);
+                                        },
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            )
+                          : null,
+                      onTap: () => myKey.currentState?.popupValidate([item]),
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -640,51 +641,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  RenderBox? _findBorderBox(RenderBox box) {
-    RenderBox? borderBox;
-
-    box.visitChildren((child) {
-      if (child is RenderCustomPaint) {
-        borderBox = child;
-      }
-
-      final box = _findBorderBox(child as RenderBox);
-      if (box != null) {
-        borderBox = box;
-      }
-    });
-
-    return borderBox;
-  }
-
-  Widget _customDropDownExample(BuildContext context, UserModel? item) {
-    if (item == null) {
-      return Container();
-    }
-
-    return Container(
-      child: (item.avatar == null)
-          ? ListTile(
-              contentPadding: EdgeInsets.all(0),
-              leading: CircleAvatar(),
-              title: Text("No item selected"),
-            )
-          : ListTile(
-              contentPadding: EdgeInsets.all(0),
-              leading: CircleAvatar(
-                  // this does not work - throws 404 error
-                  // backgroundImage: NetworkImage(item.avatar ?? ''),
-                  ),
-              title: Text(item.name),
-              subtitle: Text(
-                item.createdAt.toString(),
-              ),
-            ),
-    );
-  }
-
   Widget _customPopupItemBuilderExample2(
-      BuildContext context, UserModel? item, bool isSelected) {
+    BuildContext context,
+    UserModel? item,
+    bool isSelected,
+  ) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -719,4 +680,95 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return [];
   }
+}
+
+class _CheckBoxWidget extends StatefulWidget {
+  final Widget child;
+  final bool? isSelected;
+  final ValueChanged<bool?>? onChanged;
+
+  _CheckBoxWidget({required this.child, this.isSelected, this.onChanged});
+
+  @override
+  CheckBoxState createState() => CheckBoxState();
+}
+
+class CheckBoxState extends State<_CheckBoxWidget> {
+  bool? isSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    isSelected = widget.isSelected;
+  }
+
+  @override
+  void didUpdateWidget(covariant _CheckBoxWidget oldWidget) {
+    if (widget.isSelected != isSelected) isSelected = widget.isSelected;
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Color(0x88F44336),
+            Colors.blue,
+          ],
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text('Select: '),
+              Checkbox(
+                  value: isSelected,
+                  tristate: true,
+                  onChanged: (bool? v) {
+                    if (v == null) v = false;
+                    setState(() {
+                      isSelected = v;
+                      if (widget.onChanged != null) widget.onChanged!(v);
+                    });
+                  }),
+            ],
+          ),
+          Expanded(child: widget.child),
+        ],
+      ),
+    );
+  }
+}
+
+class MultiLevelString {
+  final String level1;
+  final List<MultiLevelString> subLevel;
+  bool isExpanded;
+
+  MultiLevelString({
+    this.level1 = "",
+    this.subLevel = const [],
+    this.isExpanded = false,
+  });
+
+  MultiLevelString copy({
+    String? level1,
+    List<MultiLevelString>? subLevel,
+    bool? isExpanded,
+  }) =>
+      MultiLevelString(
+        level1: level1 ?? this.level1,
+        subLevel: subLevel ?? this.subLevel,
+        isExpanded: isExpanded ?? this.isExpanded,
+      );
+
+  @override
+  String toString() => level1;
 }

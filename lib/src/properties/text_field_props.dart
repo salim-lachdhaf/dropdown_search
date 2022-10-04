@@ -58,7 +58,7 @@ class TextFieldProps {
 
   const TextFieldProps({
     this.controller,
-    this.decoration = const InputDecoration(),
+    this.decoration = const InputDecoration(border: OutlineInputBorder()),
     this.keyboardType,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,

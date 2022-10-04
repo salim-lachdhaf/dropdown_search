@@ -14,7 +14,6 @@ class DialogProps {
   final RouteTransitionsBuilder? transitionBuilder;
   final ShapeBorder? shape;
   final bool useRootNavigator;
-  final BoxConstraints constraints;
   final double? elevation;
   final String? semanticLabel;
   final Color? barrierColor;
@@ -25,10 +24,8 @@ class DialogProps {
   final Clip clipBehavior;
   final AnimationController? animation;
   final AlignmentGeometry? alignment;
-  final TextStyle? contentTextStyle;
 
   const DialogProps({
-    this.contentTextStyle,
     this.alignment,
     this.elevation,
     this.semanticLabel,
@@ -46,11 +43,6 @@ class DialogProps {
     this.actionsOverflowDirection,
     this.clipBehavior = Clip.none,
     this.useRootNavigator = false,
-    this.constraints = const BoxConstraints(
-      minWidth: 500,
-      maxWidth: 500,
-      maxHeight: 600,
-    ),
     this.actionsPadding = EdgeInsets.zero,
     this.insetPadding = const EdgeInsets.symmetric(
       horizontal: 40.0,

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../dropdown_search.dart';
 
 class PopupProps<T> {
-  final TextStyle? textStyle;
+  ///popup title
   final Widget? title;
+
+  ///the search box will be shown if true, hidden otherwise
   final bool showSearchBox;
 
   final DropdownSearchPopupItemBuilder<T>? itemBuilder;
@@ -66,11 +68,21 @@ class PopupProps<T> {
   ///fit height depending on nb of result or keep height fix.
   final FlexFit fit;
 
+  ///used as container to the popup widget
+  ///this could be very useful if you want to add extra actions/widget to the popup
+  ///the popup widget is considered as a child
+  final PopupBuilder? containerBuilder;
+
+  ///popup constraints
+  final BoxConstraints constraints;
+
+  ///if true , the callbacks (onTap, onLongClick...) will be handled by the user
+  final bool interceptCallBacks;
+
   const PopupProps._({
     this.mode = Mode.MENU,
     this.fit = FlexFit.tight,
     this.title,
-    this.textStyle,
     this.showSearchBox = false,
     this.bottomSheetProps = const BottomSheetProps(),
     this.dialogProps = const DialogProps(),
@@ -89,12 +101,14 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.disabledItemFn,
     this.isFilterOnline = false,
+    this.containerBuilder,
+    this.constraints = const BoxConstraints(),
+    this.interceptCallBacks = false,
   });
 
   const PopupProps.menu({
     this.title,
     this.fit = FlexFit.tight,
-    this.textStyle,
     this.showSearchBox = false,
     this.menuProps = const MenuProps(),
     this.searchFieldProps = const TextFieldProps(),
@@ -110,13 +124,15 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.disabledItemFn,
     this.isFilterOnline = false,
+    this.containerBuilder,
+    this.constraints = const BoxConstraints(maxHeight: 350),
+    this.interceptCallBacks = false,
   })  : this.mode = Mode.MENU,
         this.bottomSheetProps = const BottomSheetProps(),
         this.dialogProps = const DialogProps(),
         this.modalBottomSheetProps = const ModalBottomSheetProps();
 
   const PopupProps.dialog({
-    this.textStyle,
     this.fit = FlexFit.tight,
     this.title,
     this.showSearchBox = false,
@@ -134,13 +150,19 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.disabledItemFn,
     this.isFilterOnline = false,
+    this.containerBuilder,
+    this.constraints = const BoxConstraints(
+      minWidth: 500,
+      maxWidth: 500,
+      maxHeight: 600,
+    ),
+    this.interceptCallBacks = false,
   })  : this.mode = Mode.DIALOG,
         this.menuProps = const MenuProps(),
         this.bottomSheetProps = const BottomSheetProps(),
         this.modalBottomSheetProps = const ModalBottomSheetProps();
 
   const PopupProps.bottomSheet({
-    this.textStyle,
     this.fit = FlexFit.tight,
     this.title,
     this.showSearchBox = false,
@@ -158,6 +180,9 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.disabledItemFn,
     this.isFilterOnline = false,
+    this.containerBuilder,
+    this.constraints = const BoxConstraints(maxHeight: 500),
+    this.interceptCallBacks = false,
   })  : this.mode = Mode.BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -165,7 +190,6 @@ class PopupProps<T> {
 
   const PopupProps.modalBottomSheet({
     this.title,
-    this.textStyle,
     this.fit = FlexFit.tight,
     this.showSearchBox = false,
     this.modalBottomSheetProps = const ModalBottomSheetProps(),
@@ -182,6 +206,9 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.disabledItemFn,
     this.isFilterOnline = false,
+    this.containerBuilder,
+    this.constraints = const BoxConstraints(maxHeight: 500),
+    this.interceptCallBacks = false,
   })  : this.mode = Mode.MODAL_BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -190,19 +217,16 @@ class PopupProps<T> {
 
 class PopupPropsMultiSelection<T> extends PopupProps<T> {
   ///called when a new item added on Multi selection mode
-  final OnItemAdded<T>? popupOnItemAdded;
+  final OnItemAdded<T>? onItemAdded;
 
   ///called when a new item added on Multi selection mode
-  final OnItemRemoved<T>? popupOnItemRemoved;
+  final OnItemRemoved<T>? onItemRemoved;
 
   ///widget used to show checked items in multiSelection mode
-  final DropdownSearchPopupItemBuilder<T>? popupSelectionWidget;
+  final DropdownSearchPopupItemBuilder<T>? selectionWidget;
 
   ///widget used to validate items in multiSelection mode
-  final ValidationMultiSelectionBuilder<T>? popupValidationMultiSelectionWidget;
-
-  ///widget to add custom widget like addAll/removeAll on popup multi selection mode
-  final ValidationMultiSelectionBuilder<T>? popupCustomMultiSelectionWidget;
+  final ValidationMultiSelectionBuilder<T>? validationWidgetBuilder;
 
   const PopupPropsMultiSelection._({
     super.mode = Mode.MENU,
@@ -211,7 +235,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.isFilterOnline,
     super.itemBuilder,
     super.disabledItemFn,
-    super.textStyle,
     super.showSearchBox,
     super.searchFieldProps = const TextFieldProps(),
     super.favoriteItemProps = const FavoriteItemProps(),
@@ -227,16 +250,17 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.bottomSheetProps = const BottomSheetProps(),
     super.dialogProps = const DialogProps(),
     super.menuProps = const MenuProps(),
-    this.popupCustomMultiSelectionWidget,
-    this.popupOnItemAdded,
-    this.popupOnItemRemoved,
-    this.popupSelectionWidget,
-    this.popupValidationMultiSelectionWidget,
+    super.containerBuilder,
+    super.constraints = const BoxConstraints(maxHeight: 350),
+    super.interceptCallBacks = false,
+    this.onItemAdded,
+    this.onItemRemoved,
+    this.selectionWidget,
+    this.validationWidgetBuilder,
   }) : super._();
 
   const PopupPropsMultiSelection.menu({
     super.title,
-    super.textStyle,
     super.fit = FlexFit.tight,
     super.showSearchBox = false,
     super.searchFieldProps = const TextFieldProps(),
@@ -253,16 +277,17 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.showSelectedItems = false,
     super.disabledItemFn,
     super.isFilterOnline = false,
-    this.popupCustomMultiSelectionWidget,
-    this.popupOnItemAdded,
-    this.popupOnItemRemoved,
-    this.popupSelectionWidget,
-    this.popupValidationMultiSelectionWidget,
+    super.containerBuilder,
+    super.constraints = const BoxConstraints(maxHeight: 350),
+    super.interceptCallBacks = false,
+    this.onItemAdded,
+    this.onItemRemoved,
+    this.selectionWidget,
+    this.validationWidgetBuilder,
   }) : super.menu();
 
   const PopupPropsMultiSelection.dialog({
     super.title,
-    super.textStyle,
     super.fit = FlexFit.tight,
     super.showSearchBox = false,
     super.searchFieldProps = const TextFieldProps(),
@@ -279,16 +304,21 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.showSelectedItems = false,
     super.disabledItemFn,
     super.isFilterOnline = false,
-    this.popupCustomMultiSelectionWidget,
-    this.popupOnItemAdded,
-    this.popupOnItemRemoved,
-    this.popupSelectionWidget,
-    this.popupValidationMultiSelectionWidget,
+    super.containerBuilder,
+    super.constraints = const BoxConstraints(
+      minWidth: 500,
+      maxWidth: 500,
+      maxHeight: 600,
+    ),
+    super.interceptCallBacks = false,
+    this.onItemAdded,
+    this.onItemRemoved,
+    this.selectionWidget,
+    this.validationWidgetBuilder,
   }) : super.dialog();
 
   const PopupPropsMultiSelection.bottomSheet({
     super.title,
-    super.textStyle,
     super.fit = FlexFit.tight,
     super.showSearchBox = false,
     super.searchFieldProps = const TextFieldProps(),
@@ -305,11 +335,13 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.showSelectedItems = false,
     super.disabledItemFn,
     super.isFilterOnline = false,
-    this.popupCustomMultiSelectionWidget,
-    this.popupOnItemAdded,
-    this.popupOnItemRemoved,
-    this.popupSelectionWidget,
-    this.popupValidationMultiSelectionWidget,
+    super.containerBuilder,
+    super.constraints = const BoxConstraints(maxHeight: 500),
+    super.interceptCallBacks = false,
+    this.onItemAdded,
+    this.onItemRemoved,
+    this.selectionWidget,
+    this.validationWidgetBuilder,
   }) : super.bottomSheet();
 
   const PopupPropsMultiSelection.modalBottomSheet({
@@ -318,7 +350,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.fit = FlexFit.tight,
     super.itemBuilder,
     super.disabledItemFn,
-    super.textStyle,
     super.showSearchBox,
     super.searchFieldProps = const TextFieldProps(),
     super.favoriteItemProps = const FavoriteItemProps(),
@@ -331,11 +362,13 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.errorBuilder,
     super.loadingBuilder,
     super.showSelectedItems,
-    this.popupCustomMultiSelectionWidget,
-    this.popupOnItemAdded,
-    this.popupOnItemRemoved,
-    this.popupSelectionWidget,
-    this.popupValidationMultiSelectionWidget,
+    super.containerBuilder,
+    super.constraints = const BoxConstraints(maxHeight: 500),
+    super.interceptCallBacks = false,
+    this.onItemAdded,
+    this.onItemRemoved,
+    this.selectionWidget,
+    this.validationWidgetBuilder,
   }) : super.modalBottomSheet();
 
   PopupPropsMultiSelection.from(PopupProps<T> popupProps)
@@ -357,15 +390,16 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           searchFieldProps: popupProps.searchFieldProps,
           showSearchBox: popupProps.showSearchBox,
           showSelectedItems: popupProps.showSelectedItems,
-          textStyle: popupProps.textStyle,
           mode: popupProps.mode,
           bottomSheetProps: popupProps.bottomSheetProps,
           dialogProps: popupProps.dialogProps,
           menuProps: popupProps.menuProps,
-          popupCustomMultiSelectionWidget: null,
-          popupOnItemAdded: null,
-          popupOnItemRemoved: null,
-          popupSelectionWidget: null,
-          popupValidationMultiSelectionWidget: null,
+          containerBuilder: popupProps.containerBuilder,
+          constraints: popupProps.constraints,
+          interceptCallBacks: popupProps.interceptCallBacks,
+          onItemAdded: null,
+          onItemRemoved: null,
+          selectionWidget: null,
+          validationWidgetBuilder: null,
         );
 }
