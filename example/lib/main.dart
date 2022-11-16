@@ -439,6 +439,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<UserModel>(
+                      selectedItemTextStyle:
+                          TextStyle(color: Colors.amber, fontSize: 20),
                       asyncItems: (String? filter) => getData(filter),
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
                         showSelectedItems: true,
