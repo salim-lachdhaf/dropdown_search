@@ -15,7 +15,7 @@ version: 1.0.0+1
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.18.2 <=3.0.0"
+  sdk: ">=2.18.4 <=3.0.0"
 
 dependencies:
   dio: ^4.0.6
@@ -27,6 +27,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^2.0.1
 
 flutter:
   uses-material-design: true

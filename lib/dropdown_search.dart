@@ -92,6 +92,8 @@ class DropdownSearch<T> extends StatefulWidget {
   ///selected item
   final T? selectedItem;
 
+  final TextStyle? selectedItemTextStyle;
+
   ///selected items
   final List<T> selectedItems;
 
@@ -178,6 +180,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.onChanged,
     this.items = const [],
     this.selectedItem,
+    this.selectedItemTextStyle,
     this.asyncItems,
     this.dropdownBuilder,
     this.dropdownDecoratorProps = const DropDownDecoratorProps(),
@@ -208,6 +211,7 @@ class DropdownSearch<T> extends StatefulWidget {
     Key? key,
     this.isIconBased = false,
     this.icon,
+    this.selectedItemTextStyle,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.items = const [],
     this.asyncItems,
@@ -326,7 +330,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             Flexible(
               child: Text(
                 _selectedItemAsString(item),
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle2!
+                    .merge(widget.selectedItemTextStyle),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
