@@ -83,7 +83,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   @override
   void dispose() {
     _itemsStream.close();
-    searchBoxController.dispose();
+
+    if(widget.popupProps.searchFieldProps.controller == null) {
+      searchBoxController.dispose();
+    }
     widget.popupProps.listViewProps.controller?.dispose();
     widget.popupProps.searchFieldProps.scrollController?.dispose();
     super.dispose();
