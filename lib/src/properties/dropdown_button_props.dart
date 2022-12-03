@@ -2,6 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 class DropdownButtonProps extends IconButtonProps {
+  final VoidCallback? onPressed;
   const DropdownButtonProps({
     super.icon = const Icon(Icons.arrow_drop_down, size: 24),
     super.isVisible = true,
@@ -22,5 +23,6 @@ class DropdownButtonProps extends IconButtonProps {
     super.tooltip,
     super.enableFeedback = false,
     super.constraints,
+    this.onPressed,
   });
 }
