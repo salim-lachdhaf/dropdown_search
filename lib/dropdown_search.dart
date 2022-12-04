@@ -356,8 +356,11 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               .toList(),
         );
       }
-      return Text(_selectedItemAsString(getSelectedItem),
-          style: Theme.of(context).textTheme.subtitle1);
+      return Text(
+        _selectedItemAsString(getSelectedItem),
+        style: widget.dropdownDecoratorProps.baseStyle,
+        textAlign: widget.dropdownDecoratorProps.textAlign,
+      );
     }
 
     return selectedItemWidget();
@@ -470,7 +473,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       children: <Widget>[
         if (widget.clearButtonProps.isVisible && getSelectedItems.isNotEmpty)
           IconButton(
-            onPressed: clearButtonPressed,
+            style: widget.clearButtonProps.style,
+            isSelected: widget.clearButtonProps.isSelected,
+            selectedIcon: widget.clearButtonProps.selectedIcon,
+            onPressed: widget.clearButtonProps.onPressed ?? clearButtonPressed,
             icon: widget.clearButtonProps.icon,
             constraints: widget.clearButtonProps.constraints,
             hoverColor: widget.clearButtonProps.hoverColor,
@@ -492,8 +498,12 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           ),
         if (widget.dropdownButtonProps.isVisible)
           IconButton(
+            style: widget.dropdownButtonProps.style,
+            isSelected: widget.dropdownButtonProps.isSelected,
+            selectedIcon: widget.dropdownButtonProps.selectedIcon,
+            onPressed:
+                widget.dropdownButtonProps.onPressed ?? dropdownButtonPressed,
             icon: widget.dropdownButtonProps.icon,
-            onPressed: dropdownButtonPressed,
             constraints: widget.dropdownButtonProps.constraints,
             hoverColor: widget.dropdownButtonProps.hoverColor,
             highlightColor: widget.dropdownButtonProps.highlightColor,

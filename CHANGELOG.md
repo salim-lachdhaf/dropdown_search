@@ -1,3 +1,7 @@
+## [5.0.4] - 2022.12.05
+* fix bugs: [510] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/510), [439] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/439), [513] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/513), [514] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/514)
+* add new properties to dropdownButton and clearDropdownButton: 'style', 'isSelected', 'selectedIcon', 'onPressed'
+
 ## [5.0.3] - 2022.09.22
 * fix bugs
 * update Readme file

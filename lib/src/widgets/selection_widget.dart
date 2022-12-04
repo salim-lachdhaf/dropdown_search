@@ -44,22 +44,20 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   final List<T> _currentShowedItems = [];
   late TextEditingController searchBoxController;
 
-  late Debouncer _debouncer;
-
   List<T> get _selectedItems => _selectedItemsNotifier.value;
 
   @override
   void initState() {
     super.initState();
-    _debouncer = Debouncer(delay: widget.popupProps.searchDelay);
     _selectedItemsNotifier.value = widget.defaultSelectedItems;
 
     searchBoxController = widget.popupProps.searchFieldProps.controller ??
         TextEditingController();
     searchBoxController.addListener(() {
-      _debouncer(() {
-        _onTextChanged(searchBoxController.text);
-      });
+      Future.delayed(
+        widget.popupProps.searchDelay ?? Duration(milliseconds: 500),
+        () => _onTextChanged(searchBoxController.text),
+      );
     });
 
     Future.delayed(
@@ -84,11 +82,12 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   void dispose() {
     _itemsStream.close();
 
-    if(widget.popupProps.searchFieldProps.controller == null) {
+    if (widget.popupProps.searchFieldProps.controller == null) {
       searchBoxController.dispose();
     }
-    widget.popupProps.listViewProps.controller?.dispose();
-    widget.popupProps.searchFieldProps.scrollController?.dispose();
+    if (widget.popupProps.listViewProps.controller == null) {
+      scrollController.dispose();
+    }
     super.dispose();
   }
 
@@ -731,17 +730,4 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       _selectedItems.length >= _currentShowedItems.length;
 
   List<T> get getSelectedItem => List.from(_selectedItems);
-}
-
-class Debouncer {
-  final Duration? delay;
-  Timer? _timer;
-
-  Debouncer({this.delay});
-
-  void call(Function action) {
-    _timer?.cancel();
-    _timer = Timer(
-        delay ?? const Duration(milliseconds: 500), action as void Function());
-  }
 }
