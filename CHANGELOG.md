@@ -1,9 +1,12 @@
+## [5.0.5] - 2022.12.05
+* Fix analysis warning and formatting issues 
+
 ## [5.0.4] - 2022.12.05
-* fix bugs: [510] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/510), [439] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/439), [513] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/513), [514] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/514)
+* Fix bugs: [510] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/510), [439] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/439), [513] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/513), [514] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/514)
 * add new properties to dropdownButton and clearDropdownButton: 'style', 'isSelected', 'selectedIcon', 'onPressed'
 
 ## [5.0.3] - 2022.09.22
-* fix bugs
+* Fix bugs
 * update Readme file
 
 ## [5.0.2] - 2022.06.04
