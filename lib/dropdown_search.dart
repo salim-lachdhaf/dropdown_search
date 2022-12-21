@@ -350,10 +350,12 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           getSelectedItems,
         );
       else if (isMultiSelectionMode) {
-        return Wrap(
-          children: getSelectedItems
-              .map((e) => defaultItemMultiSelectionMode(e))
-              .toList(),
+        return ClipRRect(
+          child: Wrap(
+            children: getSelectedItems
+                .map((e) => defaultItemMultiSelectionMode(e))
+                .toList(),
+          ),
         );
       }
       return Text(
