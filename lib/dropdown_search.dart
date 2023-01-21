@@ -162,9 +162,13 @@ class DropdownSearch<T> extends StatefulWidget {
   ///if the callBack return FALSE, the opening of the popup will be cancelled
   final BeforePopupOpeningMultiSelection<T>? onBeforePopupOpeningMultiSelection;
 
+  /// multiSelect ConfirmButton
+  final String okTxt;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
+    this.okTxt = 'Ok',
     this.validator,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.onChanged,
@@ -198,6 +202,7 @@ class DropdownSearch<T> extends StatefulWidget {
 
   DropdownSearch.multiSelection({
     Key? key,
+    this.okTxt = 'Ok',
     this.autoValidateMode = AutovalidateMode.disabled,
     this.items = const [],
     this.asyncItems,
@@ -671,6 +676,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       compareFn: widget.compareFn,
       isMultiSelectionMode: isMultiSelectionMode,
       defaultSelectedItems: List.from(getSelectedItems),
+      okTxt: widget.okTxt,
     );
   }
 

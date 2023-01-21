@@ -17,6 +17,7 @@ class SelectionWidget<T> extends StatefulWidget {
   final List<T> defaultSelectedItems;
   final PopupPropsMultiSelection<T> popupProps;
   final bool isMultiSelectionMode;
+  final String okTxt;
 
   const SelectionWidget({
     Key? key,
@@ -29,6 +30,7 @@ class SelectionWidget<T> extends StatefulWidget {
     this.itemAsString,
     this.filterFn,
     this.compareFn,
+    this.okTxt = 'Ok',
   }) : super(key: key);
 
   @override
@@ -212,7 +214,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                   ],
                 ),
               ),
-              _multiSelectionValidation(),
+              _multiSelectionValidation(okTxt: widget.okTxt),
             ],
           );
         });
@@ -227,7 +229,9 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   ///close popup
   void closePopup() => Navigator.pop(context);
 
-  Widget _multiSelectionValidation() {
+  Widget _multiSelectionValidation({
+    required String okTxt,
+  }) {
     if (!widget.isMultiSelectionMode) return SizedBox.shrink();
 
     Widget defaultValidation = Padding(
@@ -236,7 +240,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         alignment: Alignment.centerRight,
         child: ElevatedButton(
           onPressed: onValidate,
-          child: Text("OK"),
+          child: Text(okTxt),
         ),
       ),
     );
