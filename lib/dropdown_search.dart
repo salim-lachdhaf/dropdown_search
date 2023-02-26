@@ -558,45 +558,41 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   Future _openBottomSheet() {
     return showBottomSheet(
-        context: context,
-        enableDrag: widget.popupProps.bottomSheetProps.enableDrag,
-        backgroundColor: widget.popupProps.bottomSheetProps.backgroundColor,
-        clipBehavior: widget.popupProps.bottomSheetProps.clipBehavior,
-        elevation: widget.popupProps.bottomSheetProps.elevation,
-        shape: widget.popupProps.bottomSheetProps.shape,
-        transitionAnimationController: widget.popupProps.bottomSheetProps.animation,
-        constraints: widget.popupProps.bottomSheetProps.constraints,
-        builder: (ctx) {
-          return _popupWidgetInstance();
-        }).closed;
+      context: context,
+      enableDrag: widget.popupProps.bottomSheetProps.enableDrag,
+      backgroundColor: widget.popupProps.bottomSheetProps.backgroundColor,
+      clipBehavior: widget.popupProps.bottomSheetProps.clipBehavior,
+      elevation: widget.popupProps.bottomSheetProps.elevation,
+      shape: widget.popupProps.bottomSheetProps.shape,
+      transitionAnimationController: widget.popupProps.bottomSheetProps.animation,
+      constraints: widget.popupProps.bottomSheetProps.constraints,
+      builder: (ctx) => _popupWidgetInstance(),
+    ).closed;
   }
 
   ///open BottomSheet (Dialog mode)
   Future _openModalBottomSheet() {
     final sheetTheme = Theme.of(context).bottomSheetTheme;
     return showModalBottomSheet<T>(
-        context: context,
-        barrierColor: widget.popupProps.modalBottomSheetProps.barrierColor,
-        backgroundColor: widget.popupProps.modalBottomSheetProps.backgroundColor ??
-            sheetTheme.modalBackgroundColor ??
-            sheetTheme.backgroundColor ??
-            Colors.white,
-        isDismissible: widget.popupProps.modalBottomSheetProps.barrierDismissible,
-        isScrollControlled: widget.popupProps.modalBottomSheetProps.isScrollControlled,
-        enableDrag: widget.popupProps.modalBottomSheetProps.enableDrag,
-        clipBehavior: widget.popupProps.modalBottomSheetProps.clipBehavior,
-        elevation: widget.popupProps.modalBottomSheetProps.elevation,
-        shape: widget.popupProps.modalBottomSheetProps.shape,
-        anchorPoint: widget.popupProps.modalBottomSheetProps.anchorPoint,
-        useRootNavigator: widget.popupProps.modalBottomSheetProps.useRootNavigator,
-        transitionAnimationController: widget.popupProps.modalBottomSheetProps.animation,
-        constraints: widget.popupProps.modalBottomSheetProps.constraints,
-        builder: (ctx) {
-          return Container(
-            margin: widget.popupProps.modalBottomSheetProps.padding,
-            child: _popupWidgetInstance(),
-          );
-        });
+      context: context,
+      useSafeArea: widget.popupProps.modalBottomSheetProps.useSafeArea,
+      barrierColor: widget.popupProps.modalBottomSheetProps.barrierColor,
+      backgroundColor: widget.popupProps.modalBottomSheetProps.backgroundColor ??
+          sheetTheme.modalBackgroundColor ??
+          sheetTheme.backgroundColor ??
+          Colors.white,
+      isDismissible: widget.popupProps.modalBottomSheetProps.barrierDismissible,
+      isScrollControlled: widget.popupProps.modalBottomSheetProps.isScrollControlled,
+      enableDrag: widget.popupProps.modalBottomSheetProps.enableDrag,
+      clipBehavior: widget.popupProps.modalBottomSheetProps.clipBehavior,
+      elevation: widget.popupProps.modalBottomSheetProps.elevation,
+      shape: widget.popupProps.modalBottomSheetProps.shape,
+      anchorPoint: widget.popupProps.modalBottomSheetProps.anchorPoint,
+      useRootNavigator: widget.popupProps.modalBottomSheetProps.useRootNavigator,
+      transitionAnimationController: widget.popupProps.modalBottomSheetProps.animation,
+      constraints: widget.popupProps.modalBottomSheetProps.constraints,
+      builder: (ctx) => _popupWidgetInstance(),
+    );
   }
 
   ///openMenu

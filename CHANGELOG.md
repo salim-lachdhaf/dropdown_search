@@ -3,6 +3,7 @@
 * Fix search delay [485](https://github.com/salim-lachdhaf/searchable_dropdown/issues/485)
 * fix lint errors
 * add 'textDirection' in multiSelection mode to handle checkbox alignment
+* add useSafeArea for modal
 
 * ## [5.0.5] - 2022.12.05
 * Fix analysis warning and formatting issues 

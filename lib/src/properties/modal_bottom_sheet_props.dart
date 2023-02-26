@@ -14,6 +14,7 @@ class ModalBottomSheetProps {
   final Offset? anchorPoint;
   final bool isScrollControlled;
   final EdgeInsets padding;
+  final bool useSafeArea;
 
   const ModalBottomSheetProps({
     this.anchorPoint,
@@ -29,5 +30,6 @@ class ModalBottomSheetProps {
     this.constraints,
     this.isScrollControlled = true,
     this.padding = EdgeInsets.zero,
+    this.useSafeArea = true,
   });
 }
