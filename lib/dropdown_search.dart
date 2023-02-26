@@ -712,7 +712,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   void changeSelectedItems(List<T> selectedItems) => _handleOnChangeSelectedItems(selectedItems);
 
   ///function to remove an item from the list
-  ///Useful i multiSelection mode to delete an item
+  ///Useful in multiSelection mode to delete an item
   void removeItem(T itemToRemove) =>
       _handleOnChangeSelectedItems(getSelectedItems..removeWhere((i) => _isEqual(itemToRemove, i)));
 
@@ -770,6 +770,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///THIS USED FOR OPEN DROPDOWN_SEARCH PROGRAMMATICALLY,
   ///otherwise you can you [_selectSearchMode]
   void openDropDownSearch() => _selectSearchMode();
+
+  ///return the state of the popup
+  SelectionWidgetState<T>? get getPopupState => _popupStateKey.currentState;
 
   ///close dropdownSearch popup if it's open
   void closeDropDownSearch() => _popupStateKey.currentState?.closePopup();
