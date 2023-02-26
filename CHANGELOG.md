@@ -1,8 +1,14 @@
-## [5.0.5] - 2022.12.05
+## [5.0.6] - 2023.02.26
+* Fix search delay [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)
+* Fix search delay [485](https://github.com/salim-lachdhaf/searchable_dropdown/issues/485)
+* fix lint errors
+* add 'textDirection' in multiSelection mode to handle checkbox alignment
+
+* ## [5.0.5] - 2022.12.05
 * Fix analysis warning and formatting issues 
 
 ## [5.0.4] - 2022.12.05
-* Fix bugs: [510] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/510), [439] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/439), [513] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/513), [514] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/514)
+* Fix bugs: [510](https://github.com/salim-lachdhaf/searchable_dropdown/issues/510), [439] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/439), [513] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/513), [514] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/514)
 * add new properties to dropdownButton and clearDropdownButton: 'style', 'isSelected', 'selectedIcon', 'onPressed'
 
 ## [5.0.3] - 2022.09.22
@@ -44,7 +50,7 @@
 * improve menu mode
 * improve dialog mode
 * fix large text in chips in multiSelection mode
-* fix bug [84] (https://github.com/salim-lachdhaf/searchable_dropdown/issues/84)
+* fix bug [84](https://github.com/salim-lachdhaf/searchable_dropdown/issues/84)
 * add new mode BOTTOM_SHEET
 * support Flutter v3
 

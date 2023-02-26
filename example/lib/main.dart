@@ -48,12 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     void _handleCheckBoxState({bool updateState = true}) {
-      var selectedItem =
-          _popupBuilderKey.currentState?.popupGetSelectedItems ?? [];
-      var isAllSelected =
-          _popupBuilderKey.currentState?.popupIsAllItemSelected ?? false;
-      _popupBuilderSelection =
-          selectedItem.isEmpty ? false : (isAllSelected ? true : null);
+      var selectedItem = _popupBuilderKey.currentState?.popupGetSelectedItems ?? [];
+      var isAllSelected = _popupBuilderKey.currentState?.popupIsAllItemSelected ?? false;
+      _popupBuilderSelection = selectedItem.isEmpty ? false : (isAllSelected ? true : null);
 
       if (updateState) setState(() {});
     }
@@ -116,8 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: MaterialButton(
                                 child: Text('OK'),
                                 onPressed: () {
-                                  _popupCustomValidationKey.currentState
-                                      ?.popupOnValidate();
+                                  _popupCustomValidationKey.currentState?.popupOnValidate();
                                 },
                               ),
                             ),
@@ -141,9 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       popupProps: PopupProps.bottomSheet(
-                          bottomSheetProps: BottomSheetProps(
-                              elevation: 16,
-                              backgroundColor: Color(0xFFAADCEE))),
+                          bottomSheetProps: BottomSheetProps(elevation: 16, backgroundColor: Color(0xFFAADCEE))),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
@@ -183,9 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         favoriteItemProps: FavoriteItemProps(
                           showFavoriteItems: true,
                           favoriteItems: (us) {
-                            return us
-                                .where((e) => e.name.contains("Mrs"))
-                                .toList();
+                            return us.where((e) => e.name.contains("Mrs")).toList();
                           },
                         ),
                       ),
@@ -202,14 +194,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         favoriteItemProps: FavoriteItemProps(
                           showFavoriteItems: true,
                           favoriteItems: (us) {
-                            return us
-                                .where((e) => e.name.contains("Mrs"))
-                                .toList();
+                            return us.where((e) => e.name.contains("Mrs")).toList();
                           },
                           favoriteItemBuilder: (context, item, isSelected) {
                             return Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 6),
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
                                   borderRadius: BorderRadius.circular(10),
@@ -222,9 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     style: TextStyle(color: Colors.indigo),
                                   ),
                                   Padding(padding: EdgeInsets.only(left: 8)),
-                                  isSelected
-                                      ? Icon(Icons.check_box_outlined)
-                                      : SizedBox.shrink(),
+                                  isSelected ? Icon(Icons.check_box_outlined) : SizedBox.shrink(),
                                 ],
                               ),
                             );
@@ -262,8 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       validator: (List<int>? items) {
                         if (items == null || items.isEmpty)
                           return 'required filed';
-                        else if (items.length > 3)
-                          return 'only 1 to 3 items are allowed';
+                        else if (items.length > 3) return 'only 1 to 3 items are allowed';
                         return null;
                       },
                     ),
@@ -324,11 +310,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             isSelected: _popupBuilderSelection,
                             onChanged: (v) {
                               if (v == true)
-                                _popupBuilderKey.currentState!
-                                    .popupSelectAllItems();
-                              else if (v == false)
-                                _popupBuilderKey.currentState!
-                                    .popupDeselectAllItems();
+                                _popupBuilderKey.currentState!.popupSelectAllItems();
+                              else if (v == false) _popupBuilderKey.currentState!.popupDeselectAllItems();
                               _handleCheckBoxState();
                             },
                           );
@@ -357,8 +340,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: OutlinedButton(
                                       onPressed: () {
                                         // How should I unselect all items in the list?
-                                        _multiKey.currentState
-                                            ?.closeDropDownSearch();
+                                        _multiKey.currentState?.closeDropDownSearch();
                                       },
                                       child: const Text('Cancel'),
                                     ),
@@ -368,8 +350,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: OutlinedButton(
                                       onPressed: () {
                                         // How should I select all items in the list?
-                                        _multiKey.currentState
-                                            ?.popupSelectAllItems();
+                                        _multiKey.currentState?.popupSelectAllItems();
                                       },
                                       child: const Text('All'),
                                     ),
@@ -379,8 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: OutlinedButton(
                                       onPressed: () {
                                         // How should I unselect all items in the list?
-                                        _multiKey.currentState
-                                            ?.popupDeselectAllItems();
+                                        _multiKey.currentState?.popupDeselectAllItems();
                                       },
                                       child: const Text('None'),
                                     ),
@@ -409,6 +389,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       clearButtonProps: ClearButtonProps(isVisible: true),
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
                         showSelectedItems: true,
+                        isFilterOnline: true,
                         itemBuilder: _customPopupItemBuilderExample2,
                         showSearchBox: true,
                         searchFieldProps: TextFieldProps(
@@ -423,14 +404,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                       ),
-                      compareFn: (item, selectedItem) =>
-                          item.id == selectedItem.id,
+                      compareFn: (item, selectedItem) => item.id == selectedItem.id,
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           labelText: 'Users *',
                           filled: true,
-                          fillColor:
-                              Theme.of(context).inputDecorationTheme.fillColor,
+                          fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                         ),
                       ),
                       dropdownBuilder: _customDropDownExampleMultiSelection,
@@ -450,8 +429,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         dropdownSearchDecoration: InputDecoration(
                           labelText: 'User *',
                           filled: true,
-                          fillColor:
-                              Theme.of(context).inputDecorationTheme.fillColor,
+                          fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                         ),
                       ),
                     ),
@@ -583,13 +561,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                 children: item.subLevel
                                     .map(
                                       (e) => ListTile(
-                                        selected: myKey.currentState
-                                                ?.getSelectedItem?.level1 ==
-                                            e.level1,
+                                        selected: myKey.currentState?.getSelectedItem?.level1 == e.level1,
                                         title: Text(e.level1),
                                         onTap: () {
-                                          myKey.currentState
-                                              ?.popupValidate([e]);
+                                          myKey.currentState?.popupValidate([e]);
                                         },
                                       ),
                                     )
@@ -609,8 +584,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _customDropDownExampleMultiSelection(
-      BuildContext context, List<UserModel?> selectedItems) {
+  Widget _customDropDownExampleMultiSelection(BuildContext context, List<UserModel> selectedItems) {
     if (selectedItems.isEmpty) {
       return ListTile(
         contentPadding: EdgeInsets.all(0),
@@ -627,12 +601,11 @@ class _MyHomePageState extends State<MyHomePage> {
             child: ListTile(
               contentPadding: EdgeInsets.all(0),
               leading: CircleAvatar(
-                  // this does not work - throws 404 error
-                  // backgroundImage: NetworkImage(item.avatar ?? ''),
-                  ),
-              title: Text(e?.name ?? ''),
+                backgroundImage: NetworkImage(e.avatar),
+              ),
+              title: Text(e.name),
               subtitle: Text(
-                e?.createdAt.toString() ?? '',
+                e.createdAt.toString(),
               ),
             ),
           ),
@@ -641,11 +614,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _customPopupItemBuilderExample2(
-    BuildContext context,
-    UserModel? item,
-    bool isSelected,
-  ) {
+  Widget _customPopupItemBuilderExample2(BuildContext context, UserModel item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
@@ -657,19 +626,18 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
       child: ListTile(
         selected: isSelected,
-        title: Text(item?.name ?? ''),
-        subtitle: Text(item?.createdAt?.toString() ?? ''),
+        title: Text(item.name),
+        subtitle: Text(item.createdAt.toString()),
         leading: CircleAvatar(
-            // this does not work - throws 404 error
-            // backgroundImage: NetworkImage(item.avatar ?? ''),
-            ),
+          backgroundImage: NetworkImage(item.avatar),
+        ),
       ),
     );
   }
 
   Future<List<UserModel>> getData(filter) async {
     var response = await Dio().get(
-      "https://5d85ccfb1e61af001471bf60.mockapi.io/user",
+      "https://63c1210999c0a15d28e1ec1d.mockapi.io/users",
       queryParameters: {"filter": filter},
     );
 
