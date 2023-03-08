@@ -372,7 +372,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (FormFieldState<T> state) {
         if (state.value != getSelectedItem) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            state.didChange(getSelectedItem);
+            if(mounted) {
+              state.didChange(getSelectedItem);
+            }
           });
         }
         return ValueListenableBuilder<bool>(
@@ -402,7 +404,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (FormFieldState<List<T>> state) {
         if (state.value != getSelectedItems) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            state.didChange(getSelectedItems);
+            if(mounted) {
+              state.didChange(getSelectedItems);
+            }
           });
         }
         return ValueListenableBuilder<bool>(
