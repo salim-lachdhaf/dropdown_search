@@ -247,7 +247,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   @override
   void initState() {
     super.initState();
-    _selectedItemsNotifier.value =        isMultiSelectionMode ? List.from(widget.selectedItems) : _itemToList(widget.selectedItem);
+    _selectedItemsNotifier.value = isMultiSelectionMode ? List.from(widget.selectedItems) : _itemToList(widget.selectedItem);
   }
 
   @override
@@ -371,7 +371,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (FormFieldState<T> state) {
         if (state.value != getSelectedItem) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if(mounted) {
+            if (mounted) {
               state.didChange(getSelectedItem);
             }
           });
@@ -403,7 +403,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (FormFieldState<List<T>> state) {
         if (state.value != getSelectedItems) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if(mounted) {
+            if (mounted) {
               state.didChange(getSelectedItems);
             }
           });
@@ -580,7 +580,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       context: context,
       useSafeArea: widget.popupProps.modalBottomSheetProps.useSafeArea,
       barrierColor: widget.popupProps.modalBottomSheetProps.barrierColor,
-      backgroundColor: widget.popupProps.modalBottomSheetProps.backgroundColor ??          sheetTheme.modalBackgroundColor ??          sheetTheme.backgroundColor ??          Colors.white,
+      backgroundColor: widget.popupProps.modalBottomSheetProps.backgroundColor ?? sheetTheme.modalBackgroundColor ?? sheetTheme.backgroundColor ?? Colors.white,
       isDismissible: widget.popupProps.modalBottomSheetProps.barrierDismissible,
       isScrollControlled: widget.popupProps.modalBottomSheetProps.isScrollControlled,
       enableDrag: widget.popupProps.modalBottomSheetProps.enableDrag,
@@ -713,8 +713,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///function to remove an item from the list
   ///Useful in multiSelection mode to delete an item
-  void removeItem(T itemToRemove) =>
-      _handleOnChangeSelectedItems(getSelectedItems..removeWhere((i) => _isEqual(itemToRemove, i)));
+  void removeItem(T itemToRemove) => _handleOnChangeSelectedItems(getSelectedItems..removeWhere((i) => _isEqual(itemToRemove, i)));
 
   ///Change selected Value; this function is public USED to clear selected
   ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItems]
@@ -788,18 +787,6 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Future<void> doExternalRefresh() async {
     if (_popupStateKey.currentState != null) {
       await _popupStateKey.currentState!.externalRefresh().then((value) {});
-    } else {
-      // ha a lenyílóka key-jének a currentState-je még null, az azt jelenti, hogy még nem kreálódott lenyílóka.
-      // ezért előbb kreálnun kkell egyet
-      //(_popupWidgetInstance() as StatefulWidget).createState();
-      //
-
-      //SelectionWidget<T> w = _popupWidgetInstance() as SelectionWidget<T>;
-
-      SelectionWidget<T> w = _popupWidgetInstance();
-      StatefulElement se = StatefulElement(w);
-      se.state.initState();
-      await (se.state as SelectionWidgetState).externalRefresh();
     }
   }
 }
