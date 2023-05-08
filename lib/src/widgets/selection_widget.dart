@@ -296,11 +296,11 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
 
     List<T> applyFilter(String filter) {
       return _cachedItems.where((i) {
-        if (widget.filterFn != null)
+        if (widget.filterFn != null) {
           return (widget.filterFn!(i, filter));
-        else if (i.toString().toLowerCase().contains(filter.toLowerCase()))
+        } else if (i.toString().toLowerCase().contains(filter.toLowerCase())) {
           return true;
-        else if (widget.itemAsString != null) {
+        } else if (widget.itemAsString != null) {
           return (widget.itemAsString!(i)).toLowerCase().contains(filter.toLowerCase());
         }
         return false;
@@ -331,10 +331,11 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         _cachedItems.addAll(onlineItems);
 
         //don't filter data , they are already filtered online and local data are already filtered
-        if (widget.popupProps.isFilterOnline == true)
+        if (widget.popupProps.isFilterOnline == true) {
           _addDataToStream(_cachedItems);
-        else
+        } else {
           _addDataToStream(applyFilter(filter));
+        }
       } catch (e) {
         _addErrorToStream(e);
         //if offline items count > 0 , the error will be not visible for the user
@@ -644,4 +645,11 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   bool get isAllItemSelected => _selectedItems.length >= _currentShowedItems.length;
 
   List<T> get getSelectedItem => List.from(_selectedItems);
+
+  Future<void> externalRefresh() async {
+    return await _manageItemsByFilter(
+      searchBoxController.text,
+      isFirstLoad: true,
+    );
+  }
 }

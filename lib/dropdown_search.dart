@@ -247,8 +247,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   @override
   void initState() {
     super.initState();
-    _selectedItemsNotifier.value =
-        isMultiSelectionMode ? List.from(widget.selectedItems) : _itemToList(widget.selectedItem);
+    _selectedItemsNotifier.value =        isMultiSelectionMode ? List.from(widget.selectedItems) : _itemToList(widget.selectedItem);
   }
 
   @override
@@ -581,10 +580,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       context: context,
       useSafeArea: widget.popupProps.modalBottomSheetProps.useSafeArea,
       barrierColor: widget.popupProps.modalBottomSheetProps.barrierColor,
-      backgroundColor: widget.popupProps.modalBottomSheetProps.backgroundColor ??
-          sheetTheme.modalBackgroundColor ??
-          sheetTheme.backgroundColor ??
-          Colors.white,
+      backgroundColor: widget.popupProps.modalBottomSheetProps.backgroundColor ??          sheetTheme.modalBackgroundColor ??          sheetTheme.backgroundColor ??          Colors.white,
       isDismissible: widget.popupProps.modalBottomSheetProps.barrierDismissible,
       isScrollControlled: widget.popupProps.modalBottomSheetProps.isScrollControlled,
       enableDrag: widget.popupProps.modalBottomSheetProps.enableDrag,
@@ -617,7 +613,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     );
   }
 
-  Widget _popupWidgetInstance() {
+  SelectionWidget<T> _popupWidgetInstance() {
     return SelectionWidget<T>(
       key: _popupStateKey,
       popupProps: widget.popupProps,
@@ -788,4 +784,22 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   List<T> get popupGetSelectedItems => _popupStateKey.currentState?.getSelectedItem ?? [];
 
   void updatePopupState() => _popupStateKey.currentState?.setState(() {});
+
+  Future<void> doExternalRefresh() async {
+    if (_popupStateKey.currentState != null) {
+      await _popupStateKey.currentState!.externalRefresh().then((value) {});
+    } else {
+      // ha a lenyílóka key-jének a currentState-je még null, az azt jelenti, hogy még nem kreálódott lenyílóka.
+      // ezért előbb kreálnun kkell egyet
+      //(_popupWidgetInstance() as StatefulWidget).createState();
+      //
+
+      //SelectionWidget<T> w = _popupWidgetInstance() as SelectionWidget<T>;
+
+      SelectionWidget<T> w = _popupWidgetInstance();
+      StatefulElement se = StatefulElement(w);
+      se.state.initState();
+      await (se.state as SelectionWidgetState).externalRefresh();
+    }
+  }
 }
