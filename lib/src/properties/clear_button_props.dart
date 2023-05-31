@@ -2,6 +2,11 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 class ClearButtonProps extends IconButtonProps {
+  /// Used to indicate the buttons order when the field is not empty
+  /// If `true` (default) the clear button is before the dropdown button
+  /// If `false` the dropdown button is before the clear button
+  final bool isBefore;
+
   const ClearButtonProps({
     super.icon = const Icon(Icons.clear, size: 24),
     super.isVisible = false,
@@ -26,5 +31,6 @@ class ClearButtonProps extends IconButtonProps {
     super.isSelected,
     super.selectedIcon,
     super.onPressed,
+    this.isBefore = true,
   });
 }

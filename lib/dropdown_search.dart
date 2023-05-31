@@ -456,13 +456,38 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Widget _manageSuffixIcons() {
     final clearButtonPressed = () => clear();
     final dropdownButtonPressed = () => _selectSearchMode();
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        if (widget.clearButtonProps.isVisible && getSelectedItems.isNotEmpty)
-          IconButton(
+    
+    final Widget? dropdownButton = (widget.dropdownButtonProps.isVisible)
+        ? IconButton(
+            style: widget.dropdownButtonProps.style,
+            isSelected: widget.dropdownButtonProps.isSelected,
+            selectedIcon: widget.dropdownButtonProps.selectedIcon,
+            onPressed:
+                widget.dropdownButtonProps.onPressed ?? dropdownButtonPressed,
+            icon: widget.dropdownButtonProps.icon,
+            constraints: widget.dropdownButtonProps.constraints,
+            hoverColor: widget.dropdownButtonProps.hoverColor,
+            highlightColor: widget.dropdownButtonProps.highlightColor,
+            splashColor: widget.dropdownButtonProps.splashColor,
+            color: widget.dropdownButtonProps.color,
+            focusColor: widget.dropdownButtonProps.focusColor,
+            iconSize: widget.dropdownButtonProps.iconSize,
+            padding: widget.dropdownButtonProps.padding,
+            splashRadius: widget.dropdownButtonProps.splashRadius,
+            alignment: widget.dropdownButtonProps.alignment,
+            autofocus: widget.dropdownButtonProps.autofocus,
+            disabledColor: widget.dropdownButtonProps.disabledColor,
+            enableFeedback: widget.dropdownButtonProps.enableFeedback,
+            focusNode: widget.dropdownButtonProps.focusNode,
+            mouseCursor: widget.dropdownButtonProps.mouseCursor,
+            tooltip: widget.dropdownButtonProps.tooltip,
+            visualDensity: widget.dropdownButtonProps.visualDensity,
+          )
+        : null;
+    
+    final Widget? clearButton = (widget.clearButtonProps.isVisible &&
+            getSelectedItems.isNotEmpty)
+        ? IconButton(
             style: widget.clearButtonProps.style,
             isSelected: widget.clearButtonProps.isSelected,
             selectedIcon: widget.clearButtonProps.selectedIcon,
@@ -485,35 +510,24 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             mouseCursor: widget.clearButtonProps.mouseCursor,
             tooltip: widget.clearButtonProps.tooltip,
             visualDensity: widget.clearButtonProps.visualDensity,
-          ),
-        if (widget.dropdownButtonProps.isVisible)
-          IconButton(
-            style: widget.dropdownButtonProps.style,
-            isSelected: widget.dropdownButtonProps.isSelected,
-            selectedIcon: widget.dropdownButtonProps.selectedIcon,
-            onPressed: widget.dropdownButtonProps.onPressed ?? dropdownButtonPressed,
-            icon: widget.dropdownButtonProps.icon,
-            constraints: widget.dropdownButtonProps.constraints,
-            hoverColor: widget.dropdownButtonProps.hoverColor,
-            highlightColor: widget.dropdownButtonProps.highlightColor,
-            splashColor: widget.dropdownButtonProps.splashColor,
-            color: widget.dropdownButtonProps.color,
-            focusColor: widget.dropdownButtonProps.focusColor,
-            iconSize: widget.dropdownButtonProps.iconSize,
-            padding: widget.dropdownButtonProps.padding,
-            splashRadius: widget.dropdownButtonProps.splashRadius,
-            alignment: widget.dropdownButtonProps.alignment,
-            autofocus: widget.dropdownButtonProps.autofocus,
-            disabledColor: widget.dropdownButtonProps.disabledColor,
-            enableFeedback: widget.dropdownButtonProps.enableFeedback,
-            focusNode: widget.dropdownButtonProps.focusNode,
-            mouseCursor: widget.dropdownButtonProps.mouseCursor,
-            tooltip: widget.dropdownButtonProps.tooltip,
-            visualDensity: widget.dropdownButtonProps.visualDensity,
-          ),
-      ],
+          )
+        : null;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: widget.clearButtonProps.isBefore
+          ? <Widget>[
+              if (clearButton != null) clearButton,
+              if (dropdownButton != null) dropdownButton,
+            ]
+          : <Widget>[
+              if (dropdownButton != null) dropdownButton,
+              if (clearButton != null) clearButton,
+            ],
     );
   }
+
 
   RelativeRect _position(RenderBox popupButtonObject, RenderBox overlay) {
     // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
