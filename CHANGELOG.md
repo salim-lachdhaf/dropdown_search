@@ -1,4 +1,12 @@
-* Added `searchSplashColor`, `searchHighlightColor` and `searchHoverColor` fields to `DropDownDecoratorProps`.
+* Added the following properties to the class `DropDownDecoratorProps`:
+  
+  - `searchSplashColor`
+  - `searchHighlightColor`
+  - `searchHoverColor`
+  - `searchFocusColor`
+  - `autofocus`
+  - `canRequestFocus`
+  - `focusNode`
 
 ## [5.0.6] - 2023.02.26
 * Fix search delay [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)

@@ -15,6 +15,15 @@ class DropDownDecoratorProps {
   /// Defaults to the value of [ThemeData.hoverColor] or the nearest [Theme].
   final Color? searchHoverColor;
 
+  /// Defaults to the value of [ThemeData.focusColor] or the nearest [Theme].
+  final Color? searchFocusColor;
+
+  final bool autofocus;
+
+  final bool canRequestFocus;
+
+  final FocusNode? focusNode;
+
   const DropDownDecoratorProps({
     this.dropdownSearchDecoration,
     this.baseStyle,
@@ -23,5 +32,9 @@ class DropDownDecoratorProps {
     this.searchSplashColor,
     this.searchHighlightColor,
     this.searchHoverColor,
+    this.searchFocusColor,
+    this.autofocus = false,
+    this.canRequestFocus = true,
+    this.focusNode,
   });
 }

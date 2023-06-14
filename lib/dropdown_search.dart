@@ -286,6 +286,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         return IgnorePointer(
           ignoring: !widget.enabled,
           child: InkWell(
+            autofocus: widget.dropdownDecoratorProps.autofocus,
+            focusNode: widget.dropdownDecoratorProps.focusNode,
+            canRequestFocus: widget.dropdownDecoratorProps.canRequestFocus,
+            focusColor: widget.dropdownDecoratorProps.searchFocusColor,
             highlightColor: widget.dropdownDecoratorProps.searchHighlightColor,
             splashColor: widget.dropdownDecoratorProps.searchSplashColor,
             hoverColor: widget.dropdownDecoratorProps.searchHoverColor,
