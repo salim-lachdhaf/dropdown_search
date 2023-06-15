@@ -384,10 +384,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 baseStyle: widget.dropdownDecoratorProps.baseStyle,
                 textAlign: widget.dropdownDecoratorProps.textAlign,
                 textAlignVertical: widget.dropdownDecoratorProps.textAlignVertical,
-                isEmpty: getSelectedItem == null && widget.dropdownBuilder == null,
+                isEmpty: getSelectedItem == null,
                 isFocused: isFocused,
                 decoration: _manageDropdownDecoration(state),
-                child: _defaultSelectedItemWidget(),
+                child:(getSelectedItem!=null)? _defaultSelectedItemWidget():null,
               );
             });
       },
@@ -416,10 +416,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 baseStyle: widget.dropdownDecoratorProps.baseStyle,
                 textAlign: widget.dropdownDecoratorProps.textAlign,
                 textAlignVertical: widget.dropdownDecoratorProps.textAlignVertical,
-                isEmpty: getSelectedItems.isEmpty && widget.dropdownBuilderMultiSelection == null,
+                isEmpty: getSelectedItems.isEmpty,
                 isFocused: isFocused,
                 decoration: _manageDropdownDecoration(state),
-                child: _defaultSelectedItemWidget(),
+                child:(getSelectedItems.isNotEmpty)? _defaultSelectedItemWidget():null,
               );
             });
       },
