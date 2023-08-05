@@ -106,15 +106,13 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
   String? get barrierLabel => menuModeProps.barrierLabel;
 
   @override
-  Animation<double>? get animation =>
-      menuModeProps.animation ?? super.animation;
+  Animation<double>? get animation => menuModeProps.animation ?? super.animation;
 
   @override
   Curve get barrierCurve => menuModeProps.barrierCurve ?? super.barrierCurve;
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation) {
+  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
     final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
     final menu = Material(
       shape: menuModeProps.shape ?? popupMenuTheme.shape,

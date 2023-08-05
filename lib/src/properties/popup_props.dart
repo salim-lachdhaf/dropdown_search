@@ -23,7 +23,7 @@ class PopupProps<T> {
   /// callback executed before applying value change
   ///delay before searching, change it to Duration(milliseconds: 0)
   ///if you do not use online search
-  final Duration? searchDelay;
+  final Duration searchDelay;
 
   ///called when popup is dismissed
   final VoidCallback? onDismissed;
@@ -92,7 +92,7 @@ class PopupProps<T> {
     this.scrollbarProps = const ScrollbarProps(),
     this.listViewProps = const ListViewProps(),
     this.favoriteItemProps = const FavoriteItemProps(),
-    this.searchDelay,
+    this.searchDelay = const Duration(seconds: 1),
     this.onDismissed,
     this.emptyBuilder,
     this.itemBuilder,
@@ -115,7 +115,7 @@ class PopupProps<T> {
     this.scrollbarProps = const ScrollbarProps(),
     this.listViewProps = const ListViewProps(),
     this.favoriteItemProps = const FavoriteItemProps(),
-    this.searchDelay,
+    this.searchDelay = const Duration(seconds: 1),
     this.onDismissed,
     this.emptyBuilder,
     this.itemBuilder,
@@ -141,7 +141,7 @@ class PopupProps<T> {
     this.scrollbarProps = const ScrollbarProps(),
     this.listViewProps = const ListViewProps(),
     this.favoriteItemProps = const FavoriteItemProps(),
-    this.searchDelay,
+    this.searchDelay = const Duration(seconds: 1),
     this.onDismissed,
     this.emptyBuilder,
     this.itemBuilder,
@@ -171,7 +171,7 @@ class PopupProps<T> {
     this.scrollbarProps = const ScrollbarProps(),
     this.listViewProps = const ListViewProps(),
     this.favoriteItemProps = const FavoriteItemProps(),
-    this.searchDelay,
+    this.searchDelay = const Duration(seconds: 1),
     this.onDismissed,
     this.emptyBuilder,
     this.itemBuilder,
@@ -197,7 +197,7 @@ class PopupProps<T> {
     this.scrollbarProps = const ScrollbarProps(),
     this.listViewProps = const ListViewProps(),
     this.favoriteItemProps = const FavoriteItemProps(),
-    this.searchDelay,
+    this.searchDelay = const Duration(seconds: 1),
     this.onDismissed,
     this.emptyBuilder,
     this.itemBuilder,
@@ -228,6 +228,8 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   ///widget used to validate items in multiSelection mode
   final ValidationMultiSelectionBuilder<T>? validationWidgetBuilder;
 
+  final TextDirection textDirection;
+
   const PopupPropsMultiSelection._({
     super.mode = Mode.MENU,
     super.fit = FlexFit.tight,
@@ -257,6 +259,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemRemoved,
     this.selectionWidget,
     this.validationWidgetBuilder,
+    this.textDirection = TextDirection.ltr,
   }) : super._();
 
   const PopupPropsMultiSelection.menu({
@@ -284,6 +287,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemRemoved,
     this.selectionWidget,
     this.validationWidgetBuilder,
+    this.textDirection = TextDirection.ltr,
   }) : super.menu();
 
   const PopupPropsMultiSelection.dialog({
@@ -315,6 +319,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemRemoved,
     this.selectionWidget,
     this.validationWidgetBuilder,
+    this.textDirection = TextDirection.ltr,
   }) : super.dialog();
 
   const PopupPropsMultiSelection.bottomSheet({
@@ -342,6 +347,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemRemoved,
     this.selectionWidget,
     this.validationWidgetBuilder,
+    this.textDirection = TextDirection.ltr,
   }) : super.bottomSheet();
 
   const PopupPropsMultiSelection.modalBottomSheet({
@@ -369,6 +375,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemRemoved,
     this.selectionWidget,
     this.validationWidgetBuilder,
+    this.textDirection = TextDirection.ltr,
   }) : super.modalBottomSheet();
 
   PopupPropsMultiSelection.from(PopupProps<T> popupProps)
@@ -401,5 +408,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           onItemRemoved: null,
           selectionWidget: null,
           validationWidgetBuilder: null,
+          textDirection: TextDirection.ltr,
         );
 }

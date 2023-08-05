@@ -11,7 +11,7 @@ class TextFieldProps {
   final TextEditingController? controller;
   final SmartDashesType? smartDashesType;
   final SmartQuotesType? smartQuotesType;
-  final ToolbarOptions? toolbarOptions;
+  final EditableTextContextMenuBuilder? contextMenuBuilder;
   final InputDecoration decoration;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -68,7 +68,7 @@ class TextFieldProps {
     this.textAlignVertical,
     this.textDirection,
     this.readOnly = false,
-    this.toolbarOptions,
+    this.contextMenuBuilder,
     this.showCursor,
     this.autofocus = false,
     this.obscuringCharacter = '•',
