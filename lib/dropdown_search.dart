@@ -496,37 +496,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     final clearButtonPressed = () => clear();
     final dropdownButtonPressed = () => _selectSearchMode();
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        if (widget.clearButtonProps.isVisible && getSelectedItems.isNotEmpty)
-          IconButton(
-            style: widget.clearButtonProps.style,
-            isSelected: widget.clearButtonProps.isSelected,
-            selectedIcon: widget.clearButtonProps.selectedIcon,
-            onPressed: widget.clearButtonProps.onPressed ?? clearButtonPressed,
-            icon: widget.clearButtonProps.icon,
-            constraints: widget.clearButtonProps.constraints,
-            hoverColor: widget.clearButtonProps.hoverColor,
-            highlightColor: widget.clearButtonProps.highlightColor,
-            splashColor: widget.clearButtonProps.splashColor,
-            color: widget.clearButtonProps.color,
-            focusColor: widget.clearButtonProps.focusColor,
-            iconSize: widget.clearButtonProps.iconSize,
-            padding: widget.clearButtonProps.padding,
-            splashRadius: widget.clearButtonProps.splashRadius,
-            alignment: widget.clearButtonProps.alignment,
-            autofocus: widget.clearButtonProps.autofocus,
-            disabledColor: widget.clearButtonProps.disabledColor,
-            enableFeedback: widget.clearButtonProps.enableFeedback,
-            focusNode: widget.clearButtonProps.focusNode,
-            mouseCursor: widget.clearButtonProps.mouseCursor,
-            tooltip: widget.clearButtonProps.tooltip,
-            visualDensity: widget.clearButtonProps.visualDensity,
-          ),
-        if (widget.dropdownButtonProps.isVisible)
-          IconButton(
+    final Widget? dropdownButton = (widget.dropdownButtonProps.isVisible)
+        ? IconButton(
             style: widget.dropdownButtonProps.style,
             isSelected: widget.dropdownButtonProps.isSelected,
             selectedIcon: widget.dropdownButtonProps.selectedIcon,
@@ -550,8 +521,49 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             mouseCursor: widget.dropdownButtonProps.mouseCursor,
             tooltip: widget.dropdownButtonProps.tooltip,
             visualDensity: widget.dropdownButtonProps.visualDensity,
-          ),
-      ],
+          )
+        : null;
+
+    final Widget? clearButton = (widget.clearButtonProps.isVisible &&
+            getSelectedItems.isNotEmpty)
+        ? IconButton(
+            style: widget.clearButtonProps.style,
+            isSelected: widget.clearButtonProps.isSelected,
+            selectedIcon: widget.clearButtonProps.selectedIcon,
+            onPressed: widget.clearButtonProps.onPressed ?? clearButtonPressed,
+            icon: widget.clearButtonProps.icon,
+            constraints: widget.clearButtonProps.constraints,
+            hoverColor: widget.clearButtonProps.hoverColor,
+            highlightColor: widget.clearButtonProps.highlightColor,
+            splashColor: widget.clearButtonProps.splashColor,
+            color: widget.clearButtonProps.color,
+            focusColor: widget.clearButtonProps.focusColor,
+            iconSize: widget.clearButtonProps.iconSize,
+            padding: widget.clearButtonProps.padding,
+            splashRadius: widget.clearButtonProps.splashRadius,
+            alignment: widget.clearButtonProps.alignment,
+            autofocus: widget.clearButtonProps.autofocus,
+            disabledColor: widget.clearButtonProps.disabledColor,
+            enableFeedback: widget.clearButtonProps.enableFeedback,
+            focusNode: widget.clearButtonProps.focusNode,
+            mouseCursor: widget.clearButtonProps.mouseCursor,
+            tooltip: widget.clearButtonProps.tooltip,
+            visualDensity: widget.clearButtonProps.visualDensity,
+          )
+        : null;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: widget.clearButtonProps.isBefore
+          ? <Widget>[
+              if (clearButton != null) clearButton,
+              if (dropdownButton != null) dropdownButton,
+            ]
+          : <Widget>[
+              if (dropdownButton != null) dropdownButton,
+              if (clearButton != null) clearButton,
+            ],
     );
   }
 
