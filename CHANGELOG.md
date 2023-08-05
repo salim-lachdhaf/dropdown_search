@@ -1,3 +1,13 @@
+* Added the following properties to the class `DropDownDecoratorProps`:
+  
+  - `searchSplashColor`
+  - `searchHighlightColor`
+  - `searchHoverColor`
+  - `searchFocusColor`
+  - `autofocus`
+  - `canRequestFocus`
+  - `focusNode`
+
 ## [5.0.6] - 2023.02.26
 * Fix search delay [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)
 * Fix search delay [485](https://github.com/salim-lachdhaf/searchable_dropdown/issues/485)
@@ -5,7 +15,7 @@
 * add 'textDirection' in multiSelection mode to handle checkbox alignment
 * add useSafeArea for modal
 
-* ## [5.0.5] - 2022.12.05
+## [5.0.5] - 2022.12.05
 * Fix analysis warning and formatting issues 
 
 ## [5.0.4] - 2022.12.05
@@ -19,7 +29,7 @@
 ## [5.0.2] - 2022.06.04
 * add 'interceptCallBacks' for popupProps
 
-* ## [5.0.1] - 2022.05.29
+## [5.0.1] - 2022.05.29
 * Fix code format
 
 ## [5.0.0] - 2022.05.29
