@@ -375,10 +375,14 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           getSelectedItems,
         );
       else if (isMultiSelectionMode) {
-        return Wrap(
-          children: getSelectedItems
-              .map((e) => defaultItemMultiSelectionMode(e))
-              .toList(),
+        return ClipRRect(
+          child:  SingleChildScrollView(
+            child: Wrap(
+              children: getSelectedItems
+                  .map((e) => defaultItemMultiSelectionMode(e))
+                  .toList(),
+            ),
+          ),
         );
       }
       return Text(
@@ -418,11 +422,14 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               return InputDecorator(
                 baseStyle: widget.dropdownDecoratorProps.baseStyle,
                 textAlign: widget.dropdownDecoratorProps.textAlign,
-                textAlignVertical: widget.dropdownDecoratorProps.textAlignVertical,
+                textAlignVertical:
+                    widget.dropdownDecoratorProps.textAlignVertical,
                 isEmpty: getSelectedItem == null,
                 isFocused: isFocused,
                 decoration: _manageDropdownDecoration(state),
-                child:(getSelectedItem!=null)? _defaultSelectedItemWidget():null,
+                child: (getSelectedItem != null)
+                    ? _defaultSelectedItemWidget()
+                    : null,
               );
             });
       },
@@ -450,11 +457,14 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               return InputDecorator(
                 baseStyle: widget.dropdownDecoratorProps.baseStyle,
                 textAlign: widget.dropdownDecoratorProps.textAlign,
-                textAlignVertical: widget.dropdownDecoratorProps.textAlignVertical,
+                textAlignVertical:
+                    widget.dropdownDecoratorProps.textAlignVertical,
                 isEmpty: getSelectedItems.isEmpty,
                 isFocused: isFocused,
                 decoration: _manageDropdownDecoration(state),
-                child:(getSelectedItems.isNotEmpty)? _defaultSelectedItemWidget():null,
+                child: (getSelectedItems.isNotEmpty)
+                    ? _defaultSelectedItemWidget()
+                    : null,
               );
             });
       },
