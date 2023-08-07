@@ -27,7 +27,7 @@ class IconButtonProps {
   final Function()? onPressed;
 
   const IconButtonProps({
-    required this.icon,
+    this.icon=const Icon(Icons.arrow_drop_down, size: 24),
     this.isVisible = false,
     this.iconSize = 24.0,
     this.visualDensity,

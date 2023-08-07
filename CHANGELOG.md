@@ -7,6 +7,7 @@
   - `autofocus`
   - `canRequestFocus`
   - `focusNode`
+  - `showSuffixIcon`
 
 ## [5.0.6] - 2023.02.26
 * Fix search delay [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)

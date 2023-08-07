@@ -481,7 +481,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         .applyDefaults(Theme.of(state.context).inputDecorationTheme)
         .copyWith(
           enabled: widget.enabled,
-          suffixIcon: _manageSuffixIcons(),
+          suffixIcon:widget.dropdownDecoratorProps.showSuffixIcon ? _manageSuffixIcons(): null,
           errorText: state.errorText,
         );
   }
