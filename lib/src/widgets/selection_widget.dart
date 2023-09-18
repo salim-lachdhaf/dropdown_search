@@ -18,6 +18,8 @@ class SelectionWidget<T> extends StatefulWidget {
   final PopupPropsMultiSelection<T> popupProps;
   final bool isMultiSelectionMode;
 
+  static const listViewKey = Key('listViewKey');
+
   const SelectionWidget({
     Key? key,
     required this.popupProps,
@@ -153,8 +155,12 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                           trackColor: widget.popupProps.scrollbarProps.trackColor,
                           trackRadius: widget.popupProps.scrollbarProps.trackRadius,
                           child: ListView.builder(
-                            controller: widget.popupProps.listViewProps.controller ?? scrollController,
-                            shrinkWrap: widget.popupProps.listViewProps.shrinkWrap,
+                            key: SelectionWidget.listViewKey,
+                            controller:
+                                widget.popupProps.listViewProps.controller ??
+                                    scrollController,
+                            shrinkWrap:
+                                widget.popupProps.listViewProps.shrinkWrap,
                             padding: widget.popupProps.listViewProps.padding,
                             scrollDirection: widget.popupProps.listViewProps.scrollDirection,
                             reverse: widget.popupProps.listViewProps.reverse,
