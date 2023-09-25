@@ -55,6 +55,9 @@ class TextFieldProps {
   final ScrollController? scrollController;
   final Iterable<String>? autofillHints;
   final String? restorationId;
+  final bool? enableDynamicClearButton;
+  final Icon? dynamicClearIcon;
+  final ValueChanged<String>? onSubmit;
 
   const TextFieldProps({
     this.controller,
@@ -107,5 +110,8 @@ class TextFieldProps {
     this.clipBehavior = Clip.hardEdge,
     this.enableIMEPersonalizedLearning = true,
     this.focusNode,
+    this.enableDynamicClearButton = false,
+    this.dynamicClearIcon,
+    this.onSubmit,
   });
 }
