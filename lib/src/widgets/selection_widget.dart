@@ -43,6 +43,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   final ScrollController scrollController = ScrollController();
   final List<T> _currentShowedItems = [];
   late TextEditingController searchBoxController;
+  var _showClearButton = false;
 
   List<T> get _selectedItems => _selectedItemsNotifier.value;
   Timer? _debounce;
@@ -69,6 +70,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         isFirstLoad: true,
       ),
     );
+    _showClearButton = searchBoxController.text.isNotEmpty;
   }
 
   @override
@@ -444,6 +446,9 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   Widget _searchField() {
+    final decoration = widget.popupProps.searchFieldProps.decoration;
+    final enalbeDynamicClearButton = widget.popupProps.searchFieldProps.enableDynamicClearButton ?? false;
+    final dynamicClearIcon = widget.popupProps.searchFieldProps.dynamicClearIcon ?? Icon(Icons.clear_rounded,);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
@@ -457,7 +462,15 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                 shortcuts: const <ShortcutActivator, Intent>{
                   SingleActivator(LogicalKeyboardKey.space): DoNothingAndStopPropagationTextIntent(),
                 },
-                child: TextField(
+                child: enalbeDynamicClearButton ? _SearchTextField(
+                  textEditingController: searchBoxController,
+                  focusNode: widget.popupProps.searchFieldProps.focusNode,
+                  style: widget.popupProps.searchFieldProps.style,
+                  hintText: widget.popupProps.searchFieldProps.decoration.hintText,
+                  hintStyle: widget.popupProps.searchFieldProps.decoration.hintStyle,
+                  onSubmitted: widget.popupProps.searchFieldProps.onSubmit,
+                  clearIcon: dynamicClearIcon,
+                ) : TextField(
                   enableIMEPersonalizedLearning: widget.popupProps.searchFieldProps.enableIMEPersonalizedLearning,
                   clipBehavior: widget.popupProps.searchFieldProps.clipBehavior,
                   style: widget.popupProps.searchFieldProps.style,
@@ -507,12 +520,22 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                   scrollPhysics: widget.popupProps.searchFieldProps.scrollPhysics,
                   autofillHints: widget.popupProps.searchFieldProps.autofillHints,
                   restorationId: widget.popupProps.searchFieldProps.restorationId,
+                  onSubmitted: widget.popupProps.searchFieldProps.onSubmit,
                 ),
               ),
             ),
           )
       ],
     );
+  }
+
+  _updateClearButtonVisible() {
+    final visible = searchBoxController.text.isNotEmpty;
+    if(visible != _showClearButton) {
+      setState(() {
+        _showClearButton = visible;
+      });
+    }
   }
 
   Widget _favoriteItemsWidget() {
@@ -649,4 +672,82 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   bool get isAllItemSelected => _selectedItems.length >= _currentShowedItems.length;
 
   List<T> get getSelectedItem => List.from(_selectedItems);
+}
+
+class _SearchTextField extends StatefulWidget {
+  const _SearchTextField({
+    Key? key,
+    this.textEditingController,
+    this.focusNode,
+    this.hintText,
+    this.hintStyle,
+    this.style,
+    this.onSubmitted,
+    required this.clearIcon,
+  }) : super(key: key);
+  final TextEditingController? textEditingController;
+  final FocusNode? focusNode;
+  final TextStyle? hintStyle;
+  final TextStyle? style;
+  final String? hintText;
+  final ValueChanged<String>? onSubmitted;
+  final Icon clearIcon;
+
+  @override
+  __SearchTextFieldState createState() {
+    return __SearchTextFieldState();
+  }
+}
+
+class __SearchTextFieldState extends State<_SearchTextField> {
+  var _showClearButton = false;
+
+  get _currentText => widget.textEditingController?.text ?? "";
+
+  @override
+  void initState() {
+    _showClearButton = _currentText.isNotEmpty;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      maxLines: 1,
+      focusNode: widget.focusNode,
+      style: widget.style,
+      controller: widget.textEditingController,
+      onChanged: (value) {
+        _updateClearButtonVisible();
+      },
+      decoration: InputDecoration(
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 8,
+        ),
+        hintText: widget.hintText,
+        border: InputBorder.none,
+        hintStyle: widget.hintStyle,
+        suffixIcon: !_showClearButton ? null : IconButton(
+          onPressed: () {
+            widget.textEditingController?.clear();
+            _updateClearButtonVisible();
+          },
+          padding: EdgeInsets.zero,
+          icon: widget.clearIcon,
+        ),
+      ),
+      onSubmitted: widget.onSubmitted,
+    );
+  }
+
+  _updateClearButtonVisible() {
+    final visible = _currentText.isNotEmpty;
+    if(visible != _showClearButton) {
+      setState(() {
+        _showClearButton = visible;
+      });
+    }
+  }
 }
