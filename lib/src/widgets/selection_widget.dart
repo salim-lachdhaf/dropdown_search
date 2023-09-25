@@ -529,15 +529,6 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     );
   }
 
-  _updateClearButtonVisible() {
-    final visible = searchBoxController.text.isNotEmpty;
-    if(visible != _showClearButton) {
-      setState(() {
-        _showClearButton = visible;
-      });
-    }
-  }
-
   Widget _favoriteItemsWidget() {
     if (widget.popupProps.favoriteItemProps.showFavoriteItems &&
         widget.popupProps.favoriteItemProps.favoriteItems != null) {
