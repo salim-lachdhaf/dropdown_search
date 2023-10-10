@@ -162,6 +162,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///if the callBack return FALSE, the opening of the popup will be cancelled
   final BeforePopupOpeningMultiSelection<T>? onBeforePopupOpeningMultiSelection;
 
+  //For controlling the overlay color when hovering the mouse over the dropdown
+  final MaterialStateProperty<Color?>? overlayColor;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -181,6 +184,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.compareFn,
     this.onBeforeChange,
     this.onBeforePopupOpening,
+    this.overlayColor,
     PopupProps<T> popupProps = const PopupProps.menu(),
   })  : assert(
           !popupProps.showSelectedItems || T == String || compareFn != null,
@@ -210,6 +214,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.compareFn,
     this.selectedItems = const [],
     this.popupProps = const PopupPropsMultiSelection.menu(),
+    this.overlayColor,
     FormFieldSetter<List<T>>? onSaved,
     ValueChanged<List<T>>? onChanged,
     BeforeChangeMultiSelection<T>? onBeforeChange,
@@ -253,9 +258,11 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   @override
   void didUpdateWidget(DropdownSearch<T> oldWidget) {
-    List<T> oldSelectedItems = isMultiSelectionMode ? oldWidget.selectedItems : _itemToList(oldWidget.selectedItem);
+    List<T> oldSelectedItems =
+        isMultiSelectionMode ? oldWidget.selectedItems : _itemToList(oldWidget.selectedItem);
 
-    List<T> newSelectedItems = isMultiSelectionMode ? widget.selectedItems : _itemToList(widget.selectedItem);
+    List<T> newSelectedItems =
+        isMultiSelectionMode ? widget.selectedItems : _itemToList(widget.selectedItem);
 
     if (!listEquals(oldSelectedItems, newSelectedItems)) {
       _selectedItemsNotifier.value = List.from(newSelectedItems);
@@ -280,6 +287,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         return IgnorePointer(
           ignoring: !widget.enabled,
           child: InkWell(
+            overlayColor: widget.overlayColor,
             onTap: () => _selectSearchMode(),
             child: _formField(),
           ),
@@ -372,7 +380,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (FormFieldState<T> state) {
         if (state.value != getSelectedItem) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if(mounted) {
+            if (mounted) {
               state.didChange(getSelectedItem);
             }
           });
@@ -404,7 +412,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (FormFieldState<List<T>> state) {
         if (state.value != getSelectedItems) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if(mounted) {
+            if (mounted) {
               state.didChange(getSelectedItems);
             }
           });
@@ -519,8 +527,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
     return RelativeRect.fromSize(
       Rect.fromPoints(
-        popupButtonObject.localToGlobal(popupButtonObject.size.bottomLeft(Offset.zero), ancestor: overlay),
-        popupButtonObject.localToGlobal(popupButtonObject.size.bottomRight(Offset.zero), ancestor: overlay),
+        popupButtonObject.localToGlobal(popupButtonObject.size.bottomLeft(Offset.zero),
+            ancestor: overlay),
+        popupButtonObject.localToGlobal(popupButtonObject.size.bottomRight(Offset.zero),
+            ancestor: overlay),
       ),
       Size(overlay.size.width, overlay.size.height),
     );
@@ -648,11 +658,13 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       _selectedItemsNotifier.value = List.from(selectedItems);
       if (widget.onChanged != null)
         widget.onChanged!(getSelectedItem);
-      else if (widget.onChangedMultiSelection != null) widget.onChangedMultiSelection!(selectedItems);
+      else if (widget.onChangedMultiSelection != null)
+        widget.onChangedMultiSelection!(selectedItems);
     };
 
     if (widget.onBeforeChange != null) {
-      widget.onBeforeChange!(getSelectedItem, selectedItems.isEmpty ? null : selectedItems.first).then((value) {
+      widget.onBeforeChange!(getSelectedItem, selectedItems.isEmpty ? null : selectedItems.first)
+          .then((value) {
         if (value == true) {
           changeItem();
         }
@@ -708,7 +720,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///Change selected Value; this function is public USED to change the selected
   ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItems]
   ///for multiSelection mode you can use [changeSelectedItems]
-  void changeSelectedItem(T? selectedItem) => _handleOnChangeSelectedItems(_itemToList(selectedItem));
+  void changeSelectedItem(T? selectedItem) =>
+      _handleOnChangeSelectedItems(_itemToList(selectedItem));
 
   ///Change selected Value; this function is public USED to change the selected
   ///value PROGRAMMATICALLY, Otherwise you can use [_handleOnChangeSelectedItems]
