@@ -162,8 +162,11 @@ class DropdownSearch<T> extends StatefulWidget {
   ///if the callBack return FALSE, the opening of the popup will be cancelled
   final BeforePopupOpeningMultiSelection<T>? onBeforePopupOpeningMultiSelection;
 
-  //For controlling the overlay color when hovering the mouse over the dropdown
+  ///For controlling the overlay color when hovering the mouse over the dropdown inkwell
   final MaterialStateProperty<Color?>? overlayColor;
+
+  ///For controlling the border radius of the dropdown inkwell
+  final BorderRadius? borderRadius;
 
   DropdownSearch({
     Key? key,
@@ -185,6 +188,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.onBeforeChange,
     this.onBeforePopupOpening,
     this.overlayColor,
+    this.borderRadius,
     PopupProps<T> popupProps = const PopupProps.menu(),
   })  : assert(
           !popupProps.showSelectedItems || T == String || compareFn != null,
@@ -215,6 +219,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectedItems = const [],
     this.popupProps = const PopupPropsMultiSelection.menu(),
     this.overlayColor,
+    this.borderRadius,
     FormFieldSetter<List<T>>? onSaved,
     ValueChanged<List<T>>? onChanged,
     BeforeChangeMultiSelection<T>? onBeforeChange,
@@ -287,6 +292,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         return IgnorePointer(
           ignoring: !widget.enabled,
           child: InkWell(
+            borderRadius: widget.borderRadius,
             overlayColor: widget.overlayColor,
             onTap: () => _selectSearchMode(),
             child: _formField(),
