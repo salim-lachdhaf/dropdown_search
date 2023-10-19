@@ -17,6 +17,9 @@ class SelectionWidget<T> extends StatefulWidget {
   final List<T> defaultSelectedItems;
   final PopupPropsMultiSelection<T> popupProps;
   final bool isMultiSelectionMode;
+  static const textFieldKey = Key('textSearchDropdown');
+  static const listViewKey = Key('listViewKey');
+  static const itemTextKey = Key('itemTextKey');
 
   const SelectionWidget({
     Key? key,
@@ -153,6 +156,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                           trackColor: widget.popupProps.scrollbarProps.trackColor,
                           trackRadius: widget.popupProps.scrollbarProps.trackRadius,
                           child: ListView.builder(
+                            key: SelectionWidget.listViewKey,
                             controller: widget.popupProps.listViewProps.controller ?? scrollController,
                             shrinkWrap: widget.popupProps.listViewProps.shrinkWrap,
                             padding: widget.popupProps.listViewProps.padding,
@@ -389,7 +393,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     } else {
       return ListTile(
         enabled: !_isDisabled(item),
-        title: Text(_selectedItemAsString(item)),
+        title: Text(_selectedItemAsString(item), key: SelectionWidget.itemTextKey,),
         selected: !widget.popupProps.showSelectedItems ? false : _isSelectedItem(item),
         onTap: _isDisabled(item) ? null : () => _handleSelectedItem(item),
       );
@@ -458,6 +462,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                   SingleActivator(LogicalKeyboardKey.space): DoNothingAndStopPropagationTextIntent(),
                 },
                 child: TextField(
+                  key: SelectionWidget.textFieldKey,
                   enableIMEPersonalizedLearning: widget.popupProps.searchFieldProps.enableIMEPersonalizedLearning,
                   clipBehavior: widget.popupProps.searchFieldProps.clipBehavior,
                   style: widget.popupProps.searchFieldProps.style,
