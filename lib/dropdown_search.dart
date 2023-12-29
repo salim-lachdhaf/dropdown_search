@@ -7,6 +7,7 @@ import 'package:dropdown_search/src/properties/dropdown_button_props.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'src/properties/async_item_props.dart';
 import 'src/properties/dropdown_decorator_props.dart';
 import 'src/properties/popup_props.dart';
 import 'src/widgets/popup_menu.dart';
@@ -25,8 +26,10 @@ export 'src/properties/modal_bottom_sheet_props.dart';
 export 'src/properties/popup_props.dart';
 export 'src/properties/scrollbar_props.dart';
 export 'src/properties/text_field_props.dart';
+export 'src/properties/async_item_props.dart';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
+typedef Future<List<T>> DropdownSearchOnFindPaginated<T>(String text, int page, int perPage);
 typedef String DropdownSearchItemAsString<T>(T item);
 typedef bool DropdownSearchFilterFn<T>(T item, String filter);
 typedef bool DropdownSearchCompareFn<T>(T item1, T item2);
@@ -90,7 +93,7 @@ class DropdownSearch<T> extends StatefulWidget {
   final List<T> selectedItems;
 
   ///function that returns item from API
-  final DropdownSearchOnFind<T>? asyncItems;
+  final AsyncItemsProps<T, Object>? asyncItems;
 
   ///called when a new item is selected
   final ValueChanged<T?>? onChanged;

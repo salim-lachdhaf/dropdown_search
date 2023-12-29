@@ -167,7 +167,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Expanded(
                     child: DropdownSearch<UserModel>(
-                      asyncItems: (filter) => getData(filter),
+                      asyncItems: AsyncItemsBasicProps(
+                        fn: (filter) => getData(filter)
+                      ),
                       compareFn: (i, s) => i.isEqual(s),
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
                         isFilterOnline: true,
@@ -186,7 +188,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<UserModel>.multiSelection(
-                      asyncItems: (filter) => getData(filter),
+                      asyncItems: AsyncItemsBasicProps(
+                        fn: (filter) => getData(filter)
+                      ),
                       compareFn: (i, s) => i.isEqual(s),
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
                         showSearchBox: true,
@@ -385,7 +389,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Expanded(
                     child: DropdownSearch<UserModel>.multiSelection(
-                      asyncItems: (String? filter) => getData(filter),
+                      asyncItems: AsyncItemsBasicProps(
+                        fn: (filter) => getData(filter)
+                      ),
                       clearButtonProps: ClearButtonProps(isVisible: true),
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
                         showSelectedItems: true,
@@ -418,7 +424,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<UserModel>(
-                      asyncItems: (String? filter) => getData(filter),
+                      asyncItems: AsyncItemsBasicProps(
+                        fn: (filter) => getData(filter)
+                      ),
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
                         showSelectedItems: true,
                         itemBuilder: _customPopupItemBuilderExample2,
@@ -577,6 +585,27 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
               ),
+              SizedBox(
+                height: 20,
+              ),
+              Text("[async item paginated example]"),
+              Divider(),
+              DropdownSearch<String>(
+                asyncItems: AsyncItemsPaginatedProps(
+                  fn: (filter, page, perPage) {
+                    return _generateItems(
+                      filter: filter,
+                      page: page,
+                      perpage: perPage
+                    );
+                  },
+                  perPage: 20,
+                ),
+                popupProps: PopupProps.bottomSheet(
+                  showSearchBox: true,
+                  isFilterOnline: true,
+                ),
+              ),
             ],
           ),
         ),
@@ -647,6 +676,28 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return [];
+  }
+
+  Future<List<String>> _generateItems({
+    String? filter,
+    int page=1,
+    int perpage=20,
+  }) async {
+    final rawItems = List.generate(200, (index) => (index+1).toString());
+
+    if(filter != null) {
+      rawItems.retainWhere((e) => e.contains(filter));
+    }
+
+    final items = <String>[];
+
+    for(int i=(page-1)*perpage; i<rawItems.length && items.length<perpage; i++) {
+      items.add(rawItems[i]);
+    }
+
+    await Future.delayed(Duration(seconds: 2));
+
+    return items;
   }
 }
 
