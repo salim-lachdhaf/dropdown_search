@@ -599,9 +599,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       perpage: perPage
                     );
                   },
-                  perPage: 20,
+                  /// example of not work pagination
+                  /// perPage: 2,
+                  perPage: 15,
+                  endOfPageErrorIndication: (e) {
+                    if(e is String) {
+                      return true;
+                    }
+
+                    return false;
+                  }
                 ),
-                popupProps: PopupProps.bottomSheet(
+                popupProps: PopupProps.modalBottomSheet(
                   showSearchBox: true,
                   isFilterOnline: true,
                 ),
@@ -683,7 +692,15 @@ class _MyHomePageState extends State<MyHomePage> {
     int page=1,
     int perpage=20,
   }) async {
-    final rawItems = List.generate(200, (index) => (index+1).toString());
+    if(filter=='2' && page==3) {
+      throw Exception('just trial');
+    }
+
+    if(filter=='3' && page==3) {
+      throw 'End of pagination';
+    }
+
+    final rawItems = List.generate(1000, (index) => (index+1).toString());
 
     if(filter != null) {
       rawItems.retainWhere((e) => e.contains(filter));
