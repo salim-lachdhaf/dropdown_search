@@ -58,11 +58,13 @@ class _ScrollPaginationListener<T> {
     }).catchError((e, trace) {
       log('_paginationListener error', error: e, stackTrace: trace);
 
-      onError(e, trace);
-
       if(props.endOfPageErrorIndication?.call(e) ?? false) {
         _hasReachEnd = true;
+
+        return;
       }
+
+      onError(e, trace);
     }).whenComplete(() {
       loadingNotifier.value = false;
     });
