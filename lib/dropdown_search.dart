@@ -252,6 +252,14 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   @override
+  void dispose() {
+    _selectedItemsNotifier.dispose();
+    _isFocused.dispose();
+
+    super.dispose();
+  }
+
+  @override
   void didUpdateWidget(DropdownSearch<T> oldWidget) {
     List<T> oldSelectedItems = isMultiSelectionMode ? oldWidget.selectedItems : _itemToList(oldWidget.selectedItem);
 

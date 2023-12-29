@@ -40,9 +40,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
   final List<T> _cachedItems = [];
   final ValueNotifier<List<T>> _selectedItemsNotifier = ValueNotifier([]);
-  final ScrollController scrollController = ScrollController();
+  late final ScrollController scrollController;
   final List<T> _currentShowedItems = [];
-  late TextEditingController searchBoxController;
+  late final TextEditingController searchBoxController;
+  late final _ScrollPaginationListener? _scrollPaginationListener;
 
   List<T> get _selectedItems => _selectedItemsNotifier.value;
   Timer? _debounce;
@@ -58,6 +59,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   void initState() {
     super.initState();
     _selectedItemsNotifier.value = widget.defaultSelectedItems;
+
+    scrollController = widget.popupProps.listViewProps.controller ?? ScrollController();
 
     searchBoxController = widget.popupProps.searchFieldProps.controller ?? TextEditingController();
     searchBoxController.addListener(searchBoxControllerListener);
@@ -83,6 +86,11 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   void dispose() {
     _itemsStream.close();
     _debounce?.cancel();
+
+    searchBoxController.removeListener(searchBoxControllerListener);
+
+    _loadingNotifier.dispose();
+    _selectedItemsNotifier.dispose();
 
     if (widget.popupProps.searchFieldProps.controller == null) {
       searchBoxController.dispose();
