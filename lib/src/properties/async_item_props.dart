@@ -27,6 +27,10 @@ class AsyncItemsPaginatedParam {
   });
 }
 
+/// known limitation:
+/// 1. if given perPage value is small, could render the widget not fit the
+/// parent widget (too small) thus scroll listener wont work (this pagination
+/// rely on scroll listener).
 class AsyncItemsPaginatedProps<T> extends AsyncItemsProps<T, AsyncItemsPaginatedParam> {
   ///function to fetch data
   final DropdownSearchOnFindPaginated<T> fn;
