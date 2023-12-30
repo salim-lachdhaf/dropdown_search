@@ -64,9 +64,19 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     super.initState();
     _selectedItemsNotifier.value = widget.defaultSelectedItems;
 
-    scrollController = widget.popupProps.listViewProps.controller ?? ScrollController();
+    scrollController = widget.popupProps.listViewProps.controller ??
+      ScrollController(
+        onAttach: (scrollPosition) {
+          Future.delayed(Duration.zero, () {
+            if(_scrollPaginationListener?.props.isAutoPaginatingSmallPerPage==true) {
+              _scrollPaginationListener!.autoPaginatingSmallPerPage();
+            }
+          });
+        }
+      );
 
-    searchBoxController = widget.popupProps.searchFieldProps.controller ?? TextEditingController();
+    searchBoxController = widget.popupProps.searchFieldProps.controller ??
+        TextEditingController();
 
     final asyncItems = widget.asyncItems;
 

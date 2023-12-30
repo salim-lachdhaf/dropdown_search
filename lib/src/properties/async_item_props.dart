@@ -31,6 +31,8 @@ class AsyncItemsPaginatedParam {
 /// 1. if given perPage value is small, could render the widget not fit the
 /// parent widget (too small) thus scroll listener wont work (this pagination
 /// rely on scroll listener).
+/// workaround: given option to automatically paginating small per page by
+/// detecting scroll controller attached component's size
 class AsyncItemsPaginatedProps<T> extends AsyncItemsProps<T, AsyncItemsPaginatedParam> {
   ///function to fetch data
   final DropdownSearchOnFindPaginated<T> fn;
@@ -43,10 +45,13 @@ class AsyncItemsPaginatedProps<T> extends AsyncItemsProps<T, AsyncItemsPaginated
   ///by default, when fn return empty list, it will mark as end of page
   final bool Function(Object)? endOfPageErrorIndication;
 
+  final bool isAutoPaginatingSmallPerPage;
+
   AsyncItemsPaginatedProps({
     required this.fn,
     required this.perPage,
-    this.endOfPageErrorIndication
+    this.endOfPageErrorIndication,
+    this.isAutoPaginatingSmallPerPage=false,
   });
 
   @override

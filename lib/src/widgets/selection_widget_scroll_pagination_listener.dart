@@ -43,6 +43,12 @@ class _ScrollPaginationListener<T> {
       return;
     }
 
+    _doPagination();
+  }
+
+  Future<void> _doPagination() {
+    final completer = Completer();
+
     loadingNotifier.value = true;
 
     props.getter(AsyncItemsPaginatedParam(
@@ -67,10 +73,20 @@ class _ScrollPaginationListener<T> {
       onError(e, trace);
     }).whenComplete(() {
       loadingNotifier.value = false;
+
+      completer.complete();
     });
+
+    return completer.future;
   }
 
   void resetPage() {
     _currentPage = 1;
+  }
+
+  void autoPaginatingSmallPerPage() async {
+    while(scrollController.position.maxScrollExtent==0 && !_hasReachEnd) {
+      await _doPagination();
+    }
   }
 }
