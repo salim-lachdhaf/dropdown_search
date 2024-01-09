@@ -95,9 +95,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   Widget build(BuildContext context) {
     return Container(
       constraints: widget.popupProps.constraints,
-      child: widget.popupProps.containerBuilder == null
-          ? _defaultWidget()
-          : widget.popupProps.containerBuilder!(context, _defaultWidget()),
+      child: widget.popupProps.containerBuilder == null ? _defaultWidget() : widget.popupProps.containerBuilder!(context, _defaultWidget()),
     );
   }
 
@@ -168,9 +166,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
                               var item = snapshot.data![index];
-                              return widget.isMultiSelectionMode
-                                  ? _itemWidgetMultiSelection(item)
-                                  : _itemWidgetSingleSelection(item);
+                              return widget.isMultiSelectionMode ? _itemWidgetMultiSelection(item) : _itemWidgetSingleSelection(item);
                             },
                           ),
                         );
@@ -415,8 +411,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       );
   }
 
-  bool _isDisabled(T item) =>
-      widget.popupProps.disabledItemFn != null && (widget.popupProps.disabledItemFn!(item)) == true;
+  bool _isDisabled(T item) => widget.popupProps.disabledItemFn != null && (widget.popupProps.disabledItemFn!(item)) == true;
 
   /// selected item will be highlighted only when [widget.showSelectedItems] is true,
   /// if our object is String [widget.compareFn] is not required , other wises it's required
@@ -511,8 +506,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   Widget _favoriteItemsWidget() {
-    if (widget.popupProps.favoriteItemProps.showFavoriteItems &&
-        widget.popupProps.favoriteItemProps.favoriteItems != null) {
+    if (widget.popupProps.favoriteItemProps.showFavoriteItems && widget.popupProps.favoriteItemProps.favoriteItems != null) {
       return StreamBuilder<List<T>>(
           stream: _itemsStream.stream,
           builder: (context, snapshot) {
