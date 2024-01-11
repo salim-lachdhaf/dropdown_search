@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../dropdown_search_ex.dart';
+import '../../dropdown_search.dart';
 
 class MenuProps {
   final ShapeBorder? shape;
