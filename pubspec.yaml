@@ -1,4 +1,4 @@
-name: dropdown_search
+name: dropdown_search_ex
 description: Simple and robust Searchable Dropdown with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
 version: 5.0.6
 homepage: https://github.com/salim-lachdhaf
