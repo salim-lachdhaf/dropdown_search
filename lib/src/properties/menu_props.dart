@@ -17,6 +17,7 @@ class MenuProps {
   final Curve? barrierCurve;
   final String? barrierLabel;
   final PositionCallback? positionCallback;
+  final EdgeInsets? edgeInsets;
 
   const MenuProps({
     this.barrierLabel,
@@ -33,5 +34,6 @@ class MenuProps {
     this.borderOnForeground = false,
     this.borderRadius,
     this.shadowColor,
+    this.edgeInsets
   });
 }
