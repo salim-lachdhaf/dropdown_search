@@ -162,6 +162,9 @@ class DropdownSearch<T> extends StatefulWidget {
   ///if the callBack return FALSE, the opening of the popup will be cancelled
   final BeforePopupOpeningMultiSelection<T>? onBeforePopupOpeningMultiSelection;
 
+  /// opens the search list when press a letter on the physical keyboard
+  final bool openSearchListOnLetterKeyDown;
+
   DropdownSearch({
     Key? key,
     this.onSaved,
@@ -181,6 +184,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.compareFn,
     this.onBeforeChange,
     this.onBeforePopupOpening,
+    this.openSearchListOnLetterKeyDown = false,
     PopupProps<T> popupProps = const PopupProps.menu(),
   })  : assert(
           !popupProps.showSelectedItems || T == String || compareFn != null,
@@ -210,6 +214,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.compareFn,
     this.selectedItems = const [],
     this.popupProps = const PopupPropsMultiSelection.menu(),
+    this.openSearchListOnLetterKeyDown = false,
     FormFieldSetter<List<T>>? onSaved,
     ValueChanged<List<T>>? onChanged,
     BeforeChangeMultiSelection<T>? onBeforeChange,
@@ -274,17 +279,29 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<T?>>(
-      valueListenable: _selectedItemsNotifier,
-      builder: (context, data, wt) {
-        return IgnorePointer(
-          ignoring: !widget.enabled,
-          child: InkWell(
-            onTap: () => _selectSearchMode(),
-            child: _formField(),
-          ),
-        );
+    return Focus(
+      canRequestFocus: false,
+      onKey: (FocusNode node, RawKeyEvent event) {
+        if (widget.openSearchListOnLetterKeyDown) {
+          if (event.data.keyLabel.isNotEmpty) {
+            widget.popupProps.searchFieldProps.controller?.text = event.character ?? event.logicalKey.keyLabel;
+            _selectSearchMode();
+          }
+        }
+        return KeyEventResult.ignored;
       },
+      child: ValueListenableBuilder<List<T?>>(
+        valueListenable: _selectedItemsNotifier,
+        builder: (context, data, wt) {
+          return IgnorePointer(
+            ignoring: !widget.enabled,
+            child: InkWell(
+              onTap: () => _selectSearchMode(),
+              child: _formField(),
+            ),
+          );
+        },
+      ),
     );
   }
 
