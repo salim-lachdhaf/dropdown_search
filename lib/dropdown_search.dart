@@ -539,7 +539,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         popupButtonObject.localToGlobal(popupButtonObject.size.bottomLeft(Offset.zero), ancestor: overlay),
         popupButtonObject.localToGlobal(popupButtonObject.size.bottomRight(Offset.zero), ancestor: overlay),
       ),
-      Size(overlay.size.width, overlay.size.height),
+      Size(overlay.size.width - widget.popupProps.additionalPopupWidth, overlay.size.height),
     );
   }
 
