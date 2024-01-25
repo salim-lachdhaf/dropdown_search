@@ -812,4 +812,16 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   List<T> get popupGetSelectedItems => _popupStateKey.currentState?.getSelectedItem ?? [];
 
   void updatePopupState() => _popupStateKey.currentState?.setState(() {});
+  
+  Future<void> doExternalRefresh() async {
+    if (_popupStateKey.currentState != null) {
+      await _popupStateKey.currentState!.externalRefresh().then((value) {});
+    } else {
+      SelectionWidget<T> w = _popupWidgetInstance();
+      StatefulElement se = StatefulElement(w);
+      se.state.initState();
+      await (se.state as SelectionWidgetState).externalRefresh();
+    }
+  }
+  
 }
