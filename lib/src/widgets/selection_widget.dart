@@ -651,4 +651,11 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   bool get isAllItemSelected => _selectedItems.length >= _currentShowedItems.length;
 
   List<T> get getSelectedItem => List.from(_selectedItems);
+
+  Future<void> externalRefresh() async {
+    return await _manageItemsByFilter(
+      searchBoxController.text,
+      isFirstLoad: true,
+    );
+  }
 }
