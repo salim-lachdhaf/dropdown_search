@@ -563,17 +563,35 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   RelativeRect _position(RenderBox popupButtonObject, RenderBox overlay) {
     // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
+
+    int minWidth = widget.popupProps.minimumWidth;
+
+    Offset a = popupButtonObject.localToGlobal(
+        popupButtonObject.size.bottomLeft(Offset.zero),
+        ancestor: overlay);
+
+    Offset b = popupButtonObject.localToGlobal(
+        popupButtonObject.size.bottomRight(Offset.zero),
+        ancestor: overlay);
+
+    double boxWidth = (b.dx-a.dx);
+    if (boxWidth<minWidth) {
+      a = a.translate((boxWidth - minWidth), 0);
+      if (a.dx<=0) {
+        a = a.translate(- a.dx, 0);
+      }
+    }
+    boxWidth = (b.dx-a.dx);
+    if (boxWidth<minWidth) {
+      b = b.translate(-(boxWidth - minWidth), 0);
+      if (b.dx>=overlay.size.width) {
+        b = b.translate(overlay.size.width - b.dx, 0);
+      }
+    }
+
     return RelativeRect.fromSize(
-      Rect.fromPoints(
-        popupButtonObject.localToGlobal(
-            popupButtonObject.size.bottomLeft(Offset.zero),
-            ancestor: overlay),
-        popupButtonObject.localToGlobal(
-            popupButtonObject.size.bottomRight(Offset.zero),
-            ancestor: overlay),
-      ),
-      Size(overlay.size.width - widget.popupProps.additionalPopupWidth,
-          overlay.size.height),
+      Rect.fromPoints(a, b),
+      Size(overlay.size.width, overlay.size.height),
     );
   }
 
