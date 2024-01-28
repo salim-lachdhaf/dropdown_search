@@ -80,7 +80,7 @@ class PopupProps<T> {
   final bool interceptCallBacks;
 
   /// added width relative to the widget
-  final int additionalPopupWidth;
+  final int minimumWidth;
 
   const PopupProps._({
     this.mode = Mode.MENU,
@@ -107,7 +107,7 @@ class PopupProps<T> {
     this.containerBuilder,
     this.constraints = const BoxConstraints(),
     this.interceptCallBacks = false,
-    this.additionalPopupWidth = 0,
+    this.minimumWidth = 0,
   });
 
   const PopupProps.menu({
@@ -131,7 +131,7 @@ class PopupProps<T> {
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 350),
     this.interceptCallBacks = false,
-    this.additionalPopupWidth = 0,
+    this.minimumWidth = 0,
   })  : this.mode = Mode.MENU,
         this.bottomSheetProps = const BottomSheetProps(),
         this.dialogProps = const DialogProps(),
@@ -162,7 +162,7 @@ class PopupProps<T> {
       maxHeight: 600,
     ),
     this.interceptCallBacks = false,
-    this.additionalPopupWidth = 0,
+    this.minimumWidth = 0,
   })  : this.mode = Mode.DIALOG,
         this.menuProps = const MenuProps(),
         this.bottomSheetProps = const BottomSheetProps(),
@@ -189,7 +189,7 @@ class PopupProps<T> {
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 500),
     this.interceptCallBacks = false,
-    this.additionalPopupWidth = 0,
+    this.minimumWidth = 0,
   })  : this.mode = Mode.BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -216,7 +216,7 @@ class PopupProps<T> {
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 500),
     this.interceptCallBacks = false,
-    this.additionalPopupWidth = 0,
+    this.minimumWidth = 0,
   })  : this.mode = Mode.MODAL_BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -263,7 +263,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 350),
     super.interceptCallBacks = false,
-    super.additionalPopupWidth = 0,
+    super.minimumWidth = 0,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -413,7 +413,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           containerBuilder: popupProps.containerBuilder,
           constraints: popupProps.constraints,
           interceptCallBacks: popupProps.interceptCallBacks,
-          additionalPopupWidth: popupProps.additionalPopupWidth,
+          minimumWidth: popupProps.minimumWidth,
           onItemAdded: null,
           onItemRemoved: null,
           selectionWidget: null,
