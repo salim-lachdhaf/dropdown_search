@@ -80,7 +80,7 @@ class PopupProps<T> {
   final bool interceptCallBacks;
 
   /// added width relative to the widget
-  final int minimumWidth;
+  final double minimumWidth;
 
   const PopupProps._({
     this.mode = Mode.MENU,
