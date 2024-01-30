@@ -570,8 +570,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   RelativeRect _position(RenderBox popupButtonObject, RenderBox overlay) {
     // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
-
-    double minWidth = widget.popupProps.minimumWidth;
+    double minWidth = widget.popupProps.constraints.minWidth;
 
     Offset a = popupButtonObject.localToGlobal(
         popupButtonObject.size.bottomLeft(Offset.zero),
@@ -783,6 +782,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     _handleFocus(true);
     if (widget.popupProps.mode == Mode.MENU) {
       await _openMenu();
+
     } else if (widget.popupProps.mode == Mode.MODAL_BOTTOM_SHEET) {
       await _openModalBottomSheet();
     } else if (widget.popupProps.mode == Mode.BOTTOM_SHEET) {
