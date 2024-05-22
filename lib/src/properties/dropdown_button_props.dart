@@ -2,8 +2,10 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 class DropdownButtonProps extends IconButtonProps {
+  final Widget iconOpened;
   const DropdownButtonProps({
-    super.icon = const Icon(Icons.arrow_drop_down, size: 24),
+    this.iconOpened = const Icon(Icons.arrow_drop_up, size: 24),
+    Widget iconClosed = const Icon(Icons.arrow_drop_down, size: 24),
     super.isVisible = true,
     super.iconSize = 24.0,
     super.visualDensity,
@@ -26,5 +28,5 @@ class DropdownButtonProps extends IconButtonProps {
     super.isSelected,
     super.selectedIcon,
     super.onPressed,
-  });
+  }): super(icon: iconClosed);
 }

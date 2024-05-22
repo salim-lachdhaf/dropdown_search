@@ -15,6 +15,10 @@ class ModalBottomSheetProps {
   final bool isScrollControlled;
   final EdgeInsets padding;
   final bool useSafeArea;
+  final bool? showDragHandle;
+  final AnimationStyle? sheetAnimationStyle;
+  final String? barrierLabel;
+  final double scrollControlDisabledMaxHeightRatio;
 
   const ModalBottomSheetProps({
     this.anchorPoint,
@@ -31,5 +35,9 @@ class ModalBottomSheetProps {
     this.isScrollControlled = true,
     this.padding = EdgeInsets.zero,
     this.useSafeArea = true,
+    this.sheetAnimationStyle,
+    this.showDragHandle,
+    this.barrierLabel,
+    this.scrollControlDisabledMaxHeightRatio = 9.0 / 16.0
   });
 }

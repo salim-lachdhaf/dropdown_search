@@ -5,17 +5,21 @@ class BottomSheetProps {
   final BoxConstraints? constraints;
   final Color? backgroundColor;
   final Clip clipBehavior;
-  final AnimationController? animation;
+  final AnimationController? transitionAnimationController;
   final bool enableDrag;
   final double? elevation;
+  final bool? showDragHandle;
+  final AnimationStyle? sheetAnimationStyle;
 
   const BottomSheetProps({
     this.elevation,
     this.shape,
     this.backgroundColor,
-    this.animation,
+    this.transitionAnimationController,
     this.enableDrag = true,
     this.clipBehavior = Clip.none,
     this.constraints,
+    this.showDragHandle,
+    this.sheetAnimationStyle,
   });
 }

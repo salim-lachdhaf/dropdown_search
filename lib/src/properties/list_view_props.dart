@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class ListViewProps {
   final Axis scrollDirection;
@@ -19,6 +20,9 @@ class ListViewProps {
   final String? restorationId;
   final double? itemExtent;
   final Clip clipBehavior;
+  final Widget? prototypeItem;
+  final ItemExtentBuilder? itemExtentBuilder;
+  final ChildIndexGetter? findChildIndexCallback;
 
   const ListViewProps({
     this.scrollDirection = Axis.vertical,
@@ -38,5 +42,8 @@ class ListViewProps {
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
+    this.prototypeItem,
+    this.itemExtentBuilder,
+    this.findChildIndexCallback,
   });
 }

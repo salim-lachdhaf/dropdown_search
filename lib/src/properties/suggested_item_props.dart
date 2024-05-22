@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../dropdown_search.dart';
 
-class FavoriteItemProps<T> {
+class SuggestedItemProps<T> {
   ///show or hide favorites items
   final bool showFavoriteItems;
 
@@ -15,7 +15,7 @@ class FavoriteItemProps<T> {
   ///favorite items alignment
   final MainAxisAlignment favoriteItemsAlignment;
 
-  const FavoriteItemProps({
+  const SuggestedItemProps({
     this.favoriteItemBuilder,
     this.favoriteItems,
     this.favoriteItemsAlignment = MainAxisAlignment.start,

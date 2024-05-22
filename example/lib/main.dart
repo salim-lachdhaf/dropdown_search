@@ -74,7 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Expanded(
                     child: DropdownSearch<int>(
+                      mode: Mode.CUSTOM,
                       items: [1, 2, 3, 4, 5, 6, 7],
+                      dropdownBuilder: (context, selectedItem) => Icon(Icons.access_alarm),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
@@ -174,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         showSelectedItems: true,
                         showSearchBox: true,
                         itemBuilder: _customPopupItemBuilderExample2,
-                        favoriteItemProps: FavoriteItemProps(
+                        suggestedItemProps: SuggestedItemProps(
                           showFavoriteItems: true,
                           favoriteItems: (us) {
                             return us.where((e) => e.name.contains("Mrs")).toList();
@@ -191,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
                         showSearchBox: true,
                         itemBuilder: _customPopupItemBuilderExample2,
-                        favoriteItemProps: FavoriteItemProps(
+                        suggestedItemProps: SuggestedItemProps(
                           showFavoriteItems: true,
                           favoriteItems: (us) {
                             return us.where((e) => e.name.contains("Mrs")).toList();
@@ -680,11 +682,12 @@ class CheckBoxState extends State<_CheckBoxWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(24)),
         gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
           colors: [
-            Color(0x88F44336),
+            Color(0xF44336),
             Colors.blue,
           ],
         ),
@@ -692,21 +695,24 @@ class CheckBoxState extends State<_CheckBoxWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text('Select: '),
-              Checkbox(
-                  value: isSelected,
-                  tristate: true,
-                  onChanged: (bool? v) {
-                    if (v == null) v = false;
-                    setState(() {
-                      isSelected = v;
-                      if (widget.onChanged != null) widget.onChanged!(v);
-                    });
-                  }),
-            ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('Select: '),
+                Checkbox(
+                    value: isSelected,
+                    tristate: true,
+                    onChanged: (bool? v) {
+                      if (v == null) v = false;
+                      setState(() {
+                        isSelected = v;
+                        if (widget.onChanged != null) widget.onChanged!(v);
+                      });
+                    }),
+              ],
+            ),
           ),
           Expanded(child: widget.child),
         ],
