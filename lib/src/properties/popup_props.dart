@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../dropdown_search.dart';
+import 'infinite_scroll_props.dart';
 
 class PopupProps<T> {
   ///popup title
@@ -79,6 +80,8 @@ class PopupProps<T> {
   ///if true , the callbacks (onTap, onLongClick...) will be handled by the user
   final bool interceptCallBacks;
 
+  ///infinite scroll params like skip (offset), take,...
+  final InfiniteScrollProps? infiniteScrollProps;
 
   const PopupProps._({
     this.mode = PopupMode.MENU,
@@ -105,6 +108,7 @@ class PopupProps<T> {
     this.containerBuilder,
     this.constraints = const BoxConstraints(),
     this.interceptCallBacks = false,
+    this.infiniteScrollProps,
   });
 
   const PopupProps.menu({
@@ -128,6 +132,7 @@ class PopupProps<T> {
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 350),
     this.interceptCallBacks = false,
+    this.infiniteScrollProps,
   })  : this.mode = PopupMode.MENU,
         this.bottomSheetProps = const BottomSheetProps(),
         this.dialogProps = const DialogProps(),
@@ -158,6 +163,7 @@ class PopupProps<T> {
       maxHeight: 600,
     ),
     this.interceptCallBacks = false,
+    this.infiniteScrollProps,
   })  : this.mode = PopupMode.DIALOG,
         this.menuProps = const MenuProps(),
         this.bottomSheetProps = const BottomSheetProps(),
@@ -184,6 +190,7 @@ class PopupProps<T> {
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 500),
     this.interceptCallBacks = false,
+    this.infiniteScrollProps,
   })  : this.mode = PopupMode.BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -210,6 +217,7 @@ class PopupProps<T> {
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 500),
     this.interceptCallBacks = false,
+    this.infiniteScrollProps,
   })  : this.mode = PopupMode.MODAL_BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -256,6 +264,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 350),
     super.interceptCallBacks = false,
+    super.infiniteScrollProps,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -284,6 +293,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 350),
     super.interceptCallBacks = false,
+    super.infiniteScrollProps,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -316,6 +326,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
       maxHeight: 600,
     ),
     super.interceptCallBacks = false,
+    super.infiniteScrollProps,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -344,6 +355,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 500),
     super.interceptCallBacks = false,
+    super.infiniteScrollProps,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -372,6 +384,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 500),
     super.interceptCallBacks = false,
+    super.infiniteScrollProps,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -410,5 +423,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           selectionWidget: null,
           validationWidgetBuilder: null,
           textDirection: TextDirection.ltr,
+          infiniteScrollProps: popupProps.infiniteScrollProps,
         );
 }

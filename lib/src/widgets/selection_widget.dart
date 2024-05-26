@@ -8,9 +8,8 @@ import '../../dropdown_search.dart';
 import 'checkbox_widget.dart';
 
 class SelectionWidget<T> extends StatefulWidget {
-  final List<T> items;
   final ValueChanged<List<T>>? onChanged;
-  final DropdownSearchOnFind<T>? asyncItems;
+  final DropdownSearchOnFind<T>? items;
   final DropdownSearchItemAsString<T>? itemAsString;
   final DropdownSearchFilterFn<T>? filterFn;
   final DropdownSearchCompareFn<T>? compareFn;
@@ -23,9 +22,8 @@ class SelectionWidget<T> extends StatefulWidget {
     required this.popupProps,
     this.defaultSelectedItems = const [],
     this.isMultiSelectionMode = false,
-    this.items = const [],
     this.onChanged,
-    this.asyncItems,
+    this.items ,
     this.itemAsString,
     this.filterFn,
     this.compareFn,
@@ -43,6 +41,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   final ScrollController scrollController = ScrollController();
   final List<T> _currentShowedItems = [];
   late TextEditingController searchBoxController;
+  late bool isInfiniteScrollEnded;
 
   List<T> get _selectedItems => _selectedItemsNotifier.value;
   Timer? _debounce;
@@ -50,7 +49,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   void searchBoxControllerListener() {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(widget.popupProps.searchDelay, () {
-      _manageItemsByFilter(searchBoxController.text);
+      _manageLoadMoreItems(searchBoxController.text, widget.popupProps.infiniteScrollProps, isFirstLoad: true);
     });
   }
 
@@ -63,12 +62,11 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         TextEditingController();
     searchBoxController.addListener(searchBoxControllerListener);
 
+    isInfiniteScrollEnded = widget.popupProps.infiniteScrollProps == null;
+
     Future.delayed(
       Duration.zero,
-      () => _manageItemsByFilter(
-        searchBoxController.text,
-        isFirstLoad: true,
-      ),
+      () => _manageLoadMoreItems(searchBoxController.text, widget.popupProps.infiniteScrollProps, isFirstLoad: true),
     );
   }
 
@@ -133,6 +131,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                           return _noDataWidget();
                         }
 
+                        final itemCount = snapshot.data!.length;
                         return RawScrollbar(
                           controller:
                               widget.popupProps.listViewProps.controller ??
@@ -213,19 +212,31 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                                   .popupProps.listViewProps.itemExtentBuilder,
                               findChildIndexCallback: widget.popupProps
                                   .listViewProps.findChildIndexCallback,
-                              itemCount: snapshot.data!.length,
+                              itemCount: itemCount + (isInfiniteScrollEnded ? 0 : 1),
                               itemBuilder: (context, index) {
-                                var item = snapshot.data![index];
-                                return widget.isMultiSelectionMode
-                                    ? _itemWidgetMultiSelection(item)
-                                    : _itemWidgetSingleSelection(item);
+                                if(index < itemCount){
+                                  var item = snapshot.data![index];
+                                  return widget.isMultiSelectionMode
+                                      ? _itemWidgetMultiSelection(item)
+                                      : _itemWidgetSingleSelection(item);
+                                }
+                                //if infiniteScroll enabled && data received not less then take request
+                                else if(!isInfiniteScrollEnded) {
+                                  _manageLoadMoreItems(
+                                    searchBoxController.text,
+                                    InfiniteScrollProps(skip: itemCount, take: widget.popupProps.infiniteScrollProps!.take),
+                                  );
+                                  return Center(child:CircularProgressIndicator());
+                                }
+
+                                return SizedBox.shrink();
                               },
                             ),
                           ),
                         );
                       },
                     ),
-                    _loadingWidget()
+                    //_loadingWidget() todo fix me
                   ],
                 ),
               ),
@@ -264,27 +275,6 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     }
 
     return defaultValidation;
-  }
-
-  void _showErrorDialog(dynamic error) {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Error while getting online items"),
-          content: _errorWidget(error),
-          actions: <Widget>[
-            TextButton(
-              child: new Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            )
-          ],
-        );
-      },
-    );
   }
 
   Widget _noDataWidget() {
@@ -338,14 +328,10 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         });
   }
 
-  ///Function that filter item (online and offline) base on user filter
-  ///[filter] is the filter keyword
-  ///[isFirstLoad] true if it's the first time we load data from online, false other wises
-  Future<void> _manageItemsByFilter(String filter,
-      {bool isFirstLoad = false}) async {
-    _loadingNotifier.value = true;
+  Future<void> _manageLoadMoreItems(String filter, InfiniteScrollProps? infiniteScrollProps, {bool isFirstLoad = false}) async {
+    if (widget.items == null) return;
 
-    List<T> applyFilter(String filter) {
+    List<T> _applyFilter(String filter) {
       return _cachedItems.where((i) {
         if (widget.filterFn != null)
           return (widget.filterFn!(i, filter));
@@ -360,46 +346,29 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       }).toList();
     }
 
-    //load offline data for the first time
-    if (isFirstLoad) _cachedItems.addAll(widget.items);
+    _loadingNotifier.value = true;
 
-    //manage offline items
-    if (widget.asyncItems != null &&
-        (widget.popupProps.isFilterOnline || isFirstLoad)) {
-      try {
-        final List<T> onlineItems = [];
-        onlineItems.addAll(await widget.asyncItems!(filter));
-
-        //Remove all old data
-        _cachedItems.clear();
-        //add offline items
-        _cachedItems.addAll(widget.items);
-        //if filter online we filter only local list based on entered keyword (filter)
-        if (widget.popupProps.isFilterOnline == true) {
-          var filteredLocalList = applyFilter(filter);
-          _cachedItems.clear();
-          _cachedItems.addAll(filteredLocalList);
-        }
-
-        //add new online items to list
-        _cachedItems.addAll(onlineItems);
-
-        //don't filter data , they are already filtered online and local data are already filtered
-        if (widget.popupProps.isFilterOnline == true)
-          _addDataToStream(_cachedItems);
-        else
-          _addDataToStream(applyFilter(filter));
-      } catch (e) {
-        _addErrorToStream(e);
-        //if offline items count > 0 , the error will be not visible for the user
-        //As solution we show it in dialog
-        if (widget.items.isNotEmpty) {
-          _showErrorDialog(e);
-          _addDataToStream(applyFilter(filter));
-        }
+    try {
+      //case filtering locally (no need to load new data)
+      if(!isFirstLoad && !widget.popupProps.isFilterOnline){
+        _addDataToStream(_applyFilter(filter));
+        return;
       }
-    } else {
-      _addDataToStream(applyFilter(filter));
+
+      final List<T> myItems = await widget.items!(filter, infiniteScrollProps);
+
+      if(infiniteScrollProps != null) isInfiniteScrollEnded = myItems.length < infiniteScrollProps.take;
+
+      if(widget.popupProps.isFilterOnline && widget.popupProps.infiniteScrollProps?.skip == infiniteScrollProps?.skip) _cachedItems.clear();
+
+      //add new online items to cache list
+      _cachedItems.addAll(myItems);
+
+      //manage data filtering
+      if (widget.popupProps.isFilterOnline) _addDataToStream(_cachedItems);
+      else _addDataToStream(_applyFilter(filter));
+    } catch (e) {
+      _setErrorToStream(e);
     }
 
     _loadingNotifier.value = false;
@@ -414,7 +383,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     _currentShowedItems.addAll(data);
   }
 
-  void _addErrorToStream(Object error, [StackTrace? stackTrace]) {
+  void _setErrorToStream(Object error, [StackTrace? stackTrace]) {
     if (_itemsStream.isClosed) return;
     _itemsStream.addError(error, stackTrace);
   }
@@ -510,7 +479,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                   SingleActivator(LogicalKeyboardKey.space):
                       DoNothingAndStopPropagationTextIntent(),
                 },
-                child: TextField(
+                child: TextField(//todo add all new fields
                   enableIMEPersonalizedLearning: widget.popupProps
                       .searchFieldProps.enableIMEPersonalizedLearning,
                   clipBehavior: widget.popupProps.searchFieldProps.clipBehavior,

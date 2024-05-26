@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:dropdown_search/src/properties/clear_button_props.dart';
 import 'package:dropdown_search/src/properties/dropdown_button_props.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:dropdown_search/src/properties/infinite_scroll_props.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -26,8 +26,9 @@ export 'src/properties/modal_bottom_sheet_props.dart';
 export 'src/properties/popup_props.dart';
 export 'src/properties/scrollbar_props.dart';
 export 'src/properties/text_field_props.dart';
+export 'src/properties/infinite_scroll_props.dart';
 
-typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
+typedef FutureOr<List<T>> DropdownSearchOnFind<T>(String filter, InfiniteScrollProps? infiniteScrollProps);
 typedef String DropdownSearchItemAsString<T>(T item);
 typedef bool DropdownSearchFilterFn<T>(T item, String filter);
 typedef bool DropdownSearchCompareFn<T>(T item1, T item2);
@@ -75,7 +76,7 @@ typedef void OnItemAdded<T>(List<T> selectedItems, T addedItem);
 typedef void OnItemRemoved<T>(List<T> selectedItems, T removedItem);
 typedef Widget PopupBuilder(BuildContext context, Widget popupWidget);
 
-///[items] are the original item from [items] or/and [asyncItems]
+///[items] are the original item from [items] or/and [items]
 typedef List<T> FavoriteItems<T>(List<T> items);
 
 enum PopupMode { DIALOG, MODAL_BOTTOM_SHEET, MENU, BOTTOM_SHEET }
@@ -83,17 +84,14 @@ enum PopupMode { DIALOG, MODAL_BOTTOM_SHEET, MENU, BOTTOM_SHEET }
 enum Mode { FORM, AUTOCOMPLETE, CUSTOM }
 
 class DropdownSearch<T> extends StatefulWidget {
-  ///sync items list
-  final List<T> items;
-
   ///selected item
   final T? selectedItem;
 
   ///selected items
   final List<T> selectedItems;
 
-  ///function that returns item from API
-  final DropdownSearchOnFind<T>? asyncItems;
+  ///items/data
+  final DropdownSearchOnFind<T>? items;
 
   ///called when a new item is selected
   final ValueChanged<T?>? onChanged;
@@ -174,9 +172,8 @@ class DropdownSearch<T> extends StatefulWidget {
     this.validator,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.onChanged,
-    this.items = const [],
+    this.items,
     this.selectedItem,
-    this.asyncItems,
     this.dropdownBuilder,
     this.dropdownDecoratorProps = const DropDownDecoratorProps(),
     this.clearButtonProps = const ClearButtonProps(),
@@ -188,12 +185,9 @@ class DropdownSearch<T> extends StatefulWidget {
     this.onBeforeChange,
     this.onBeforePopupOpening,
     PopupProps<T> popupProps = const PopupProps.menu(),
-  })  : assert(
-          !popupProps.showSelectedItems || T == String || compareFn != null,
-        ),
-        assert(
-        mode!=Mode.CUSTOM || dropdownBuilder!=null,
-        ),
+  })  : assert(!popupProps.showSelectedItems || T == String || compareFn != null),
+        assert(mode!=Mode.CUSTOM || dropdownBuilder!=null),
+        assert(popupProps.infiniteScrollProps==null || popupProps.isFilterOnline),
         this.popupProps = PopupPropsMultiSelection.from(popupProps),
         this.isMultiSelectionMode = false,
         this.dropdownBuilderMultiSelection = null,
@@ -209,8 +203,7 @@ class DropdownSearch<T> extends StatefulWidget {
     Key? key,
     this.mode = Mode.FORM,
     this.autoValidateMode = AutovalidateMode.disabled,
-    this.items = const [],
-    this.asyncItems,
+    this.items,
     this.dropdownDecoratorProps = const DropDownDecoratorProps(),
     this.clearButtonProps = const ClearButtonProps(),
     this.dropdownButtonProps = const DropdownButtonProps(),
@@ -226,13 +219,11 @@ class DropdownSearch<T> extends StatefulWidget {
     BeforePopupOpeningMultiSelection<T>? onBeforePopupOpening,
     FormFieldValidator<List<T>>? validator,
     DropdownSearchBuilderMultiSelection<T>? dropdownBuilder,
-  })  : assert(
-          !popupProps.showSelectedItems || T == String || compareFn != null,
-        ),
-        assert(
-        mode!=Mode.CUSTOM || dropdownBuilder!=null,
-        ),
-        this.onChangedMultiSelection = onChanged,
+  })  : assert(!popupProps.showSelectedItems || T == String || compareFn != null),
+        assert(mode!=Mode.CUSTOM || dropdownBuilder!=null),
+        assert(popupProps.infiniteScrollProps==null || popupProps.isFilterOnline),
+
+      this.onChangedMultiSelection = onChanged,
         this.onBeforePopupOpeningMultiSelection = onBeforePopupOpening,
         this.onSavedMultiSelection = onSaved,
         this.onBeforeChangeMultiSelection = onBeforeChange,
@@ -659,7 +650,6 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       itemAsString: widget.itemAsString,
       filterFn: widget.filterFn,
       items: widget.items,
-      asyncItems: widget.asyncItems,
       onChanged: _handleOnChangeSelectedItems,
       compareFn: widget.compareFn,
       isMultiSelectionMode: isMultiSelectionMode,
