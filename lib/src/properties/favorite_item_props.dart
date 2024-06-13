@@ -15,10 +15,18 @@ class FavoriteItemProps<T> {
   ///favorite items alignment
   final MainAxisAlignment favoriteItemsAlignment;
 
+  ///favorite items header
+  final Widget? favoriteHeader;
+
+  ///favorite items divider
+  final Widget? favoriteDivider;
+
   const FavoriteItemProps({
     this.favoriteItemBuilder,
     this.favoriteItems,
     this.favoriteItemsAlignment = MainAxisAlignment.start,
     this.showFavoriteItems = false,
+    this.favoriteHeader,
+    this.favoriteDivider,
   });
 }

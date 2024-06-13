@@ -1,3 +1,7 @@
+## [5.1.0] - 2024.06.13
+* `favoriteHeader` widget was added to the `popupProps.favoriteItemProps`
+* `favoriteDivider` widget was added to the `popupProps.favoriteItemProps`
+
 ## [5.0.6] - 2023.02.26
 * Fix search delay [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)
 * Fix search delay [485](https://github.com/salim-lachdhaf/searchable_dropdown/issues/485)
