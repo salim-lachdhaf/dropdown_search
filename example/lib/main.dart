@@ -307,24 +307,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
                 ],
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: DropdownMenu(
-                      dropdownMenuEntries:
-                          [1, 2, 3, 4, 5, 6, 7].map((e) => DropdownMenuEntry(value: e, label: e.toString())).toList(),
-                      inputDecorationTheme: InputDecorationTheme(
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      errorText: 'test',
-                    ),
-                  ),
-                ],
-              ),
 
               ///************************[custom popup background examples]********************************///
               Padding(padding: EdgeInsets.all(8)),
