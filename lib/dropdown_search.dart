@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:dropdown_search/src/properties/clear_button_props.dart';
 import 'package:dropdown_search/src/properties/dropdown_button_props.dart';
+import 'package:dropdown_search/src/properties/ink_well_props.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,7 @@ export 'src/properties/modal_bottom_sheet_props.dart';
 export 'src/properties/popup_props.dart';
 export 'src/properties/scrollbar_props.dart';
 export 'src/properties/text_field_props.dart';
+export 'src/properties/ink_well_props.dart';
 
 typedef Future<List<T>> DropdownSearchOnFind<T>(String text);
 typedef String DropdownSearchItemAsString<T>(T item);
@@ -241,7 +243,7 @@ class DropdownSearch<T> extends StatefulWidget {
 
 class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   final ValueNotifier<List<T>> _selectedItemsNotifier = ValueNotifier([]);
-  final ValueNotifier<bool> _isFocused = ValueNotifier(false);
+  final _widgetStatesController = WidgetStatesController();
   final _popupStateKey = GlobalKey<SelectionWidgetState<T>>();
 
   @override
@@ -277,11 +279,28 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     return ValueListenableBuilder<List<T?>>(
       valueListenable: _selectedItemsNotifier,
       builder: (context, data, wt) {
+        final props =
+            widget.dropdownDecoratorProps.inkWellProps?.applyDefaults(defautlInkWellProps) ?? defautlInkWellProps;
         return IgnorePointer(
           ignoring: !widget.enabled,
           child: InkWell(
             onTap: () => _selectSearchMode(),
             child: _formField(),
+            onHover: (value) => _widgetStatesController.update(WidgetState.hovered, value),
+            focusColor: props.focusColor,
+            hoverColor: props.hoverColor,
+            highlightColor: props.highlightColor,
+            overlayColor: props.overlayColor,
+            splashColor: props.splashColor,
+            splashFactory: props.splashFactory,
+            radius: props.radius,
+            borderRadius: props.borderRadius,
+            customBorder: props.customBorder,
+            enableFeedback: props.enableFeedback,
+            excludeFromSemantics: props.excludeFromSemantics,
+            canRequestFocus: props.canRequestFocus,
+            autofocus: props.autofocus,
+            hoverDuration: props.hoverDuration,
           ),
         );
       },
@@ -372,20 +391,21 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (FormFieldState<T> state) {
         if (state.value != getSelectedItem) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if(mounted) {
+            if (mounted) {
               state.didChange(getSelectedItem);
             }
           });
         }
-        return ValueListenableBuilder<bool>(
-            valueListenable: _isFocused,
-            builder: (context, isFocused, w) {
+        return ValueListenableBuilder<Set<WidgetState>>(
+            valueListenable: _widgetStatesController,
+            builder: (context, states, w) {
               return InputDecorator(
                 baseStyle: widget.dropdownDecoratorProps.baseStyle,
                 textAlign: widget.dropdownDecoratorProps.textAlign,
                 textAlignVertical: widget.dropdownDecoratorProps.textAlignVertical,
                 isEmpty: getSelectedItem == null && widget.dropdownBuilder == null,
-                isFocused: isFocused,
+                isFocused: states.contains(WidgetState.focused),
+                isHovering: states.contains(WidgetState.hovered),
                 decoration: _manageDropdownDecoration(state),
                 child: _defaultSelectedItemWidget(),
               );
@@ -404,20 +424,21 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (FormFieldState<List<T>> state) {
         if (state.value != getSelectedItems) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if(mounted) {
+            if (mounted) {
               state.didChange(getSelectedItems);
             }
           });
         }
-        return ValueListenableBuilder<bool>(
-            valueListenable: _isFocused,
-            builder: (context, isFocused, w) {
+        return ValueListenableBuilder<Set<WidgetState>>(
+            valueListenable: _widgetStatesController,
+            builder: (context, states, w) {
               return InputDecorator(
                 baseStyle: widget.dropdownDecoratorProps.baseStyle,
                 textAlign: widget.dropdownDecoratorProps.textAlign,
                 textAlignVertical: widget.dropdownDecoratorProps.textAlignVertical,
                 isEmpty: getSelectedItems.isEmpty && widget.dropdownBuilderMultiSelection == null,
-                isFocused: isFocused,
+                isFocused: states.contains(WidgetState.focused),
+                isHovering: states.contains(WidgetState.hovered),
                 decoration: _manageDropdownDecoration(state),
                 child: _defaultSelectedItemWidget(),
               );
@@ -635,11 +656,11 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///Function that manage focus listener
   ///set true only if the widget already not focused to prevent unnecessary build
   ///same thing for clear focus,
-  void _handleFocus(bool isFocused) {
-    if (isFocused && !_isFocused.value) {
+  void _handleFocus(bool setFocus) {
+    if (setFocus && !isFocused) {
       FocusScope.of(context).unfocus();
-      _isFocused.value = true;
-    } else if (!isFocused && _isFocused.value) _isFocused.value = false;
+      _widgetStatesController.update(WidgetState.focused, true);
+    } else if (!setFocus && isFocused) _widgetStatesController.update(WidgetState.focused, false);
   }
 
   ///handle on change value , if the validation is active , we validate the new selected item
@@ -731,7 +752,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   List<T> get getSelectedItems => _selectedItemsNotifier.value;
 
   ///check if the dropdownSearch is focused
-  bool get isFocused => _isFocused.value;
+  bool get isFocused => _widgetStatesController.value.contains(WidgetState.focused);
 
   ///return true if we are in multiSelection mode , false otherwise
   bool get isMultiSelectionMode => widget.isMultiSelectionMode;

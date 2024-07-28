@@ -257,6 +257,75 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
 
+              ///************************[custom shape examples]********************************///
+              Padding(padding: EdgeInsets.all(8)),
+              Text("[custom shape examples]"),
+              Divider(),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownSearch<int>(
+                      items: [1, 2, 3, 4, 5, 6, 7],
+                      autoValidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (int? i) {
+                        if (i == null)
+                          return 'required filed';
+                        else if (i >= 5) return 'value should be < 5';
+                        return null;
+                      },
+                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Expanded(
+                    child: DropdownSearch<int>.multiSelection(
+                      items: [1, 2, 3, 4, 5, 6, 7],
+                      validator: (List<int>? items) {
+                        if (items == null || items.isEmpty)
+                          return 'required filed';
+                        else if (items.length > 3) return 'only 1 to 3 items are allowed';
+                        return null;
+                      },
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownMenu(
+                      dropdownMenuEntries:
+                          [1, 2, 3, 4, 5, 6, 7].map((e) => DropdownMenuEntry(value: e, label: e.toString())).toList(),
+                      inputDecorationTheme: InputDecorationTheme(
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      errorText: 'test',
+                    ),
+                  ),
+                ],
+              ),
+
               ///************************[custom popup background examples]********************************///
               Padding(padding: EdgeInsets.all(8)),
               Text("[custom popup background examples]"),
