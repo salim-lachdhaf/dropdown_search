@@ -632,6 +632,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
     var overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
 
+
     return showCustomMenu<T>(
       menuModeProps: widget.popupProps.menuProps,
       context: context,
