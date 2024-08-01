@@ -372,7 +372,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (FormFieldState<T> state) {
         if (state.value != getSelectedItem) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if(mounted) {
+            if (mounted) {
               state.didChange(getSelectedItem);
             }
           });
@@ -404,7 +404,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (FormFieldState<List<T>> state) {
         if (state.value != getSelectedItems) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if(mounted) {
+            if (mounted) {
               state.didChange(getSelectedItems);
             }
           });
@@ -461,6 +461,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
+        if (widget.dropdownDecoratorProps.dropdownSearchDecoration?.suffixIcon != null)
+          widget.dropdownDecoratorProps.dropdownSearchDecoration!.suffixIcon!,
         if (widget.clearButtonProps.isVisible && getSelectedItems.isNotEmpty)
           IconButton(
             style: widget.clearButtonProps.style,
