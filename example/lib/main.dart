@@ -80,7 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     mode: Mode.CUSTOM,
                     items:  (f, cs ) =>[10000, 2, 3, 4, 5, 6, 7],
                     dropdownBuilder: (context, selectedItem) => Icon(Icons.access_alarm),
-                    popupProps: PopupProps.menu(),
+                    popupProps: PopupProps.menu(
+                      constraints: BoxConstraints.tight(Size(200, 100))
+                    ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
