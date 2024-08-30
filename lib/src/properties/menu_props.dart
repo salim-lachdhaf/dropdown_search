@@ -18,7 +18,7 @@ class MenuProps {
   final Color? color;
   final String? semanticLabel;
   final Color? surfaceTintColor;
-
+  final EdgeInsets? margin;
 
 
   const MenuProps({
@@ -37,5 +37,6 @@ class MenuProps {
     this.popUpAnimationStyle,
     this.semanticLabel,
     this.surfaceTintColor,
+    this.margin,
   });
 }

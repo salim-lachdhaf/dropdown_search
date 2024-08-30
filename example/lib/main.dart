@@ -31,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _popupCustomValidationKey = GlobalKey<DropdownSearchState<int>>();
   final _userEditTextController = TextEditingController(text: 'Mrs');
   final myKey = GlobalKey<DropdownSearchState<MultiLevelString>>();
+  var w = Icon(Icons.alarm);
   final List<MultiLevelString> myItems = [
     MultiLevelString(level1: "1"),
     MultiLevelString(level1: "2"),
@@ -45,16 +46,17 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
   bool? _popupBuilderSelection = false;
 
-  final longList = List.generate(110, (i) => i+1);
-
+  final longList = List.generate(110, (i) => i + 1);
 
   @override
   Widget build(BuildContext context) {
     void _handleCheckBoxState({bool updateState = true}) {
-      var selectedItem = _popupBuilderKey.currentState?.popupGetSelectedItems ?? [];
-      var isAllSelected = _popupBuilderKey.currentState?.popupIsAllItemSelected ?? false;
-      _popupBuilderSelection = selectedItem.isEmpty ? false : (isAllSelected ? true : null);
-
+      var selectedItem =
+          _popupBuilderKey.currentState?.popupGetSelectedItems ?? [];
+      var isAllSelected =
+          _popupBuilderKey.currentState?.popupIsAllItemSelected ?? false;
+      _popupBuilderSelection =
+          selectedItem.isEmpty ? false : (isAllSelected ? true : null);
 
       if (updateState) setState(() {});
     }
@@ -62,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _handleCheckBoxState(updateState: false);
 
     return Scaffold(
+      extendBodyBehindAppBar: false,
       appBar: AppBar(title: Text("DropdownSearch Demo")),
       body: Padding(
         padding: const EdgeInsets.all(25),
@@ -78,17 +81,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   DropdownSearch<int>(
                     mode: Mode.CUSTOM,
-                    items:  (f, cs ) =>[10000, 2, 3, 4, 5, 6, 7],
-                    dropdownBuilder: (context, selectedItem) => Icon(Icons.access_alarm),
+                    items: (f, cs) => [10000],
+                    dropdownBuilder: (context, selectedItem) => w,
                     popupProps: PopupProps.menu(
-                      constraints: BoxConstraints.tight(Size(200, 100))
+                      menuProps: MenuProps(),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<int>.multiSelection(
                       clearButtonProps: ClearButtonProps(isVisible: true),
-                      items:  (f, cs ) =>[1, 2, 3, 4, 5, 6, 7],
+                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
+                      popupProps: PopupPropsMultiSelection.menu(),
                     ),
                   )
                 ],
@@ -102,14 +106,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Expanded(
                     child: DropdownSearch<int>(
-                      items:  (f, cs) =>[1, 2, 3, 4, 5, 6, 7],
+                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<int>.multiSelection(
                       key: _popupCustomValidationKey,
-                      items:  (f, cs) =>[1, 2, 3, 4, 5, 6, 7],
+                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
                       popupProps: PopupPropsMultiSelection.dialog(
                         validationWidgetBuilder: (ctx, selectedItems) {
                           return Container(
@@ -120,7 +124,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: MaterialButton(
                                 child: Text('OK'),
                                 onPressed: () {
-                                  _popupCustomValidationKey.currentState?.popupOnValidate();
+                                  _popupCustomValidationKey.currentState
+                                      ?.popupOnValidate();
                                 },
                               ),
                             ),
@@ -136,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Expanded(
                     child: DropdownSearch<int>(
-                      items:  (f, cs) =>[1, 2, 3, 4, 5, 6, 7],
+                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           labelText: "BottomSheet mode",
@@ -144,13 +149,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       popupProps: PopupProps.bottomSheet(
-                          bottomSheetProps: BottomSheetProps(elevation: 16, backgroundColor: Color(0xFFAADCEE))),
+                          bottomSheetProps: BottomSheetProps(
+                              elevation: 16,
+                              backgroundColor: Color(0xFFAADCEE))),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<int>(
-                      items:  (f, cs) =>[1, 2, 3, 4, 5, 6, 7],
+                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           labelText: "Modal mode",
@@ -184,7 +191,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         suggestedItemProps: SuggestedItemProps(
                           showFavoriteItems: true,
                           favoriteItems: (us) {
-                            return us.where((e) => e.name.contains("Mrs")).toList();
+                            return us
+                                .where((e) => e.name.contains("Mrs"))
+                                .toList();
                           },
                         ),
                       ),
@@ -193,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<UserModel>.multiSelection(
-                      items: (filter, s) =>  getData(filter),
+                      items: (filter, s) => getData(filter),
                       compareFn: (i, s) => i.isEqual(s),
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
                         showSearchBox: true,
@@ -201,11 +210,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         suggestedItemProps: SuggestedItemProps(
                           showFavoriteItems: true,
                           favoriteItems: (us) {
-                            return us.where((e) => e.name.contains("Mrs")).toList();
+                            return us
+                                .where((e) => e.name.contains("Mrs"))
+                                .toList();
                           },
                           favoriteItemBuilder: (context, item, isSelected) {
                             return Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 6),
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
                                   borderRadius: BorderRadius.circular(10),
@@ -218,7 +230,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                     style: TextStyle(color: Colors.indigo),
                                   ),
                                   Padding(padding: EdgeInsets.only(left: 8)),
-                                  isSelected ? Icon(Icons.check_box_outlined) : SizedBox.shrink(),
+                                  isSelected
+                                      ? Icon(Icons.check_box_outlined)
+                                      : SizedBox.shrink(),
                                 ],
                               ),
                             );
@@ -238,7 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Expanded(
                     child: DropdownSearch<int>(
-                      items:  (f, cs) =>[1, 2, 3, 4, 5, 6, 7],
+                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
                       autoValidateMode: AutovalidateMode.onUserInteraction,
                       validator: (int? i) {
                         if (i == null)
@@ -252,11 +266,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<int>.multiSelection(
-                      items:  (f, cs) =>[1, 2, 3, 4, 5, 6, 7],
+                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
                       validator: (List<int>? items) {
                         if (items == null || items.isEmpty)
                           return 'required filed';
-                        else if (items.length > 3) return 'only 1 to 3 items are allowed';
+                        else if (items.length > 3)
+                          return 'only 1 to 3 items are allowed';
                         return null;
                       },
                     ),
@@ -269,7 +284,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Text("[custom popup background examples]"),
               Divider(),
               DropdownSearch<String>(
-                items:  (f, cs) =>List.generate(5, (index) => "$index"),
+                items: (f, cs) => List.generate(5, (index) => "$index"),
                 popupProps: PopupProps.menu(
                   fit: FlexFit.loose,
                   menuProps: MenuProps(
@@ -306,16 +321,26 @@ class _MyHomePageState extends State<MyHomePage> {
                   Expanded(
                     child: DropdownSearch<int>.multiSelection(
                       key: _popupBuilderKey,
-                      items:  (f, ic) {
+                      items: (f, ic) {
                         return Future.delayed(Duration(seconds: 1), () {
-                          if(f.isEmpty) return longList.skip(ic!.skip).take(ic.take).toList();
-                          else return longList.where((l)=> l.toString().contains(f)).skip(ic!.skip).take(ic.take).toList();
+                          if (f.isEmpty)
+                            return longList
+                                .skip(ic!.skip)
+                                .take(ic.take)
+                                .toList();
+                          else
+                            return longList
+                                .where((l) => l.toString().contains(f))
+                                .skip(ic!.skip)
+                                .take(ic.take)
+                                .toList();
                         });
-                      } ,
+                      },
                       popupProps: PopupPropsMultiSelection.dialog(
                         onItemAdded: (l, s) => _handleCheckBoxState(),
                         onItemRemoved: (l, s) => _handleCheckBoxState(),
-                        infiniteScrollProps: InfiniteScrollProps(skip: 0, take: 10),
+                        infiniteScrollProps:
+                            InfiniteScrollProps(skip: 0, take: 10),
                         showSearchBox: true,
                         isFilterOnline: true,
                         containerBuilder: (ctx, popupWidget) {
@@ -324,8 +349,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             isSelected: _popupBuilderSelection,
                             onChanged: (v) {
                               if (v == true)
-                                _popupBuilderKey.currentState!.popupSelectAllItems();
-                              else if (v == false) _popupBuilderKey.currentState!.popupDeselectAllItems();
+                                _popupBuilderKey.currentState!
+                                    .popupSelectAllItems();
+                              else if (v == false)
+                                _popupBuilderKey.currentState!
+                                    .popupDeselectAllItems();
                               _handleCheckBoxState();
                             },
                           );
@@ -337,7 +365,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Expanded(
                     child: DropdownSearch<String>.multiSelection(
                       key: _multiKey,
-                      items:  (f, cs) =>List.generate(30, (index) => "$index"),
+                      items: (f, cs) => List.generate(30, (index) => "$index"),
                       popupProps: PopupPropsMultiSelection.dialog(
                         onItemAdded: (l, s) => _handleCheckBoxState(),
                         onItemRemoved: (l, s) => _handleCheckBoxState(),
@@ -354,7 +382,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: OutlinedButton(
                                       onPressed: () {
                                         // How should I unselect all items in the list?
-                                        _multiKey.currentState?.closeDropDownSearch();
+                                        _multiKey.currentState
+                                            ?.closeDropDownSearch();
                                       },
                                       child: const Text('Cancel'),
                                     ),
@@ -364,7 +393,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: OutlinedButton(
                                       onPressed: () {
                                         // How should I select all items in the list?
-                                        _multiKey.currentState?.popupSelectAllItems();
+                                        _multiKey.currentState
+                                            ?.popupSelectAllItems();
                                       },
                                       child: const Text('All'),
                                     ),
@@ -374,7 +404,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: OutlinedButton(
                                       onPressed: () {
                                         // How should I unselect all items in the list?
-                                        _multiKey.currentState?.popupDeselectAllItems();
+                                        _multiKey.currentState
+                                            ?.popupDeselectAllItems();
                                       },
                                       child: const Text('None'),
                                     ),
@@ -418,12 +449,14 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                       ),
-                      compareFn: (item, selectedItem) => item.id == selectedItem.id,
+                      compareFn: (item, selectedItem) =>
+                          item.id == selectedItem.id,
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           labelText: 'Users *',
                           filled: true,
-                          fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                          fillColor:
+                              Theme.of(context).inputDecorationTheme.fillColor,
                         ),
                       ),
                       dropdownBuilder: _customDropDownExampleMultiSelection,
@@ -443,7 +476,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         dropdownSearchDecoration: InputDecoration(
                           labelText: 'User *',
                           filled: true,
-                          fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                          fillColor:
+                              Theme.of(context).inputDecorationTheme.fillColor,
                         ),
                       ),
                     ),
@@ -459,7 +493,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Expanded(
                     child: DropdownSearch<int>(
-                      items:  (f, cs) =>List.generate(50, (i) => i),
+                      items: (f, cs) => List.generate(50, (i) => i),
                       popupProps: PopupProps.menu(
                         showSearchBox: true,
                         title: Text('default fit'),
@@ -469,7 +503,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<int>(
-                      items:  (f, cs) =>List.generate(50, (i) => i),
+                      items: (f, cs) => List.generate(50, (i) => i),
                       popupProps: PopupProps.menu(
                         title: Text('With fit to loose and no constraints'),
                         showSearchBox: true,
@@ -486,7 +520,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Expanded(
                     child: DropdownSearch<int>(
-                      items:  (f, cs) =>List.generate(50, (i) => i),
+                      items: (f, cs) => List.generate(50, (i) => i),
                       popupProps: PopupProps.menu(
                         showSearchBox: true,
                         fit: FlexFit.loose,
@@ -498,7 +532,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<int>(
-                      items:  (f, cs) =>List.generate(50, (i) => i),
+                      items: (f, cs) => List.generate(50, (i) => i),
                       popupProps: PopupProps.menu(
                         title: Text('fit to a specific width and height'),
                         showSearchBox: true,
@@ -519,7 +553,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Divider(),
               DropdownSearch<int>(
                 key: _openDropDownProgKey,
-                items:  (f, cs) =>[1, 2, 3],
+                items: (f, cs) => [1, 2, 3],
               ),
               Padding(padding: EdgeInsets.all(4)),
               ElevatedButton(
@@ -542,7 +576,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Divider(),
               DropdownSearch<MultiLevelString>(
                 key: myKey,
-                items:  (f, cs) =>myItems,
+                items: (f, cs) => myItems,
                 compareFn: (i1, i2) => i1.level1 == i2.level1,
                 popupProps: PopupProps.menu(
                   showSelectedItems: true,
@@ -575,10 +609,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                 children: item.subLevel
                                     .map(
                                       (e) => ListTile(
-                                        selected: myKey.currentState?.getSelectedItem?.level1 == e.level1,
+                                        selected: myKey.currentState
+                                                ?.getSelectedItem?.level1 ==
+                                            e.level1,
                                         title: Text(e.level1),
                                         onTap: () {
-                                          myKey.currentState?.popupValidate([e]);
+                                          myKey.currentState
+                                              ?.popupValidate([e]);
                                         },
                                       ),
                                     )
@@ -598,7 +635,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _customDropDownExampleMultiSelection(BuildContext context, List<UserModel> selectedItems) {
+  Widget _customDropDownExampleMultiSelection(
+      BuildContext context, List<UserModel> selectedItems) {
     if (selectedItems.isEmpty) {
       return ListTile(
         contentPadding: EdgeInsets.all(0),
@@ -628,7 +666,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _customPopupItemBuilderExample2(BuildContext context, UserModel item, bool isSelected) {
+  Widget _customPopupItemBuilderExample2(
+      BuildContext context, UserModel item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
