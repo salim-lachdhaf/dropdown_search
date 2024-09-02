@@ -1,3 +1,14 @@
+## [6.0.0-pre] - 2024.09.01
+* New feature: infinite list / lazy loading
+* New feature: add click properties to the dropdown
+* New feature: add custom mode
+* New feature: dropdown button can be changed depending on state (open/closed)
+* New feature: add property 'cacheItems'
+* New feature: adding new properties for a lot of widget (scroll, modal, bottomSheet,...)
+* Breaking changes : 
+* * AsyncItems and items are grouped in items:(filter, infiniteScrollProps)
+* * FavoriteItems renamed to SuggestedItems
+* Fix search delay [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)
 ## [5.0.6] - 2023.02.26
 * Fix search delay [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)
 * Fix search delay [485](https://github.com/salim-lachdhaf/searchable_dropdown/issues/485)

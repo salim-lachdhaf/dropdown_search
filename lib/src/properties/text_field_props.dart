@@ -55,6 +55,17 @@ class TextFieldProps {
   final ScrollController? scrollController;
   final Iterable<String>? autofillHints;
   final String? restorationId;
+  final bool canRequestFocus;
+  final WidgetStatesController? statesController;
+  final ContentInsertionConfiguration? contentInsertionConfiguration;
+  final Color? cursorErrorColor;
+  final bool? cursorOpacityAnimates;
+  final bool? ignorePointers;
+  final TextMagnifierConfiguration? magnifierConfiguration;
+  final TapRegionCallback? onTapOutside;
+  final bool scribbleEnabled;
+  final UndoHistoryController? undoController;
+  final SpellCheckConfiguration? spellCheckConfiguration;
 
   const TextFieldProps({
     this.controller,
@@ -107,5 +118,16 @@ class TextFieldProps {
     this.clipBehavior = Clip.hardEdge,
     this.enableIMEPersonalizedLearning = true,
     this.focusNode,
+    this.canRequestFocus = true,
+    this.statesController,
+    this.contentInsertionConfiguration,
+    this.cursorErrorColor,
+    this.cursorOpacityAnimates,
+    this.ignorePointers,
+    this.magnifierConfiguration,
+    this.onTapOutside,
+    this.scribbleEnabled = true,
+    this.spellCheckConfiguration,
+    this.undoController,
   });
 }

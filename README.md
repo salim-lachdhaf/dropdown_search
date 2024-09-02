@@ -30,15 +30,16 @@
 
 ## Key Features
 
+* Infinite list (lazy loading)
 * Sync and/or Async items (online, offline, DB, ...)
 * Searchable dropdown
-* Three dropdown mode: Menu/ BottomSheet/ ModalBottomSheet / Dialog
+* Support multi level items
+* Four dropdown mode: Menu/ BottomSheet/ ModalBottomSheet / Dialog
 * Single & multi selection
 * Material dropdown
-* Easy customizable UI
+* Easy customizable UI - No Boilerplate
 * Handle Light and Dark theme
 * Easy implementation into statelessWidget
-* Support multi level items
 
 <table>
     <tr>

@@ -4,21 +4,21 @@ import '../../dropdown_search.dart';
 
 class SuggestedItemProps<T> {
   ///show or hide favorites items
-  final bool showFavoriteItems;
+  final bool showSuggestedItems;
 
   ///to customize favorites chips
-  final FavoriteItemsBuilder<T>? favoriteItemBuilder;
+  final FavoriteItemsBuilder<T>? suggestedItemBuilder;
 
   ///favorites items list
-  final FavoriteItems<T>? favoriteItems;
+  final FavoriteItems<T>? suggestedItems;
 
   ///favorite items alignment
-  final MainAxisAlignment favoriteItemsAlignment;
+  final MainAxisAlignment suggestedItemsAlignment;
 
   const SuggestedItemProps({
-    this.favoriteItemBuilder,
-    this.favoriteItems,
-    this.favoriteItemsAlignment = MainAxisAlignment.start,
-    this.showFavoriteItems = false,
+    this.suggestedItemBuilder,
+    this.suggestedItems,
+    this.suggestedItemsAlignment = MainAxisAlignment.start,
+    this.showSuggestedItems = false,
   });
 }

@@ -1,7 +1,3 @@
-import 'package:flutter/material.dart';
-
-import '../../dropdown_search.dart';
-
 class InfiniteScrollProps {
   final int skip;
   final int take;
@@ -11,4 +7,8 @@ class InfiniteScrollProps {
     this.take = 50,
   })  : assert(skip >= 0),
         assert(take > 1);
+
+  InfiniteScrollProps copy({int? skip, int? take}) {
+    return InfiniteScrollProps(skip: skip ?? this.skip, take: take ?? this.take);
+  }
 }

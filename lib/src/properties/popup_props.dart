@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../dropdown_search.dart';
-import 'infinite_scroll_props.dart';
 
 class PopupProps<T> {
   ///popup title
@@ -50,6 +49,10 @@ class PopupProps<T> {
 
   ///true if the filter on items is applied onlie (via API/DB/...)
   final bool isFilterOnline;
+
+  ///if true, once all items are loaded, filtering is applied on cached items (no need to re call the API to get items)
+  ///[cacheItems] and [isFilterOnline] could not be both true
+  final bool cacheItems;
 
   ///suggested items props
   final SuggestedItemProps<T> suggestedItemProps;
@@ -105,6 +108,7 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.disabledItemFn,
     this.isFilterOnline = false,
+    this.cacheItems = false,
     this.containerBuilder,
     this.constraints = const BoxConstraints(),
     this.interceptCallBacks = false,
@@ -129,6 +133,7 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.disabledItemFn,
     this.isFilterOnline = false,
+    this.cacheItems = false,
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 350),
     this.interceptCallBacks = false,
@@ -156,6 +161,7 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.disabledItemFn,
     this.isFilterOnline = false,
+    this.cacheItems = false,
     this.containerBuilder,
     this.constraints = const BoxConstraints(
       minWidth: 500,
@@ -187,6 +193,7 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.disabledItemFn,
     this.isFilterOnline = false,
+    this.cacheItems = false,
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 500),
     this.interceptCallBacks = false,
@@ -214,6 +221,7 @@ class PopupProps<T> {
     this.showSelectedItems = false,
     this.disabledItemFn,
     this.isFilterOnline = false,
+    this.cacheItems = false,
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 500),
     this.interceptCallBacks = false,
@@ -244,6 +252,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.fit = FlexFit.tight,
     super.title,
     super.isFilterOnline,
+    super.cacheItems,
     super.itemBuilder,
     super.disabledItemFn,
     super.showSearchBox,
@@ -290,6 +299,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.showSelectedItems = false,
     super.disabledItemFn,
     super.isFilterOnline = false,
+    super.cacheItems = false,
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 350),
     super.interceptCallBacks = false,
@@ -319,6 +329,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.showSelectedItems = false,
     super.disabledItemFn,
     super.isFilterOnline = false,
+    super.cacheItems = false,
     super.containerBuilder,
     super.constraints = const BoxConstraints(
       minWidth: 500,
@@ -352,6 +363,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.showSelectedItems = false,
     super.disabledItemFn,
     super.isFilterOnline = false,
+    super.cacheItems = false,
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 500),
     super.interceptCallBacks = false,
@@ -366,6 +378,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   const PopupPropsMultiSelection.modalBottomSheet({
     super.title,
     super.isFilterOnline,
+    super.cacheItems,
     super.fit = FlexFit.tight,
     super.itemBuilder,
     super.disabledItemFn,
@@ -401,6 +414,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           emptyBuilder: popupProps.emptyBuilder,
           errorBuilder: popupProps.errorBuilder,
           isFilterOnline: popupProps.isFilterOnline,
+          cacheItems: popupProps.cacheItems,
           itemBuilder: popupProps.itemBuilder,
           listViewProps: popupProps.listViewProps,
           loadingBuilder: popupProps.loadingBuilder,

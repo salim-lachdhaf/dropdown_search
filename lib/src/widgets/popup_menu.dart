@@ -49,7 +49,7 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
     return BoxConstraints.loose(
       Size(
         constraints.minWidth - position.right - position.left,
-        constraints.minHeight - position.top,
+        constraints.minHeight - (position.bottom - position.top),
       ),
     ).deflate(
       EdgeInsets.only(top: safeAreaTotal + keyBoardHeight) + padding,

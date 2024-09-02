@@ -27,7 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
   final _openDropDownProgKey = GlobalKey<DropdownSearchState<int>>();
   final _multiKey = GlobalKey<DropdownSearchState<String>>();
-  final _popupBuilderKey = GlobalKey<DropdownSearchState<String>>();
+  final _popupBuilderKey = GlobalKey<DropdownSearchState<int>>();
   final _popupCustomValidationKey = GlobalKey<DropdownSearchState<int>>();
   final _userEditTextController = TextEditingController(text: 'Mrs');
   final myKey = GlobalKey<DropdownSearchState<MultiLevelString>>();
@@ -48,23 +48,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final longList = List.generate(110, (i) => i + 1);
 
+  bool? _handleCheckBoxState() {
+    var selectedItem = _popupBuilderKey.currentState?.popupGetSelectedItems ?? [];
+    var isAllSelected = _popupBuilderKey.currentState?.popupIsAllItemSelected ?? false;
+    return selectedItem.isEmpty ? false : (isAllSelected ? true : null);
+  }
+
   @override
   Widget build(BuildContext context) {
-    void _handleCheckBoxState({bool updateState = true}) {
-      var selectedItem =
-          _popupBuilderKey.currentState?.popupGetSelectedItems ?? [];
-      var isAllSelected =
-          _popupBuilderKey.currentState?.popupIsAllItemSelected ?? false;
-      _popupBuilderSelection =
-          selectedItem.isEmpty ? false : (isAllSelected ? true : null);
-
-      if (updateState) setState(() {});
-    }
-
-    _handleCheckBoxState(updateState: false);
-
     return Scaffold(
-      extendBodyBehindAppBar: false,
       appBar: AppBar(title: Text("DropdownSearch Demo")),
       body: Padding(
         padding: const EdgeInsets.all(25),
@@ -124,8 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: MaterialButton(
                                 child: Text('OK'),
                                 onPressed: () {
-                                  _popupCustomValidationKey.currentState
-                                      ?.popupOnValidate();
+                                  _popupCustomValidationKey.currentState?.popupOnValidate();
                                 },
                               ),
                             ),
@@ -149,9 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       popupProps: PopupProps.bottomSheet(
-                          bottomSheetProps: BottomSheetProps(
-                              elevation: 16,
-                              backgroundColor: Color(0xFFAADCEE))),
+                          bottomSheetProps: BottomSheetProps(elevation: 16, backgroundColor: Color(0xFFAADCEE))),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
@@ -189,11 +178,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         showSearchBox: true,
                         itemBuilder: _customPopupItemBuilderExample2,
                         suggestedItemProps: SuggestedItemProps(
-                          showFavoriteItems: true,
-                          favoriteItems: (us) {
-                            return us
-                                .where((e) => e.name.contains("Mrs"))
-                                .toList();
+                          showSuggestedItems: true,
+                          suggestedItems: (us) {
+                            return us.where((e) => e.name.contains("Mrs")).toList();
                           },
                         ),
                       ),
@@ -208,16 +195,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         showSearchBox: true,
                         itemBuilder: _customPopupItemBuilderExample2,
                         suggestedItemProps: SuggestedItemProps(
-                          showFavoriteItems: true,
-                          favoriteItems: (us) {
-                            return us
-                                .where((e) => e.name.contains("Mrs"))
-                                .toList();
+                          showSuggestedItems: true,
+                          suggestedItems: (us) {
+                            return us.where((e) => e.name.contains("Mrs")).toList();
                           },
-                          favoriteItemBuilder: (context, item, isSelected) {
+                          suggestedItemBuilder: (context, item, isSelected) {
                             return Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 6),
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
                                   borderRadius: BorderRadius.circular(10),
@@ -230,9 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     style: TextStyle(color: Colors.indigo),
                                   ),
                                   Padding(padding: EdgeInsets.only(left: 8)),
-                                  isSelected
-                                      ? Icon(Icons.check_box_outlined)
-                                      : SizedBox.shrink(),
+                                  isSelected ? Icon(Icons.check_box_outlined) : SizedBox.shrink(),
                                 ],
                               ),
                             );
@@ -270,8 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       validator: (List<int>? items) {
                         if (items == null || items.isEmpty)
                           return 'required filed';
-                        else if (items.length > 3)
-                          return 'only 1 to 3 items are allowed';
+                        else if (items.length > 3) return 'only 1 to 3 items are allowed';
                         return null;
                       },
                     ),
@@ -323,38 +304,25 @@ class _MyHomePageState extends State<MyHomePage> {
                       key: _popupBuilderKey,
                       items: (f, ic) {
                         return Future.delayed(Duration(seconds: 1), () {
-                          if (f.isEmpty)
-                            return longList
-                                .skip(ic!.skip)
-                                .take(ic.take)
-                                .toList();
-                          else
-                            return longList
-                                .where((l) => l.toString().contains(f))
-                                .skip(ic!.skip)
-                                .take(ic.take)
-                                .toList();
+                          var list = f.isEmpty ? longList : longList.where((l) => l.toString().contains(f));
+
+                          return list.skip(ic!.skip).take(ic.take).toList();
                         });
                       },
                       popupProps: PopupPropsMultiSelection.dialog(
-                        onItemAdded: (l, s) => _handleCheckBoxState(),
-                        onItemRemoved: (l, s) => _handleCheckBoxState(),
-                        infiniteScrollProps:
-                            InfiniteScrollProps(skip: 0, take: 10),
+                        onItemAdded: (l, s) => setState(() {}),
+                        onItemRemoved: (l, s) => setState(() {}),
+                        infiniteScrollProps: InfiniteScrollProps(skip: 0, take: 10),
                         showSearchBox: true,
                         isFilterOnline: true,
                         containerBuilder: (ctx, popupWidget) {
                           return _CheckBoxWidget(
                             child: popupWidget,
-                            isSelected: _popupBuilderSelection,
+                            isSelected: _handleCheckBoxState(),
                             onChanged: (v) {
                               if (v == true)
-                                _popupBuilderKey.currentState!
-                                    .popupSelectAllItems();
-                              else if (v == false)
-                                _popupBuilderKey.currentState!
-                                    .popupDeselectAllItems();
-                              _handleCheckBoxState();
+                                _popupBuilderKey.currentState?.popupSelectAllItems();
+                              else if (v == false) _popupBuilderKey.currentState?.popupDeselectAllItems();
                             },
                           );
                         },
@@ -382,8 +350,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: OutlinedButton(
                                       onPressed: () {
                                         // How should I unselect all items in the list?
-                                        _multiKey.currentState
-                                            ?.closeDropDownSearch();
+                                        _multiKey.currentState?.closeDropDownSearch();
                                       },
                                       child: const Text('Cancel'),
                                     ),
@@ -393,8 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: OutlinedButton(
                                       onPressed: () {
                                         // How should I select all items in the list?
-                                        _multiKey.currentState
-                                            ?.popupSelectAllItems();
+                                        _multiKey.currentState?.popupSelectAllItems();
                                       },
                                       child: const Text('All'),
                                     ),
@@ -404,8 +370,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: OutlinedButton(
                                       onPressed: () {
                                         // How should I unselect all items in the list?
-                                        _multiKey.currentState
-                                            ?.popupDeselectAllItems();
+                                        _multiKey.currentState?.popupDeselectAllItems();
                                       },
                                       child: const Text('None'),
                                     ),
@@ -449,14 +414,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                       ),
-                      compareFn: (item, selectedItem) =>
-                          item.id == selectedItem.id,
+                      compareFn: (item, selectedItem) => item.id == selectedItem.id,
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           labelText: 'Users *',
                           filled: true,
-                          fillColor:
-                              Theme.of(context).inputDecorationTheme.fillColor,
+                          fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                         ),
                       ),
                       dropdownBuilder: _customDropDownExampleMultiSelection,
@@ -476,8 +439,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         dropdownSearchDecoration: InputDecoration(
                           labelText: 'User *',
                           filled: true,
-                          fillColor:
-                              Theme.of(context).inputDecorationTheme.fillColor,
+                          fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                         ),
                       ),
                     ),
@@ -609,13 +571,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                 children: item.subLevel
                                     .map(
                                       (e) => ListTile(
-                                        selected: myKey.currentState
-                                                ?.getSelectedItem?.level1 ==
-                                            e.level1,
+                                        selected: myKey.currentState?.getSelectedItem?.level1 == e.level1,
                                         title: Text(e.level1),
                                         onTap: () {
-                                          myKey.currentState
-                                              ?.popupValidate([e]);
+                                          myKey.currentState?.popupValidate([e]);
                                         },
                                       ),
                                     )
@@ -635,8 +594,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _customDropDownExampleMultiSelection(
-      BuildContext context, List<UserModel> selectedItems) {
+  Widget _customDropDownExampleMultiSelection(BuildContext context, List<UserModel> selectedItems) {
     if (selectedItems.isEmpty) {
       return ListTile(
         contentPadding: EdgeInsets.all(0),
@@ -666,8 +624,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _customPopupItemBuilderExample2(
-      BuildContext context, UserModel item, bool isSelected) {
+  Widget _customPopupItemBuilderExample2(BuildContext context, UserModel item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
