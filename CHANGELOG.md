@@ -1,10 +1,12 @@
 ## [6.0.0-pre] - 2024.09.01
-* New feature: infinite list / lazy loading
-* New feature: add click properties to the dropdown
-* New feature: add custom mode
-* New feature: dropdown button can be changed depending on state (open/closed)
-* New feature: add property 'cacheItems'
-* New feature: adding new properties for a lot of widget (scroll, modal, bottomSheet,...)
+* New feature: 
+  * infinite list / lazy loading
+  * add click properties to the dropdown
+  * add custom mode
+  * dropdown button can be changed depending on state (open/closed)
+  * add property ```cacheItems``` for popupProps
+  * add property ```onItemLoaded```
+  * adding new properties for a lot of widget (scroll, modal, bottomSheet,...)
 * Breaking changes : 
 * * AsyncItems and items are grouped in items:(filter, infiniteScrollProps)
 * * FavoriteItems renamed to SuggestedItems

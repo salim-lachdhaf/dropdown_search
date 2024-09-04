@@ -315,14 +315,14 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             highlightColor: widget.clickProps.highlightColor,
             onFocusChange: widget.clickProps.onFocusChange,
             onTap: () => _selectSearchMode(),
-            child: dropDown(),
+            child: _dropDown(),
           ),
         );
       },
     );
   }
 
-  Widget dropDown() {
+  Widget _dropDown() {
     if (widget.mode == Mode.CUSTOM) {
       return _customField();
     } else if (widget.mode == Mode.AUTOCOMPLETE) {
@@ -452,7 +452,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       autovalidateMode: widget.autoValidateMode,
       initialValue: widget.selectedItems,
       builder: (FormFieldState<List<T>> state) {
-        if (state.value != getSelectedItems) {
+        if (!listEquals(state.value, getSelectedItems)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               state.didChange(getSelectedItems);
@@ -848,6 +848,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///returns popup selected items
   List<T> get popupGetSelectedItems => _popupStateKey.currentState?.getSelectedItem ?? [];
+
+  ///returns popup showed/loaded items
+  List<T> get popupGetItems => _popupStateKey.currentState?.getLoadedItems ?? [];
 
   void updatePopupState() => _popupStateKey.currentState?.setState(() {});
 }

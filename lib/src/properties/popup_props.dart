@@ -86,6 +86,9 @@ class PopupProps<T> {
   ///infinite scroll params like skip (offset), take,...
   final InfiniteScrollProps? infiniteScrollProps;
 
+  /// called when loading new items
+  final ValueChanged<List<T>>? onItemsLoaded;
+
   const PopupProps._({
     this.mode = PopupMode.MENU,
     this.fit = FlexFit.tight,
@@ -113,6 +116,7 @@ class PopupProps<T> {
     this.constraints = const BoxConstraints(),
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
+    this.onItemsLoaded,
   });
 
   const PopupProps.menu({
@@ -138,6 +142,7 @@ class PopupProps<T> {
     this.constraints = const BoxConstraints(maxHeight: 350),
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
+    this.onItemsLoaded,
   })  : this.mode = PopupMode.MENU,
         this.bottomSheetProps = const BottomSheetProps(),
         this.dialogProps = const DialogProps(),
@@ -170,6 +175,7 @@ class PopupProps<T> {
     ),
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
+    this.onItemsLoaded,
   })  : this.mode = PopupMode.DIALOG,
         this.menuProps = const MenuProps(),
         this.bottomSheetProps = const BottomSheetProps(),
@@ -198,6 +204,7 @@ class PopupProps<T> {
     this.constraints = const BoxConstraints(maxHeight: 500),
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
+    this.onItemsLoaded,
   })  : this.mode = PopupMode.BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -226,6 +233,7 @@ class PopupProps<T> {
     this.constraints = const BoxConstraints(maxHeight: 500),
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
+    this.onItemsLoaded,
   })  : this.mode = PopupMode.MODAL_BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -274,6 +282,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.constraints = const BoxConstraints(maxHeight: 350),
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
+    super.onItemsLoaded,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -304,6 +313,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.constraints = const BoxConstraints(maxHeight: 350),
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
+    super.onItemsLoaded,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -338,6 +348,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     ),
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
+    super.onItemsLoaded,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -368,6 +379,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.constraints = const BoxConstraints(maxHeight: 500),
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
+    super.onItemsLoaded,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -398,6 +410,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.constraints = const BoxConstraints(maxHeight: 500),
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
+    super.onItemsLoaded,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -438,5 +451,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           validationWidgetBuilder: null,
           textDirection: TextDirection.ltr,
           infiniteScrollProps: popupProps.infiniteScrollProps,
+          onItemsLoaded: popupProps.onItemsLoaded,
         );
 }

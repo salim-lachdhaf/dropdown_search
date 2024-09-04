@@ -48,14 +48,15 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   String lastSearchText = '';
 
   void searchBoxControllerListener() {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+
     //handle case when editText get focused, onTextChange was called !
     if (lastSearchText == searchBoxController.text) return;
 
-    if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(widget.popupProps.searchDelay, () {
+      lastSearchText = searchBoxController.text;
       _manageLoadItems(searchBoxController.text);
     });
-    lastSearchText = searchBoxController.text;
   }
 
   @override
@@ -218,9 +219,6 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     if (widget.onChanged != null) widget.onChanged!(_selectedItems);
   }
 
-  ///close popup
-  void closePopup() => Navigator.pop(context);
-
   Widget _multiSelectionValidation() {
     if (!widget.isMultiSelectionMode) return SizedBox.shrink();
 
@@ -364,6 +362,8 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     //update showed data list
     _currentShowedItems.clear();
     _currentShowedItems.addAll(data);
+
+    if (widget.popupProps.onItemsLoaded != null) widget.popupProps.onItemsLoaded!(data);
   }
 
   void _setErrorToStream(Object error, [StackTrace? stackTrace]) {
@@ -569,7 +569,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                                   f,
                                   _isSelectedItem(f),
                                 )
-                              : _favoriteItemDefaultWidget(f),
+                              : _suggestedItemDefaultWidget(f),
                         ),
                       ),
                     )
@@ -595,7 +595,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     }
   }
 
-  Widget _favoriteItemDefaultWidget(T item) {
+  Widget _suggestedItemDefaultWidget(T item) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Theme.of(context).primaryColorLight),
@@ -637,10 +637,6 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     _selectedItemsNotifier.value = List.from(_selectedItems);
   }
 
-  void selectAllItems() {
-    selectItems(_currentShowedItems);
-  }
-
   void deselectItems(List<T> itemsToDeselect) {
     List<T> tempList = List.from(itemsToDeselect);
     tempList.forEach((i) {
@@ -653,13 +649,18 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     _selectedItemsNotifier.value = List.from(_selectedItems);
   }
 
-  void deselectAllItems() {
-    deselectItems(_selectedItems);
-  }
+  ///close popup
+  void closePopup() => Navigator.pop(context);
+
+  void selectAllItems() => selectItems(_currentShowedItems);
+
+  void deselectAllItems() => deselectItems(_selectedItems);
 
   bool get isAllItemSelected => _listEquals(_selectedItems, _currentShowedItems);
 
   List<T> get getSelectedItem => List.from(_selectedItems);
+
+  List<T> get getLoadedItems => List.from(_currentShowedItems);
 
   bool _listEquals(List<T>? a, List<T>? b) {
     if (a == null) {
