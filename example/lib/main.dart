@@ -1,9 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:example/bottom_sheets.dart';
+import 'package:example/dialogs.dart';
 import 'package:example/menus.dart';
+import 'package:example/modals.dart';
 import 'package:flutter/material.dart';
 
-import 'user_model.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,6 +21,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  final dropDownKey = GlobalKey<DropdownSearchState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +35,7 @@ class MyHomePage extends StatelessWidget {
               children: [
                 Expanded(
                   child: DropdownSearch(
+                    key: dropDownKey,
                     selectedItem: "Menu",
                     items: (filter, infiniteScrollProps) => ["Menu", "Dialog", "Modal", "BottomSheet"],
                     dropdownDecoratorProps: DropDownDecoratorProps(
@@ -46,7 +50,20 @@ class MyHomePage extends StatelessWidget {
                 Padding(padding: EdgeInsets.only(right: 16)),
                 FilledButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => MenuExamplesPage()));
+                    switch (dropDownKey.currentState?.getSelectedItem) {
+                      case 'Menu':
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MenuExamplesPage()));
+                        break;
+                      case 'Modal':
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ModalsExamplesPage()));
+                        break;
+                      case 'BottomSheet':
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => BottomSheetExamplesPage()));
+                        break;
+                      case 'Dialog':
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DialogExamplesPage()));
+                        break;
+                    }
                   },
                   child: Text("Go"),
                 )

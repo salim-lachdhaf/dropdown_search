@@ -186,10 +186,10 @@ class DropdownSearch<T> extends StatefulWidget {
     this.onBeforeChange,
     this.onBeforePopupOpening,
     PopupProps<T> popupProps = const PopupProps.menu(),
-  })  : assert(!popupProps.showSelectedItems || T == String || compareFn != null),
-        assert(popupProps.cacheItems != popupProps.isFilterOnline || !popupProps.cacheItems),
+  })  : assert(!popupProps.showSelectedItems || T == String || T == int || T == double || compareFn != null),
+        assert(popupProps.cacheItems != popupProps.disableFilter || !popupProps.cacheItems),
         assert(mode != Mode.CUSTOM || dropdownBuilder != null),
-        assert(popupProps.infiniteScrollProps == null || popupProps.isFilterOnline),
+        assert(popupProps.infiniteScrollProps == null || popupProps.disableFilter),
         this.popupProps = PopupPropsMultiSelection.from(popupProps),
         this.isMultiSelectionMode = false,
         this.dropdownBuilderMultiSelection = null,
@@ -222,9 +222,9 @@ class DropdownSearch<T> extends StatefulWidget {
     BeforePopupOpeningMultiSelection<T>? onBeforePopupOpening,
     FormFieldValidator<List<T>>? validator,
     DropdownSearchBuilderMultiSelection<T>? dropdownBuilder,
-  })  : assert(!popupProps.showSelectedItems || T == String || compareFn != null),
+  })  : assert(!popupProps.showSelectedItems || T == String || T == int || T == double || compareFn != null),
         assert(mode != Mode.CUSTOM || dropdownBuilder != null),
-        assert(popupProps.infiniteScrollProps == null || popupProps.isFilterOnline),
+        assert(popupProps.infiniteScrollProps == null || popupProps.disableFilter),
         this.onChangedMultiSelection = onChanged,
         this.onBeforePopupOpeningMultiSelection = onBeforePopupOpening,
         this.onSavedMultiSelection = onSaved,
@@ -480,6 +480,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   InputDecoration _manageDropdownDecoration(FormFieldState state) {
     return (widget.dropdownDecoratorProps.dropdownSearchDecoration ??
             const InputDecoration(
+              fillColor: Colors.red,
               contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
               border: OutlineInputBorder(),
             ))

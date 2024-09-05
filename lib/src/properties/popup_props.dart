@@ -47,11 +47,12 @@ class PopupProps<T> {
   ///select the selected item in the menu/dialog/bottomSheet of items
   final bool showSelectedItems;
 
-  ///true if the filter on items is applied onlie (via API/DB/...)
-  final bool isFilterOnline;
+  ///false if the filter on items is applied by the plugin
+  ///true if you want to handle by yourself the filtering (data already filtered by DB, API, ....)
+  final bool disableFilter;
 
   ///if true, once all items are loaded, filtering is applied on cached items (no need to re call the API to get items)
-  ///[cacheItems] and [isFilterOnline] could not be both true
+  ///[cacheItems] and [disableFilter] could not be both true
   final bool cacheItems;
 
   ///suggested items props
@@ -110,7 +111,7 @@ class PopupProps<T> {
     this.loadingBuilder,
     this.showSelectedItems = false,
     this.disabledItemFn,
-    this.isFilterOnline = false,
+    this.disableFilter = false,
     this.cacheItems = false,
     this.containerBuilder,
     this.constraints = const BoxConstraints(),
@@ -136,7 +137,7 @@ class PopupProps<T> {
     this.loadingBuilder,
     this.showSelectedItems = false,
     this.disabledItemFn,
-    this.isFilterOnline = false,
+    this.disableFilter = false,
     this.cacheItems = false,
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 350),
@@ -165,7 +166,7 @@ class PopupProps<T> {
     this.loadingBuilder,
     this.showSelectedItems = false,
     this.disabledItemFn,
-    this.isFilterOnline = false,
+    this.disableFilter = false,
     this.cacheItems = false,
     this.containerBuilder,
     this.constraints = const BoxConstraints(
@@ -198,7 +199,7 @@ class PopupProps<T> {
     this.loadingBuilder,
     this.showSelectedItems = false,
     this.disabledItemFn,
-    this.isFilterOnline = false,
+    this.disableFilter = false,
     this.cacheItems = false,
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 500),
@@ -227,7 +228,7 @@ class PopupProps<T> {
     this.loadingBuilder,
     this.showSelectedItems = false,
     this.disabledItemFn,
-    this.isFilterOnline = false,
+    this.disableFilter = false,
     this.cacheItems = false,
     this.containerBuilder,
     this.constraints = const BoxConstraints(maxHeight: 500),
@@ -259,7 +260,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.mode = PopupMode.MENU,
     super.fit = FlexFit.tight,
     super.title,
-    super.isFilterOnline,
+    super.disableFilter,
     super.cacheItems,
     super.itemBuilder,
     super.disabledItemFn,
@@ -307,7 +308,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.loadingBuilder,
     super.showSelectedItems = false,
     super.disabledItemFn,
-    super.isFilterOnline = false,
+    super.disableFilter = false,
     super.cacheItems = false,
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 350),
@@ -338,7 +339,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.loadingBuilder,
     super.showSelectedItems = false,
     super.disabledItemFn,
-    super.isFilterOnline = false,
+    super.disableFilter = false,
     super.cacheItems = false,
     super.containerBuilder,
     super.constraints = const BoxConstraints(
@@ -373,7 +374,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.loadingBuilder,
     super.showSelectedItems = false,
     super.disabledItemFn,
-    super.isFilterOnline = false,
+    super.disableFilter = false,
     super.cacheItems = false,
     super.containerBuilder,
     super.constraints = const BoxConstraints(maxHeight: 500),
@@ -389,7 +390,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
 
   const PopupPropsMultiSelection.modalBottomSheet({
     super.title,
-    super.isFilterOnline,
+    super.disableFilter,
     super.cacheItems,
     super.fit = FlexFit.tight,
     super.itemBuilder,
@@ -426,7 +427,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           disabledItemFn: popupProps.disabledItemFn,
           emptyBuilder: popupProps.emptyBuilder,
           errorBuilder: popupProps.errorBuilder,
-          isFilterOnline: popupProps.isFilterOnline,
+          disableFilter: popupProps.disableFilter,
           cacheItems: popupProps.cacheItems,
           itemBuilder: popupProps.itemBuilder,
           listViewProps: popupProps.listViewProps,

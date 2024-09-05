@@ -113,104 +113,107 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   Widget _defaultWidget() {
-    return ValueListenableBuilder(
-        valueListenable: _selectedItemsNotifier,
-        builder: (ctx, value, wdgt) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              _searchField(),
-              _suggestedItemsWidget(),
-              Flexible(
-                fit: widget.popupProps.fit,
-                child: Stack(
-                  children: <Widget>[
-                    StreamBuilder<List<T>>(
-                      stream: _itemsStream.stream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return _errorWidget(snapshot.error);
-                        } else if (!snapshot.hasData) {
-                          return _loadingWidget();
-                        } else if (snapshot.data!.isEmpty) {
-                          return _noDataWidget();
-                        }
+    return Material(
+      type: MaterialType.transparency,
+      child: ValueListenableBuilder(
+          valueListenable: _selectedItemsNotifier,
+          builder: (ctx, value, w) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                _searchField(),
+                _suggestedItemsWidget(),
+                Flexible(
+                  fit: widget.popupProps.fit,
+                  child: Stack(
+                    children: <Widget>[
+                      StreamBuilder<List<T>>(
+                        stream: _itemsStream.stream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return _errorWidget(snapshot.error);
+                          } else if (!snapshot.hasData) {
+                            return _loadingWidget();
+                          } else if (snapshot.data!.isEmpty) {
+                            return _noDataWidget();
+                          }
 
-                        final itemCount = snapshot.data!.length;
-                        return RawScrollbar(
-                          controller: widget.popupProps.listViewProps.controller ?? scrollController,
-                          thumbVisibility: widget.popupProps.scrollbarProps.thumbVisibility,
-                          trackVisibility: widget.popupProps.scrollbarProps.trackVisibility,
-                          thickness: widget.popupProps.scrollbarProps.thickness,
-                          radius: widget.popupProps.scrollbarProps.radius,
-                          notificationPredicate: widget.popupProps.scrollbarProps.notificationPredicate,
-                          interactive: widget.popupProps.scrollbarProps.interactive,
-                          scrollbarOrientation: widget.popupProps.scrollbarProps.scrollbarOrientation,
-                          thumbColor: widget.popupProps.scrollbarProps.thumbColor,
-                          fadeDuration: widget.popupProps.scrollbarProps.fadeDuration,
-                          crossAxisMargin: widget.popupProps.scrollbarProps.crossAxisMargin,
-                          mainAxisMargin: widget.popupProps.scrollbarProps.mainAxisMargin,
-                          minOverscrollLength: widget.popupProps.scrollbarProps.minOverscrollLength,
-                          minThumbLength: widget.popupProps.scrollbarProps.minThumbLength,
-                          pressDuration: widget.popupProps.scrollbarProps.pressDuration,
-                          shape: widget.popupProps.scrollbarProps.shape,
-                          timeToFade: widget.popupProps.scrollbarProps.timeToFade,
-                          trackBorderColor: widget.popupProps.scrollbarProps.trackBorderColor,
-                          trackColor: widget.popupProps.scrollbarProps.trackColor,
-                          trackRadius: widget.popupProps.scrollbarProps.trackRadius,
-                          child: ScrollConfiguration(
-                            behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                            child: ListView.builder(
-                              controller: widget.popupProps.listViewProps.controller ?? scrollController,
-                              shrinkWrap: widget.popupProps.listViewProps.shrinkWrap,
-                              padding: widget.popupProps.listViewProps.padding,
-                              scrollDirection: widget.popupProps.listViewProps.scrollDirection,
-                              reverse: widget.popupProps.listViewProps.reverse,
-                              primary: widget.popupProps.listViewProps.primary,
-                              physics: widget.popupProps.listViewProps.physics,
-                              itemExtent: widget.popupProps.listViewProps.itemExtent,
-                              addAutomaticKeepAlives: widget.popupProps.listViewProps.addAutomaticKeepAlives,
-                              addRepaintBoundaries: widget.popupProps.listViewProps.addRepaintBoundaries,
-                              addSemanticIndexes: widget.popupProps.listViewProps.addSemanticIndexes,
-                              cacheExtent: widget.popupProps.listViewProps.cacheExtent,
-                              semanticChildCount: widget.popupProps.listViewProps.semanticChildCount,
-                              dragStartBehavior: widget.popupProps.listViewProps.dragStartBehavior,
-                              keyboardDismissBehavior: widget.popupProps.listViewProps.keyboardDismissBehavior,
-                              restorationId: widget.popupProps.listViewProps.restorationId,
-                              clipBehavior: widget.popupProps.listViewProps.clipBehavior,
-                              prototypeItem: widget.popupProps.listViewProps.prototypeItem,
-                              itemExtentBuilder: widget.popupProps.listViewProps.itemExtentBuilder,
-                              findChildIndexCallback: widget.popupProps.listViewProps.findChildIndexCallback,
-                              itemCount: itemCount + (isInfiniteScrollEnded ? 0 : 1),
-                              itemBuilder: (context, index) {
-                                if (index < itemCount) {
-                                  var item = snapshot.data![index];
-                                  return widget.isMultiSelectionMode
-                                      ? _itemWidgetMultiSelection(item)
-                                      : _itemWidgetSingleSelection(item);
-                                }
-                                //if infiniteScroll enabled && data received not less then take request
-                                else if (!isInfiniteScrollEnded) {
-                                  _manageLoadMoreItems(searchBoxController.text, skip: itemCount, showLoading: false);
-                                  return Center(child: CircularProgressIndicator());
-                                }
+                          final itemCount = snapshot.data!.length;
+                          return RawScrollbar(
+                            controller: widget.popupProps.listViewProps.controller ?? scrollController,
+                            thumbVisibility: widget.popupProps.scrollbarProps.thumbVisibility,
+                            trackVisibility: widget.popupProps.scrollbarProps.trackVisibility,
+                            thickness: widget.popupProps.scrollbarProps.thickness,
+                            radius: widget.popupProps.scrollbarProps.radius,
+                            notificationPredicate: widget.popupProps.scrollbarProps.notificationPredicate,
+                            interactive: widget.popupProps.scrollbarProps.interactive,
+                            scrollbarOrientation: widget.popupProps.scrollbarProps.scrollbarOrientation,
+                            thumbColor: widget.popupProps.scrollbarProps.thumbColor,
+                            fadeDuration: widget.popupProps.scrollbarProps.fadeDuration,
+                            crossAxisMargin: widget.popupProps.scrollbarProps.crossAxisMargin,
+                            mainAxisMargin: widget.popupProps.scrollbarProps.mainAxisMargin,
+                            minOverscrollLength: widget.popupProps.scrollbarProps.minOverscrollLength,
+                            minThumbLength: widget.popupProps.scrollbarProps.minThumbLength,
+                            pressDuration: widget.popupProps.scrollbarProps.pressDuration,
+                            shape: widget.popupProps.scrollbarProps.shape,
+                            timeToFade: widget.popupProps.scrollbarProps.timeToFade,
+                            trackBorderColor: widget.popupProps.scrollbarProps.trackBorderColor,
+                            trackColor: widget.popupProps.scrollbarProps.trackColor,
+                            trackRadius: widget.popupProps.scrollbarProps.trackRadius,
+                            child: ScrollConfiguration(
+                              behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                              child: ListView.builder(
+                                controller: widget.popupProps.listViewProps.controller ?? scrollController,
+                                shrinkWrap: widget.popupProps.listViewProps.shrinkWrap,
+                                padding: widget.popupProps.listViewProps.padding,
+                                scrollDirection: widget.popupProps.listViewProps.scrollDirection,
+                                reverse: widget.popupProps.listViewProps.reverse,
+                                primary: widget.popupProps.listViewProps.primary,
+                                physics: widget.popupProps.listViewProps.physics,
+                                itemExtent: widget.popupProps.listViewProps.itemExtent,
+                                addAutomaticKeepAlives: widget.popupProps.listViewProps.addAutomaticKeepAlives,
+                                addRepaintBoundaries: widget.popupProps.listViewProps.addRepaintBoundaries,
+                                addSemanticIndexes: widget.popupProps.listViewProps.addSemanticIndexes,
+                                cacheExtent: widget.popupProps.listViewProps.cacheExtent,
+                                semanticChildCount: widget.popupProps.listViewProps.semanticChildCount,
+                                dragStartBehavior: widget.popupProps.listViewProps.dragStartBehavior,
+                                keyboardDismissBehavior: widget.popupProps.listViewProps.keyboardDismissBehavior,
+                                restorationId: widget.popupProps.listViewProps.restorationId,
+                                clipBehavior: widget.popupProps.listViewProps.clipBehavior,
+                                prototypeItem: widget.popupProps.listViewProps.prototypeItem,
+                                itemExtentBuilder: widget.popupProps.listViewProps.itemExtentBuilder,
+                                findChildIndexCallback: widget.popupProps.listViewProps.findChildIndexCallback,
+                                itemCount: itemCount + (isInfiniteScrollEnded ? 0 : 1),
+                                itemBuilder: (context, index) {
+                                  if (index < itemCount) {
+                                    var item = snapshot.data![index];
+                                    return widget.isMultiSelectionMode
+                                        ? _itemWidgetMultiSelection(item)
+                                        : _itemWidgetSingleSelection(item);
+                                  }
+                                  //if infiniteScroll enabled && data received not less then take request
+                                  else if (!isInfiniteScrollEnded) {
+                                    _manageLoadMoreItems(searchBoxController.text, skip: itemCount, showLoading: false);
+                                    return Center(child: CircularProgressIndicator());
+                                  }
 
-                                return SizedBox.shrink();
-                              },
+                                  return SizedBox.shrink();
+                                },
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                    _loadingWidget()
-                  ],
+                          );
+                        },
+                      ),
+                      _loadingWidget()
+                    ],
+                  ),
                 ),
-              ),
-              _multiSelectionValidation(),
-            ],
-          );
-        });
+                _multiSelectionValidation(),
+              ],
+            );
+          }),
+    );
   }
 
   ///validation of selected items
@@ -312,7 +315,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     if (!widget.popupProps.cacheItems) _cachedItems.clear();
 
     //case filtering locally (no need to load new data)
-    if (!isFirstLoad && !widget.popupProps.isFilterOnline && widget.popupProps.cacheItems && isInfiniteScrollEnded) {
+    if (!isFirstLoad && !widget.popupProps.disableFilter && widget.popupProps.cacheItems && isInfiniteScrollEnded) {
       _addDataToStream(_applyFilter(filter));
       return;
     }
@@ -342,7 +345,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       _cachedItems.addAll(myItems);
 
       //manage data filtering
-      if (widget.popupProps.isFilterOnline)
+      if (widget.popupProps.disableFilter)
         _addDataToStream(_cachedItems);
       else
         _addDataToStream(_applyFilter(filter));

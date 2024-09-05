@@ -14,9 +14,15 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
   final _openDropDownProgKey = GlobalKey<DropdownSearchState<int>>();
   final _multiKey = GlobalKey<DropdownSearchState<String>>();
   final _popupCustomValidationKey = GlobalKey<DropdownSearchState<int>>();
-  final _userEditTextController = TextEditingController(text: 'Mrs');
   final myKey = GlobalKey<DropdownSearchState<MultiLevelString>>();
-  var w = Icon(Icons.alarm);
+  final a = RotationTransition(
+    turns: AlwaysStoppedAnimation(15 / 360),
+    child: Image.asset(
+      'networks.png',
+      height: 154,
+      width: 154,
+    ),
+  );
   final List<MultiLevelString> myItems = [
     MultiLevelString(level1: "1"),
     MultiLevelString(level1: "2"),
@@ -43,163 +49,281 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
             padding: EdgeInsets.all(4),
             children: <Widget>[
               ///************************[simple examples for single and multi selection]************///
-              Text("[simple examples for single and multi selection]"),
+              Text("[simple examples for custom mode]"),
               Divider(),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  DropdownSearch<int>(
+                  DropdownSearch<String>.multiSelection(
                     mode: Mode.CUSTOM,
-                    items: (f, cs) => [10000],
-                    dropdownBuilder: (context, selectedItem) => w,
+                    items: (f, cs) => ["Monday", 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                    dropdownBuilder: (ctx, selectedItem) => Icon(Icons.calendar_month_outlined, size: 54),
+                  ),
+                  DropdownSearch<(String, Color)>(
+                    mode: Mode.CUSTOM,
+                    items: (f, cs) => [
+                      ("Red", Colors.red),
+                      ("Black", Colors.black),
+                      ("Yellow", Colors.yellow),
+                      ('Blue', Colors.blue),
+                    ],
                     popupProps: PopupProps.menu(
-                      menuProps: MenuProps(),
+                      fit: FlexFit.loose,
+                      itemBuilder: (context, item, isSelected) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(item.$1, style: TextStyle(color: item.$2, fontSize: 16)),
+                      ),
+                    ),
+                    dropdownBuilder: (ctx, selectedItem) => Icon(Icons.face, color: selectedItem?.$2, size: 54),
+                  ),
+                  DropdownSearch(
+                    mode: Mode.CUSTOM,
+                    items: (f, cs) => ['Facebook', 'Twitter', 'Instagram', 'SnapChat', 'Other'],
+                    dropdownBuilder: (context, selectedItem) {
+                      int r = 0;
+                      switch (selectedItem) {
+                        case 'Facebook':
+                          r = 5;
+                          break;
+                        case 'Twitter':
+                          r = -55;
+                          break;
+                        case 'Instagram':
+                          r = 185;
+                          break;
+                        case 'SnapChat':
+                          r = 245;
+                          break;
+                      }
+                      return RotationTransition(
+                        turns: AlwaysStoppedAnimation(r / 360),
+                        child: Image.asset('networks.png', height: 164, width: 164),
+                      );
+                    },
+                    clickProps: ClickProps(borderRadius: BorderRadius.all(Radius.circular(50))),
+                    popupProps: PopupProps.menu(
+                      fit: FlexFit.loose,
+                      menuProps: MenuProps(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                            topLeft: Radius.zero,
+                            topRight: Radius.zero,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  Padding(padding: EdgeInsets.all(4)),
-                  Expanded(
-                    child: DropdownSearch<int>.multiSelection(
-                      clearButtonProps: ClearButtonProps(isVisible: true),
-                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
-                      popupProps: PopupPropsMultiSelection.menu(),
-                    ),
-                  )
                 ],
               ),
 
-              ///************************[simple examples for each mode]*************************///
               Padding(padding: EdgeInsets.all(8)),
-              Text("[simple examples for each mode]"),
+              Text("[simple examples for single and multi Selection]"),
               Divider(),
               Row(
                 children: [
                   Expanded(
                     child: DropdownSearch<int>(
-                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
+                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
                     child: DropdownSearch<int>.multiSelection(
-                      key: _popupCustomValidationKey,
-                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
-                      popupProps: PopupPropsMultiSelection.dialog(
-                        validationWidgetBuilder: (ctx, selectedItems) {
-                          return Container(
-                            color: Colors.blue[200],
-                            height: 56,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: MaterialButton(
-                                child: Text('OK'),
-                                onPressed: () {
-                                  _popupCustomValidationKey.currentState?.popupOnValidate();
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Padding(padding: EdgeInsets.all(4)),
-              Row(
-                children: [
-                  Expanded(
-                    child: DropdownSearch<int>(
-                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                          labelText: "BottomSheet mode",
-                          hintText: "Select an Int",
-                        ),
-                      ),
-                      popupProps: PopupProps.bottomSheet(
-                          bottomSheetProps: BottomSheetProps(elevation: 16, backgroundColor: Color(0xFFAADCEE))),
+                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                      popupProps: PopupPropsMultiSelection.menu(showSelectedItems: true),
                     ),
                   ),
-                  Padding(padding: EdgeInsets.all(4)),
-                  Expanded(
-                    child: DropdownSearch<int>(
-                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                          labelText: "Modal mode",
-                          hintText: "Select an Int",
-                          filled: true,
-                        ),
-                      ),
-                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
-                        disabledItemFn: (int i) => i <= 3,
-                      ),
-                    ),
-                  )
                 ],
               ),
 
-              ///************************[Favorites examples]**********************************///
               Padding(padding: EdgeInsets.all(8)),
-              Text("[Favorites examples]"),
-              Divider(),
+              Text("[example for async items]"),
               Row(
                 children: [
                   Expanded(
                     child: DropdownSearch<UserModel>(
-                      items: (filter, t) => getData(filter),
-                      compareFn: (i, s) => i.isEqual(s),
-                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
-                        isFilterOnline: true,
-                        showSelectedItems: true,
+                      items: (f, cs) => getData(f),
+                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      compareFn: (item, selectedItem) => item.id == selectedItem.id,
+                      dropdownBuilder: (context, selectedItem) {
+                        if (selectedItem == null) {
+                          return SizedBox.shrink();
+                        }
+
+                        return ListTile(
+                          contentPadding: EdgeInsets.only(left: 0),
+                          leading: CircleAvatar(backgroundColor: Colors.blue, child: Text(selectedItem.name[0])),
+                          title: Text(selectedItem.name),
+                        );
+                      },
+                      popupProps: PopupProps.menu(
+                        disableFilter: true, //data will be filtered by the backend
                         showSearchBox: true,
-                        itemBuilder: _customPopupItemBuilderExample2,
-                        suggestedItemProps: SuggestedItemProps(
-                          showSuggestedItems: true,
-                          suggestedItems: (us) {
-                            return us.where((e) => e.name.contains("Mrs")).toList();
-                          },
-                        ),
+                        showSelectedItems: true,
+                        itemBuilder: (ctx, item, isSelected) {
+                          return ListTile(
+                            leading: CircleAvatar(backgroundColor: Colors.blue, child: Text(item.name[0])),
+                            selected: isSelected,
+                            title: Text(item.name),
+                          );
+                        },
                       ),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
-                  Expanded(
-                    child: DropdownSearch<UserModel>.multiSelection(
-                      items: (filter, s) => getData(filter),
-                      compareFn: (i, s) => i.isEqual(s),
-                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
-                        showSearchBox: true,
-                        itemBuilder: _customPopupItemBuilderExample2,
-                        suggestedItemProps: SuggestedItemProps(
-                          showSuggestedItems: true,
-                          suggestedItems: (us) {
-                            return us.where((e) => e.name.contains("Mrs")).toList();
-                          },
-                          suggestedItemBuilder: (context, item, isSelected) {
-                            return Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.grey[100]),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "${item.name}",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.indigo),
-                                  ),
-                                  Padding(padding: EdgeInsets.only(left: 8)),
-                                  isSelected ? Icon(Icons.check_box_outlined) : SizedBox.shrink(),
-                                ],
-                              ),
-                            );
-                          },
+                ],
+              ),
+              Padding(padding: EdgeInsets.all(8)),
+
+              Container(
+                height: 380,
+                padding: EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    begin: Alignment.center,
+                    colors: [Color(0xffd1c6e5), Color(0xff8785ce)],
+                  ),
+                ),
+                child: Column(
+                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Example for customized menu"),
+                    Padding(padding: EdgeInsets.all(8)),
+                    DropdownSearch<(IconData, String)>(
+                      selectedItem: (Icons.person, 'Your Profile'),
+                      items: (f, cs) => [
+                        (Icons.person, 'Your Profile'),
+                        (Icons.settings, 'Setting'),
+                        (Icons.lock_open_rounded, 'Change Password'),
+                        (Icons.power_settings_new_rounded, 'Logout'),
+                      ],
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          filled: true,
+                          fillColor: Color(0xFF1eb98f),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
+                      dropdownBuilder: (context, selectedItem) {
+                        return ListTile(
+                          dense: true,
+                          leading: Icon(selectedItem!.$1, color: Colors.white),
+                          title: Text(
+                            selectedItem.$2,
+                            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      },
+                      popupProps: PopupProps.menu(
+                        itemBuilder: (context, item, isSelected) {
+                          return ListTile(
+                            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                            leading: Icon(item.$1, color: Colors.white),
+                            title: Text(
+                              item.$2,
+                              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          );
+                        },
+                        fit: FlexFit.loose,
+                        menuProps: MenuProps(
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                          margin: EdgeInsets.only(top: 16),
+                        ),
+                        containerBuilder: (ctx, popupWidget) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 12),
+                                child: Image.asset(
+                                  'assets/images/arrow-up.png',
+                                  color: Color(0xFF1eb98f),
+                                  height: 14,
+                                ),
+                              ),
+                              Flexible(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Color(0xFF1eb98f),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: popupWidget,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                    Padding(padding: EdgeInsets.only(top: 32)),
+                    DropdownSearch<String>(
+                      items: (filter, infiniteScrollProps) => ['Item 1', 'Item 2', 'Item 3'],
+                      dropdownButtonProps: DropdownButtonProps(
+                        iconClosed: Icon(Icons.keyboard_arrow_down),
+                        iconOpened: Icon(Icons.keyboard_arrow_up),
+                      ),
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        textAlign: TextAlign.center,
+                        dropdownSearchDecoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(vertical: 20),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          hintText: 'Please select...',
+                          hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.grey),
+                        ),
+                      ),
+                      popupProps: PopupProps.menu(
+                        itemBuilder: (context, item, isSelected) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: Text(
+                              item,
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        },
+                        fit: FlexFit.loose,
+                        menuProps: MenuProps(
+                          margin: EdgeInsets.only(top: 12),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
 
               ///************************[validation examples]********************************///
@@ -338,61 +462,6 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
               Padding(padding: EdgeInsets.all(8)),
               Text("[DropDownSearch builder examples]"),
               Divider(),
-              Row(
-                children: [
-                  Expanded(
-                    child: DropdownSearch<UserModel>.multiSelection(
-                      items: (filter, t) => getData(filter),
-                      clearButtonProps: ClearButtonProps(isVisible: true),
-                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
-                        showSelectedItems: true,
-                        isFilterOnline: true,
-                        itemBuilder: _customPopupItemBuilderExample2,
-                        showSearchBox: true,
-                        searchFieldProps: TextFieldProps(
-                          controller: _userEditTextController,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.clear),
-                              onPressed: () {
-                                _userEditTextController.clear();
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                      compareFn: (item, selectedItem) => item.id == selectedItem.id,
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                          labelText: 'Users *',
-                          filled: true,
-                          fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-                        ),
-                      ),
-                      dropdownBuilder: _customDropDownExampleMultiSelection,
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.all(4)),
-                  Expanded(
-                    child: DropdownSearch<UserModel>(
-                      items: (filter, t) => getData(filter),
-                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
-                        showSelectedItems: true,
-                        itemBuilder: _customPopupItemBuilderExample2,
-                        showSearchBox: true,
-                      ),
-                      compareFn: (item, sItem) => item.id == sItem.id,
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                          labelText: 'User *',
-                          filled: true,
-                          fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
 
               ///************************[Dynamic height depending on items number]********************************///
               Padding(padding: EdgeInsets.all(8)),
@@ -640,7 +709,6 @@ class _dropdownWithGlobalCheckBoxState extends State<_dropdownWithGlobalCheckBox
         onItemsLoaded: (value) => longListCheckBoxValueNotifier.value = _getCheckBoxState(),
         infiniteScrollProps: InfiniteScrollProps(skip: 0, take: 10),
         showSearchBox: true,
-        isFilterOnline: true,
         containerBuilder: (ctx, popupWidget) {
           return Container(
             decoration: BoxDecoration(

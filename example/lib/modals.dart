@@ -4,26 +4,12 @@ import 'package:flutter/material.dart';
 
 import 'user_model.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
+class ModalsExamplesPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'dropdownSearch Demo',
-      //enable this line if you want test Dark Mode
-      //theme: ThemeData.dark(),
-      home: MyHomePage(),
-    );
-  }
+  _ModalsExamplesPageState createState() => _ModalsExamplesPageState();
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _ModalsExamplesPageState extends State<ModalsExamplesPage> {
   final _formKey = GlobalKey<FormState>();
   final _openDropDownProgKey = GlobalKey<DropdownSearchState<int>>();
   final _multiKey = GlobalKey<DropdownSearchState<String>>();
@@ -163,7 +149,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       items: (filter, t) => getData(filter),
                       compareFn: (i, s) => i.isEqual(s),
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
-                        isFilterOnline: true,
                         showSelectedItems: true,
                         showSearchBox: true,
                         itemBuilder: _customPopupItemBuilderExample2,
@@ -360,7 +345,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       clearButtonProps: ClearButtonProps(isVisible: true),
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
                         showSelectedItems: true,
-                        isFilterOnline: true,
                         itemBuilder: _customPopupItemBuilderExample2,
                         showSearchBox: true,
                         searchFieldProps: TextFieldProps(
@@ -654,7 +638,6 @@ class _dropdownWithGlobalCheckBoxState extends State<_dropdownWithGlobalCheckBox
         onItemsLoaded: (value) => longListCheckBoxValueNotifier.value = _getCheckBoxState(),
         infiniteScrollProps: InfiniteScrollProps(skip: 0, take: 10),
         showSearchBox: true,
-        isFilterOnline: true,
         containerBuilder: (ctx, popupWidget) {
           return Container(
             decoration: BoxDecoration(
