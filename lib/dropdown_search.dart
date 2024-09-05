@@ -315,7 +315,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             highlightColor: widget.clickProps.highlightColor,
             onFocusChange: widget.clickProps.onFocusChange,
             onTap: () => _selectSearchMode(),
-            child: _dropDown(),
+            child: _dropDown(),//todo add props for infinite scroll progress
           ),
         );
       },
