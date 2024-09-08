@@ -1,8 +1,11 @@
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:dropdown_search/src/widgets/custom_inkwell.dart';
 import 'package:flutter/material.dart';
 
 typedef Widget WidgetCheckBox(BuildContext context, bool isChecked);
 
 class CheckBoxWidget extends StatefulWidget {
+  final ClickProps clickProps;
   final WidgetCheckBox? layout;
   final WidgetCheckBox? checkBox;
   final bool isChecked;
@@ -13,6 +16,7 @@ class CheckBoxWidget extends StatefulWidget {
 
   CheckBoxWidget({
     Key? key,
+    required this.clickProps,
     this.isChecked = false,
     this.isDisabled = false,
     this.layout,
@@ -61,7 +65,8 @@ class _CheckBoxWidgetState extends State<CheckBoxWidget> {
           if (widget.interceptCallBacks)
             return w;
           else
-            return InkWell(
+            return CustomInkWell(
+              clickProps: widget.clickProps,
               onTap: widget.isDisabled
                   ? null
                   : () {

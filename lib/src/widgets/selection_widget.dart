@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dropdown_search/src/widgets/custom_inkwell.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -161,6 +162,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                             trackBorderColor: widget.popupProps.scrollbarProps.trackBorderColor,
                             trackColor: widget.popupProps.scrollbarProps.trackColor,
                             trackRadius: widget.popupProps.scrollbarProps.trackRadius,
+                            padding: widget.popupProps.scrollbarProps.padding,
                             child: ScrollConfiguration(
                               behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                               child: ListView.builder(
@@ -195,7 +197,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                                   //if infiniteScroll enabled && data received not less then take request
                                   else if (!isInfiniteScrollEnded) {
                                     _manageLoadMoreItems(searchBoxController.text, skip: itemCount, showLoading: false);
-                                    return Center(child: CircularProgressIndicator());
+                                    return _infiniteScrollLoadingMoreWidget(itemCount);
                                   }
 
                                   return SizedBox.shrink();
@@ -214,6 +216,13 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
             );
           }),
     );
+  }
+
+  Widget _infiniteScrollLoadingMoreWidget(int loadedItems) {
+    if (widget.popupProps.infiniteScrollProps?.builder != null) {
+      return widget.popupProps.infiniteScrollProps!.builder!(context, loadedItems);
+    }
+    return const Center(child: CircularProgressIndicator());
   }
 
   ///validation of selected items
@@ -247,7 +256,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     if (widget.popupProps.emptyBuilder != null)
       return widget.popupProps.emptyBuilder!(
         context,
-        searchBoxController.text,
+        searchBoxController.text
       );
 
     return Container(
@@ -330,16 +339,16 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }) async {
     if (widget.items == null) return;
 
-    final infiniteScrollProps = widget.popupProps.infiniteScrollProps;
+    final loadProps = widget.popupProps.infiniteScrollProps?.loadProps;
 
     if (showLoading) {
       _loadingNotifier.value = true;
     }
 
     try {
-      final List<T> myItems = await widget.items!(filter, infiniteScrollProps?.copy(skip: skip));
+      final List<T> myItems = await widget.items!(filter, loadProps?.copy(skip: skip));
 
-      if (infiniteScrollProps != null) isInfiniteScrollEnded = myItems.length < infiniteScrollProps.take;
+      if (loadProps != null) isInfiniteScrollEnded = myItems.length < loadProps.take;
 
       //add new online items to cache list
       _cachedItems.addAll(myItems);
@@ -382,14 +391,13 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         !widget.popupProps.showSelectedItems ? false : _isSelectedItem(item),
       );
 
-      if (widget.popupProps.interceptCallBacks)
-        return w;
-      else
-        return InkWell(
-          // ignore pointers in itemBuilder
-          child: IgnorePointer(child: w),
-          onTap: _isDisabled(item) ? null : () => _handleSelectedItem(item),
-        );
+      if (widget.popupProps.interceptCallBacks) return w;
+
+      return CustomInkWell(
+        clickProps: widget.popupProps.itemClickProps,
+        onTap: _isDisabled(item) ? null : () => _handleSelectedItem(item),
+        child: IgnorePointer(child: w),
+      );
     } else {
       return ListTile(
         enabled: !_isDisabled(item),
@@ -401,10 +409,11 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   Widget _itemWidgetMultiSelection(T item) {
-    if (widget.popupProps.selectionWidget != null)
+    if (widget.popupProps.checkBoxBuilder != null)
       return CheckBoxWidget(
-        checkBox: (cnt, checked) {
-          return widget.popupProps.selectionWidget!(context, item, checked);
+        clickProps: widget.popupProps.itemClickProps,
+        checkBox: (cxt, checked) {
+          return widget.popupProps.checkBoxBuilder!(cxt, item, checked);
         },
         interceptCallBacks: widget.popupProps.interceptCallBacks,
         textDirection: widget.popupProps.textDirection,
@@ -415,6 +424,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       );
     else
       return CheckBoxWidget(
+        clickProps: widget.popupProps.itemClickProps,
         textDirection: widget.popupProps.textDirection,
         interceptCallBacks: widget.popupProps.interceptCallBacks,
         layout: (context, isChecked) => _itemWidgetSingleSelection(item),
@@ -424,20 +434,15 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       );
   }
 
-  bool _isDisabled(T item) =>
-      widget.popupProps.disabledItemFn != null && (widget.popupProps.disabledItemFn!(item)) == true;
+  bool _isDisabled(T item) => widget.popupProps.disabledItemFn != null && (widget.popupProps.disabledItemFn!(item)) == true;
 
   /// selected item will be highlighted only when [widget.showSelectedItems] is true,
   /// if our object is String [widget.compareFn] is not required , other wises it's required
-  bool _isSelectedItem(T item) {
-    return _itemIndexInList(_selectedItems, item) > -1;
-  }
+  bool _isSelectedItem(T item) => _itemIndexInList(_selectedItems, item) > -1;
 
   ///test if list has an item T
   ///if contains return index of item in the list, -1 otherwise
-  int _itemIndexInList(List<T> list, T item) {
-    return list.indexWhere((i) => _isEqual(i, item));
-  }
+  int _itemIndexInList(List<T> list, T item) => list.indexWhere((i) => _isEqual(i, item));
 
   ///compared two items base on user params
   bool _isEqual(T i1, T i2) {
@@ -554,29 +559,25 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       padding: EdgeInsets.symmetric(horizontal: 8),
       child: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
+          //todo add props here
           scrollDirection: Axis.horizontal,
           child: ConstrainedBox(
             constraints: BoxConstraints(minWidth: constraints.maxWidth),
             child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: widget.popupProps.suggestedItemProps.suggestedItemsAlignment,
-                children: suggestedItems
-                    .map(
-                      (f) => InkWell(
-                        onTap: () => _handleSelectedItem(f),
-                        child: Container(
-                          margin: EdgeInsets.only(right: 4),
-                          child: widget.popupProps.suggestedItemProps.suggestedItemBuilder != null
-                              ? widget.popupProps.suggestedItemProps.suggestedItemBuilder!(
-                                  context,
-                                  f,
-                                  _isSelectedItem(f),
-                                )
-                              : _suggestedItemDefaultWidget(f),
-                        ),
-                      ),
-                    )
-                    .toList()),
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: widget.popupProps.suggestedItemProps.suggestedItemsAlignment,
+              children: suggestedItems
+                  .map(
+                    (f) => CustomInkWell(
+                      clickProps: widget.popupProps.suggestedItemProps.itemClickProps,
+                      onTap: () => _handleSelectedItem(f),
+                      child: widget.popupProps.suggestedItemProps.suggestedItemBuilder != null
+                          ? widget.popupProps.suggestedItemProps.suggestedItemBuilder!(context, f, _isSelectedItem(f))
+                          : _suggestedItemDefaultWidget(f),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         );
       }),

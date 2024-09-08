@@ -90,6 +90,9 @@ class PopupProps<T> {
   /// called when loading new items
   final ValueChanged<List<T>>? onItemsLoaded;
 
+  ///properties of click
+  final ClickProps itemClickProps;
+
   const PopupProps._({
     this.mode = PopupMode.MENU,
     this.fit = FlexFit.tight,
@@ -118,7 +121,8 @@ class PopupProps<T> {
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,
-  });
+    this.itemClickProps = const ClickProps(),
+  }) : assert(infiniteScrollProps == null || disableFilter);
 
   const PopupProps.menu({
     this.title,
@@ -144,6 +148,7 @@ class PopupProps<T> {
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,
+    this.itemClickProps = const ClickProps(),
   })  : this.mode = PopupMode.MENU,
         this.bottomSheetProps = const BottomSheetProps(),
         this.dialogProps = const DialogProps(),
@@ -177,6 +182,7 @@ class PopupProps<T> {
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,
+    this.itemClickProps = const ClickProps(),
   })  : this.mode = PopupMode.DIALOG,
         this.menuProps = const MenuProps(),
         this.bottomSheetProps = const BottomSheetProps(),
@@ -206,6 +212,7 @@ class PopupProps<T> {
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,
+    this.itemClickProps = const ClickProps(),
   })  : this.mode = PopupMode.BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -235,6 +242,7 @@ class PopupProps<T> {
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,
+    this.itemClickProps = const ClickProps(),
   })  : this.mode = PopupMode.MODAL_BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -249,7 +257,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   final OnItemRemoved<T>? onItemRemoved;
 
   ///widget used to show checked items in multiSelection mode
-  final DropdownSearchPopupItemBuilder<T>? selectionWidget;
+  final DropdownSearchPopupItemBuilder<T>? checkBoxBuilder;
 
   ///widget used to validate items in multiSelection mode
   final ValidationMultiSelectionBuilder<T>? validationWidgetBuilder;
@@ -284,9 +292,10 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
     super.onItemsLoaded,
+    super.itemClickProps,
     this.onItemAdded,
     this.onItemRemoved,
-    this.selectionWidget,
+    this.checkBoxBuilder,
     this.validationWidgetBuilder,
     this.textDirection = TextDirection.ltr,
   }) : super._();
@@ -315,9 +324,10 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
     super.onItemsLoaded,
+    super.itemClickProps,
     this.onItemAdded,
     this.onItemRemoved,
-    this.selectionWidget,
+    this.checkBoxBuilder,
     this.validationWidgetBuilder,
     this.textDirection = TextDirection.ltr,
   }) : super.menu();
@@ -350,9 +360,10 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
     super.onItemsLoaded,
+    super.itemClickProps,
     this.onItemAdded,
     this.onItemRemoved,
-    this.selectionWidget,
+    this.checkBoxBuilder,
     this.validationWidgetBuilder,
     this.textDirection = TextDirection.ltr,
   }) : super.dialog();
@@ -381,9 +392,10 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
     super.onItemsLoaded,
+    super.itemClickProps,
     this.onItemAdded,
     this.onItemRemoved,
-    this.selectionWidget,
+    this.checkBoxBuilder,
     this.validationWidgetBuilder,
     this.textDirection = TextDirection.ltr,
   }) : super.bottomSheet();
@@ -412,9 +424,10 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
     super.onItemsLoaded,
+    super.itemClickProps,
     this.onItemAdded,
     this.onItemRemoved,
-    this.selectionWidget,
+    this.checkBoxBuilder,
     this.validationWidgetBuilder,
     this.textDirection = TextDirection.ltr,
   }) : super.modalBottomSheet();
@@ -446,12 +459,13 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           containerBuilder: popupProps.containerBuilder,
           constraints: popupProps.constraints,
           interceptCallBacks: popupProps.interceptCallBacks,
-          onItemAdded: null,
-          onItemRemoved: null,
-          selectionWidget: null,
-          validationWidgetBuilder: null,
           textDirection: TextDirection.ltr,
           infiniteScrollProps: popupProps.infiniteScrollProps,
           onItemsLoaded: popupProps.onItemsLoaded,
+          itemClickProps: popupProps.itemClickProps,
+          onItemAdded: null,
+          onItemRemoved: null,
+          checkBoxBuilder: null,
+          validationWidgetBuilder: null,
         );
 }

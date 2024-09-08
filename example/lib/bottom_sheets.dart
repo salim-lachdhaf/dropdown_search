@@ -637,7 +637,7 @@ class _dropdownWithGlobalCheckBoxState extends State<_dropdownWithGlobalCheckBox
         onItemAdded: (l, s) => longListCheckBoxValueNotifier.value = _getCheckBoxState(),
         onItemRemoved: (l, s) => longListCheckBoxValueNotifier.value = _getCheckBoxState(),
         onItemsLoaded: (value) => longListCheckBoxValueNotifier.value = _getCheckBoxState(),
-        infiniteScrollProps: InfiniteScrollProps(skip: 0, take: 10),
+        infiniteScrollProps: InfiniteScrollProps(loadProps: LoadProps(skip: 10)),
         showSearchBox: true,
         containerBuilder: (ctx, popupWidget) {
           return Container(

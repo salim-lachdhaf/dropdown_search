@@ -34,7 +34,7 @@ class MyHomePage extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: DropdownSearch(
+                  child: DropdownSearch<String>(
                     key: dropDownKey,
                     selectedItem: "Menu",
                     items: (filter, infiniteScrollProps) => ["Menu", "Dialog", "Modal", "BottomSheet"],

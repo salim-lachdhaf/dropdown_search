@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import '../properties/menu_props.dart';
 
@@ -48,7 +49,7 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
 
     return BoxConstraints.loose(
       Size(
-        constraints.minWidth - position.right - position.left,
+        constraints.minWidth - position.left - position.right,
         constraints.minHeight,
       ),
     ).deflate(
@@ -68,10 +69,14 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
     // check if we are in the bottom
     if (y + childSize.height > size.height - keyBoardHeight) {
       y = size.height - childSize.height - keyBoardHeight;
+    } else if (y < 0) {
+      y = 8;
     }
 
     if (x + childSize.width > size.width) {
       x = size.width - childSize.width;
+    } else if (x < 0) {
+      x = 8;
     }
 
     return Offset(x, y);
@@ -99,9 +104,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
   });
 
   @override
-  Duration get transitionDuration =>
-      menuModeProps.popUpAnimationStyle?.duration ??
-      Duration(milliseconds: 300);
+  Duration get transitionDuration => menuModeProps.popUpAnimationStyle?.duration ?? Duration(milliseconds: 300);
 
   @override
   bool get barrierDismissible => menuModeProps.barrierDismissible;
@@ -113,8 +116,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
   String? get barrierLabel => menuModeProps.barrierLabel;
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation) {
+  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
     final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
     final menu = Material(
       surfaceTintColor: menuModeProps.surfaceTintColor,
@@ -124,8 +126,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
       elevation: menuModeProps.elevation ?? popupMenuTheme.elevation ?? 8.0,
       clipBehavior: menuModeProps.clipBehavior,
       borderRadius: menuModeProps.borderRadius,
-      animationDuration: menuModeProps.popUpAnimationStyle?.duration ??
-          Duration(milliseconds: 300),
+      animationDuration: menuModeProps.popUpAnimationStyle?.duration ?? Duration(milliseconds: 300),
       shadowColor: menuModeProps.shadowColor,
       borderOnForeground: menuModeProps.borderOnForeground,
       child: child,

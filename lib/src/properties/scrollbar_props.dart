@@ -21,6 +21,7 @@ class ScrollbarProps {
   final Duration pressDuration;
   final double mainAxisMargin;
   final double crossAxisMargin;
+  final EdgeInsets? padding;
 
   const ScrollbarProps({
     this.shape,
@@ -42,6 +43,7 @@ class ScrollbarProps {
     this.trackVisibility,
     this.interactive,
     this.notificationPredicate = defaultScrollNotificationPredicate,
+    this.padding,
   });
 }
 
