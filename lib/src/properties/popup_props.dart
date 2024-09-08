@@ -90,6 +90,9 @@ class PopupProps<T> {
   /// called when loading new items
   final ValueChanged<List<T>>? onItemsLoaded;
 
+  ///properties of click
+  final ClickProps itemClickProps;
+
   const PopupProps._({
     this.mode = PopupMode.MENU,
     this.fit = FlexFit.tight,
@@ -118,6 +121,7 @@ class PopupProps<T> {
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,
+    this.itemClickProps = const ClickProps(),
   });
 
   const PopupProps.menu({
@@ -144,6 +148,7 @@ class PopupProps<T> {
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,
+    this.itemClickProps = const ClickProps(),
   })  : this.mode = PopupMode.MENU,
         this.bottomSheetProps = const BottomSheetProps(),
         this.dialogProps = const DialogProps(),
@@ -177,6 +182,7 @@ class PopupProps<T> {
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,
+    this.itemClickProps = const ClickProps(),
   })  : this.mode = PopupMode.DIALOG,
         this.menuProps = const MenuProps(),
         this.bottomSheetProps = const BottomSheetProps(),
@@ -206,6 +212,7 @@ class PopupProps<T> {
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,
+    this.itemClickProps = const ClickProps(),
   })  : this.mode = PopupMode.BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -235,6 +242,7 @@ class PopupProps<T> {
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,
+    this.itemClickProps = const ClickProps(),
   })  : this.mode = PopupMode.MODAL_BOTTOM_SHEET,
         this.menuProps = const MenuProps(),
         this.dialogProps = const DialogProps(),
@@ -284,6 +292,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
     super.onItemsLoaded,
+    super.itemClickProps,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -315,6 +324,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
     super.onItemsLoaded,
+    super.itemClickProps,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -350,6 +360,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
     super.onItemsLoaded,
+    super.itemClickProps,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -381,6 +392,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
     super.onItemsLoaded,
+    super.itemClickProps,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -412,6 +424,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     super.interceptCallBacks = false,
     super.infiniteScrollProps,
     super.onItemsLoaded,
+    super.itemClickProps,
     this.onItemAdded,
     this.onItemRemoved,
     this.selectionWidget,
@@ -453,5 +466,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           textDirection: TextDirection.ltr,
           infiniteScrollProps: popupProps.infiniteScrollProps,
           onItemsLoaded: popupProps.onItemsLoaded,
+          itemClickProps: popupProps.itemClickProps,
         );
 }

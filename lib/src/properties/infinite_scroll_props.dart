@@ -1,14 +1,29 @@
+import 'package:flutter/material.dart';
+typedef InfiniteScrollBuilder = Widget Function(BuildContext, int loadedItems);
+
 class InfiniteScrollProps {
+  final LoadProps loadProps;
+  final InfiniteScrollBuilder? builder;
+
+  const InfiniteScrollProps({
+    this.builder,
+    this.loadProps = const LoadProps(),
+  });
+
+
+}
+
+class LoadProps {
   final int skip;
   final int take;
 
-  const InfiniteScrollProps({
+  const LoadProps({
     this.skip = 0,
     this.take = 50,
   })  : assert(skip >= 0),
         assert(take > 1);
 
-  InfiniteScrollProps copy({int? skip, int? take}) {
-    return InfiniteScrollProps(skip: skip ?? this.skip, take: take ?? this.take);
+  LoadProps copy({int? skip, int? take}) {
+    return LoadProps(skip: skip ?? this.skip, take: take ?? this.take);
   }
 }

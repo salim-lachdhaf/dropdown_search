@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:dropdown_search/src/properties/clear_button_props.dart';
 import 'package:dropdown_search/src/properties/dropdown_props.dart';
 import 'package:dropdown_search/src/properties/infinite_scroll_props.dart';
+import 'package:dropdown_search/src/utils.dart';
+import 'package:dropdown_search/src/widgets/custom_inkwell.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -25,56 +27,32 @@ export 'src/properties/scrollbar_props.dart';
 export 'src/properties/text_field_props.dart';
 export 'src/properties/infinite_scroll_props.dart';
 
-typedef FutureOr<List<T>> DropdownSearchOnFind<T>(String filter, InfiniteScrollProps? infiniteScrollProps);
+typedef FutureOr<List<T>> DropdownSearchOnFind<T>(String filter, LoadProps? loadProps);
 typedef String DropdownSearchItemAsString<T>(T item);
 typedef bool DropdownSearchFilterFn<T>(T item, String filter);
 typedef bool DropdownSearchCompareFn<T>(T item1, T item2);
 typedef Widget DropdownSearchBuilder<T>(BuildContext context, T? selectedItem);
-typedef Widget DropdownSearchBuilderMultiSelection<T>(
-  BuildContext context,
-  List<T> selectedItems,
-);
-typedef Widget DropdownSearchPopupItemBuilder<T>(
-  BuildContext context,
-  T item,
-  bool isSelected,
-);
+typedef Widget DropdownSearchBuilderMultiSelection<T>(BuildContext context, List<T> selectedItems);
+typedef Widget DropdownSearchPopupItemBuilder<T>(BuildContext context, T item, bool isSelected);
 typedef bool DropdownSearchPopupItemEnabled<T>(T item);
-typedef Widget ErrorBuilder<T>(
-  BuildContext context,
-  String searchEntry,
-  dynamic exception,
-);
+typedef Widget ErrorBuilder<T>(BuildContext context, String searchEntry, dynamic exception);
 typedef Widget EmptyBuilder<T>(BuildContext context, String searchEntry);
 typedef Widget LoadingBuilder<T>(BuildContext context, String searchEntry);
 typedef Future<bool?> BeforeChange<T>(T? prevItem, T? nextItem);
 typedef Future<bool?> BeforePopupOpening<T>(T? selectedItem);
 typedef Future<bool?> BeforePopupOpeningMultiSelection<T>(List<T> selItems);
-typedef Future<bool?> BeforeChangeMultiSelection<T>(
-  List<T> prevItems,
-  List<T> nextItems,
-);
-typedef Widget FavoriteItemsBuilder<T>(
-  BuildContext context,
-  T item,
-  bool isSelected,
-);
-typedef Widget ValidationMultiSelectionBuilder<T>(
-  BuildContext context,
-  List<T> item,
-);
+typedef Future<bool?> BeforeChangeMultiSelection<T>(List<T> prevItems, List<T> nextItems);
+typedef Widget FavoriteItemsBuilder<T>(BuildContext context, T item, bool isSelected);
+typedef Widget ValidationMultiSelectionBuilder<T>(BuildContext context, List<T> item);
 
-typedef RelativeRect PositionCallback(
-  RenderBox popupButtonObject,
-  RenderBox overlay,
-);
+typedef RelativeRect PositionCallback(RenderBox popupButtonObject, RenderBox overlay);
 
 typedef void OnItemAdded<T>(List<T> selectedItems, T addedItem);
 typedef void OnItemRemoved<T>(List<T> selectedItems, T removedItem);
 typedef Widget PopupBuilder(BuildContext context, Widget popupWidget);
 
 ///[items] are the original item from [items] or/and [items]
-typedef List<T> FavoriteItems<T>(List<T> items);
+typedef List<T> SuggestedItems<T>(List<T> items);
 
 enum PopupMode { DIALOG, MODAL_BOTTOM_SHEET, MENU, BOTTOM_SHEET }
 
@@ -253,8 +231,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   @override
   void initState() {
     super.initState();
-    _selectedItemsNotifier.value =
-        isMultiSelectionMode ? List.from(widget.selectedItems) : _itemToList(widget.selectedItem);
+    _selectedItemsNotifier.value = isMultiSelectionMode ? List.from(widget.selectedItems) : _itemToList(widget.selectedItem);
   }
 
   @override
@@ -285,38 +262,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       builder: (context, data, wt) {
         return IgnorePointer(
           ignoring: !widget.enabled,
-          child: InkWell(
-            autofocus: widget.clickProps.autofocus,
-            borderRadius: widget.clickProps.borderRadius,
-            customBorder: widget.clickProps.customBorder,
-            enableFeedback: widget.clickProps.enableFeedback,
-            focusColor: widget.clickProps.focusColor,
-            excludeFromSemantics: widget.clickProps.excludeFromSemantics,
-            hoverColor: widget.clickProps.hoverColor,
-            mouseCursor: widget.clickProps.mouseCursor,
-            onHover: widget.clickProps.onHover,
-            onDoubleTap: widget.clickProps.onDoubleTap,
-            onHighlightChanged: widget.clickProps.onHighlightChanged,
-            onLongPress: widget.clickProps.onLongPress,
-            onSecondaryTap: widget.clickProps.onSecondaryTap,
-            onSecondaryTapCancel: widget.clickProps.onSecondaryTapCancel,
-            onSecondaryTapUp: widget.clickProps.onSecondaryTapUp,
-            onSecondaryTapDown: widget.clickProps.onSecondaryTapDown,
-            onTapCancel: widget.clickProps.onTapCancel,
-            onTapDown: widget.clickProps.onTapDown,
-            onTapUp: widget.clickProps.onTapUp,
-            overlayColor: widget.clickProps.overlayColor,
-            radius: widget.clickProps.radius,
-            splashColor: widget.clickProps.splashColor,
-            splashFactory: widget.clickProps.splashFactory,
-            statesController: widget.clickProps.statesController,
-            hoverDuration: widget.clickProps.hoverDuration,
-            canRequestFocus: widget.clickProps.canRequestFocus,
-            highlightColor: widget.clickProps.highlightColor,
-            onFocusChange: widget.clickProps.onFocusChange,
-            onTap: () => _selectSearchMode(),
-            child: _dropDown(),//todo add props for infinite scroll progress
-          ),
+          child: customInkWell(widget.clickProps, ()=> _selectSearchMode(), _dropDown()),
         );
       },
     );
@@ -378,19 +324,11 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
     Widget selectedItemWidget() {
       if (widget.dropdownBuilder != null) {
-        return widget.dropdownBuilder!(
-          context,
-          getSelectedItem,
-        );
+        return widget.dropdownBuilder!(context, getSelectedItem);
       } else if (widget.dropdownBuilderMultiSelection != null)
-        return widget.dropdownBuilderMultiSelection!(
-          context,
-          getSelectedItems,
-        );
+        return widget.dropdownBuilderMultiSelection!(context, getSelectedItems);
       else if (isMultiSelectionMode) {
-        return Wrap(
-          children: getSelectedItems.map((e) => defaultItemMultiSelectionMode(e)).toList(),
-        );
+        return Wrap(children: getSelectedItems.map((e) => defaultItemMultiSelectionMode(e)).toList());
       }
       return Text(
         _selectedItemAsString(getSelectedItem),
@@ -406,9 +344,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     return isMultiSelectionMode ? _formFieldMultiSelection() : _formFieldSingleSelection();
   }
 
-  Widget _customField() {
-    return _defaultSelectedItemWidget();
-  }
+  Widget _customField() => _defaultSelectedItemWidget();
 
   Widget _formFieldSingleSelection() {
     return FormField<T>(
@@ -480,7 +416,6 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   InputDecoration _manageDropdownDecoration(FormFieldState state) {
     return (widget.dropdownDecoratorProps.dropdownSearchDecoration ??
             const InputDecoration(
-              fillColor: Colors.red,
               contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
               border: OutlineInputBorder(),
             ))
@@ -568,20 +503,34 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   //to goal of this function is to return a position of the popup
   //taking in consideration menu button width and popup constraints
-  RelativeRect _position(RenderBox popupButtonObject, RenderBox overlay) {
-    var size = popupButtonObject.size;
-    if (widget.popupProps.constraints.minWidth > 0)
-      size = Size(widget.popupProps.constraints.minWidth, popupButtonObject.size.height);
-    else if (widget.mode == Mode.CUSTOM && size.width < 64) size = Size(164, popupButtonObject.size.height);
+  RelativeRect _position(RenderBox dropdown, RenderBox overlay) {
+    var menuMinWidth = widget.popupProps.constraints.minWidth;
+    var menuMaxWidth = widget.popupProps.constraints.maxWidth;
 
-    // Calculate the show-up area for the dropdown using button's size & position based on the `overlay` used as the coordinate space.
-    return RelativeRect.fromSize(
-      Rect.fromPoints(
-        popupButtonObject.localToGlobal(size.bottomLeft(Offset.zero), ancestor: overlay),
-        popupButtonObject.localToGlobal(size.bottomRight(Offset.zero), ancestor: overlay),
-      ),
-      Size(overlay.size.width, overlay.size.height),
-    );
+    var menuMinHeight = widget.popupProps.constraints.minHeight;
+    var menuMaxHeight = widget.popupProps.constraints.maxHeight;
+
+    var menuWidth = dropdown.size.width;
+    var menuHeight = 350.0;
+
+    if (menuMinWidth > 0) {
+      menuWidth = menuMinWidth;
+    }
+    if (menuMaxWidth > 0 && menuMaxWidth < menuWidth) {
+      menuWidth = menuMaxWidth;
+    }
+    if (widget.mode == Mode.CUSTOM && dropdown.size.width < 64) {
+      menuWidth = 164;
+    }
+
+    if (menuMinHeight > 0) {
+      menuHeight = menuMinHeight;
+    }
+    if (menuMaxHeight > 0 && menuMaxHeight < menuHeight) {
+      menuHeight = menuMaxHeight;
+    }
+
+    return getPosition(dropdown, overlay, Size(menuWidth, menuHeight), widget.popupProps.menuProps.align);
   }
 
   ///open dialog
@@ -666,18 +615,16 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///openMenu
   Future _openMenu() {
     // Here we get the render object of our physical button, later to get its size & position
-    final popupButtonObject = context.findRenderObject() as RenderBox;
+    final dropdownObject = context.findRenderObject() as RenderBox;
     // Get the render object of the overlay used in `Navigator` / `MaterialApp`, i.e. screen size reference
     var overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+
 
     return showCustomMenu<T>(
       menuModeProps: widget.popupProps.menuProps,
       context: context,
-      position: (widget.popupProps.menuProps.positionCallback ?? _position)(
-        popupButtonObject,
-        overlay,
-      ),
-      child: _popupWidgetInstance(),
+      position: (widget.popupProps.menuProps.positionCallback ?? _position)(dropdownObject, overlay),
+      child:(constraints) =>  _popupWidgetInstance(),
     );
   }
 

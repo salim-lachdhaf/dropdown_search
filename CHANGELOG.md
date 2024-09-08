@@ -12,7 +12,7 @@
   * ```FavoriteItems``` renamed to ```SuggestedItems```
   * ```isFilterOnline``` renamed to ```disableFilter``` 
 * #### Fix bugs: 
-  * Search delay [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)
+  * Search delay [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542),[668](https://github.com/salim-lachdhaf/searchable_dropdown/issues/668)
 ## [5.0.6] - 2023.02.26
 * Fix bugs
   * [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)

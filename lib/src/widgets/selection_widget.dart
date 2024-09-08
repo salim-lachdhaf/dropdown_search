@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dropdown_search/src/widgets/custom_inkwell.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -195,7 +196,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                                   //if infiniteScroll enabled && data received not less then take request
                                   else if (!isInfiniteScrollEnded) {
                                     _manageLoadMoreItems(searchBoxController.text, skip: itemCount, showLoading: false);
-                                    return Center(child: CircularProgressIndicator());
+                                    return _infiniteScrollLoadingMoreWidget(itemCount);
                                   }
 
                                   return SizedBox.shrink();
@@ -214,6 +215,13 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
             );
           }),
     );
+  }
+
+  Widget _infiniteScrollLoadingMoreWidget(int loadedItems) {
+    if (widget.popupProps.infiniteScrollProps?.builder != null) {
+      return widget.popupProps.infiniteScrollProps!.builder!(context, loadedItems);
+    }
+    return const Center(child: CircularProgressIndicator());
   }
 
   ///validation of selected items
@@ -330,16 +338,16 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }) async {
     if (widget.items == null) return;
 
-    final infiniteScrollProps = widget.popupProps.infiniteScrollProps;
+    final loadProps = widget.popupProps.infiniteScrollProps?.loadProps;
 
     if (showLoading) {
       _loadingNotifier.value = true;
     }
 
     try {
-      final List<T> myItems = await widget.items!(filter, infiniteScrollProps?.copy(skip: skip));
+      final List<T> myItems = await widget.items!(filter, loadProps?.copy(skip: skip));
 
-      if (infiniteScrollProps != null) isInfiniteScrollEnded = myItems.length < infiniteScrollProps.take;
+      if (loadProps != null) isInfiniteScrollEnded = myItems.length < loadProps.take;
 
       //add new online items to cache list
       _cachedItems.addAll(myItems);
@@ -382,14 +390,13 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
         !widget.popupProps.showSelectedItems ? false : _isSelectedItem(item),
       );
 
-      if (widget.popupProps.interceptCallBacks)
-        return w;
-      else
-        return InkWell(
-          // ignore pointers in itemBuilder
-          child: IgnorePointer(child: w),
-          onTap: _isDisabled(item) ? null : () => _handleSelectedItem(item),
-        );
+      if (widget.popupProps.interceptCallBacks) return w;
+
+      return customInkWell(
+        widget.popupProps.itemClickProps,
+        () => _isDisabled(item) ? null : () => _handleSelectedItem(item),
+        IgnorePointer(child: w),
+      );
     } else {
       return ListTile(
         enabled: !_isDisabled(item),
@@ -424,20 +431,15 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       );
   }
 
-  bool _isDisabled(T item) =>
-      widget.popupProps.disabledItemFn != null && (widget.popupProps.disabledItemFn!(item)) == true;
+  bool _isDisabled(T item) => widget.popupProps.disabledItemFn != null && (widget.popupProps.disabledItemFn!(item)) == true;
 
   /// selected item will be highlighted only when [widget.showSelectedItems] is true,
   /// if our object is String [widget.compareFn] is not required , other wises it's required
-  bool _isSelectedItem(T item) {
-    return _itemIndexInList(_selectedItems, item) > -1;
-  }
+  bool _isSelectedItem(T item) => _itemIndexInList(_selectedItems, item) > -1;
 
   ///test if list has an item T
   ///if contains return index of item in the list, -1 otherwise
-  int _itemIndexInList(List<T> list, T item) {
-    return list.indexWhere((i) => _isEqual(i, item));
-  }
+  int _itemIndexInList(List<T> list, T item) => list.indexWhere((i) => _isEqual(i, item));
 
   ///compared two items base on user params
   bool _isEqual(T i1, T i2) {
@@ -553,7 +555,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8),
       child: LayoutBuilder(builder: (context, constraints) {
-        return SingleChildScrollView(
+        return SingleChildScrollView(//todo add props here
           scrollDirection: Axis.horizontal,
           child: ConstrainedBox(
             constraints: BoxConstraints(minWidth: constraints.maxWidth),
@@ -562,18 +564,12 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
                 mainAxisAlignment: widget.popupProps.suggestedItemProps.suggestedItemsAlignment,
                 children: suggestedItems
                     .map(
-                      (f) => InkWell(
-                        onTap: () => _handleSelectedItem(f),
-                        child: Container(
-                          margin: EdgeInsets.only(right: 4),
-                          child: widget.popupProps.suggestedItemProps.suggestedItemBuilder != null
-                              ? widget.popupProps.suggestedItemProps.suggestedItemBuilder!(
-                                  context,
-                                  f,
-                                  _isSelectedItem(f),
-                                )
-                              : _suggestedItemDefaultWidget(f),
-                        ),
+                      (f) => customInkWell(
+                        widget.popupProps.suggestedItemProps.itemClickProps,
+                        () => _handleSelectedItem(f),
+                        widget.popupProps.suggestedItemProps.suggestedItemBuilder != null
+                            ? widget.popupProps.suggestedItemProps.suggestedItemBuilder!(context, f, _isSelectedItem(f))
+                            : _suggestedItemDefaultWidget(f),
                       ),
                     )
                     .toList()),

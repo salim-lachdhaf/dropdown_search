@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../dropdown_search.dart';
 
+enum MenuAlign { bottomStart, bottomCenter, bottomEnd, topStart, topCenter, topEnd }
+
 class MenuProps {
+  final MenuAlign? align;
   final ShapeBorder? shape;
   final double? elevation;
   final Color? barrierColor;
@@ -20,8 +23,8 @@ class MenuProps {
   final Color? surfaceTintColor;
   final EdgeInsets? margin;
 
-
   const MenuProps({
+    this.align,
     this.barrierLabel,
     this.elevation,
     this.shape,

@@ -10,15 +10,18 @@ class SuggestedItemProps<T> {
   final FavoriteItemsBuilder<T>? suggestedItemBuilder;
 
   ///favorites items list
-  final FavoriteItems<T>? suggestedItems;
+  final SuggestedItems<T>? suggestedItems;
 
   ///favorite items alignment
   final MainAxisAlignment suggestedItemsAlignment;
+
+  final ClickProps itemClickProps;
 
   const SuggestedItemProps({
     this.suggestedItemBuilder,
     this.suggestedItems,
     this.suggestedItemsAlignment = MainAxisAlignment.start,
     this.showSuggestedItems = false,
+    this.itemClickProps = const ClickProps(),
   });
 }
