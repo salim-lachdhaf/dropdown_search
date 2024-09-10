@@ -553,7 +553,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   Widget _buildSuggestedItems(List<T> suggestedItems) {
-    if (suggestedItems.isEmpty) return Container();
+    if (suggestedItems.isEmpty) return const SizedBox.shrink();
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8),
@@ -602,13 +602,14 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   Widget _suggestedItemDefaultWidget(T item) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      margin: EdgeInsets.only(left: 8),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Theme.of(context).primaryColorLight),
       child: Row(
         children: [
           Text(
             _selectedItemAsString(item),
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleSmall,
           ),
           Padding(padding: EdgeInsets.only(left: 8)),
           Visibility(

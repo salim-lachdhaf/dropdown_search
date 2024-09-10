@@ -7,7 +7,7 @@ Future<T?> showCustomMenu<T>({
   required BuildContext context,
   required MenuProps menuModeProps,
   required RelativeRect position,
-  required Widget Function(Size size) child,
+  required Widget child,
 }) {
   final NavigatorState navigator = Navigator.of(context);
   return navigator.push(
@@ -92,7 +92,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
   final MenuProps menuModeProps;
   final BuildContext context;
   final RelativeRect position;
-  final Widget Function(Size size) child;
+  final Widget child;
   final CapturedThemes capturedThemes;
 
   _PopupMenuRoute({
@@ -129,10 +129,7 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
       animationDuration: menuModeProps.popUpAnimationStyle?.duration ?? Duration(milliseconds: 300),
       shadowColor: menuModeProps.shadowColor,
       borderOnForeground: menuModeProps.borderOnForeground,
-      child: Builder(builder: (ctx) {
-        final menuRenderBox = context.findRenderObject() as RenderBox;
-        return child(menuRenderBox.size);
-      }),
+      child:  child,
     );
     final MediaQueryData mediaQuery = MediaQuery.of(context);
 

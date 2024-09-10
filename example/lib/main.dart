@@ -1,12 +1,28 @@
+import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:example/bottom_sheets.dart';
 import 'package:example/dialogs.dart';
 import 'package:example/menus.dart';
 import 'package:example/modals.dart';
+import 'package:example/user_model.dart';
 import 'package:flutter/material.dart';
 
 
 void main() => runApp(MyApp());
+
+Future<List<UserModel>> getData(filter) async {
+  var response = await Dio().get(
+    "https://63c1210999c0a15d28e1ec1d.mockapi.io/users",
+    queryParameters: {"filter": filter},
+  );
+
+  final data = response.data;
+  if (data != null) {
+    return UserModel.fromJsonList(data);
+  }
+
+  return [];
+}
 
 class MyApp extends StatelessWidget {
   @override
