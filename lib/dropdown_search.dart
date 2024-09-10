@@ -548,6 +548,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           shape: widget.popupProps.dialogProps.shape,
           backgroundColor: widget.popupProps.dialogProps.backgroundColor,
           semanticLabel: widget.popupProps.dialogProps.semanticLabel,
+          shadowColor: widget.popupProps.dialogProps.shadowColor,
+          surfaceTintColor: widget.popupProps.dialogProps.surfaceTintColor,
           content: _popupWidgetInstance(),
         );
       },
