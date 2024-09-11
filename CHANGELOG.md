@@ -8,6 +8,8 @@
     * add property ```cacheItems``` for popupProps
     * add property ```onItemLoaded```
     * adding new properties for a lot of widget (scrollBar, modal, bottomSheet,...)
+    * add to possibility to change position of ```clearButton``` and ```dropdownButton```
+      using ```direction``` property
 
 * #### Breaking changes :
     * ```AsyncItems``` and ```items``` are replaced by ```items:(filter, infiniteScrollProps)```
@@ -16,15 +18,18 @@
     * ```isFilterOnline``` renamed to ```disableFilter```
     * ```selectionWidget``` renamed to ```checkBoxBuilder```
     * ```dropdownDecoratorProps``` renamed to ```decoratorProps```
+    * ```clearButtonProps``` and ```dropdownButtonProps``` are placed to ```suffixProps```
 * #### Fix bugs:
     * Search delay issue [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542),
     * Multiselection triggers didChange
       issue [668](https://github.com/salim-lachdhaf/searchable_dropdown/issues/668),
     * modalBottomSheet Keyboard
       issue [650](https://github.com/salim-lachdhaf/searchable_dropdown/issues/650),
-    * ScrollBar padding top issue [512](https://github.com/salim-lachdhaf/searchable_dropdown/issues/512)
+    * ScrollBar padding top
+      issue [512](https://github.com/salim-lachdhaf/searchable_dropdown/issues/512)
     * disabled color issue [553](https://github.com/salim-lachdhaf/searchable_dropdown/issues/553)
-    * multiSelection overflow issue [526](https://github.com/salim-lachdhaf/searchable_dropdown/issues/526)
+    * multiSelection overflow
+      issue [526](https://github.com/salim-lachdhaf/searchable_dropdown/issues/526)
 
 ## [5.0.6] - 2023.02.26
 

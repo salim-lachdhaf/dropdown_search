@@ -24,7 +24,6 @@ class IconButtonProps {
   final ButtonStyle? style;
   final bool? isSelected;
   final Widget? selectedIcon;
-  final Function()? onPressed;
 
   const IconButtonProps({
     required this.icon,
@@ -46,7 +45,6 @@ class IconButtonProps {
     this.tooltip,
     this.enableFeedback = false,
     this.constraints,
-    this.onPressed,
     this.style,
     this.isSelected,
     this.selectedIcon,

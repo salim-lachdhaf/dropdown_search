@@ -113,7 +113,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                       height: 50,
                       child: DropdownSearch<int>.multiSelection(
                         items: (f, cs) => List.generate(50, (i) => i),
-                       // selectedItemsScrollProps: ScrollProps(scrollDirection: Axis.horizontal),
+                        selectedItemsScrollProps: ScrollProps(scrollDirection: Axis.horizontal),
                       ),
                     ),
                   ),
@@ -127,7 +127,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                   Expanded(
                     child: DropdownSearch<UserModel>(
                       items: (f, cs) => getData(f),
-                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
                       compareFn: (item, selectedItem) => item.id == selectedItem.id,
                       dropdownBuilder: (context, selectedItem) {
                         if (selectedItem == null) {
@@ -258,9 +258,11 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     Padding(padding: EdgeInsets.only(top: 32)),
                     DropdownSearch<String>(
                       items: (filter, infiniteScrollProps) => ['Item 1', 'Item 2', 'Item 3'],
-                      dropdownButtonProps: DropdownButtonProps(
-                        iconClosed: Icon(Icons.keyboard_arrow_down),
-                        iconOpened: Icon(Icons.keyboard_arrow_up),
+                      suffixProps: DropdownSuffixProps(
+                        dropdownButtonProps: DropdownButtonProps(
+                          iconClosed: Icon(Icons.keyboard_arrow_down),
+                          iconOpened: Icon(Icons.keyboard_arrow_up),
+                        ),
                       ),
                       decoratorProps: DropDownDecoratorProps(
                         textAlign: TextAlign.center,
@@ -306,8 +308,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     DropdownSearch<String>(
                       items: (filter, loadProps) => ["Item 1", "Item 2", "Item 3", "Item 4"],
                       decoratorProps: DropDownDecoratorProps(
-                        decoration:
-                            InputDecoration(labelText: 'Bottom Left Menu', border: OutlineInputBorder()),
+                        decoration: InputDecoration(labelText: 'Bottom Left Menu', border: OutlineInputBorder()),
                       ),
                       popupProps: PopupProps.menu(
                         constraints: BoxConstraints.tight(Size(250, 250)),
@@ -317,8 +318,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                     DropdownSearch<String>(
                       decoratorProps: DropDownDecoratorProps(
-                        decoration:
-                            InputDecoration(labelText: 'Bottom Center Menu', border: OutlineInputBorder()),
+                        decoration: InputDecoration(labelText: 'Bottom Center Menu', border: OutlineInputBorder()),
                       ),
                       items: (filter, loadProps) => ["Item 1", "Item 2", "Item 3", "Item 4"],
                       popupProps: PopupProps.menu(
@@ -327,7 +327,6 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                       ),
                     ),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-
                     DropdownSearch<String>(
                       decoratorProps: DropDownDecoratorProps(
                         decoration: InputDecoration(labelText: 'Top Right Menu', border: OutlineInputBorder()),
@@ -358,7 +357,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                         else if (i >= 5) return 'value should be < 5';
                         return null;
                       },
-                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),

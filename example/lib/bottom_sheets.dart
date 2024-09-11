@@ -225,7 +225,7 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                   Expanded(
                     child: DropdownSearch<UserModel>.multiSelection(
                       items: (filter, t) => getData(filter),
-                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
                       popupProps: PopupPropsMultiSelection.bottomSheet(
                         showSelectedItems: true,
                         itemBuilder: userModelPopupItem,

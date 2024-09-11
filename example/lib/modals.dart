@@ -169,7 +169,9 @@ class _ModalsExamplesPageState extends State<ModalsExamplesPage> {
                 key: _dropDownCustomBGKey,
                 items: (f, cs) => List.generate(30, (index) => "$index"),
                 popupProps: PopupPropsMultiSelection.modalBottomSheet(
-                  modalBottomSheetProps: ModalBottomSheetProps(backgroundColor: Colors.grey.shade200),
+                  modalBottomSheetProps: ModalBottomSheetProps(
+                    backgroundColor: Colors.grey.shade200,
+                  ),
                   showSearchBox: true,
                   containerBuilder: (ctx, popupWidget) {
                     return Column(
@@ -226,7 +228,7 @@ class _ModalsExamplesPageState extends State<ModalsExamplesPage> {
                   Expanded(
                     child: DropdownSearch<UserModel>.multiSelection(
                       items: (filter, t) => getData(filter),
-                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
                       popupProps: PopupPropsMultiSelection.modalBottomSheet(
                         showSelectedItems: true,
                         itemBuilder: userModelPopupItem,

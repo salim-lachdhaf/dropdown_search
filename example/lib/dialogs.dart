@@ -234,7 +234,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
                   Expanded(
                     child: DropdownSearch<UserModel>.multiSelection(
                       items: (filter, t) => getData(filter),
-                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
                       popupProps: PopupPropsMultiSelection.dialog(
                         showSelectedItems: true,
                         itemBuilder: userModelPopupItem,

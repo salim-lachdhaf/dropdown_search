@@ -28,7 +28,6 @@ class DropdownButtonProps extends IconButtonProps {
     super.style,
     super.isSelected,
     super.selectedIcon,
-    super.onPressed,
   }) : super(icon: iconClosed);
 }
 

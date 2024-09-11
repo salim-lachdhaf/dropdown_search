@@ -1,15 +1,16 @@
 library dropdown_search;
 
 import 'dart:async';
-import 'package:dropdown_search/src/properties/clear_button_props.dart';
 import 'package:dropdown_search/src/properties/dropdown_props.dart';
 import 'package:dropdown_search/src/properties/infinite_scroll_props.dart';
 import 'package:dropdown_search/src/properties/scroll_props.dart';
 import 'package:dropdown_search/src/utils.dart';
+import 'package:dropdown_search/src/widgets/custom_icon_button.dart';
 import 'package:dropdown_search/src/widgets/custom_inkwell.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'src/properties/dropdown_suffix_props.dart';
 import 'src/properties/popup_props.dart';
 import 'src/widgets/custom_scroll_view.dart';
 import 'src/widgets/popup_menu.dart';
@@ -30,6 +31,7 @@ export 'src/properties/text_field_props.dart';
 export 'src/properties/infinite_scroll_props.dart';
 export 'src/properties/scroll_props.dart';
 export 'src/widgets/dropdown_search_popup.dart';
+export 'src/properties/dropdown_suffix_props.dart';
 
 typedef DropdownSearchOnFind<T> = FutureOr<List<T>> Function(String filter, LoadProps? loadProps);
 typedef DropdownSearchItemAsString<T> = String Function(T item);
@@ -128,11 +130,8 @@ class DropdownSearch<T> extends StatefulWidget {
   ///define whatever we are in multi selection mode or single selection mode
   final bool isMultiSelectionMode;
 
-  ///custom dropdown clear button icon properties
-  final ClearButtonProps clearButtonProps;
-
-  ///custom dropdown icon button properties
-  final DropdownButtonProps dropdownButtonProps;
+  ///custom suffix widget props
+  final DropdownSuffixProps suffixProps;
 
   ///dropdown click properties
   final ClickProps clickProps;
@@ -164,8 +163,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.items,
     this.dropdownBuilder,
     this.decoratorProps = const DropDownDecoratorProps(),
-    this.clearButtonProps = const ClearButtonProps(),
-    this.dropdownButtonProps = const DropdownButtonProps(),
+    this.suffixProps = const DropdownSuffixProps(),
     this.clickProps = const ClickProps(),
     this.enabled = true,
     this.filterFn,
@@ -194,8 +192,7 @@ class DropdownSearch<T> extends StatefulWidget {
     this.autoValidateMode = AutovalidateMode.disabled,
     this.items,
     this.decoratorProps = const DropDownDecoratorProps(),
-    this.clearButtonProps = const ClearButtonProps(),
-    this.dropdownButtonProps = const DropdownButtonProps(),
+    this.suffixProps = const DropdownSuffixProps(),
     this.clickProps = const ClickProps(),
     this.enabled = true,
     this.filterFn,
@@ -459,65 +456,20 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     final dropdownButtonPressed = () => _selectSearchMode();
 
     return Row(
+      textDirection: TextDirection.ltr,
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        if (widget.clearButtonProps.isVisible && getSelectedItems.isNotEmpty)
-          IconButton(
-            style: widget.clearButtonProps.style,
-            isSelected: widget.clearButtonProps.isSelected,
-            selectedIcon: widget.clearButtonProps.selectedIcon,
-            onPressed: widget.clearButtonProps.onPressed ?? clearButtonPressed,
-            icon: widget.clearButtonProps.icon,
-            constraints: widget.clearButtonProps.constraints,
-            hoverColor: widget.clearButtonProps.hoverColor,
-            highlightColor: widget.clearButtonProps.highlightColor,
-            splashColor: widget.clearButtonProps.splashColor,
-            color: widget.clearButtonProps.color,
-            focusColor: widget.clearButtonProps.focusColor,
-            iconSize: widget.clearButtonProps.iconSize,
-            padding: widget.clearButtonProps.padding,
-            splashRadius: widget.clearButtonProps.splashRadius,
-            alignment: widget.clearButtonProps.alignment,
-            autofocus: widget.clearButtonProps.autofocus,
-            disabledColor: widget.clearButtonProps.disabledColor,
-            enableFeedback: widget.clearButtonProps.enableFeedback,
-            focusNode: widget.clearButtonProps.focusNode,
-            mouseCursor: widget.clearButtonProps.mouseCursor,
-            tooltip: widget.clearButtonProps.tooltip,
-            visualDensity: widget.clearButtonProps.visualDensity,
-          ),
-        if (widget.dropdownButtonProps.isVisible)
-          IconButton(
-            style: widget.dropdownButtonProps.style,
-            isSelected: widget.dropdownButtonProps.isSelected,
-            selectedIcon: widget.dropdownButtonProps.selectedIcon,
-            onPressed: widget.dropdownButtonProps.onPressed ?? dropdownButtonPressed,
-            icon: isFocused ? widget.dropdownButtonProps.iconOpened : widget.dropdownButtonProps.icon,
-            constraints: widget.dropdownButtonProps.constraints,
-            hoverColor: widget.dropdownButtonProps.hoverColor,
-            highlightColor: widget.dropdownButtonProps.highlightColor,
-            splashColor: widget.dropdownButtonProps.splashColor,
-            color: widget.dropdownButtonProps.color,
-            focusColor: widget.dropdownButtonProps.focusColor,
-            iconSize: widget.dropdownButtonProps.iconSize,
-            padding: widget.dropdownButtonProps.padding,
-            splashRadius: widget.dropdownButtonProps.splashRadius,
-            alignment: widget.dropdownButtonProps.alignment,
-            autofocus: widget.dropdownButtonProps.autofocus,
-            disabledColor: widget.dropdownButtonProps.disabledColor,
-            enableFeedback: widget.dropdownButtonProps.enableFeedback,
-            focusNode: widget.dropdownButtonProps.focusNode,
-            mouseCursor: widget.dropdownButtonProps.mouseCursor,
-            tooltip: widget.dropdownButtonProps.tooltip,
-            visualDensity: widget.dropdownButtonProps.visualDensity,
-          ),
+        if (widget.suffixProps.clearButtonProps.isVisible && getSelectedItems.isNotEmpty)
+          CustomIconButton(props: widget.suffixProps.clearButtonProps, onPressed: clearButtonPressed),
+        if (widget.suffixProps.dropdownButtonProps.isVisible)
+          CustomIconButton(props: widget.suffixProps.dropdownButtonProps, onPressed: dropdownButtonPressed),
       ],
     );
   }
 
-  //to goal of this function is to return a position of the popup
-  //taking in consideration menu button width and popup constraints
+  ///the goal of this function is to return a position of the popup
+  ///taking in consideration menu button width and popup constraints
   RelativeRect _position(RenderBox dropdown, RenderBox overlay) {
     var menuMinWidth = widget.popupProps.constraints.minWidth;
     var menuMaxWidth = widget.popupProps.constraints.maxWidth;
