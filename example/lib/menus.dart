@@ -109,9 +109,12 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                   ),
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
-                    child: DropdownSearch<int>.multiSelection(
-                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-                      popupProps: PopupPropsMultiSelection.menu(showSelectedItems: true),
+                    child: SizedBox(
+                      height: 50,
+                      child: DropdownSearch<int>.multiSelection(
+                        items: (f, cs) => List.generate(50, (i) => i),
+                       // selectedItemsScrollProps: ScrollProps(scrollDirection: Axis.horizontal),
+                      ),
                     ),
                   ),
                 ],
@@ -179,8 +182,8 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                         (Icons.lock_open_rounded, 'Change Password'),
                         (Icons.power_settings_new_rounded, 'Logout'),
                       ],
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(vertical: 6),
                           filled: true,
                           fillColor: Color(0xFF1eb98f),
@@ -259,9 +262,9 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                         iconClosed: Icon(Icons.keyboard_arrow_down),
                         iconOpened: Icon(Icons.keyboard_arrow_up),
                       ),
-                      dropdownDecoratorProps: DropDownDecoratorProps(
+                      decoratorProps: DropDownDecoratorProps(
                         textAlign: TextAlign.center,
-                        dropdownSearchDecoration: InputDecoration(
+                        decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(vertical: 20),
                           filled: true,
                           fillColor: Colors.white,
@@ -302,8 +305,8 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     Padding(padding: EdgeInsets.only(top: 32)),
                     DropdownSearch<String>(
                       items: (filter, loadProps) => ["Item 1", "Item 2", "Item 3", "Item 4"],
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration:
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration:
                             InputDecoration(labelText: 'Bottom Left Menu', border: OutlineInputBorder()),
                       ),
                       popupProps: PopupProps.menu(
@@ -313,8 +316,8 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     ),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                     DropdownSearch<String>(
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration:
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration:
                             InputDecoration(labelText: 'Bottom Center Menu', border: OutlineInputBorder()),
                       ),
                       items: (filter, loadProps) => ["Item 1", "Item 2", "Item 3", "Item 4"],
@@ -324,12 +327,10 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                       ),
                     ),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+
                     DropdownSearch<String>(
-                      selectedItem: 'Yop',
-                      enabled: false,
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(labelText: 'Top Right Menu', border: OutlineInputBorder()),
-                        baseStyle: TextStyle(color: Colors.grey)
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(labelText: 'Top Right Menu', border: OutlineInputBorder()),
                       ),
                       items: (filter, loadProps) => ["Item 1", "Item 2", "Item 3", "Item 4"],
                       popupProps: PopupProps.menu(

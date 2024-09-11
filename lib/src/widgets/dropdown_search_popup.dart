@@ -7,8 +7,9 @@ import 'package:flutter/services.dart';
 
 import '../../dropdown_search.dart';
 import 'checkbox_widget.dart';
+import 'custom_scroll_view.dart';
 
-class DropdownSearchSelection<T> extends StatefulWidget {
+class DropdownSearchPopup<T> extends StatefulWidget {
   final ValueChanged<List<T>>? onChanged;
   final DropdownSearchOnFind<T>? items;
   final DropdownSearchItemAsString<T>? itemAsString;
@@ -18,7 +19,7 @@ class DropdownSearchSelection<T> extends StatefulWidget {
   final PopupPropsMultiSelection<T> popupProps;
   final bool isMultiSelectionMode;
 
-  const DropdownSearchSelection({
+  const DropdownSearchPopup({
     Key? key,
     required this.popupProps,
     this.defaultSelectedItems = const [],
@@ -31,10 +32,10 @@ class DropdownSearchSelection<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  DropdownSearchSelectionState<T> createState() => DropdownSearchSelectionState<T>();
+  DropdownSearchPopupState<T> createState() => DropdownSearchPopupState<T>();
 }
 
-class DropdownSearchSelectionState<T> extends State<DropdownSearchSelection<T>> {
+class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   final StreamController<List<T>> _itemsStream = StreamController.broadcast();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
   final List<T> _cachedItems = [];
@@ -79,7 +80,7 @@ class DropdownSearchSelectionState<T> extends State<DropdownSearchSelection<T>> 
   }
 
   @override
-  void didUpdateWidget(covariant DropdownSearchSelection<T> oldWidget) {
+  void didUpdateWidget(covariant DropdownSearchPopup<T> oldWidget) {
     if (!listEquals(oldWidget.defaultSelectedItems, widget.defaultSelectedItems)) {
       _selectedItemsNotifier.value = widget.defaultSelectedItems;
     }
@@ -253,11 +254,7 @@ class DropdownSearchSelectionState<T> extends State<DropdownSearchSelection<T>> 
   }
 
   Widget _noDataWidget() {
-    if (widget.popupProps.emptyBuilder != null)
-      return widget.popupProps.emptyBuilder!(
-        context,
-        searchBoxController.text
-      );
+    if (widget.popupProps.emptyBuilder != null) return widget.popupProps.emptyBuilder!(context, searchBoxController.text);
 
     return Container(
       height: 70,
@@ -559,9 +556,8 @@ class DropdownSearchSelectionState<T> extends State<DropdownSearchSelection<T>> 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8),
       child: LayoutBuilder(builder: (context, constraints) {
-        return SingleChildScrollView(
-          //todo add props here
-          scrollDirection: Axis.horizontal,
+        return CustomSingleScrollView(
+          scrollProps: widget.popupProps.suggestedItemProps.scrollProps,
           child: ConstrainedBox(
             constraints: BoxConstraints(minWidth: constraints.maxWidth),
             child: Row(

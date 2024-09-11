@@ -54,8 +54,8 @@ class MyHomePage extends StatelessWidget {
                     key: dropDownKey,
                     selectedItem: "Menu",
                     items: (filter, infiniteScrollProps) => ["Menu", "Dialog", "Modal", "BottomSheet"],
-                    dropdownDecoratorProps: DropDownDecoratorProps(
-                      dropdownSearchDecoration: InputDecoration(
+                    decoratorProps: DropDownDecoratorProps(
+                      decoration: InputDecoration(
                         labelText: 'Examples for: ',
                         border: OutlineInputBorder(),
                       ),

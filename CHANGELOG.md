@@ -7,7 +7,7 @@
     * dropdown button can be changed depending on state (open/closed)
     * add property ```cacheItems``` for popupProps
     * add property ```onItemLoaded```
-    * adding new properties for a lot of widget (scroll, modal, bottomSheet,...)
+    * adding new properties for a lot of widget (scrollBar, modal, bottomSheet,...)
 
 * #### Breaking changes :
     * ```AsyncItems``` and ```items``` are replaced by ```items:(filter, infiniteScrollProps)```
@@ -15,6 +15,7 @@
     * ```FavoriteItems``` renamed to ```SuggestedItems```
     * ```isFilterOnline``` renamed to ```disableFilter```
     * ```selectionWidget``` renamed to ```checkBoxBuilder```
+    * ```dropdownDecoratorProps``` renamed to ```decoratorProps```
 * #### Fix bugs:
     * Search delay issue [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542),
     * Multiselection triggers didChange
@@ -23,6 +24,7 @@
       issue [650](https://github.com/salim-lachdhaf/searchable_dropdown/issues/650),
     * ScrollBar padding top issue [512](https://github.com/salim-lachdhaf/searchable_dropdown/issues/512)
     * disabled color issue [553](https://github.com/salim-lachdhaf/searchable_dropdown/issues/553)
+    * multiSelection overflow issue [526](https://github.com/salim-lachdhaf/searchable_dropdown/issues/526)
 
 ## [5.0.6] - 2023.02.26
 

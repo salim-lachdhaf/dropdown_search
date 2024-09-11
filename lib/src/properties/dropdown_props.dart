@@ -353,7 +353,7 @@ class ClickProps {
 }
 
 class DropDownDecoratorProps {
-  final InputDecoration? dropdownSearchDecoration;
+  final InputDecoration? decoration;
   final TextStyle? baseStyle;
   final TextAlign? textAlign;
   final TextAlignVertical? textAlignVertical;
@@ -361,7 +361,7 @@ class DropDownDecoratorProps {
   final bool isHovering;
 
   const DropDownDecoratorProps({
-    this.dropdownSearchDecoration,
+    this.decoration,
     this.baseStyle,
     this.textAlign,
     this.textAlignVertical,

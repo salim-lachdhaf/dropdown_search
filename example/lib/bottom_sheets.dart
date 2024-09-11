@@ -52,8 +52,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                   Expanded(
                     child: DropdownSearch<int>(
                       items: (f, cs) => List.generate(30, (i) => i + 1),
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(labelText: "Dialog with title", hintText: "Select an Int"),
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(labelText: "Dialog with title", hintText: "Select an Int"),
                       ),
                       popupProps: PopupProps.bottomSheet(
                         title: Container(
@@ -81,8 +81,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                   Expanded(
                     child: DropdownSearch<int>(
                       items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(
                           labelText: "Modal mode",
                           hintText: "Select an Int",
                           filled: true,
@@ -241,8 +241,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                         ),
                       ),
                       compareFn: (item, selectedItem) => item.id == selectedItem.id,
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(
                           labelText: 'Users *',
                           filled: true,
                           fillColor: Theme.of(context).inputDecorationTheme.fillColor,
@@ -261,8 +261,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                         showSearchBox: true,
                       ),
                       compareFn: (item, sItem) => item.id == sItem.id,
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(
                           labelText: 'User *',
                           filled: true,
                           fillColor: Theme.of(context).inputDecorationTheme.fillColor,

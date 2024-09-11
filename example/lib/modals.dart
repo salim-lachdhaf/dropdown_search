@@ -53,8 +53,8 @@ class _ModalsExamplesPageState extends State<ModalsExamplesPage> {
                   Expanded(
                     child: DropdownSearch<int>(
                       items: (f, cs) => List.generate(30, (i) => i + 1),
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(labelText: "Dialog with title", hintText: "Select an Int"),
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(labelText: "Dialog with title", hintText: "Select an Int"),
                       ),
                       popupProps: PopupProps.modalBottomSheet(
                         title: Container(
@@ -82,8 +82,8 @@ class _ModalsExamplesPageState extends State<ModalsExamplesPage> {
                   Expanded(
                     child: DropdownSearch<int>(
                       items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(
                           labelText: "Modal mode",
                           hintText: "Select an Int",
                           filled: true,
@@ -242,8 +242,8 @@ class _ModalsExamplesPageState extends State<ModalsExamplesPage> {
                         ),
                       ),
                       compareFn: (item, selectedItem) => item.id == selectedItem.id,
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(
                           labelText: 'Users *',
                           filled: true,
                           fillColor: Theme.of(context).inputDecorationTheme.fillColor,
@@ -262,8 +262,8 @@ class _ModalsExamplesPageState extends State<ModalsExamplesPage> {
                         showSearchBox: true,
                       ),
                       compareFn: (item, sItem) => item.id == sItem.id,
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(
                           labelText: 'User *',
                           filled: true,
                           fillColor: Theme.of(context).inputDecorationTheme.fillColor,
@@ -292,37 +292,37 @@ class _ModalsExamplesPageState extends State<ModalsExamplesPage> {
                       trailing: item.subLevel.isEmpty
                           ? null
                           : (item.isExpanded
-                          ? IconButton(
-                        icon: Icon(Icons.arrow_drop_down),
-                        onPressed: () {
-                          item.isExpanded = !item.isExpanded;
-                          _dropdownMultiLevelKey.currentState?.updatePopupState();
-                        },
-                      )
-                          : IconButton(
-                        icon: Icon(Icons.arrow_right),
-                        onPressed: () {
-                          item.isExpanded = !item.isExpanded;
-                          _dropdownMultiLevelKey.currentState?.updatePopupState();
-                        },
-                      )),
+                              ? IconButton(
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  onPressed: () {
+                                    item.isExpanded = !item.isExpanded;
+                                    _dropdownMultiLevelKey.currentState?.updatePopupState();
+                                  },
+                                )
+                              : IconButton(
+                                  icon: Icon(Icons.arrow_right),
+                                  onPressed: () {
+                                    item.isExpanded = !item.isExpanded;
+                                    _dropdownMultiLevelKey.currentState?.updatePopupState();
+                                  },
+                                )),
                       subtitle: item.subLevel.isNotEmpty && item.isExpanded
                           ? Container(
-                        height: item.subLevel.length * 50,
-                        child: ListView(
-                          children: item.subLevel
-                              .map(
-                                (e) => ListTile(
-                              selected: _dropdownMultiLevelKey.currentState?.getSelectedItem?.level1 == e.level1,
-                              title: Text(e.level1),
-                              onTap: () {
-                                _dropdownMultiLevelKey.currentState?.popupValidate([e]);
-                              },
-                            ),
-                          )
-                              .toList(),
-                        ),
-                      )
+                              height: item.subLevel.length * 50,
+                              child: ListView(
+                                children: item.subLevel
+                                    .map(
+                                      (e) => ListTile(
+                                        selected: _dropdownMultiLevelKey.currentState?.getSelectedItem?.level1 == e.level1,
+                                        title: Text(e.level1),
+                                        onTap: () {
+                                          _dropdownMultiLevelKey.currentState?.popupValidate([e]);
+                                        },
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            )
                           : null,
                       onTap: () => _dropdownMultiLevelKey.currentState?.popupValidate([item]),
                     );
