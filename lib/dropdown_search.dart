@@ -451,9 +451,11 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   ///function that manage Trailing icons(close, dropDown)
-  Widget _manageSuffixIcons() {
+  Widget? _manageSuffixIcons() {
     final clearButtonPressed = () => clear();
     final dropdownButtonPressed = () => _selectSearchMode();
+
+    if (!widget.suffixProps.dropdownButtonProps.isVisible && !widget.suffixProps.clearButtonProps.isVisible) return null;
 
     return Row(
       textDirection: TextDirection.ltr,
@@ -463,7 +465,12 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         if (widget.suffixProps.clearButtonProps.isVisible && getSelectedItems.isNotEmpty)
           CustomIconButton(props: widget.suffixProps.clearButtonProps, onPressed: clearButtonPressed),
         if (widget.suffixProps.dropdownButtonProps.isVisible)
-          CustomIconButton(props: widget.suffixProps.dropdownButtonProps, onPressed: dropdownButtonPressed),
+          CustomIconButton(
+            props: widget.suffixProps.dropdownButtonProps,
+            icon:
+                isFocused ? widget.suffixProps.dropdownButtonProps.iconOpened : widget.suffixProps.dropdownButtonProps.icon,
+            onPressed: dropdownButtonPressed,
+          ),
       ],
     );
   }

@@ -33,6 +33,9 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                   DropdownSearch<String>.multiSelection(
                     mode: Mode.CUSTOM,
                     items: (f, cs) => ["Monday", 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                    popupProps: PopupPropsMultiSelection.menu(
+                      disabledItemFn: (item) => item == 'Tuesday',
+                    ),
                     dropdownBuilder: (ctx, selectedItem) => Icon(Icons.calendar_month_outlined, size: 54),
                   ),
                   DropdownSearch<(String, Color)>(
@@ -157,11 +160,11 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                   Padding(padding: EdgeInsets.all(4)),
                 ],
               ),
-              Padding(padding: EdgeInsets.all(8)),
+              Padding(padding: EdgeInsets.all(32)),
 
               Container(
                 height: 500,
-                padding: EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+                padding: EdgeInsets.symmetric(vertical: 18, horizontal: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   gradient: LinearGradient(
@@ -342,7 +345,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
               ),
 
               ///************************[validation examples]********************************///
-              Padding(padding: EdgeInsets.all(8)),
+              Padding(padding: EdgeInsets.all(32)),
               Text("[validation examples]"),
               Divider(),
               Row(

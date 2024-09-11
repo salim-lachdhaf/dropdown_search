@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class CustomIconButton extends StatelessWidget{
   final VoidCallback? onPressed;
   final IconButtonProps props;
+  final Widget? icon;
 
-  const CustomIconButton({super.key, required this.props, this.onPressed});
+  const CustomIconButton({super.key, required this.props, this.icon, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class CustomIconButton extends StatelessWidget{
       isSelected: props.isSelected,
       selectedIcon: props.selectedIcon,
       onPressed: onPressed,
-      icon: props.icon,
+      icon: icon ?? props.icon,
       constraints: props.constraints,
       hoverColor: props.hoverColor,
       highlightColor: props.highlightColor,

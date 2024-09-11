@@ -73,7 +73,7 @@ class _CheckBoxWidgetState extends State<CheckBoxWidget> {
                       isCheckedNotifier.value = !v;
                       if (widget.onChanged != null) widget.onChanged!(v);
                     },
-              child: IgnorePointer(child: w),
+              child: IgnorePointer(child: ExcludeFocus(child: w)),
             );
         },
       ),

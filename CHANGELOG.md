@@ -4,7 +4,7 @@
     * infinite list / lazy loading
     * add click properties to the dropdown
     * add custom mode
-    * dropdown button can be changed depending on state (open/closed)
+    * dropdown button can be changed depending on state (opened/closed)
     * add property ```cacheItems``` for popupProps
     * add property ```onItemLoaded```
     * adding new properties for a lot of widget (scrollBar, modal, bottomSheet,...)
@@ -32,6 +32,7 @@
       issue [526](https://github.com/salim-lachdhaf/searchable_dropdown/issues/526)
     * Popup does not close after dropdown dispose
       issue [554](https://github.com/salim-lachdhaf/searchable_dropdown/issues/554)
+    * Suffix space issue [670](https://github.com/salim-lachdhaf/searchable_dropdown/issues/670)
 
 ## [5.0.6] - 2023.02.26
 
@@ -59,21 +60,22 @@
 
 ## [5.0.2] - 2022.06.04
 
-* add 'interceptCallBacks' for popupProps
+* add ```interceptCallBacks``` for popupProps
 
-* ## [5.0.1] - 2022.05.29
+## [5.0.1] - 2022.05.29
+
 * Fix code format
 
 ## [5.0.0] - 2022.05.29
 
 * Replace ScrollBar with RawScrollBar (adding new properties)
-* move 'showClearButton' into 'ClearButtonProps'
-* move all dropdownDecoration props into 'dropdownDecoratorProps'
-* replace 'IconButtonProps' with 'DropdownButtonProps' and 'ClearButtonProps' for clearButtonProps
+* move ``showClearButton`` into ``ClearButtonProps``
+* move all dropdownDecoration props into ``dropdownDecoratorProps``
+* replace ``IconButtonProps`` with DropdownButtonProps and ``ClearButtonProps`` for ``clearButtonProps``
   and dropdownButtonProps
-* add a full custom container for the pop 'containerBuilder' to 'popup_props'
-* add 'isVisible' prop to 'DropdownButtonProps'
-* change 'validationMultiSelectionWidget' to 'validationWidgetBuilder'
+* add a full custom container for the pop `containerBuilder` to ``popup_props``
+* add ```isVisible``` prop to `DropdownButtonProps`
+* change ``validationMultiSelectionWidget`` to ``validationWidgetBuilder``
 
 ## [4.0.1] - 2022.05.17
 
@@ -101,11 +103,11 @@
 ## [3.0.1] - 2022.04.15
 
 * breaking changes:
-    - remove 'hint' and 'label' properties, use 'dropdownSearchDecoration' instead
-    - remove 'showAsSuffixIcons' property, now always are as suffixIcon
-    - replace 'clearButtonSplashRadius' and 'clearButtonBuilder' into one property 'IconButtonProps'
-    - replace 'dropdownButtonSplashRadius' and 'dropdownButtonBuilder' into one property '
-      IconButtonProps'
+    - remove ``hint`` and ``label`` properties, use ``dropdownSearchDecoration`` instead
+    - remove ``showAsSuffixIcons`` property, now always are as suffixIcon
+    - replace '``clearButtonSplashRadius``' and '``clearButtonBuilder``' into one property '``IconButtonProps``'
+    - replace '``dropdownButtonSplashRadius``' and '``dropdownButtonBuilder``' into one property '
+      ``IconButtonProps``'
 * fix issue [380](https://github.com/salim-lachdhaf/searchable_dropdown/issues/380)
 
 ## [2.0.1] - 2021.11.15
