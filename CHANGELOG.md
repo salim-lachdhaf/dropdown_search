@@ -23,13 +23,15 @@
     * Search delay issue [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542),
     * Multiselection triggers didChange
       issue [668](https://github.com/salim-lachdhaf/searchable_dropdown/issues/668),
-    * modalBottomSheet Keyboard
+    * ModalBottomSheet Keyboard
       issue [650](https://github.com/salim-lachdhaf/searchable_dropdown/issues/650),
     * ScrollBar padding top
       issue [512](https://github.com/salim-lachdhaf/searchable_dropdown/issues/512)
-    * disabled color issue [553](https://github.com/salim-lachdhaf/searchable_dropdown/issues/553)
-    * multiSelection overflow
+    * Disabled color issue [553](https://github.com/salim-lachdhaf/searchable_dropdown/issues/553)
+    * MultiSelection overflow
       issue [526](https://github.com/salim-lachdhaf/searchable_dropdown/issues/526)
+    * Popup does not close after dropdown dispose
+      issue [554](https://github.com/salim-lachdhaf/searchable_dropdown/issues/554)
 
 ## [5.0.6] - 2023.02.26
 
