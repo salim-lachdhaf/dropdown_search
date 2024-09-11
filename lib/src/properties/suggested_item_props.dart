@@ -1,4 +1,3 @@
-import 'package:dropdown_search/src/properties/scroll_props.dart';
 import 'package:flutter/material.dart';
 
 import '../../dropdown_search.dart';
