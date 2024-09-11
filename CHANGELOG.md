@@ -1,45 +1,62 @@
 ## [6.0.0-pre] - 2024.09.01
-* ##### New features: 
-  * infinite list / lazy loading
-  * add click properties to the dropdown
-  * add custom mode
-  * dropdown button can be changed depending on state (open/closed)
-  * add property ```cacheItems``` for popupProps
-  * add property ```onItemLoaded```
-  * adding new properties for a lot of widget (scroll, modal, bottomSheet,...)
-* #### Breaking changes : 
-  * ```AsyncItems``` and ```items``` are replaced by ```items:(filter, infiniteScrollProps)```
-  * ```FavoriteItems``` renamed to ```SuggestedItems```
-  * ```isFilterOnline``` renamed to ```disableFilter``` 
-  * ```selectionWidget``` renamed to ```checkBoxBuilder``` 
-* #### Fix bugs: 
-  * Search delay [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542),[668](https://github.com/salim-lachdhaf/searchable_dropdown/issues/668)
+
+* #### New features:
+    * infinite list / lazy loading
+    * add click properties to the dropdown
+    * add custom mode
+    * dropdown button can be changed depending on state (open/closed)
+    * add property ```cacheItems``` for popupProps
+    * add property ```onItemLoaded```
+    * adding new properties for a lot of widget (scroll, modal, bottomSheet,...)
+
+* #### Breaking changes :
+    * ```AsyncItems``` and ```items``` are replaced by ```items:(filter, infiniteScrollProps)```
+    * Add ```isDisabled``` to ```itemBuilder``` params
+    * ```FavoriteItems``` renamed to ```SuggestedItems```
+    * ```isFilterOnline``` renamed to ```disableFilter```
+    * ```selectionWidget``` renamed to ```checkBoxBuilder```
+* #### Fix bugs:
+    * Search delay issue [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542),
+    * Multiselection triggers didChange
+      issue [668](https://github.com/salim-lachdhaf/searchable_dropdown/issues/668),
+    * modalBottomSheet Keyboard
+      issue [650](https://github.com/salim-lachdhaf/searchable_dropdown/issues/650),
+    * ScrollBar padding top issue [512](https://github.com/salim-lachdhaf/searchable_dropdown/issues/512)
+    * disabled color issue [553](https://github.com/salim-lachdhaf/searchable_dropdown/issues/553)
+
 ## [5.0.6] - 2023.02.26
+
 * Fix bugs
-  * [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)
-  * [485](https://github.com/salim-lachdhaf/searchable_dropdown/issues/485)
+    * [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542)
+    * [485](https://github.com/salim-lachdhaf/searchable_dropdown/issues/485)
 * fix lint errors
 * add 'textDirection' in multiSelection mode to handle checkbox alignment
 * add useSafeArea for modal
 
 * ## [5.0.5] - 2022.12.05
-* Fix analysis warning and formatting issues 
+* Fix analysis warning and formatting issues
 
 ## [5.0.4] - 2022.12.05
-* Fix bugs: [510](https://github.com/salim-lachdhaf/searchable_dropdown/issues/510), [439](https://github.com/salim-lachdhaf/searchable_dropdown/issues/439), [513](https://github.com/salim-lachdhaf/searchable_dropdown/issues/513), [514](https://github.com/salim-lachdhaf/searchable_dropdown/issues/514)
-* add new properties to dropdownButton and clearDropdownButton: 'style', 'isSelected', 'selectedIcon', 'onPressed'
+
+* Fix
+  bugs: [510](https://github.com/salim-lachdhaf/searchable_dropdown/issues/510), [439](https://github.com/salim-lachdhaf/searchable_dropdown/issues/439), [513](https://github.com/salim-lachdhaf/searchable_dropdown/issues/513), [514](https://github.com/salim-lachdhaf/searchable_dropdown/issues/514)
+* add new properties to dropdownButton and clearDropdownButton: 'style', 'isSelected', '
+  selectedIcon', 'onPressed'
 
 ## [5.0.3] - 2022.09.22
+
 * Fix bugs
 * update Readme file
 
 ## [5.0.2] - 2022.06.04
+
 * add 'interceptCallBacks' for popupProps
 
 * ## [5.0.1] - 2022.05.29
 * Fix code format
 
 ## [5.0.0] - 2022.05.29
+
 * Replace ScrollBar with RawScrollBar (adding new properties)
 * move 'showClearButton' into 'ClearButtonProps'
 * move all dropdownDecoration props into 'dropdownDecoratorProps'

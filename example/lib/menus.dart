@@ -15,7 +15,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("DropdownSearch Demo")),
+      appBar: AppBar(title: Text("DropdownSearch Menu Demo")),
       body: Padding(
         padding: const EdgeInsets.all(25),
         child: Form(
@@ -48,7 +48,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     popupProps: PopupProps.menu(
                       menuProps: MenuProps(align: MenuAlign.bottomCenter),
                       fit: FlexFit.loose,
-                      itemBuilder: (context, item, isSelected) => Padding(
+                      itemBuilder: (context, item, isDisabled, isSelected) => Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(item.$1, style: TextStyle(color: item.$2, fontSize: 16)),
                       ),
@@ -141,7 +141,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                         disableFilter: true, //data will be filtered by the backend
                         showSearchBox: true,
                         showSelectedItems: true,
-                        itemBuilder: (ctx, item, isSelected) {
+                        itemBuilder: (ctx, item, isDisabled, isSelected) {
                           return ListTile(
                             leading: CircleAvatar(backgroundColor: Colors.blue, child: Text(item.name[0])),
                             selected: isSelected,
@@ -208,7 +208,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                         );
                       },
                       popupProps: PopupProps.menu(
-                        itemBuilder: (context, item, isSelected) {
+                        itemBuilder: (context, item, isDisabled, isSelected) {
                           return ListTile(
                             contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                             leading: Icon(item.$1, color: Colors.white),
@@ -282,7 +282,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                         ),
                       ),
                       popupProps: PopupProps.menu(
-                        itemBuilder: (context, item, isSelected) {
+                        itemBuilder: (context, item, isDisabled, isSelected) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 12.0),
                             child: Text(
@@ -295,9 +295,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                         fit: FlexFit.loose,
                         menuProps: MenuProps(
                           margin: EdgeInsets.only(top: 12),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                          ),
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                         ),
                       ),
                     ),
@@ -327,8 +325,11 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     ),
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                     DropdownSearch<String>(
+                      selectedItem: 'Yop',
+                      enabled: false,
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(labelText: 'Top Right Menu', border: OutlineInputBorder()),
+                        baseStyle: TextStyle(color: Colors.grey)
                       ),
                       items: (filter, loadProps) => ["Item 1", "Item 2", "Item 3", "Item 4"],
                       popupProps: PopupProps.menu(
@@ -381,5 +382,3 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
     );
   }
 }
-
-

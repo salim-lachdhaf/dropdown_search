@@ -96,7 +96,7 @@ class MyHomePage extends StatelessWidget {
                   TextSpan(text: 'we used '),
                   TextSpan(text: 'fit: FlexFit.loose and '),
                   TextSpan(text: 'constraints: BoxConstraints() '),
-                  TextSpan(text: 'to fit the height of mebu automatically to the length of items'),
+                  TextSpan(text: 'to fit the height of menu automatically to the length of items'),
                 ],
               ),
             ),

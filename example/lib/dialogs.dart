@@ -34,7 +34,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("DropdownSearch Demo")),
+      appBar: AppBar(title: Text("DropdownSearch Dialog Demo")),
       body: Padding(
         padding: const EdgeInsets.all(25),
         child: Form(
@@ -108,7 +108,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
                       popupProps: PopupPropsMultiSelection.dialog(
                         showSelectedItems: true,
                         showSearchBox: true,
-                        itemBuilder: _userModelPopupItem,
+                        itemBuilder: userModelPopupItem,
                         suggestedItemProps: SuggestedItemProps(
                           showSuggestedItems: true,
                           suggestedItems: (us) {
@@ -125,7 +125,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
                       compareFn: (i, s) => i.isEqual(s),
                       popupProps: PopupPropsMultiSelection.dialog(
                         showSearchBox: true,
-                        itemBuilder: _userModelPopupItem,
+                        itemBuilder: userModelPopupItem,
                         suggestedItemProps: SuggestedItemProps(
                           showSuggestedItems: true,
                           suggestedItems: (us) {
@@ -167,7 +167,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
               Row(
                 children: [
                   Expanded(
-                    child: _DropdownWithGlobalCheckBox(),
+                    child: DropdownWithGlobalCheckBox(),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
                   Expanded(
@@ -237,7 +237,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
                       clearButtonProps: ClearButtonProps(isVisible: true),
                       popupProps: PopupPropsMultiSelection.dialog(
                         showSelectedItems: true,
-                        itemBuilder: _userModelPopupItem,
+                        itemBuilder: userModelPopupItem,
                         showSearchBox: true,
                         searchFieldProps: TextFieldProps(
                           controller: _userEditTextController,
@@ -257,7 +257,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
                           fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                         ),
                       ),
-                      dropdownBuilder: _customDropDownExampleMultiSelection,
+                      dropdownBuilder: customDropDownExampleMultiSelection,
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
@@ -266,7 +266,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
                       items: (filter, t) => getData(filter),
                       popupProps: PopupPropsMultiSelection.dialog(
                         showSelectedItems: true,
-                        itemBuilder: _userModelPopupItem,
+                        itemBuilder: userModelPopupItem,
                         showSearchBox: true,
                       ),
                       compareFn: (item, sItem) => item.id == sItem.id,
@@ -293,7 +293,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
                 popupProps: PopupProps.dialog(
                   showSelectedItems: true,
                   interceptCallBacks: true, //important line
-                  itemBuilder: (ctx, item, isSelected) {
+                  itemBuilder: (ctx, item, isDisabled, isSelected) {
                     return ListTile(
                       selected: isSelected,
                       title: Text(item.level1),
@@ -343,59 +343,14 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
       ),
     );
   }
-
-  Widget _customDropDownExampleMultiSelection(BuildContext context, List<UserModel> selectedItems) {
-    if (selectedItems.isEmpty) {
-      return ListTile(
-        contentPadding: EdgeInsets.all(0),
-        leading: CircleAvatar(),
-        title: Text("No item selected"),
-      );
-    }
-
-    return Wrap(
-      children: selectedItems.map((e) {
-        return Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Container(
-            child: ListTile(
-              contentPadding: EdgeInsets.all(0),
-              leading: CircleAvatar(child: Text(e.name[0])),
-              title: Text(e.name),
-              subtitle: Text(e.createdAt.toString()),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _userModelPopupItem(BuildContext context, UserModel item, bool isSelected) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
-      decoration: !isSelected
-          ? null
-          : BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor),
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white,
-            ),
-      child: ListTile(
-        selected: isSelected,
-        title: Text(item.name),
-        subtitle: Text(item.createdAt.toString()),
-        leading: CircleAvatar(child: Text(item.name[0])),
-      ),
-    );
-  }
 }
 
-class _DropdownWithGlobalCheckBox extends StatefulWidget {
+class DropdownWithGlobalCheckBox extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _DropdownWithGlobalCheckBoxState();
 }
 
-class _DropdownWithGlobalCheckBoxState extends State<_DropdownWithGlobalCheckBox> {
+class _DropdownWithGlobalCheckBoxState extends State<DropdownWithGlobalCheckBox> {
   final _infiniteScrollDropDownKey = GlobalKey<DropdownSearchState<int>>();
   final ValueNotifier<bool?> longListCheckBoxValueNotifier = ValueNotifier(false);
   final longList = List.generate(110, (i) => i + 1);
@@ -421,7 +376,11 @@ class _DropdownWithGlobalCheckBoxState extends State<_DropdownWithGlobalCheckBox
       key: _infiniteScrollDropDownKey,
       items: (f, ic) => _getData(f, ic),
       dropdownDecoratorProps: DropDownDecoratorProps(
-        dropdownSearchDecoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Infinite Scroll'),
+        dropdownSearchDecoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Infinite Scroll',
+          contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+        ),
       ),
       popupProps: PopupPropsMultiSelection.dialog(
         onItemAdded: (l, s) => longListCheckBoxValueNotifier.value = _getCheckBoxState(),
@@ -475,6 +434,51 @@ class _DropdownWithGlobalCheckBoxState extends State<_DropdownWithGlobalCheckBox
       ),
     );
   }
+}
+
+Widget customDropDownExampleMultiSelection(BuildContext context, List<UserModel> selectedItems) {
+  if (selectedItems.isEmpty) {
+    return ListTile(
+      contentPadding: EdgeInsets.all(0),
+      leading: CircleAvatar(),
+      title: Text("No item selected"),
+    );
+  }
+
+  return Wrap(
+    children: selectedItems.map((e) {
+      return Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Container(
+          child: ListTile(
+            contentPadding: EdgeInsets.all(0),
+            leading: CircleAvatar(child: Text(e.name[0])),
+            title: Text(e.name),
+            subtitle: Text(e.createdAt.toString()),
+          ),
+        ),
+      );
+    }).toList(),
+  );
+}
+
+Widget userModelPopupItem(BuildContext context, UserModel item, bool isDisabled, bool isSelected) {
+  return Container(
+    margin: EdgeInsets.symmetric(horizontal: 8),
+    decoration: !isSelected
+        ? null
+        : BoxDecoration(
+            border: Border.all(color: Theme.of(context).primaryColor),
+            borderRadius: BorderRadius.circular(5),
+            color: Colors.white,
+          ),
+    child: ListTile(
+      selected: isSelected,
+      title: Text(item.name),
+      subtitle: Text(item.createdAt.toString()),
+      leading: CircleAvatar(child: Text(item.name[0])),
+    ),
+  );
 }
 
 class MultiLevelString {

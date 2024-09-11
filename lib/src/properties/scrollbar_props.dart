@@ -43,7 +43,7 @@ class ScrollbarProps {
     this.trackVisibility,
     this.interactive,
     this.notificationPredicate = defaultScrollNotificationPredicate,
-    this.padding,
+    this.padding = EdgeInsets.zero,
   });
 }
 

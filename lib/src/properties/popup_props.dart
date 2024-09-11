@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import '../../dropdown_search.dart';
 
 class PopupProps<T> {
-  ///popup title
+  /// popup title
   final Widget? title;
 
-  ///the search box will be shown if true, hidden otherwise
+  /// the search box will be shown if true, hidden otherwise
   final bool showSearchBox;
 
+  /// custom UI for the item
   final DropdownSearchPopupItemBuilder<T>? itemBuilder;
 
   /// object that passes all props to search field
@@ -21,8 +22,8 @@ class PopupProps<T> {
   final ScrollbarProps scrollbarProps;
 
   /// callback executed before applying value change
-  ///delay before searching, change it to Duration(milliseconds: 0)
-  ///if you do not use online search
+  /// delay before searching, change it to Duration(milliseconds: 0)
+  /// if you do not use online search
   final Duration searchDelay;
 
   ///called when popup is dismissed

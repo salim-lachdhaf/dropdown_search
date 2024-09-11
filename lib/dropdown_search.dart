@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 
 import 'src/properties/popup_props.dart';
 import 'src/widgets/popup_menu.dart';
-import 'src/widgets/selection_widget.dart';
+import 'src/widgets/dropdown_search_selection.dart';
 
 export 'src/properties/bottom_sheet_props.dart';
 export 'src/properties/clear_button_props.dart';
@@ -26,6 +26,7 @@ export 'src/properties/popup_props.dart';
 export 'src/properties/scrollbar_props.dart';
 export 'src/properties/text_field_props.dart';
 export 'src/properties/infinite_scroll_props.dart';
+export 'src/widgets/dropdown_search_selection.dart';
 
 typedef DropdownSearchOnFind<T> = FutureOr<List<T>> Function(String filter, LoadProps? loadProps);
 typedef DropdownSearchItemAsString<T> = String Function(T item);
@@ -33,7 +34,7 @@ typedef DropdownSearchFilterFn<T> = bool Function(T item, String filter);
 typedef DropdownSearchCompareFn<T> = bool Function(T item1, T item2);
 typedef DropdownSearchBuilder<T> = Widget Function(BuildContext context, T? selectedItem);
 typedef DropdownSearchBuilderMultiSelection<T> = Widget Function(BuildContext context, List<T> selectedItems);
-typedef DropdownSearchPopupItemBuilder<T> = Widget Function(BuildContext context, T item, bool isSelected);
+typedef DropdownSearchPopupItemBuilder<T> = Widget Function(BuildContext context, T item, bool isDisabled, bool isSelected);
 typedef DropdownSearchPopupItemEnabled<T> = bool Function(T item);
 typedef ErrorBuilder<T> = Widget Function(BuildContext context, String searchEntry, dynamic exception);
 typedef EmptyBuilder<T> = Widget Function(BuildContext context, String searchEntry);
@@ -222,7 +223,7 @@ class DropdownSearch<T> extends StatefulWidget {
 class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   final ValueNotifier<List<T>> _selectedItemsNotifier = ValueNotifier([]);
   final ValueNotifier<bool> _isFocused = ValueNotifier(false);
-  final _popupStateKey = GlobalKey<SelectionWidgetState<T>>();
+  final _popupStateKey = GlobalKey<DropdownSearchSelectionState<T>>();
 
   @override
   void initState() {
@@ -386,7 +387,9 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
             valueListenable: _isFocused,
             builder: (context, isFocused, w) {
               return InputDecorator(
-                baseStyle: widget.dropdownDecoratorProps.baseStyle,
+                baseStyle: widget.enabled
+                    ? widget.dropdownDecoratorProps.baseStyle
+                    : widget.dropdownDecoratorProps.baseStyle ?? TextStyle(color: Theme.of(context).disabledColor),
                 textAlign: widget.dropdownDecoratorProps.textAlign,
                 textAlignVertical: widget.dropdownDecoratorProps.textAlignVertical,
                 isEmpty: getSelectedItems.isEmpty && widget.dropdownBuilderMultiSelection == null,
@@ -576,29 +579,33 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Future _openModalBottomSheet() {
     final sheetTheme = Theme.of(context).bottomSheetTheme;
     return showModalBottomSheet<T>(
-      context: context,
-      barrierLabel: widget.popupProps.modalBottomSheetProps.barrierLabel,
-      scrollControlDisabledMaxHeightRatio: widget.popupProps.modalBottomSheetProps.scrollControlDisabledMaxHeightRatio,
-      showDragHandle: widget.popupProps.modalBottomSheetProps.showDragHandle,
-      sheetAnimationStyle: widget.popupProps.modalBottomSheetProps.sheetAnimationStyle,
-      useSafeArea: widget.popupProps.modalBottomSheetProps.useSafeArea,
-      barrierColor: widget.popupProps.modalBottomSheetProps.barrierColor,
-      backgroundColor: widget.popupProps.modalBottomSheetProps.backgroundColor ??
-          sheetTheme.modalBackgroundColor ??
-          sheetTheme.backgroundColor ??
-          Colors.white,
-      isDismissible: widget.popupProps.modalBottomSheetProps.barrierDismissible,
-      isScrollControlled: widget.popupProps.modalBottomSheetProps.isScrollControlled,
-      enableDrag: widget.popupProps.modalBottomSheetProps.enableDrag,
-      clipBehavior: widget.popupProps.modalBottomSheetProps.clipBehavior,
-      elevation: widget.popupProps.modalBottomSheetProps.elevation,
-      shape: widget.popupProps.modalBottomSheetProps.shape,
-      anchorPoint: widget.popupProps.modalBottomSheetProps.anchorPoint,
-      useRootNavigator: widget.popupProps.modalBottomSheetProps.useRootNavigator,
-      transitionAnimationController: widget.popupProps.modalBottomSheetProps.animation,
-      constraints: widget.popupProps.modalBottomSheetProps.constraints,
-      builder: (ctx) => _popupWidgetInstance(),
-    );
+        context: context,
+        barrierLabel: widget.popupProps.modalBottomSheetProps.barrierLabel,
+        scrollControlDisabledMaxHeightRatio: widget.popupProps.modalBottomSheetProps.scrollControlDisabledMaxHeightRatio,
+        showDragHandle: widget.popupProps.modalBottomSheetProps.showDragHandle,
+        sheetAnimationStyle: widget.popupProps.modalBottomSheetProps.sheetAnimationStyle,
+        useSafeArea: widget.popupProps.modalBottomSheetProps.useSafeArea,
+        barrierColor: widget.popupProps.modalBottomSheetProps.barrierColor,
+        backgroundColor: widget.popupProps.modalBottomSheetProps.backgroundColor ??
+            sheetTheme.modalBackgroundColor ??
+            sheetTheme.backgroundColor ??
+            Colors.white,
+        isDismissible: widget.popupProps.modalBottomSheetProps.barrierDismissible,
+        isScrollControlled: widget.popupProps.modalBottomSheetProps.isScrollControlled,
+        enableDrag: widget.popupProps.modalBottomSheetProps.enableDrag,
+        clipBehavior: widget.popupProps.modalBottomSheetProps.clipBehavior,
+        elevation: widget.popupProps.modalBottomSheetProps.elevation,
+        shape: widget.popupProps.modalBottomSheetProps.shape,
+        anchorPoint: widget.popupProps.modalBottomSheetProps.anchorPoint,
+        useRootNavigator: widget.popupProps.modalBottomSheetProps.useRootNavigator,
+        transitionAnimationController: widget.popupProps.modalBottomSheetProps.animation,
+        constraints: widget.popupProps.modalBottomSheetProps.constraints,
+        builder: (ctx) {
+          return Container(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+            child: _popupWidgetInstance(),
+          );
+        });
   }
 
   ///openMenu
@@ -617,7 +624,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   Widget _popupWidgetInstance() {
-    return SelectionWidget<T>(
+    return DropdownSearchSelection<T>(
       key: _popupStateKey,
       popupProps: widget.popupProps,
       itemAsString: widget.itemAsString,
@@ -774,7 +781,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   void openDropDownSearch() => _selectSearchMode();
 
   ///return the state of the popup
-  SelectionWidgetState<T>? get getPopupState => _popupStateKey.currentState;
+  DropdownSearchSelectionState<T>? get getPopupState => _popupStateKey.currentState;
 
   ///close dropdownSearch popup if it's open
   void closeDropDownSearch() => _popupStateKey.currentState?.closePopup();

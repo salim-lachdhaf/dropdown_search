@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import '../../dropdown_search.dart';
 import 'checkbox_widget.dart';
 
-class SelectionWidget<T> extends StatefulWidget {
+class DropdownSearchSelection<T> extends StatefulWidget {
   final ValueChanged<List<T>>? onChanged;
   final DropdownSearchOnFind<T>? items;
   final DropdownSearchItemAsString<T>? itemAsString;
@@ -18,7 +18,7 @@ class SelectionWidget<T> extends StatefulWidget {
   final PopupPropsMultiSelection<T> popupProps;
   final bool isMultiSelectionMode;
 
-  const SelectionWidget({
+  const DropdownSearchSelection({
     Key? key,
     required this.popupProps,
     this.defaultSelectedItems = const [],
@@ -31,10 +31,10 @@ class SelectionWidget<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  SelectionWidgetState<T> createState() => SelectionWidgetState<T>();
+  DropdownSearchSelectionState<T> createState() => DropdownSearchSelectionState<T>();
 }
 
-class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
+class DropdownSearchSelectionState<T> extends State<DropdownSearchSelection<T>> {
   final StreamController<List<T>> _itemsStream = StreamController.broadcast();
   final ValueNotifier<bool> _loadingNotifier = ValueNotifier(false);
   final List<T> _cachedItems = [];
@@ -79,7 +79,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant SelectionWidget<T> oldWidget) {
+  void didUpdateWidget(covariant DropdownSearchSelection<T> oldWidget) {
     if (!listEquals(oldWidget.defaultSelectedItems, widget.defaultSelectedItems)) {
       _selectedItemsNotifier.value = widget.defaultSelectedItems;
     }
@@ -388,6 +388,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       var w = widget.popupProps.itemBuilder!(
         context,
         item,
+        _isDisabled(item),
         !widget.popupProps.showSelectedItems ? false : _isSelectedItem(item),
       );
 
@@ -413,7 +414,7 @@ class SelectionWidgetState<T> extends State<SelectionWidget<T>> {
       return CheckBoxWidget(
         clickProps: widget.popupProps.itemClickProps,
         checkBox: (cxt, checked) {
-          return widget.popupProps.checkBoxBuilder!(cxt, item, checked);
+          return widget.popupProps.checkBoxBuilder!(cxt, item, _isDisabled(item), checked);
         },
         interceptCallBacks: widget.popupProps.interceptCallBacks,
         textDirection: widget.popupProps.textDirection,
