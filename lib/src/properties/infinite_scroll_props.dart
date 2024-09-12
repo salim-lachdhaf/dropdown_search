@@ -3,10 +3,10 @@ typedef InfiniteScrollBuilder = Widget Function(BuildContext, int loadedItems);
 
 class InfiniteScrollProps {
   final LoadProps loadProps;
-  final InfiniteScrollBuilder? builder;
+  final InfiniteScrollBuilder? loadingMoreBuilder;
 
   const InfiniteScrollProps({
-    this.builder,
+    this.loadingMoreBuilder,
     this.loadProps = const LoadProps(),
   });
 

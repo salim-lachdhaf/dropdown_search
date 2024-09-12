@@ -220,8 +220,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   }
 
   Widget _infiniteScrollLoadingMoreWidget(int loadedItems) {
-    if (widget.popupProps.infiniteScrollProps?.builder != null) {
-      return widget.popupProps.infiniteScrollProps!.builder!(context, loadedItems);
+    if (widget.popupProps.infiniteScrollProps?.loadingMoreBuilder != null) {
+      return widget.popupProps.infiniteScrollProps!.loadingMoreBuilder!(context, loadedItems);
     }
     return const Center(child: CircularProgressIndicator());
   }
