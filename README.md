@@ -66,7 +66,7 @@ DropdownSearch<String>(
   ),
 ),
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex1.png?raw=true" alt="Dropdown search" width="400" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa1.png?raw=true" alt="Dropdown search" width="400" />
 
 
 
@@ -77,7 +77,7 @@ DropdownSearch<String>.multiSelection(
   dropdownBuilder: (ctx, selectedItem) => Icon(Icons.calendar_month_outlined, size: 54),
 ),
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex2.png?raw=true" alt="Dropdown search" width="400" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa2.png?raw=true" alt="Dropdown search" width="400" />
 
 
 ```dart
@@ -102,7 +102,7 @@ DropdownSearch<(String, Color)>(
   dropdownBuilder: (ctx, selectedItem) => Icon(Icons.face, color: selectedItem?.$2, size: 54),
 ),
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex3.png?raw=true" alt="Dropdown search" width="400" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa3.png?raw=true" alt="Dropdown search" width="400" />
 
 ```dart
 DropdownSearch<(IconData, String)>(
@@ -188,7 +188,7 @@ DropdownSearch<(IconData, String)>(
   ),
 ),
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex4.gif?raw=true" alt="Dropdown search" width="400" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa4.gif?raw=true" alt="Dropdown search" width="400" />
 
 
 ```dart
@@ -241,7 +241,7 @@ DropdownSearch<String>(
   ),
 ),
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex5.png?raw=true" alt="Dropdown search" width="400" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa5.png?raw=true" alt="Dropdown search" width="400" />
 
 
 ````dart
@@ -261,7 +261,7 @@ DropdownSearch<UserModel>.multiSelection(
   ),
 ),
 ````
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex6.gif?raw=true" alt="Dropdown search" width="400" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa6.gif?raw=true" alt="Dropdown search" width="400" />
 
 
 ````dart
@@ -290,7 +290,7 @@ DropdownSearch<int>(
   ),
 ),
 ````
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/ex7.gif?raw=true" alt="Dropdown search" width="400" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa7.gif?raw=true" alt="Dropdown search" width="400" />
 
 </details>
 
