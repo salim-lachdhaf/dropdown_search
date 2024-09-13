@@ -300,7 +300,7 @@ You can customize the layout of the DropdownSearch and its items. [EXAMPLE](http
 Full documentation [here](https://pub.dev/documentation/dropdown_search/latest/dropdown_search/DropdownSearch-class.html)
 
 <details><summary>DropdownSearch Anatomy</summary>
-    <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/anatomy.png?raw=true" alt="Dropdown search" width="400" />
+    <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/anatomy.png?raw=true" alt="Dropdown search" width="800" />
 </details>
 
 
