@@ -102,7 +102,7 @@ DropdownSearch<(String, Color)>(
   dropdownBuilder: (ctx, selectedItem) => Icon(Icons.face, color: selectedItem?.$2, size: 54),
 ),
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa3.png?raw=true" alt="Dropdown search" width="400" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa4.gif?raw=true" alt="Dropdown search" width="400" />
 
 ```dart
 DropdownSearch<(IconData, String)>(
@@ -188,7 +188,7 @@ DropdownSearch<(IconData, String)>(
   ),
 ),
 ```
-<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa4.gif?raw=true" alt="Dropdown search" width="400" />
+<img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa3.png?raw=true" alt="Dropdown search" width="400" />
 
 
 ```dart
