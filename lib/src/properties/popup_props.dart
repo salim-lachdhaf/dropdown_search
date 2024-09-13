@@ -261,7 +261,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   final DropdownSearchPopupItemBuilder<T>? checkBoxBuilder;
 
   ///widget used to validate items in multiSelection mode
-  final ValidationMultiSelectionBuilder<T>? validationWidgetBuilder;
+  final ValidationMultiSelectionBuilder<T>? validationBuilder;
 
   final TextDirection textDirection;
 
@@ -297,7 +297,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemAdded,
     this.onItemRemoved,
     this.checkBoxBuilder,
-    this.validationWidgetBuilder,
+    this.validationBuilder,
     this.textDirection = TextDirection.ltr,
   }) : super._();
 
@@ -329,7 +329,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemAdded,
     this.onItemRemoved,
     this.checkBoxBuilder,
-    this.validationWidgetBuilder,
+    this.validationBuilder,
     this.textDirection = TextDirection.ltr,
   }) : super.menu();
 
@@ -365,7 +365,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemAdded,
     this.onItemRemoved,
     this.checkBoxBuilder,
-    this.validationWidgetBuilder,
+    this.validationBuilder,
     this.textDirection = TextDirection.ltr,
   }) : super.dialog();
 
@@ -397,7 +397,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemAdded,
     this.onItemRemoved,
     this.checkBoxBuilder,
-    this.validationWidgetBuilder,
+    this.validationBuilder,
     this.textDirection = TextDirection.ltr,
   }) : super.bottomSheet();
 
@@ -429,7 +429,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
     this.onItemAdded,
     this.onItemRemoved,
     this.checkBoxBuilder,
-    this.validationWidgetBuilder,
+    this.validationBuilder,
     this.textDirection = TextDirection.ltr,
   }) : super.modalBottomSheet();
 
@@ -467,6 +467,6 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
           onItemAdded: null,
           onItemRemoved: null,
           checkBoxBuilder: null,
-          validationWidgetBuilder: null,
+          validationBuilder: null,
         );
 }

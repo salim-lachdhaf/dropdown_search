@@ -56,9 +56,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
                       ),
                       popupProps: PopupProps.dialog(
                         title: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple,
-                          ),
+                          decoration: BoxDecoration(color: Colors.deepPurple),
                           alignment: Alignment.center,
                           padding: EdgeInsets.symmetric(vertical: 16),
                           child: Text(
