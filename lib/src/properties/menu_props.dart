@@ -2,14 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../dropdown_search.dart';
 
-enum MenuAlign {
-  bottomStart,
-  bottomCenter,
-  bottomEnd,
-  topStart,
-  topCenter,
-  topEnd
-}
+enum MenuAlign { bottomStart, bottomCenter, bottomEnd, topStart, topCenter, topEnd }
 
 class MenuProps {
   final MenuAlign? align;

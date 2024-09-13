@@ -303,8 +303,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   }
 
   Widget _noDataWidget() {
-    if (widget.popupProps.emptyBuilder != null)
+    if (widget.popupProps.emptyBuilder != null) {
       return widget.popupProps.emptyBuilder!(context, searchBoxController.text);
+    }
 
     return Container(
       height: 70,
@@ -403,8 +404,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       final List<T> myItems =
           await widget.items!(filter, loadProps?.copy(skip: skip));
 
-      if (loadProps != null)
+      if (loadProps != null) {
         isInfiniteScrollEnded = myItems.length < loadProps.take;
+      }
 
       //add new online items to cache list
       _cachedItems.addAll(myItems);
@@ -432,8 +434,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
     _currentShowedItems.clear();
     _currentShowedItems.addAll(data);
 
-    if (widget.popupProps.onItemsLoaded != null)
+    if (widget.popupProps.onItemsLoaded != null) {
       widget.popupProps.onItemsLoaded!(data);
+    }
   }
 
   void _setErrorToStream(Object error, [StackTrace? stackTrace]) {
@@ -697,18 +700,21 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       if (_isSelectedItem(newSelectedItem)) {
         _selectedItemsNotifier.value = List.from(_selectedItems)
           ..removeWhere((i) => _isEqual(newSelectedItem, i));
-        if (widget.popupProps.onItemRemoved != null)
+        if (widget.popupProps.onItemRemoved != null) {
           widget.popupProps.onItemRemoved!(_selectedItems, newSelectedItem);
+        }
       } else {
         _selectedItemsNotifier.value = List.from(_selectedItems)
           ..add(newSelectedItem);
-        if (widget.popupProps.onItemAdded != null)
+        if (widget.popupProps.onItemAdded != null) {
           widget.popupProps.onItemAdded!(_selectedItems, newSelectedItem);
+        }
       }
     } else {
       closePopup();
-      if (widget.onChanged != null)
+      if (widget.onChanged != null) {
         widget.onChanged!(List.filled(1, newSelectedItem));
+      }
     }
   }
 
@@ -752,8 +758,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       if (!_isSelectedItem(i) /*check if the item is already selected*/ &&
           !_isDisabled(i) /*escape disabled items*/) {
         _selectedItems.add(i);
-        if (widget.popupProps.onItemAdded != null)
+        if (widget.popupProps.onItemAdded != null) {
           widget.popupProps.onItemAdded!(_selectedItems, i);
+        }
       }
     }
     _selectedItemsNotifier.value = List.from(_selectedItems);
@@ -765,8 +772,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       var index = _itemIndexInList(_selectedItems, i);
       if (index > -1) /*check if the item is already selected*/ {
         _selectedItems.removeAt(index);
-        if (widget.popupProps.onItemRemoved != null)
+        if (widget.popupProps.onItemRemoved != null) {
           widget.popupProps.onItemRemoved!(_selectedItems, i);
+        }
       }
     }
     _selectedItemsNotifier.value = List.from(_selectedItems);

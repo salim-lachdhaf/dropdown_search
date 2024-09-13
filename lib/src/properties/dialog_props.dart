@@ -46,8 +46,7 @@ class DialogProps {
     this.clipBehavior = Clip.none,
     this.useRootNavigator = false,
     this.actionsPadding = EdgeInsets.zero,
-    this.insetPadding =
-        const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+    this.insetPadding = const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
     this.buttonPadding,
     this.contentPadding = EdgeInsets.zero,
     this.anchorPoint,
