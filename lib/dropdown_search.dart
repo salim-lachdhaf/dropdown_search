@@ -58,9 +58,9 @@ typedef PopupBuilder<T> = Widget Function(BuildContext context, Widget popupWidg
 ///[items] are the original item from [items] or/and [items]
 typedef SuggestedItems<T> = List<T> Function(List<T> items);
 
-enum PopupMode { DIALOG, MODAL_BOTTOM_SHEET, MENU, BOTTOM_SHEET }
+enum PopupMode { dialog, modalBottomSheet, menu, bottomSheet }
 
-enum Mode { FORM, AUTOCOMPLETE, CUSTOM }
+enum Mode { form, /*autoComplete,*/ custom }
 
 class DropdownSearch<T> extends StatefulWidget {
   ///selected items
@@ -153,9 +153,9 @@ class DropdownSearch<T> extends StatefulWidget {
   final Mode mode;
 
   DropdownSearch({
-    Key? key,
+    super.key,
     T? selectedItem,
-    this.mode = Mode.FORM,
+    this.mode = Mode.form,
     this.onSaved,
     this.validator,
     this.autoValidateMode = AutovalidateMode.disabled,
@@ -173,22 +173,21 @@ class DropdownSearch<T> extends StatefulWidget {
     this.onBeforePopupOpening,
     PopupProps<T> popupProps = const PopupProps.menu(),
   })  : assert(T == String || T == int || T == double || compareFn != null),
-        assert(mode != Mode.CUSTOM || dropdownBuilder != null),
-        this.selectedItems = _itemToList(selectedItem),
-        this.popupProps = PopupPropsMultiSelection.from(popupProps),
-        this.isMultiSelectionMode = false,
-        this.dropdownBuilderMultiSelection = null,
-        this.validatorMultiSelection = null,
-        this.onBeforeChangeMultiSelection = null,
-        this.onSavedMultiSelection = null,
-        this.onChangedMultiSelection = null,
-        this.onBeforePopupOpeningMultiSelection = null,
-        this.selectedItemsScrollProps = null,
-        super(key: key);
+        assert(mode != Mode.custom || dropdownBuilder != null),
+        selectedItems = _itemToList(selectedItem),
+        popupProps = PopupPropsMultiSelection.from(popupProps),
+        isMultiSelectionMode = false,
+        dropdownBuilderMultiSelection = null,
+        validatorMultiSelection = null,
+        onBeforeChangeMultiSelection = null,
+        onSavedMultiSelection = null,
+        onChangedMultiSelection = null,
+        onBeforePopupOpeningMultiSelection = null,
+        selectedItemsScrollProps = null;
 
   const DropdownSearch.multiSelection({
-    Key? key,
-    this.mode = Mode.FORM,
+    super.key,
+    this.mode = Mode.form,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.items,
     this.decoratorProps = const DropDownDecoratorProps(),
@@ -208,21 +207,20 @@ class DropdownSearch<T> extends StatefulWidget {
     FormFieldValidator<List<T>>? validator,
     DropdownSearchBuilderMultiSelection<T>? dropdownBuilder,
   })  : assert(T == String || T == int || T == double || compareFn != null),
-        assert(mode != Mode.CUSTOM || dropdownBuilder != null),
-        this.onChangedMultiSelection = onChanged,
-        this.onBeforePopupOpeningMultiSelection = onBeforePopupOpening,
-        this.onSavedMultiSelection = onSaved,
-        this.onBeforeChangeMultiSelection = onBeforeChange,
-        this.validatorMultiSelection = validator,
-        this.dropdownBuilderMultiSelection = dropdownBuilder,
-        this.isMultiSelectionMode = true,
-        this.dropdownBuilder = null,
-        this.validator = null,
-        this.onBeforeChange = null,
-        this.onSaved = null,
-        this.onChanged = null,
-        this.onBeforePopupOpening = null,
-        super(key: key);
+        assert(mode != Mode.custom || dropdownBuilder != null),
+        onChangedMultiSelection = onChanged,
+        onBeforePopupOpeningMultiSelection = onBeforePopupOpening,
+        onSavedMultiSelection = onSaved,
+        onBeforeChangeMultiSelection = onBeforeChange,
+        validatorMultiSelection = validator,
+        dropdownBuilderMultiSelection = dropdownBuilder,
+        isMultiSelectionMode = true,
+        dropdownBuilder = null,
+        validator = null,
+        onBeforeChange = null,
+        onSaved = null,
+        onChanged = null,
+        onBeforePopupOpening = null;
 
   static List<T> _itemToList<T>(T? item) {
     List<T?> nullableList = List.filled(1, item);
@@ -275,10 +273,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   Widget _dropDown() {
-    if (widget.mode == Mode.CUSTOM) {
+    if (widget.mode == Mode.custom) {
       return _customField();
-    } else if (widget.mode == Mode.AUTOCOMPLETE) {
-      return _formField();
     } else {
       return _formField();
     }
@@ -452,8 +448,8 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///function that manage Trailing icons(close, dropDown)
   Widget? _manageSuffixIcons() {
-    final clearButtonPressed = () => clear();
-    final dropdownButtonPressed = () => _selectSearchMode();
+    clearButtonPressed() => clear();
+    dropdownButtonPressed() => _selectSearchMode();
 
     if (!widget.suffixProps.dropdownButtonProps.isVisible && !widget.suffixProps.clearButtonProps.isVisible) return null;
 
@@ -493,7 +489,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     if (menuMaxWidth > 0 && menuMaxWidth < menuWidth) {
       menuWidth = menuMaxWidth;
     }
-    if (widget.mode == Mode.CUSTOM && dropdown.size.width < 64) {
+    if (widget.mode == Mode.custom && dropdown.size.width < 64) {
       menuWidth = 180;
     }
 
@@ -628,17 +624,21 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     if (isFocused && !_isFocused.value) {
       FocusScope.of(context).unfocus();
       _isFocused.value = true;
-    } else if (!isFocused && _isFocused.value) _isFocused.value = false;
+    } else if (!isFocused && _isFocused.value) {
+      _isFocused.value = false;
+    }
   }
 
   ///handle on change value , if the validation is active , we validate the new selected item
   void _handleOnChangeSelectedItems(List<T> selectedItems) {
-    final changeItem = () {
+    changeItem() {
       _selectedItemsNotifier.value = List.from(selectedItems);
-      if (widget.onChanged != null)
+      if (widget.onChanged != null) {
         widget.onChanged!(getSelectedItem);
-      else if (widget.onChangedMultiSelection != null) widget.onChangedMultiSelection!(selectedItems);
-    };
+      } else if (widget.onChangedMultiSelection != null) {
+        widget.onChangedMultiSelection!(selectedItems);
+      }
+    }
 
     if (widget.onBeforeChange != null) {
       widget.onBeforeChange!(getSelectedItem, selectedItems.isEmpty ? null : selectedItems.first).then((value) {
@@ -661,10 +661,11 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///compared two items base on user params
   bool _isEqual(T i1, T i2) {
-    if (widget.compareFn != null)
+    if (widget.compareFn != null) {
       return widget.compareFn!(i1, i2);
-    else
+    } else {
       return i1 == i2;
+    }
   }
 
   ///Function that return then UI based on searchMode
@@ -680,11 +681,11 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     }
 
     _handleFocus(true);
-    if (widget.popupProps.mode == PopupMode.MENU) {
+    if (widget.popupProps.mode == PopupMode.menu) {
       await _openMenu();
-    } else if (widget.popupProps.mode == PopupMode.MODAL_BOTTOM_SHEET) {
+    } else if (widget.popupProps.mode == PopupMode.modalBottomSheet) {
       await _openModalBottomSheet();
-    } else if (widget.popupProps.mode == PopupMode.BOTTOM_SHEET) {
+    } else if (widget.popupProps.mode == PopupMode.bottomSheet) {
       await _openBottomSheet();
     } else {
       await _openSelectDialog();

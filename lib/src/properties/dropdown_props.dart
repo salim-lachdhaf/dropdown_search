@@ -268,12 +268,10 @@ class ClickProps {
   /// duplication of information.
   final bool excludeFromSemantics;
 
-  /// {@template flutter.material.inkwell.onFocusChange}
   /// Handler called when the focus changes.
   ///
   /// Called with true if this widget's node gains focus, and false if it loses
   /// focus.
-  /// {@endtemplate}
   final ValueChanged<bool>? onFocusChange;
 
   /// {@macro flutter.widgets.Focus.autofocus}
@@ -298,7 +296,6 @@ class ClickProps {
   /// slightly more efficient).
   RectCallback? getRectCallback(RenderBox referenceBox) => null;
 
-  /// {@template flutter.material.inkwell.statesController}
   /// Represents the interactive "state" of this widget in terms of
   /// a set of [WidgetState]s, like [WidgetState.pressed] and
   /// [WidgetState.focused].
@@ -308,7 +305,6 @@ class ClickProps {
   /// They can also update the controller's [WidgetStatesController.value]
   /// however, this may only be done when it's safe to call
   /// [State.setState], like in an event handler.
-  /// {@endtemplate}
   final WidgetStatesController? statesController;
 
   /// The duration of the animation that animates the hover effect.

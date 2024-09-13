@@ -7,7 +7,7 @@ import 'user_model.dart';
 
 class BottomSheetExamplesPage extends StatefulWidget {
   @override
-  _BottomSheetExamplesPageState createState() => _BottomSheetExamplesPageState();
+  State<BottomSheetExamplesPage> createState() => _BottomSheetExamplesPageState();
 }
 
 class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
@@ -143,7 +143,7 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                               child: Row(
                                 children: [
                                   Text(
-                                    "${item.name}",
+                                    item.name,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(color: Colors.indigo),
                                   ),

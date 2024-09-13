@@ -20,7 +20,7 @@ class DropdownSearchPopup<T> extends StatefulWidget {
   final bool isMultiSelectionMode;
 
   const DropdownSearchPopup({
-    Key? key,
+    super.key,
     required this.popupProps,
     this.defaultSelectedItems = const [],
     this.isMultiSelectionMode = false,
@@ -29,7 +29,7 @@ class DropdownSearchPopup<T> extends StatefulWidget {
     this.itemAsString,
     this.filterFn,
     this.compareFn,
-  }) : super(key: key);
+  });
 
   @override
   DropdownSearchPopupState<T> createState() => DropdownSearchPopupState<T>();
@@ -264,12 +264,13 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   }
 
   Widget _errorWidget(dynamic error) {
-    if (widget.popupProps.errorBuilder != null)
+    if (widget.popupProps.errorBuilder != null) {
       return widget.popupProps.errorBuilder!(
         context,
         searchBoxController.text,
         error,
       );
+    }
 
     return Container(
       alignment: Alignment.center,
@@ -284,11 +285,12 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
         valueListenable: _loadingNotifier,
         builder: (context, bool isLoading, wid) {
           if (isLoading) {
-            if (widget.popupProps.loadingBuilder != null)
+            if (widget.popupProps.loadingBuilder != null) {
               return widget.popupProps.loadingBuilder!(
                 context,
                 searchBoxController.text,
               );
+            }
 
             return Container(
               height: 70,
@@ -302,11 +304,11 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
   List<T> _applyFilter(String filter) {
     return _cachedItems.where((i) {
-      if (widget.filterFn != null)
+      if (widget.filterFn != null) {
         return (widget.filterFn!(i, filter));
-      else if (i.toString().toLowerCase().contains(filter.toLowerCase()))
+      } else if (i.toString().toLowerCase().contains(filter.toLowerCase())) {
         return true;
-      else if (widget.itemAsString != null) {
+      } else if (widget.itemAsString != null) {
         return (widget.itemAsString!(i)).toLowerCase().contains(filter.toLowerCase());
       }
       return false;
@@ -351,10 +353,11 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       _cachedItems.addAll(myItems);
 
       //manage data filtering
-      if (widget.popupProps.disableFilter)
+      if (widget.popupProps.disableFilter) {
         _addDataToStream(_cachedItems);
-      else
+      } else {
         _addDataToStream(_applyFilter(filter));
+      }
     } catch (e) {
       _setErrorToStream(e);
     }
@@ -407,7 +410,7 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   }
 
   Widget _itemWidgetMultiSelection(T item) {
-    if (widget.popupProps.checkBoxBuilder != null)
+    if (widget.popupProps.checkBoxBuilder != null) {
       return CheckBoxWidget(
         clickProps: widget.popupProps.itemClickProps,
         checkBox: (cxt, checked) {
@@ -420,7 +423,7 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
         isDisabled: _isDisabled(item),
         onChanged: (c) => _handleSelectedItem(item),
       );
-    else
+    } else {
       return CheckBoxWidget(
         clickProps: widget.popupProps.itemClickProps,
         textDirection: widget.popupProps.textDirection,
@@ -430,6 +433,7 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
         isDisabled: _isDisabled(item),
         onChanged: (c) => _handleSelectedItem(item),
       );
+    }
   }
 
   bool _isDisabled(T item) => widget.popupProps.disabledItemFn != null && (widget.popupProps.disabledItemFn!(item)) == true;
@@ -444,10 +448,11 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
   ///compared two items base on user params
   bool _isEqual(T i1, T i2) {
-    if (widget.compareFn != null)
+    if (widget.compareFn != null) {
       return widget.compareFn!(i1, i2);
-    else
+    } else {
       return i1 == i2;
+    }
   }
 
   Widget _searchField() {
@@ -630,24 +635,24 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   }
 
   void selectItems(List<T> itemsToSelect) {
-    itemsToSelect.forEach((i) {
+    for (var i in itemsToSelect) {
       if (!_isSelectedItem(i) /*check if the item is already selected*/ && !_isDisabled(i) /*escape disabled items*/) {
         _selectedItems.add(i);
         if (widget.popupProps.onItemAdded != null) widget.popupProps.onItemAdded!(_selectedItems, i);
       }
-    });
+    }
     _selectedItemsNotifier.value = List.from(_selectedItems);
   }
 
   void deselectItems(List<T> itemsToDeselect) {
     List<T> tempList = List.from(itemsToDeselect);
-    tempList.forEach((i) {
+    for (var i in tempList) {
       var index = _itemIndexInList(_selectedItems, i);
       if (index > -1) /*check if the item is already selected*/ {
         _selectedItems.removeAt(index);
         if (widget.popupProps.onItemRemoved != null) widget.popupProps.onItemRemoved!(_selectedItems, i);
       }
-    });
+    }
     _selectedItemsNotifier.value = List.from(_selectedItems);
   }
 

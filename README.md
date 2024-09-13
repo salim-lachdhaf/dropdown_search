@@ -4,7 +4,7 @@
 </h1>
 
 <h4 align="center">
-  <a href="https://flutter.io" target="_blank">Flutter</a> simple and robust DropdownSearch with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
+  Simple and reactive DropdownSearch with item search feature, making it possible to use an offline item list or filtering URL for easy customization.
 </h4>
 
 <p align="center">
@@ -38,6 +38,7 @@
 * Four dropdown mode: Menu/ BottomSheet/ ModalBottomSheet / Dialog
 * Single & multi selection
 * Material dropdown
+* Adaptive Material, IOS UI ```[coming soon]```
 * Easy customizable UI - No Boilerplate
 * Handle Light and Dark theme
 * Easy implementation into statelessWidget
@@ -295,7 +296,7 @@ DropdownSearch<int>(
 </details>
 
 ## Layout customization
-You can customize the layout of the DropdownSearch and its items. [EXAMPLE](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example#custom-layout-endpoint-example)
+You can customize the layout of the DropdownSearch and its items. click [here](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example) for more examples.
 
 Full documentation [here](https://pub.dev/documentation/dropdown_search/latest/dropdown_search/DropdownSearch-class.html)
 
@@ -303,8 +304,6 @@ Full documentation [here](https://pub.dev/documentation/dropdown_search/latest/d
     <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/anatomy.png?raw=true" alt="Dropdown search" width="800" />
 </details>
 
-
-# [View more Examples](https://github.com/salim-lachdhaf/searchable_dropdown/tree/master/example)
 
 ## Support
 

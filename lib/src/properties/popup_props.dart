@@ -95,7 +95,7 @@ class PopupProps<T> {
   final ClickProps itemClickProps;
 
   const PopupProps._({
-    this.mode = PopupMode.MENU,
+    this.mode = PopupMode.menu,
     this.fit = FlexFit.tight,
     this.title,
     this.showSearchBox = false,
@@ -150,10 +150,10 @@ class PopupProps<T> {
     this.infiniteScrollProps,
     this.onItemsLoaded,
     this.itemClickProps = const ClickProps(),
-  })  : this.mode = PopupMode.MENU,
-        this.bottomSheetProps = const BottomSheetProps(),
-        this.dialogProps = const DialogProps(),
-        this.modalBottomSheetProps = const ModalBottomSheetProps();
+  })  : mode = PopupMode.menu,
+        bottomSheetProps = const BottomSheetProps(),
+        dialogProps = const DialogProps(),
+        modalBottomSheetProps = const ModalBottomSheetProps();
 
   const PopupProps.dialog({
     this.fit = FlexFit.tight,
@@ -184,10 +184,10 @@ class PopupProps<T> {
     this.infiniteScrollProps,
     this.onItemsLoaded,
     this.itemClickProps = const ClickProps(),
-  })  : this.mode = PopupMode.DIALOG,
-        this.menuProps = const MenuProps(),
-        this.bottomSheetProps = const BottomSheetProps(),
-        this.modalBottomSheetProps = const ModalBottomSheetProps();
+  })  : mode = PopupMode.dialog,
+        menuProps = const MenuProps(),
+        bottomSheetProps = const BottomSheetProps(),
+        modalBottomSheetProps = const ModalBottomSheetProps();
 
   const PopupProps.bottomSheet({
     this.fit = FlexFit.tight,
@@ -214,10 +214,10 @@ class PopupProps<T> {
     this.infiniteScrollProps,
     this.onItemsLoaded,
     this.itemClickProps = const ClickProps(),
-  })  : this.mode = PopupMode.BOTTOM_SHEET,
-        this.menuProps = const MenuProps(),
-        this.dialogProps = const DialogProps(),
-        this.modalBottomSheetProps = const ModalBottomSheetProps();
+  })  : mode = PopupMode.bottomSheet,
+        menuProps = const MenuProps(),
+        dialogProps = const DialogProps(),
+        modalBottomSheetProps = const ModalBottomSheetProps();
 
   const PopupProps.modalBottomSheet({
     this.title,
@@ -244,10 +244,10 @@ class PopupProps<T> {
     this.infiniteScrollProps,
     this.onItemsLoaded,
     this.itemClickProps = const ClickProps(),
-  })  : this.mode = PopupMode.MODAL_BOTTOM_SHEET,
-        this.menuProps = const MenuProps(),
-        this.dialogProps = const DialogProps(),
-        this.bottomSheetProps = const BottomSheetProps();
+  })  : mode = PopupMode.modalBottomSheet,
+        menuProps = const MenuProps(),
+        dialogProps = const DialogProps(),
+        bottomSheetProps = const BottomSheetProps();
 }
 
 class PopupPropsMultiSelection<T> extends PopupProps<T> {
@@ -266,7 +266,7 @@ class PopupPropsMultiSelection<T> extends PopupProps<T> {
   final TextDirection textDirection;
 
   const PopupPropsMultiSelection._({
-    super.mode = PopupMode.MENU,
+    super.mode = PopupMode.menu,
     super.fit = FlexFit.tight,
     super.title,
     super.disableFilter,

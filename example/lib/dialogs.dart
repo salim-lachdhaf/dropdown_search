@@ -6,7 +6,7 @@ import 'user_model.dart';
 
 class DialogExamplesPage extends StatefulWidget {
   @override
-  _DialogExamplesPageState createState() => _DialogExamplesPageState();
+  State<DialogExamplesPage> createState() => _DialogExamplesPageState();
 }
 
 class _DialogExamplesPageState extends State<DialogExamplesPage> {
@@ -140,7 +140,7 @@ class _DialogExamplesPageState extends State<DialogExamplesPage> {
                               child: Row(
                                 children: [
                                   Text(
-                                    "${item.name}",
+                                    item.name,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(color: Colors.indigo),
                                   ),
@@ -412,10 +412,12 @@ class _DropdownWithGlobalCheckBoxState extends State<DropdownWithGlobalCheckBox>
                             value: longListCheckBoxValueNotifier.value,
                             tristate: true,
                             onChanged: (bool? v) {
-                              if (v == null) v = false;
-                              if (v == true)
+                              v ??= false;
+                              if (v == true) {
                                 _infiniteScrollDropDownKey.currentState?.popupSelectAllItems();
-                              else if (v == false) _infiniteScrollDropDownKey.currentState?.popupDeselectAllItems();
+                              } else if (v == false) {
+                                _infiniteScrollDropDownKey.currentState?.popupDeselectAllItems();
+                              }
                               longListCheckBoxValueNotifier.value = v;
                             },
                           );

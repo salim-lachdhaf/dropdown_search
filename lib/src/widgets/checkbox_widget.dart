@@ -2,7 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:dropdown_search/src/widgets/custom_inkwell.dart';
 import 'package:flutter/material.dart';
 
-typedef Widget WidgetCheckBox(BuildContext context, bool isChecked);
+typedef WidgetCheckBox = Widget Function(BuildContext context, bool isChecked);
 
 class CheckBoxWidget extends StatefulWidget {
   final ClickProps clickProps;
@@ -15,7 +15,7 @@ class CheckBoxWidget extends StatefulWidget {
   final TextDirection textDirection;
 
   CheckBoxWidget({
-    Key? key,
+    super.key,
     required this.clickProps,
     this.isChecked = false,
     this.isDisabled = false,
@@ -24,10 +24,10 @@ class CheckBoxWidget extends StatefulWidget {
     this.interceptCallBacks = false,
     this.textDirection = TextDirection.ltr,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
-  _CheckBoxWidgetState createState() => _CheckBoxWidgetState();
+  State<CheckBoxWidget> createState() => _CheckBoxWidgetState();
 }
 
 class _CheckBoxWidgetState extends State<CheckBoxWidget> {
@@ -62,9 +62,9 @@ class _CheckBoxWidgetState extends State<CheckBoxWidget> {
             ],
           );
 
-          if (widget.interceptCallBacks)
+          if (widget.interceptCallBacks) {
             return w;
-          else
+          } else {
             return CustomInkWell(
               clickProps: widget.clickProps,
               onTap: widget.isDisabled
@@ -75,6 +75,7 @@ class _CheckBoxWidgetState extends State<CheckBoxWidget> {
                     },
               child: IgnorePointer(child: ExcludeFocus(child: w)),
             );
+          }
         },
       ),
     );

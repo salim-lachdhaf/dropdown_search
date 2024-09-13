@@ -6,7 +6,7 @@ import 'user_model.dart';
 
 class MenuExamplesPage extends StatefulWidget {
   @override
-  _MenuExamplesPageState createState() => _MenuExamplesPageState();
+  State<MenuExamplesPage> createState() => _MenuExamplesPageState();
 }
 
 class _MenuExamplesPageState extends State<MenuExamplesPage> {
@@ -31,7 +31,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   DropdownSearch<String>.multiSelection(
-                    mode: Mode.CUSTOM,
+                    mode: Mode.custom,
                     items: (f, cs) => ["Monday", 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                     popupProps: PopupPropsMultiSelection.menu(
                       disabledItemFn: (item) => item == 'Tuesday',
@@ -40,14 +40,14 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                   ),
                   DropdownSearch<(String, Color)>(
                     clickProps: ClickProps(borderRadius: BorderRadius.circular(20)),
-                    mode: Mode.CUSTOM,
+                    mode: Mode.custom,
                     items: (f, cs) => [
                       ("Red", Colors.red),
                       ("Black", Colors.black),
                       ("Yellow", Colors.yellow),
                       ('Blue', Colors.blue),
                     ],
-                    compareFn: (item1, item2) => item1.$1 == item2.$2,
+                    compareFn: (item1, item2) => item1.$1 == item2.$1,
                     popupProps: PopupProps.menu(
                       menuProps: MenuProps(align: MenuAlign.bottomCenter),
                       fit: FlexFit.loose,
@@ -59,7 +59,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     dropdownBuilder: (ctx, selectedItem) => Icon(Icons.face, color: selectedItem?.$2, size: 54),
                   ),
                   DropdownSearch<String>(
-                    mode: Mode.CUSTOM,
+                    mode: Mode.custom,
                     items: (f, cs) => ['Facebook', 'Twitter', 'Instagram', 'SnapChat', 'Other'],
                     dropdownBuilder: (context, selectedItem) {
                       int r = 0;
@@ -178,7 +178,7 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     Padding(padding: EdgeInsets.all(8)),
                     DropdownSearch<(IconData, String)>(
                       selectedItem: (Icons.person, 'Your Profile'),
-                      compareFn: (item1, item2) => item1.$1 == item2.$2,
+                      compareFn: (item1, item2) => item1.$1 == item2.$1,
                       items: (f, cs) => [
                         (Icons.person, 'Your Profile'),
                         (Icons.settings, 'Setting'),
@@ -355,9 +355,11 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                       items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
                       autoValidateMode: AutovalidateMode.onUserInteraction,
                       validator: (int? i) {
-                        if (i == null)
+                        if (i == null) {
                           return 'required filed';
-                        else if (i >= 5) return 'value should be < 5';
+                        } else if (i >= 5) {
+                          return 'value should be < 5';
+                        }
                         return null;
                       },
                       suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
@@ -368,9 +370,11 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     child: DropdownSearch<int>.multiSelection(
                       items: (f, cs) => [1, 2, 3, 4, 5, 6, 7],
                       validator: (List<int>? items) {
-                        if (items == null || items.isEmpty)
+                        if (items == null || items.isEmpty) {
                           return 'required filed';
-                        else if (items.length > 3) return 'only 1 to 3 items are allowed';
+                        } else if (items.length > 3) {
+                          return 'only 1 to 3 items are allowed';
+                        }
                         return null;
                       },
                     ),

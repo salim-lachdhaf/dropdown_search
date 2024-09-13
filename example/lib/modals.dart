@@ -7,7 +7,7 @@ import 'user_model.dart';
 
 class ModalsExamplesPage extends StatefulWidget {
   @override
-  _ModalsExamplesPageState createState() => _ModalsExamplesPageState();
+  State<ModalsExamplesPage> createState() => _ModalsExamplesPageState();
 }
 
 class _ModalsExamplesPageState extends State<ModalsExamplesPage> {
@@ -144,7 +144,7 @@ class _ModalsExamplesPageState extends State<ModalsExamplesPage> {
                               child: Row(
                                 children: [
                                   Text(
-                                    "${item.name}",
+                                    item.name,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(color: Colors.indigo),
                                   ),
