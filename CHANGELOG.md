@@ -1,4 +1,4 @@
-## [6.0.0-pre] - 2024.09.01
+## [6.0.0] - 2024.09.13
 
 * #### New features:
     * infinite list / lazy loading
