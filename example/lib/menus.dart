@@ -32,14 +32,24 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                 children: [
                   DropdownSearch<String>.multiSelection(
                     mode: Mode.custom,
-                    items: (f, cs) => ["Monday", 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                    items: (f, cs) => [
+                      "Monday",
+                      'Tuesday',
+                      'Wednesday',
+                      'Thursday',
+                      'Friday',
+                      'Saturday',
+                      'Sunday'
+                    ],
                     popupProps: PopupPropsMultiSelection.menu(
                       disabledItemFn: (item) => item == 'Tuesday',
                     ),
-                    dropdownBuilder: (ctx, selectedItem) => Icon(Icons.calendar_month_outlined, size: 54),
+                    dropdownBuilder: (ctx, selectedItem) =>
+                        Icon(Icons.calendar_month_outlined, size: 54),
                   ),
                   DropdownSearch<(String, Color)>(
-                    clickProps: ClickProps(borderRadius: BorderRadius.circular(20)),
+                    clickProps:
+                        ClickProps(borderRadius: BorderRadius.circular(20)),
                     mode: Mode.custom,
                     items: (f, cs) => [
                       ("Red", Colors.red),
@@ -51,16 +61,25 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     popupProps: PopupProps.menu(
                       menuProps: MenuProps(align: MenuAlign.bottomCenter),
                       fit: FlexFit.loose,
-                      itemBuilder: (context, item, isDisabled, isSelected) => Padding(
+                      itemBuilder: (context, item, isDisabled, isSelected) =>
+                          Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(item.$1, style: TextStyle(color: item.$2, fontSize: 16)),
+                        child: Text(item.$1,
+                            style: TextStyle(color: item.$2, fontSize: 16)),
                       ),
                     ),
-                    dropdownBuilder: (ctx, selectedItem) => Icon(Icons.face, color: selectedItem?.$2, size: 54),
+                    dropdownBuilder: (ctx, selectedItem) =>
+                        Icon(Icons.face, color: selectedItem?.$2, size: 54),
                   ),
                   DropdownSearch<String>(
                     mode: Mode.custom,
-                    items: (f, cs) => ['Facebook', 'Twitter', 'Instagram', 'SnapChat', 'Other'],
+                    items: (f, cs) => [
+                      'Facebook',
+                      'Twitter',
+                      'Instagram',
+                      'SnapChat',
+                      'Other'
+                    ],
                     dropdownBuilder: (context, selectedItem) {
                       int r = 0;
                       switch (selectedItem) {
@@ -79,10 +98,12 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                       }
                       return RotationTransition(
                         turns: AlwaysStoppedAnimation(r / 360),
-                        child: Image.asset('assets/images/networks.png', height: 164, width: 164),
+                        child: Image.asset('assets/images/networks.png',
+                            height: 164, width: 164),
                       );
                     },
-                    clickProps: ClickProps(borderRadius: BorderRadius.all(Radius.circular(50))),
+                    clickProps: ClickProps(
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
                     popupProps: PopupProps.menu(
                       fit: FlexFit.loose,
                       menuProps: MenuProps(
@@ -107,7 +128,8 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                 children: [
                   Expanded(
                     child: DropdownSearch<int>(
-                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                      items: (f, cs) =>
+                          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),
@@ -116,7 +138,8 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                       height: 50,
                       child: DropdownSearch<int>.multiSelection(
                         items: (f, cs) => List.generate(50, (i) => i),
-                        selectedItemsScrollProps: ScrollProps(scrollDirection: Axis.horizontal),
+                        selectedItemsScrollProps:
+                            ScrollProps(scrollDirection: Axis.horizontal),
                       ),
                     ),
                   ),
@@ -130,8 +153,10 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                   Expanded(
                     child: DropdownSearch<UserModel>(
                       items: (f, cs) => getData(f),
-                      suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
-                      compareFn: (item, selectedItem) => item.id == selectedItem.id,
+                      suffixProps: DropdownSuffixProps(
+                          clearButtonProps: ClearButtonProps(isVisible: true)),
+                      compareFn: (item, selectedItem) =>
+                          item.id == selectedItem.id,
                       dropdownBuilder: (context, selectedItem) {
                         if (selectedItem == null) {
                           return SizedBox.shrink();
@@ -139,17 +164,22 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
 
                         return ListTile(
                           contentPadding: EdgeInsets.only(left: 0),
-                          leading: CircleAvatar(backgroundColor: Colors.blue, child: Text(selectedItem.name[0])),
+                          leading: CircleAvatar(
+                              backgroundColor: Colors.blue,
+                              child: Text(selectedItem.name[0])),
                           title: Text(selectedItem.name),
                         );
                       },
                       popupProps: PopupProps.menu(
-                        disableFilter: true, //data will be filtered by the backend
+                        disableFilter:
+                            true, //data will be filtered by the backend
                         showSearchBox: true,
                         showSelectedItems: true,
                         itemBuilder: (ctx, item, isDisabled, isSelected) {
                           return ListTile(
-                            leading: CircleAvatar(backgroundColor: Colors.blue, child: Text(item.name[0])),
+                            leading: CircleAvatar(
+                                backgroundColor: Colors.blue,
+                                child: Text(item.name[0])),
                             selected: isSelected,
                             title: Text(item.name),
                           );
@@ -209,18 +239,25 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                           leading: Icon(selectedItem!.$1, color: Colors.white),
                           title: Text(
                             selectedItem.$2,
-                            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
                           ),
                         );
                       },
                       popupProps: PopupProps.menu(
                         itemBuilder: (context, item, isDisabled, isSelected) {
                           return ListTile(
-                            contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 12),
                             leading: Icon(item.$1, color: Colors.white),
                             title: Text(
                               item.$2,
-                              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
                             ),
                           );
                         },
@@ -260,7 +297,8 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     ),
                     Padding(padding: EdgeInsets.only(top: 32)),
                     DropdownSearch<String>(
-                      items: (filter, infiniteScrollProps) => ['Item 1', 'Item 2', 'Item 3'],
+                      items: (filter, infiniteScrollProps) =>
+                          ['Item 1', 'Item 2', 'Item 3'],
                       suffixProps: DropdownSuffixProps(
                         dropdownButtonProps: DropdownButtonProps(
                           iconClosed: Icon(Icons.keyboard_arrow_down),
@@ -286,7 +324,10 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           hintText: 'Please select...',
-                          hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.grey),
+                          hintStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.grey),
                         ),
                       ),
                       popupProps: PopupProps.menu(
@@ -295,7 +336,8 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                             padding: const EdgeInsets.symmetric(vertical: 12.0),
                             child: Text(
                               item,
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
                               textAlign: TextAlign.center,
                             ),
                           );
@@ -303,15 +345,20 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                         fit: FlexFit.loose,
                         menuProps: MenuProps(
                           margin: EdgeInsets.only(top: 12),
-                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12))),
                         ),
                       ),
                     ),
                     Padding(padding: EdgeInsets.only(top: 32)),
                     DropdownSearch<String>(
-                      items: (filter, loadProps) => ["Item 1", "Item 2", "Item 3", "Item 4"],
+                      items: (filter, loadProps) =>
+                          ["Item 1", "Item 2", "Item 3", "Item 4"],
                       decoratorProps: DropDownDecoratorProps(
-                        decoration: InputDecoration(labelText: 'Bottom Left Menu', border: OutlineInputBorder()),
+                        decoration: InputDecoration(
+                            labelText: 'Bottom Left Menu',
+                            border: OutlineInputBorder()),
                       ),
                       popupProps: PopupProps.menu(
                         constraints: BoxConstraints.tight(Size(250, 250)),
@@ -321,9 +368,12 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                     DropdownSearch<String>(
                       decoratorProps: DropDownDecoratorProps(
-                        decoration: InputDecoration(labelText: 'Bottom Center Menu', border: OutlineInputBorder()),
+                        decoration: InputDecoration(
+                            labelText: 'Bottom Center Menu',
+                            border: OutlineInputBorder()),
                       ),
-                      items: (filter, loadProps) => ["Item 1", "Item 2", "Item 3", "Item 4"],
+                      items: (filter, loadProps) =>
+                          ["Item 1", "Item 2", "Item 3", "Item 4"],
                       popupProps: PopupProps.menu(
                         constraints: BoxConstraints.tight(Size(250, 250)),
                         menuProps: MenuProps(align: MenuAlign.bottomCenter),
@@ -332,9 +382,12 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                     Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                     DropdownSearch<String>(
                       decoratorProps: DropDownDecoratorProps(
-                        decoration: InputDecoration(labelText: 'Top Right Menu', border: OutlineInputBorder()),
+                        decoration: InputDecoration(
+                            labelText: 'Top Right Menu',
+                            border: OutlineInputBorder()),
                       ),
-                      items: (filter, loadProps) => ["Item 1", "Item 2", "Item 3", "Item 4"],
+                      items: (filter, loadProps) =>
+                          ["Item 1", "Item 2", "Item 3", "Item 4"],
                       popupProps: PopupProps.menu(
                         constraints: BoxConstraints.tight(Size(250, 250)),
                         menuProps: MenuProps(align: MenuAlign.topEnd),
@@ -362,7 +415,8 @@ class _MenuExamplesPageState extends State<MenuExamplesPage> {
                         }
                         return null;
                       },
-                      suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
+                      suffixProps: DropdownSuffixProps(
+                          clearButtonProps: ClearButtonProps(isVisible: true)),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(4)),

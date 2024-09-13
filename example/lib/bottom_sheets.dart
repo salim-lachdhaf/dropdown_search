@@ -7,14 +7,16 @@ import 'user_model.dart';
 
 class BottomSheetExamplesPage extends StatefulWidget {
   @override
-  State<BottomSheetExamplesPage> createState() => _BottomSheetExamplesPageState();
+  State<BottomSheetExamplesPage> createState() =>
+      _BottomSheetExamplesPageState();
 }
 
 class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
   final _formKey = GlobalKey<FormState>();
   final _dropDownCustomBGKey = GlobalKey<DropdownSearchState<String>>();
   final _userEditTextController = TextEditingController(text: 'Mrs');
-  final _dropdownMultiLevelKey = GlobalKey<DropdownSearchState<MultiLevelString>>();
+  final _dropdownMultiLevelKey =
+      GlobalKey<DropdownSearchState<MultiLevelString>>();
   final List<MultiLevelString> myMultiLevelItems = [
     MultiLevelString(level1: "1"),
     MultiLevelString(level1: "2"),
@@ -53,7 +55,9 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                     child: DropdownSearch<int>(
                       items: (f, cs) => List.generate(30, (i) => i + 1),
                       decoratorProps: DropDownDecoratorProps(
-                        decoration: InputDecoration(labelText: "Dialog with title", hintText: "Select an Int"),
+                        decoration: InputDecoration(
+                            labelText: "Dialog with title",
+                            hintText: "Select an Int"),
                       ),
                       popupProps: PopupProps.bottomSheet(
                         title: Container(
@@ -64,14 +68,19 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                           padding: EdgeInsets.symmetric(vertical: 16),
                           child: Text(
                             'Numbers 1..30',
-                            style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.white70),
+                            style: TextStyle(
+                                fontSize: 21,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white70),
                           ),
                         ),
                         bottomSheetProps: BottomSheetProps(
                           clipBehavior: Clip.antiAlias,
                           shape: OutlineInputBorder(
                             borderSide: BorderSide(width: 0),
-                            borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25)),
                           ),
                         ),
                       ),
@@ -113,7 +122,9 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                         suggestedItemProps: SuggestedItemProps(
                           showSuggestedItems: true,
                           suggestedItems: (us) {
-                            return us.where((e) => e.name.contains("Mrs")).toList();
+                            return us
+                                .where((e) => e.name.contains("Mrs"))
+                                .toList();
                           },
                         ),
                       ),
@@ -130,11 +141,14 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                         suggestedItemProps: SuggestedItemProps(
                           showSuggestedItems: true,
                           suggestedItems: (us) {
-                            return us.where((e) => e.name.contains("Mrs")).toList();
+                            return us
+                                .where((e) => e.name.contains("Mrs"))
+                                .toList();
                           },
                           suggestedItemBuilder: (context, item, isSelected) {
                             return Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 6),
                               margin: EdgeInsets.only(left: 8),
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey),
@@ -148,7 +162,9 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                                     style: TextStyle(color: Colors.indigo),
                                   ),
                                   Padding(padding: EdgeInsets.only(left: 8)),
-                                  isSelected ? Icon(Icons.check_box_outlined) : SizedBox.shrink(),
+                                  isSelected
+                                      ? Icon(Icons.check_box_outlined)
+                                      : SizedBox.shrink(),
                                 ],
                               ),
                             );
@@ -168,7 +184,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                 key: _dropDownCustomBGKey,
                 items: (f, cs) => List.generate(30, (index) => "$index"),
                 popupProps: PopupPropsMultiSelection.bottomSheet(
-                  bottomSheetProps: BottomSheetProps(backgroundColor: Colors.grey.shade200),
+                  bottomSheetProps:
+                      BottomSheetProps(backgroundColor: Colors.grey.shade200),
                   showSearchBox: true,
                   containerBuilder: (ctx, popupWidget) {
                     return Column(
@@ -182,7 +199,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                               child: FilledButton(
                                 onPressed: () {
                                   // How should I unselect all items in the list?
-                                  _dropDownCustomBGKey.currentState?.closeDropDownSearch();
+                                  _dropDownCustomBGKey.currentState
+                                      ?.closeDropDownSearch();
                                 },
                                 child: const Text('Cancel'),
                               ),
@@ -192,7 +210,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                               child: OutlinedButton(
                                 onPressed: () {
                                   // How should I select all items in the list?
-                                  _dropDownCustomBGKey.currentState?.popupSelectAllItems();
+                                  _dropDownCustomBGKey.currentState
+                                      ?.popupSelectAllItems();
                                 },
                                 child: const Text('All'),
                               ),
@@ -202,7 +221,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                               child: OutlinedButton(
                                 onPressed: () {
                                   // How should I unselect all items in the list?
-                                  _dropDownCustomBGKey.currentState?.popupDeselectAllItems();
+                                  _dropDownCustomBGKey.currentState
+                                      ?.popupDeselectAllItems();
                                 },
                                 child: const Text('None'),
                               ),
@@ -225,7 +245,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                   Expanded(
                     child: DropdownSearch<UserModel>.multiSelection(
                       items: (filter, t) => getData(filter),
-                      suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
+                      suffixProps: DropdownSuffixProps(
+                          clearButtonProps: ClearButtonProps(isVisible: true)),
                       popupProps: PopupPropsMultiSelection.bottomSheet(
                         showSelectedItems: true,
                         itemBuilder: userModelPopupItem,
@@ -240,12 +261,14 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                           ),
                         ),
                       ),
-                      compareFn: (item, selectedItem) => item.id == selectedItem.id,
+                      compareFn: (item, selectedItem) =>
+                          item.id == selectedItem.id,
                       decoratorProps: DropDownDecoratorProps(
                         decoration: InputDecoration(
                           labelText: 'Users *',
                           filled: true,
-                          fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                          fillColor:
+                              Theme.of(context).inputDecorationTheme.fillColor,
                         ),
                       ),
                       dropdownBuilder: customDropDownExampleMultiSelection,
@@ -265,7 +288,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                         decoration: InputDecoration(
                           labelText: 'User *',
                           filled: true,
-                          fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                          fillColor:
+                              Theme.of(context).inputDecorationTheme.fillColor,
                         ),
                       ),
                     ),
@@ -295,14 +319,16 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                                   icon: Icon(Icons.arrow_drop_down),
                                   onPressed: () {
                                     item.isExpanded = !item.isExpanded;
-                                    _dropdownMultiLevelKey.currentState?.updatePopupState();
+                                    _dropdownMultiLevelKey.currentState
+                                        ?.updatePopupState();
                                   },
                                 )
                               : IconButton(
                                   icon: Icon(Icons.arrow_right),
                                   onPressed: () {
                                     item.isExpanded = !item.isExpanded;
-                                    _dropdownMultiLevelKey.currentState?.updatePopupState();
+                                    _dropdownMultiLevelKey.currentState
+                                        ?.updatePopupState();
                                   },
                                 )),
                       subtitle: item.subLevel.isNotEmpty && item.isExpanded
@@ -312,10 +338,15 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                                 children: item.subLevel
                                     .map(
                                       (e) => ListTile(
-                                        selected: _dropdownMultiLevelKey.currentState?.getSelectedItem?.level1 == e.level1,
+                                        selected: _dropdownMultiLevelKey
+                                                .currentState
+                                                ?.getSelectedItem
+                                                ?.level1 ==
+                                            e.level1,
                                         title: Text(e.level1),
                                         onTap: () {
-                                          _dropdownMultiLevelKey.currentState?.popupValidate([e]);
+                                          _dropdownMultiLevelKey.currentState
+                                              ?.popupValidate([e]);
                                         },
                                       ),
                                     )
@@ -323,7 +354,8 @@ class _BottomSheetExamplesPageState extends State<BottomSheetExamplesPage> {
                               ),
                             )
                           : null,
-                      onTap: () => _dropdownMultiLevelKey.currentState?.popupValidate([item]),
+                      onTap: () => _dropdownMultiLevelKey.currentState
+                          ?.popupValidate([item]),
                     );
                   },
                 ),

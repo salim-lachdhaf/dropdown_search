@@ -66,7 +66,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
     super.initState();
     _selectedItemsNotifier.value = widget.defaultSelectedItems;
 
-    searchBoxController = widget.popupProps.searchFieldProps.controller ?? TextEditingController();
+    searchBoxController = widget.popupProps.searchFieldProps.controller ??
+        TextEditingController();
     searchBoxController.addListener(searchBoxControllerListener);
 
     lastSearchText = searchBoxController.text;
@@ -81,7 +82,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
   @override
   void didUpdateWidget(covariant DropdownSearchPopup<T> oldWidget) {
-    if (!listEquals(oldWidget.defaultSelectedItems, widget.defaultSelectedItems)) {
+    if (!listEquals(
+        oldWidget.defaultSelectedItems, widget.defaultSelectedItems)) {
       _selectedItemsNotifier.value = widget.defaultSelectedItems;
     }
     super.didUpdateWidget(oldWidget);
@@ -143,51 +145,93 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
                           final itemCount = snapshot.data!.length;
                           return RawScrollbar(
-                            controller: widget.popupProps.listViewProps.controller ?? scrollController,
-                            thumbVisibility: widget.popupProps.scrollbarProps.thumbVisibility,
-                            trackVisibility: widget.popupProps.scrollbarProps.trackVisibility,
-                            thickness: widget.popupProps.scrollbarProps.thickness,
+                            controller:
+                                widget.popupProps.listViewProps.controller ??
+                                    scrollController,
+                            thumbVisibility: widget
+                                .popupProps.scrollbarProps.thumbVisibility,
+                            trackVisibility: widget
+                                .popupProps.scrollbarProps.trackVisibility,
+                            thickness:
+                                widget.popupProps.scrollbarProps.thickness,
                             radius: widget.popupProps.scrollbarProps.radius,
-                            notificationPredicate: widget.popupProps.scrollbarProps.notificationPredicate,
-                            interactive: widget.popupProps.scrollbarProps.interactive,
-                            scrollbarOrientation: widget.popupProps.scrollbarProps.scrollbarOrientation,
-                            thumbColor: widget.popupProps.scrollbarProps.thumbColor,
-                            fadeDuration: widget.popupProps.scrollbarProps.fadeDuration,
-                            crossAxisMargin: widget.popupProps.scrollbarProps.crossAxisMargin,
-                            mainAxisMargin: widget.popupProps.scrollbarProps.mainAxisMargin,
-                            minOverscrollLength: widget.popupProps.scrollbarProps.minOverscrollLength,
-                            minThumbLength: widget.popupProps.scrollbarProps.minThumbLength,
-                            pressDuration: widget.popupProps.scrollbarProps.pressDuration,
+                            notificationPredicate: widget.popupProps
+                                .scrollbarProps.notificationPredicate,
+                            interactive:
+                                widget.popupProps.scrollbarProps.interactive,
+                            scrollbarOrientation: widget
+                                .popupProps.scrollbarProps.scrollbarOrientation,
+                            thumbColor:
+                                widget.popupProps.scrollbarProps.thumbColor,
+                            fadeDuration:
+                                widget.popupProps.scrollbarProps.fadeDuration,
+                            crossAxisMargin: widget
+                                .popupProps.scrollbarProps.crossAxisMargin,
+                            mainAxisMargin:
+                                widget.popupProps.scrollbarProps.mainAxisMargin,
+                            minOverscrollLength: widget
+                                .popupProps.scrollbarProps.minOverscrollLength,
+                            minThumbLength:
+                                widget.popupProps.scrollbarProps.minThumbLength,
+                            pressDuration:
+                                widget.popupProps.scrollbarProps.pressDuration,
                             shape: widget.popupProps.scrollbarProps.shape,
-                            timeToFade: widget.popupProps.scrollbarProps.timeToFade,
-                            trackBorderColor: widget.popupProps.scrollbarProps.trackBorderColor,
-                            trackColor: widget.popupProps.scrollbarProps.trackColor,
-                            trackRadius: widget.popupProps.scrollbarProps.trackRadius,
+                            timeToFade:
+                                widget.popupProps.scrollbarProps.timeToFade,
+                            trackBorderColor: widget
+                                .popupProps.scrollbarProps.trackBorderColor,
+                            trackColor:
+                                widget.popupProps.scrollbarProps.trackColor,
+                            trackRadius:
+                                widget.popupProps.scrollbarProps.trackRadius,
                             padding: widget.popupProps.scrollbarProps.padding,
                             child: ScrollConfiguration(
-                              behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                              behavior: ScrollConfiguration.of(context)
+                                  .copyWith(scrollbars: false),
                               child: ListView.builder(
-                                controller: widget.popupProps.listViewProps.controller ?? scrollController,
-                                shrinkWrap: widget.popupProps.listViewProps.shrinkWrap,
-                                padding: widget.popupProps.listViewProps.padding,
-                                scrollDirection: widget.popupProps.listViewProps.scrollDirection,
-                                reverse: widget.popupProps.listViewProps.reverse,
-                                primary: widget.popupProps.listViewProps.primary,
-                                physics: widget.popupProps.listViewProps.physics,
-                                itemExtent: widget.popupProps.listViewProps.itemExtent,
-                                addAutomaticKeepAlives: widget.popupProps.listViewProps.addAutomaticKeepAlives,
-                                addRepaintBoundaries: widget.popupProps.listViewProps.addRepaintBoundaries,
-                                addSemanticIndexes: widget.popupProps.listViewProps.addSemanticIndexes,
-                                cacheExtent: widget.popupProps.listViewProps.cacheExtent,
-                                semanticChildCount: widget.popupProps.listViewProps.semanticChildCount,
-                                dragStartBehavior: widget.popupProps.listViewProps.dragStartBehavior,
-                                keyboardDismissBehavior: widget.popupProps.listViewProps.keyboardDismissBehavior,
-                                restorationId: widget.popupProps.listViewProps.restorationId,
-                                clipBehavior: widget.popupProps.listViewProps.clipBehavior,
-                                prototypeItem: widget.popupProps.listViewProps.prototypeItem,
-                                itemExtentBuilder: widget.popupProps.listViewProps.itemExtentBuilder,
-                                findChildIndexCallback: widget.popupProps.listViewProps.findChildIndexCallback,
-                                itemCount: itemCount + (isInfiniteScrollEnded ? 0 : 1),
+                                controller: widget
+                                        .popupProps.listViewProps.controller ??
+                                    scrollController,
+                                shrinkWrap:
+                                    widget.popupProps.listViewProps.shrinkWrap,
+                                padding:
+                                    widget.popupProps.listViewProps.padding,
+                                scrollDirection: widget
+                                    .popupProps.listViewProps.scrollDirection,
+                                reverse:
+                                    widget.popupProps.listViewProps.reverse,
+                                primary:
+                                    widget.popupProps.listViewProps.primary,
+                                physics:
+                                    widget.popupProps.listViewProps.physics,
+                                itemExtent:
+                                    widget.popupProps.listViewProps.itemExtent,
+                                addAutomaticKeepAlives: widget.popupProps
+                                    .listViewProps.addAutomaticKeepAlives,
+                                addRepaintBoundaries: widget.popupProps
+                                    .listViewProps.addRepaintBoundaries,
+                                addSemanticIndexes: widget.popupProps
+                                    .listViewProps.addSemanticIndexes,
+                                cacheExtent:
+                                    widget.popupProps.listViewProps.cacheExtent,
+                                semanticChildCount: widget.popupProps
+                                    .listViewProps.semanticChildCount,
+                                dragStartBehavior: widget
+                                    .popupProps.listViewProps.dragStartBehavior,
+                                keyboardDismissBehavior: widget.popupProps
+                                    .listViewProps.keyboardDismissBehavior,
+                                restorationId: widget
+                                    .popupProps.listViewProps.restorationId,
+                                clipBehavior: widget
+                                    .popupProps.listViewProps.clipBehavior,
+                                prototypeItem: widget
+                                    .popupProps.listViewProps.prototypeItem,
+                                itemExtentBuilder: widget
+                                    .popupProps.listViewProps.itemExtentBuilder,
+                                findChildIndexCallback: widget.popupProps
+                                    .listViewProps.findChildIndexCallback,
+                                itemCount:
+                                    itemCount + (isInfiniteScrollEnded ? 0 : 1),
                                 itemBuilder: (context, index) {
                                   if (index < itemCount) {
                                     var item = snapshot.data![index];
@@ -197,8 +241,12 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
                                   }
                                   //if infiniteScroll enabled && data received not less then take request
                                   else if (!isInfiniteScrollEnded) {
-                                    _manageLoadMoreItems(searchBoxController.text, skip: itemCount, showLoading: false);
-                                    return _infiniteScrollLoadingMoreWidget(itemCount);
+                                    _manageLoadMoreItems(
+                                        searchBoxController.text,
+                                        skip: itemCount,
+                                        showLoading: false);
+                                    return _infiniteScrollLoadingMoreWidget(
+                                        itemCount);
                                   }
 
                                   return SizedBox.shrink();
@@ -221,7 +269,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
   Widget _infiniteScrollLoadingMoreWidget(int loadedItems) {
     if (widget.popupProps.infiniteScrollProps?.loadingMoreBuilder != null) {
-      return widget.popupProps.infiniteScrollProps!.loadingMoreBuilder!(context, loadedItems);
+      return widget.popupProps.infiniteScrollProps!.loadingMoreBuilder!(
+          context, loadedItems);
     }
     return const Center(child: CircularProgressIndicator());
   }
@@ -254,7 +303,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   }
 
   Widget _noDataWidget() {
-    if (widget.popupProps.emptyBuilder != null) return widget.popupProps.emptyBuilder!(context, searchBoxController.text);
+    if (widget.popupProps.emptyBuilder != null)
+      return widget.popupProps.emptyBuilder!(context, searchBoxController.text);
 
     return Container(
       height: 70,
@@ -309,7 +359,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       } else if (i.toString().toLowerCase().contains(filter.toLowerCase())) {
         return true;
       } else if (widget.itemAsString != null) {
-        return (widget.itemAsString!(i)).toLowerCase().contains(filter.toLowerCase());
+        return (widget.itemAsString!(i))
+            .toLowerCase()
+            .contains(filter.toLowerCase());
       }
       return false;
     }).toList();
@@ -323,7 +375,10 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
     if (!widget.popupProps.cacheItems) _cachedItems.clear();
 
     //case filtering locally (no need to load new data)
-    if (!isFirstLoad && !widget.popupProps.disableFilter && widget.popupProps.cacheItems && isInfiniteScrollEnded) {
+    if (!isFirstLoad &&
+        !widget.popupProps.disableFilter &&
+        widget.popupProps.cacheItems &&
+        isInfiniteScrollEnded) {
       _addDataToStream(_applyFilter(filter));
       return;
     }
@@ -345,9 +400,11 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
     }
 
     try {
-      final List<T> myItems = await widget.items!(filter, loadProps?.copy(skip: skip));
+      final List<T> myItems =
+          await widget.items!(filter, loadProps?.copy(skip: skip));
 
-      if (loadProps != null) isInfiniteScrollEnded = myItems.length < loadProps.take;
+      if (loadProps != null)
+        isInfiniteScrollEnded = myItems.length < loadProps.take;
 
       //add new online items to cache list
       _cachedItems.addAll(myItems);
@@ -375,7 +432,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
     _currentShowedItems.clear();
     _currentShowedItems.addAll(data);
 
-    if (widget.popupProps.onItemsLoaded != null) widget.popupProps.onItemsLoaded!(data);
+    if (widget.popupProps.onItemsLoaded != null)
+      widget.popupProps.onItemsLoaded!(data);
   }
 
   void _setErrorToStream(Object error, [StackTrace? stackTrace]) {
@@ -403,7 +461,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       return ListTile(
         enabled: !_isDisabled(item),
         title: Text(_selectedItemAsString(item)),
-        selected: !widget.popupProps.showSelectedItems ? false : _isSelectedItem(item),
+        selected: !widget.popupProps.showSelectedItems
+            ? false
+            : _isSelectedItem(item),
         onTap: _isDisabled(item) ? null : () => _handleSelectedItem(item),
       );
     }
@@ -414,7 +474,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       return CheckBoxWidget(
         clickProps: widget.popupProps.itemClickProps,
         checkBox: (cxt, checked) {
-          return widget.popupProps.checkBoxBuilder!(cxt, item, _isDisabled(item), checked);
+          return widget.popupProps.checkBoxBuilder!(
+              cxt, item, _isDisabled(item), checked);
         },
         interceptCallBacks: widget.popupProps.interceptCallBacks,
         textDirection: widget.popupProps.textDirection,
@@ -436,7 +497,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
     }
   }
 
-  bool _isDisabled(T item) => widget.popupProps.disabledItemFn != null && (widget.popupProps.disabledItemFn!(item)) == true;
+  bool _isDisabled(T item) =>
+      widget.popupProps.disabledItemFn != null &&
+      (widget.popupProps.disabledItemFn!(item)) == true;
 
   /// selected item will be highlighted only when [widget.showSelectedItems] is true,
   /// if our object is String [widget.compareFn] is not required , other wises it's required
@@ -444,7 +507,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
   ///test if list has an item T
   ///if contains return index of item in the list, -1 otherwise
-  int _itemIndexInList(List<T> list, T item) => list.indexWhere((i) => _isEqual(i, item));
+  int _itemIndexInList(List<T> list, T item) =>
+      list.indexWhere((i) => _isEqual(i, item));
 
   ///compared two items base on user params
   bool _isEqual(T i1, T i2) {
@@ -467,10 +531,12 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
             child: DefaultTextEditingShortcuts(
               child: Shortcuts(
                 shortcuts: const <ShortcutActivator, Intent>{
-                  SingleActivator(LogicalKeyboardKey.space): DoNothingAndStopPropagationTextIntent(),
+                  SingleActivator(LogicalKeyboardKey.space):
+                      DoNothingAndStopPropagationTextIntent(),
                 },
                 child: TextField(
-                  enableIMEPersonalizedLearning: widget.popupProps.searchFieldProps.enableIMEPersonalizedLearning,
+                  enableIMEPersonalizedLearning: widget.popupProps
+                      .searchFieldProps.enableIMEPersonalizedLearning,
                   clipBehavior: widget.popupProps.searchFieldProps.clipBehavior,
                   style: widget.popupProps.searchFieldProps.style,
                   controller: searchBoxController,
@@ -478,58 +544,91 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
                   autofocus: widget.popupProps.searchFieldProps.autofocus,
                   decoration: widget.popupProps.searchFieldProps.decoration,
                   keyboardType: widget.popupProps.searchFieldProps.keyboardType,
-                  textInputAction: widget.popupProps.searchFieldProps.textInputAction,
-                  textCapitalization: widget.popupProps.searchFieldProps.textCapitalization,
+                  textInputAction:
+                      widget.popupProps.searchFieldProps.textInputAction,
+                  textCapitalization:
+                      widget.popupProps.searchFieldProps.textCapitalization,
                   strutStyle: widget.popupProps.searchFieldProps.strutStyle,
                   textAlign: widget.popupProps.searchFieldProps.textAlign,
-                  textAlignVertical: widget.popupProps.searchFieldProps.textAlignVertical,
-                  textDirection: widget.popupProps.searchFieldProps.textDirection,
+                  textAlignVertical:
+                      widget.popupProps.searchFieldProps.textAlignVertical,
+                  textDirection:
+                      widget.popupProps.searchFieldProps.textDirection,
                   readOnly: widget.popupProps.searchFieldProps.readOnly,
-                  contextMenuBuilder: widget.popupProps.searchFieldProps.contextMenuBuilder,
+                  contextMenuBuilder:
+                      widget.popupProps.searchFieldProps.contextMenuBuilder,
                   showCursor: widget.popupProps.searchFieldProps.showCursor,
-                  obscuringCharacter: widget.popupProps.searchFieldProps.obscuringCharacter,
+                  obscuringCharacter:
+                      widget.popupProps.searchFieldProps.obscuringCharacter,
                   obscureText: widget.popupProps.searchFieldProps.obscureText,
                   autocorrect: widget.popupProps.searchFieldProps.autocorrect,
-                  smartDashesType: widget.popupProps.searchFieldProps.smartDashesType,
-                  smartQuotesType: widget.popupProps.searchFieldProps.smartQuotesType,
-                  enableSuggestions: widget.popupProps.searchFieldProps.enableSuggestions,
+                  smartDashesType:
+                      widget.popupProps.searchFieldProps.smartDashesType,
+                  smartQuotesType:
+                      widget.popupProps.searchFieldProps.smartQuotesType,
+                  enableSuggestions:
+                      widget.popupProps.searchFieldProps.enableSuggestions,
                   maxLines: widget.popupProps.searchFieldProps.maxLines,
                   minLines: widget.popupProps.searchFieldProps.minLines,
                   expands: widget.popupProps.searchFieldProps.expands,
-                  maxLengthEnforcement: widget.popupProps.searchFieldProps.maxLengthEnforcement,
+                  maxLengthEnforcement:
+                      widget.popupProps.searchFieldProps.maxLengthEnforcement,
                   maxLength: widget.popupProps.searchFieldProps.maxLength,
-                  onAppPrivateCommand: widget.popupProps.searchFieldProps.onAppPrivateCommand,
-                  inputFormatters: widget.popupProps.searchFieldProps.inputFormatters,
+                  onAppPrivateCommand:
+                      widget.popupProps.searchFieldProps.onAppPrivateCommand,
+                  inputFormatters:
+                      widget.popupProps.searchFieldProps.inputFormatters,
                   enabled: widget.popupProps.searchFieldProps.enabled,
                   cursorWidth: widget.popupProps.searchFieldProps.cursorWidth,
                   cursorHeight: widget.popupProps.searchFieldProps.cursorHeight,
                   cursorRadius: widget.popupProps.searchFieldProps.cursorRadius,
                   cursorColor: widget.popupProps.searchFieldProps.cursorColor,
-                  selectionHeightStyle: widget.popupProps.searchFieldProps.selectionHeightStyle,
-                  selectionWidthStyle: widget.popupProps.searchFieldProps.selectionWidthStyle,
-                  keyboardAppearance: widget.popupProps.searchFieldProps.keyboardAppearance,
-                  scrollPadding: widget.popupProps.searchFieldProps.scrollPadding,
-                  dragStartBehavior: widget.popupProps.searchFieldProps.dragStartBehavior,
-                  enableInteractiveSelection: widget.popupProps.searchFieldProps.enableInteractiveSelection,
-                  selectionControls: widget.popupProps.searchFieldProps.selectionControls,
+                  selectionHeightStyle:
+                      widget.popupProps.searchFieldProps.selectionHeightStyle,
+                  selectionWidthStyle:
+                      widget.popupProps.searchFieldProps.selectionWidthStyle,
+                  keyboardAppearance:
+                      widget.popupProps.searchFieldProps.keyboardAppearance,
+                  scrollPadding:
+                      widget.popupProps.searchFieldProps.scrollPadding,
+                  dragStartBehavior:
+                      widget.popupProps.searchFieldProps.dragStartBehavior,
+                  enableInteractiveSelection: widget
+                      .popupProps.searchFieldProps.enableInteractiveSelection,
+                  selectionControls:
+                      widget.popupProps.searchFieldProps.selectionControls,
                   onTap: widget.popupProps.searchFieldProps.onTap,
                   mouseCursor: widget.popupProps.searchFieldProps.mouseCursor,
                   buildCounter: widget.popupProps.searchFieldProps.buildCounter,
-                  scrollController: widget.popupProps.searchFieldProps.scrollController,
-                  scrollPhysics: widget.popupProps.searchFieldProps.scrollPhysics,
-                  autofillHints: widget.popupProps.searchFieldProps.autofillHints,
-                  restorationId: widget.popupProps.searchFieldProps.restorationId,
-                  canRequestFocus: widget.popupProps.searchFieldProps.canRequestFocus,
-                  statesController: widget.popupProps.searchFieldProps.statesController,
-                  contentInsertionConfiguration: widget.popupProps.searchFieldProps.contentInsertionConfiguration,
-                  cursorErrorColor: widget.popupProps.searchFieldProps.cursorErrorColor,
-                  cursorOpacityAnimates: widget.popupProps.searchFieldProps.cursorOpacityAnimates,
-                  ignorePointers: widget.popupProps.searchFieldProps.ignorePointers,
-                  magnifierConfiguration: widget.popupProps.searchFieldProps.magnifierConfiguration,
+                  scrollController:
+                      widget.popupProps.searchFieldProps.scrollController,
+                  scrollPhysics:
+                      widget.popupProps.searchFieldProps.scrollPhysics,
+                  autofillHints:
+                      widget.popupProps.searchFieldProps.autofillHints,
+                  restorationId:
+                      widget.popupProps.searchFieldProps.restorationId,
+                  canRequestFocus:
+                      widget.popupProps.searchFieldProps.canRequestFocus,
+                  statesController:
+                      widget.popupProps.searchFieldProps.statesController,
+                  contentInsertionConfiguration: widget.popupProps
+                      .searchFieldProps.contentInsertionConfiguration,
+                  cursorErrorColor:
+                      widget.popupProps.searchFieldProps.cursorErrorColor,
+                  cursorOpacityAnimates:
+                      widget.popupProps.searchFieldProps.cursorOpacityAnimates,
+                  ignorePointers:
+                      widget.popupProps.searchFieldProps.ignorePointers,
+                  magnifierConfiguration:
+                      widget.popupProps.searchFieldProps.magnifierConfiguration,
                   onTapOutside: widget.popupProps.searchFieldProps.onTapOutside,
-                  scribbleEnabled: widget.popupProps.searchFieldProps.scribbleEnabled,
-                  undoController: widget.popupProps.searchFieldProps.undoController,
-                  spellCheckConfiguration: widget.popupProps.searchFieldProps.spellCheckConfiguration,
+                  scribbleEnabled:
+                      widget.popupProps.searchFieldProps.scribbleEnabled,
+                  undoController:
+                      widget.popupProps.searchFieldProps.undoController,
+                  spellCheckConfiguration: widget
+                      .popupProps.searchFieldProps.spellCheckConfiguration,
                 ),
               ),
             ),
@@ -545,7 +644,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
           stream: _itemsStream.stream,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return _buildSuggestedItems(widget.popupProps.suggestedItemProps.suggestedItems!(snapshot.data!));
+              return _buildSuggestedItems(widget.popupProps.suggestedItemProps
+                  .suggestedItems!(snapshot.data!));
             } else {
               return SizedBox.shrink();
             }
@@ -567,14 +667,20 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
             constraints: BoxConstraints(minWidth: constraints.maxWidth),
             child: Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: widget.popupProps.suggestedItemProps.suggestedItemsAlignment,
+              mainAxisAlignment:
+                  widget.popupProps.suggestedItemProps.suggestedItemsAlignment,
               children: suggestedItems
                   .map(
                     (f) => CustomInkWell(
-                      clickProps: widget.popupProps.suggestedItemProps.itemClickProps,
+                      clickProps:
+                          widget.popupProps.suggestedItemProps.itemClickProps,
                       onTap: () => _handleSelectedItem(f),
-                      child: widget.popupProps.suggestedItemProps.suggestedItemBuilder != null
-                          ? widget.popupProps.suggestedItemProps.suggestedItemBuilder!(context, f, _isSelectedItem(f))
+                      child: widget.popupProps.suggestedItemProps
+                                  .suggestedItemBuilder !=
+                              null
+                          ? widget.popupProps.suggestedItemProps
+                                  .suggestedItemBuilder!(
+                              context, f, _isSelectedItem(f))
                           : _suggestedItemDefaultWidget(f),
                     ),
                   )
@@ -589,15 +695,20 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   void _handleSelectedItem(T newSelectedItem) {
     if (widget.isMultiSelectionMode) {
       if (_isSelectedItem(newSelectedItem)) {
-        _selectedItemsNotifier.value = List.from(_selectedItems)..removeWhere((i) => _isEqual(newSelectedItem, i));
-        if (widget.popupProps.onItemRemoved != null) widget.popupProps.onItemRemoved!(_selectedItems, newSelectedItem);
+        _selectedItemsNotifier.value = List.from(_selectedItems)
+          ..removeWhere((i) => _isEqual(newSelectedItem, i));
+        if (widget.popupProps.onItemRemoved != null)
+          widget.popupProps.onItemRemoved!(_selectedItems, newSelectedItem);
       } else {
-        _selectedItemsNotifier.value = List.from(_selectedItems)..add(newSelectedItem);
-        if (widget.popupProps.onItemAdded != null) widget.popupProps.onItemAdded!(_selectedItems, newSelectedItem);
+        _selectedItemsNotifier.value = List.from(_selectedItems)
+          ..add(newSelectedItem);
+        if (widget.popupProps.onItemAdded != null)
+          widget.popupProps.onItemAdded!(_selectedItems, newSelectedItem);
       }
     } else {
       closePopup();
-      if (widget.onChanged != null) widget.onChanged!(List.filled(1, newSelectedItem));
+      if (widget.onChanged != null)
+        widget.onChanged!(List.filled(1, newSelectedItem));
     }
   }
 
@@ -605,7 +716,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       margin: EdgeInsets.only(left: 8),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Theme.of(context).primaryColorLight),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).primaryColorLight),
       child: Row(
         children: [
           Text(
@@ -636,9 +749,11 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
   void selectItems(List<T> itemsToSelect) {
     for (var i in itemsToSelect) {
-      if (!_isSelectedItem(i) /*check if the item is already selected*/ && !_isDisabled(i) /*escape disabled items*/) {
+      if (!_isSelectedItem(i) /*check if the item is already selected*/ &&
+          !_isDisabled(i) /*escape disabled items*/) {
         _selectedItems.add(i);
-        if (widget.popupProps.onItemAdded != null) widget.popupProps.onItemAdded!(_selectedItems, i);
+        if (widget.popupProps.onItemAdded != null)
+          widget.popupProps.onItemAdded!(_selectedItems, i);
       }
     }
     _selectedItemsNotifier.value = List.from(_selectedItems);
@@ -650,7 +765,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       var index = _itemIndexInList(_selectedItems, i);
       if (index > -1) /*check if the item is already selected*/ {
         _selectedItems.removeAt(index);
-        if (widget.popupProps.onItemRemoved != null) widget.popupProps.onItemRemoved!(_selectedItems, i);
+        if (widget.popupProps.onItemRemoved != null)
+          widget.popupProps.onItemRemoved!(_selectedItems, i);
       }
     }
     _selectedItemsNotifier.value = List.from(_selectedItems);
@@ -663,7 +779,8 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
   void deselectAllItems() => deselectItems(_selectedItems);
 
-  bool get isAllItemSelected => _listEquals(_selectedItems, _currentShowedItems);
+  bool get isAllItemSelected =>
+      _listEquals(_selectedItems, _currentShowedItems);
 
   List<T> get getSelectedItem => List.from(_selectedItems);
 

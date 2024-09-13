@@ -20,24 +20,23 @@ class ModalBottomSheetProps {
   final String? barrierLabel;
   final double scrollControlDisabledMaxHeightRatio;
 
-  const ModalBottomSheetProps({
-    this.anchorPoint,
-    this.elevation,
-    this.shape,
-    this.barrierColor,
-    this.backgroundColor,
-    this.barrierDismissible = true,
-    this.animation,
-    this.enableDrag = true,
-    this.clipBehavior = Clip.none,
-    this.useRootNavigator = false,
-    this.constraints,
-    this.isScrollControlled = true,
-    this.padding = EdgeInsets.zero,
-    this.useSafeArea = true,
-    this.sheetAnimationStyle,
-    this.showDragHandle,
-    this.barrierLabel,
-    this.scrollControlDisabledMaxHeightRatio = 9.0 / 16.0
-  });
+  const ModalBottomSheetProps(
+      {this.anchorPoint,
+      this.elevation,
+      this.shape,
+      this.barrierColor,
+      this.backgroundColor,
+      this.barrierDismissible = true,
+      this.animation,
+      this.enableDrag = true,
+      this.clipBehavior = Clip.none,
+      this.useRootNavigator = false,
+      this.constraints,
+      this.isScrollControlled = true,
+      this.padding = EdgeInsets.zero,
+      this.useSafeArea = true,
+      this.sheetAnimationStyle,
+      this.showDragHandle,
+      this.barrierLabel,
+      this.scrollControlDisabledMaxHeightRatio = 9.0 / 16.0});
 }

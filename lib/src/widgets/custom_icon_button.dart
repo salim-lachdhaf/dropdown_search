@@ -1,12 +1,13 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
-class CustomIconButton extends StatelessWidget{
+class CustomIconButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final IconButtonProps props;
   final Widget? icon;
 
-  const CustomIconButton({super.key, required this.props, this.icon, this.onPressed});
+  const CustomIconButton(
+      {super.key, required this.props, this.icon, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +36,4 @@ class CustomIconButton extends StatelessWidget{
       visualDensity: props.visualDensity,
     );
   }
-  
-  
 }

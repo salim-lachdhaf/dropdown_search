@@ -7,7 +7,6 @@ import 'package:example/modals.dart';
 import 'package:example/user_model.dart';
 import 'package:flutter/material.dart';
 
-
 void main() => runApp(MyApp());
 
 Future<List<UserModel>> getData(filter) async {
@@ -53,14 +52,16 @@ class MyHomePage extends StatelessWidget {
                   child: DropdownSearch<String>(
                     key: dropDownKey,
                     selectedItem: "Menu",
-                    items: (filter, infiniteScrollProps) => ["Menu", "Dialog", "Modal", "BottomSheet"],
+                    items: (filter, infiniteScrollProps) =>
+                        ["Menu", "Dialog", "Modal", "BottomSheet"],
                     decoratorProps: DropDownDecoratorProps(
                       decoration: InputDecoration(
                         labelText: 'Examples for: ',
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    popupProps: PopupProps.menu(fit: FlexFit.loose, constraints: BoxConstraints()),
+                    popupProps: PopupProps.menu(
+                        fit: FlexFit.loose, constraints: BoxConstraints()),
                   ),
                 ),
                 Padding(padding: EdgeInsets.only(right: 16)),
@@ -68,16 +69,29 @@ class MyHomePage extends StatelessWidget {
                   onPressed: () {
                     switch (dropDownKey.currentState?.getSelectedItem) {
                       case 'Menu':
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => MenuExamplesPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MenuExamplesPage()));
                         break;
                       case 'Modal':
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ModalsExamplesPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ModalsExamplesPage()));
                         break;
                       case 'BottomSheet':
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => BottomSheetExamplesPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    BottomSheetExamplesPage()));
                         break;
                       case 'Dialog':
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => DialogExamplesPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DialogExamplesPage()));
                         break;
                     }
                   },
@@ -94,10 +108,16 @@ class MyHomePage extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(text: 'we used '),
-                  TextSpan(text: 'fit: FlexFit.loose', style:  TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(
+                      text: 'fit: FlexFit.loose',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   TextSpan(text: ' and '),
-                  TextSpan(text: 'constraints: BoxConstraints() ', style:  TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(text: 'to fit the height of menu automatically to the length of items'),
+                  TextSpan(
+                      text: 'constraints: BoxConstraints() ',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(
+                      text:
+                          'to fit the height of menu automatically to the length of items'),
                 ],
               ),
             ),

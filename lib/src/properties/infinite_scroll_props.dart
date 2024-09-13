@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 typedef InfiniteScrollBuilder = Widget Function(BuildContext, int loadedItems);
 
 class InfiniteScrollProps {
@@ -9,8 +10,6 @@ class InfiniteScrollProps {
     this.loadingMoreBuilder,
     this.loadProps = const LoadProps(),
   });
-
-
 }
 
 class LoadProps {
