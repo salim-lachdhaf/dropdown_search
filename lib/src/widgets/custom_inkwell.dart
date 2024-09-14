@@ -6,7 +6,12 @@ class CustomInkWell extends StatelessWidget {
   final GestureTapCallback? onTap;
   final Widget? child;
 
-  const CustomInkWell({super.key, required this.clickProps, this.onTap, this.child});
+  const CustomInkWell({
+    super.key,
+    required this.clickProps,
+    this.onTap,
+    this.child,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -44,6 +44,27 @@
 * Easy implementation into statelessWidget
 
 
+<br>
+<table>
+    <tr>
+        <td>
+            <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa1.png?raw=true" alt="Dropdown search" width="300" />
+            <br><br>
+            <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa4.gif?raw=true" alt="Dropdown search" width="300" />
+        </td>
+        <td><img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa6.gif?raw=true" alt="Dropdown search" width="300" /></td>
+    </tr>
+    <tr>
+        <td><img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa7.gif?raw=true" alt="Dropdown search" width="300" /></td>
+        <td>
+            <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa3.png?raw=true" alt="Dropdown search" width="300" />
+            <br><br>
+            <img src="https://github.com/salim-lachdhaf/searchable_dropdown/blob/master/screenshots/exa5.png?raw=true" alt="Dropdown search" width="300" />
+        </td>
+    </tr>
+</table>
+
+
 ## packages.yaml
 ```yaml
 dropdown_search: <lastest version>

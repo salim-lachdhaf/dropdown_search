@@ -57,10 +57,13 @@ class _CheckBoxWidgetState extends State<CheckBoxWidget> {
           var w = Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              widget.layout != null ? Expanded(child: widget.layout!(context, v == true)) : SizedBox.shrink(),
+              widget.layout != null
+                  ? Expanded(child: widget.layout!(context, v == true))
+                  : SizedBox.shrink(),
               widget.checkBox != null
                   ? widget.checkBox!(context, v == true)
-                  : Checkbox(value: v, onChanged: widget.isDisabled ? null : (b) {}),
+                  : Checkbox(
+                      value: v, onChanged: widget.isDisabled ? null : (b) {}),
             ],
           );
 

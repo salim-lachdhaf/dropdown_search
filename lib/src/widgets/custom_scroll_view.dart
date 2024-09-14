@@ -5,7 +5,11 @@ class CustomSingleScrollView extends StatelessWidget {
   final ScrollProps scrollProps;
   final Widget child;
 
-  const CustomSingleScrollView({super.key, this.scrollProps = const ScrollProps(), required this.child});
+  const CustomSingleScrollView({
+    super.key,
+    this.scrollProps = const ScrollProps(),
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
