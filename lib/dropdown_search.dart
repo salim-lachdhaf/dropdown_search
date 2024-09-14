@@ -549,6 +549,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       transitionBuilder: widget.popupProps.dialogProps.transitionBuilder,
       pageBuilder: (context, animation, secondaryAnimation) {
         return AlertDialog(
+          key: widget.popupProps.dialogProps.key,
           buttonPadding: widget.popupProps.dialogProps.buttonPadding,
           actionsOverflowButtonSpacing:
               widget.popupProps.dialogProps.actionsOverflowButtonSpacing,

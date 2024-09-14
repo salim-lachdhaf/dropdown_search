@@ -145,6 +145,7 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
                           final itemCount = snapshot.data!.length;
                           return RawScrollbar(
+                            key:  widget.popupProps.scrollbarProps.key,
                             controller:
                                 widget.popupProps.listViewProps.controller ??
                                     scrollController,
@@ -189,6 +190,10 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
                               behavior: ScrollConfiguration.of(context)
                                   .copyWith(scrollbars: false),
                               child: ListView.builder(
+                                key: widget
+                                    .popupProps.listViewProps.key,
+                                hitTestBehavior: widget
+                                    .popupProps.listViewProps.hitTestBehavior,
                                 controller: widget
                                         .popupProps.listViewProps.controller ??
                                     scrollController,
@@ -538,6 +543,11 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
                       DoNothingAndStopPropagationTextIntent(),
                 },
                 child: TextField(
+                  key: widget.popupProps.searchFieldProps.key,
+                  onChanged: widget.popupProps.searchFieldProps.onChanged,
+                  onEditingComplete: widget.popupProps.searchFieldProps.onEditingComplete,
+                  onSubmitted: widget.popupProps.searchFieldProps.onSubmitted,
+                  onTapAlwaysCalled: widget.popupProps.searchFieldProps.onTapAlwaysCalled,
                   enableIMEPersonalizedLearning: widget.popupProps
                       .searchFieldProps.enableIMEPersonalizedLearning,
                   clipBehavior: widget.popupProps.searchFieldProps.clipBehavior,

@@ -14,6 +14,7 @@ class CustomSingleScrollView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      key: scrollProps.key,
       controller: scrollProps.controller,
       padding: scrollProps.padding,
       clipBehavior: scrollProps.clipBehavior,

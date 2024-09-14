@@ -5,6 +5,7 @@ class DropdownButtonProps extends IconButtonProps {
   final Widget iconOpened;
 
   const DropdownButtonProps({
+    super.key,
     this.iconOpened = const Icon(Icons.arrow_drop_up, size: 24),
     Widget iconClosed = const Icon(Icons.arrow_drop_down, size: 24),
     super.isVisible = true,
@@ -312,7 +313,10 @@ class ClickProps {
   /// The default is 50ms.
   final Duration? hoverDuration;
 
+  final Key? key;
+
   const ClickProps({
+    this.key,
     this.containedInkWell = true,
     this.highlightShape = BoxShape.rectangle,
     this.onFocusChange,

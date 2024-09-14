@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DialogProps {
+  final Key? key;
   final List<Widget>? actions;
   final MainAxisAlignment? actionsAlignment;
   final OverflowBarAlignment? actionsOverflowAlignment;
@@ -28,6 +29,7 @@ class DialogProps {
   final Color? surfaceTintColor;
 
   const DialogProps({
+    this.key,
     this.alignment,
     this.elevation,
     this.semanticLabel,

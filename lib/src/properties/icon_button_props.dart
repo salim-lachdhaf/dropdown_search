@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 ///see [IconButton] props for more details
 class IconButtonProps {
+  final Key? key;
   final double iconSize;
   final VisualDensity? visualDensity;
   final EdgeInsetsGeometry padding;
@@ -26,6 +27,7 @@ class IconButtonProps {
   final Widget? selectedIcon;
 
   const IconButtonProps({
+    this.key,
     required this.icon,
     this.isVisible = false,
     this.iconSize = 24.0,

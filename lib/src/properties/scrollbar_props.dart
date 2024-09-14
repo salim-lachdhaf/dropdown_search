@@ -22,8 +22,10 @@ class ScrollbarProps {
   final double mainAxisMargin;
   final double crossAxisMargin;
   final EdgeInsets? padding;
+  final Key? key;
 
   const ScrollbarProps({
+    this.key,
     this.shape,
     this.radius,
     this.thickness,
