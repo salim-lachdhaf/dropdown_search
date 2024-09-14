@@ -65,7 +65,7 @@
 </table>
 
 
-## packages.yaml
+## pubspec.yaml
 ```yaml
 dropdown_search: <lastest version>
 ```
