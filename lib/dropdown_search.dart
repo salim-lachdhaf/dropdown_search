@@ -448,11 +448,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
 
   ///manage dropdownSearch field decoration
   InputDecoration _manageDropdownDecoration(FormFieldState state) {
-    return (widget.decoratorProps.decoration ??
-            const InputDecoration(
-              contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
-              border: OutlineInputBorder(),
-            ))
+    return widget.decoratorProps.decoration
         .applyDefaults(Theme.of(state.context).inputDecorationTheme)
         .copyWith(
           enabled: widget.enabled,

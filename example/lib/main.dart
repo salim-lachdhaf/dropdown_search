@@ -123,7 +123,7 @@ class MyHomePage extends StatelessWidget {
                 fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
             textAlign: TextAlign.center,
           ),
-          Image.asset('images/anatomy.png',
+          Image.asset('assets/images/anatomy.png',
               alignment: Alignment.topCenter, height: 1024)
         ],
       ),
