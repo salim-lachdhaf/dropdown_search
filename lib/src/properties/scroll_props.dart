@@ -55,11 +55,6 @@ class ScrollProps {
   /// Defaults to [Clip.hardEdge].
   final Clip clipBehavior;
 
-  /// {@macro flutter.widgets.scrollable.hitTestBehavior}
-  ///
-  /// Defaults to [HitTestBehavior.opaque].
-  final HitTestBehavior hitTestBehavior;
-
   /// {@macro flutter.widgets.scroll_view.keyboardDismissBehavior}
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
@@ -72,7 +67,6 @@ class ScrollProps {
     this.controller,
     this.dragStartBehavior = DragStartBehavior.start,
     this.clipBehavior = Clip.hardEdge,
-    this.hitTestBehavior = HitTestBehavior.opaque,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
   });
 }
