@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dropdown_search/src/widgets/custom_inkwell.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../dropdown_search.dart';
 import 'checkbox_widget.dart';
@@ -145,7 +144,6 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
                           final itemCount = snapshot.data!.length;
                           return RawScrollbar(
-                            key:  widget.popupProps.scrollbarProps.key,
                             controller:
                                 widget.popupProps.listViewProps.controller ??
                                     scrollController,
@@ -190,8 +188,6 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
                               behavior: ScrollConfiguration.of(context)
                                   .copyWith(scrollbars: false),
                               child: ListView.builder(
-                                key: widget
-                                    .popupProps.listViewProps.key,
                                 hitTestBehavior: widget
                                     .popupProps.listViewProps.hitTestBehavior,
                                 controller: widget
@@ -536,113 +532,104 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
         if (widget.popupProps.showSearchBox)
           Padding(
             padding: widget.popupProps.searchFieldProps.padding,
-            child: DefaultTextEditingShortcuts(
-              child: Shortcuts(
-                shortcuts: const <ShortcutActivator, Intent>{
-                  SingleActivator(LogicalKeyboardKey.space):
-                      DoNothingAndStopPropagationTextIntent(),
-                },
-                child: TextField(
-                  key: widget.popupProps.searchFieldProps.key,
-                  onChanged: widget.popupProps.searchFieldProps.onChanged,
-                  onEditingComplete: widget.popupProps.searchFieldProps.onEditingComplete,
-                  onSubmitted: widget.popupProps.searchFieldProps.onSubmitted,
-                  onTapAlwaysCalled: widget.popupProps.searchFieldProps.onTapAlwaysCalled,
-                  enableIMEPersonalizedLearning: widget.popupProps
-                      .searchFieldProps.enableIMEPersonalizedLearning,
-                  clipBehavior: widget.popupProps.searchFieldProps.clipBehavior,
-                  style: widget.popupProps.searchFieldProps.style,
-                  controller: searchBoxController,
-                  focusNode: widget.popupProps.searchFieldProps.focusNode,
-                  autofocus: widget.popupProps.searchFieldProps.autofocus,
-                  decoration: widget.popupProps.searchFieldProps.decoration,
-                  keyboardType: widget.popupProps.searchFieldProps.keyboardType,
-                  textInputAction:
-                      widget.popupProps.searchFieldProps.textInputAction,
-                  textCapitalization:
-                      widget.popupProps.searchFieldProps.textCapitalization,
-                  strutStyle: widget.popupProps.searchFieldProps.strutStyle,
-                  textAlign: widget.popupProps.searchFieldProps.textAlign,
-                  textAlignVertical:
-                      widget.popupProps.searchFieldProps.textAlignVertical,
-                  textDirection:
-                      widget.popupProps.searchFieldProps.textDirection,
-                  readOnly: widget.popupProps.searchFieldProps.readOnly,
-                  contextMenuBuilder:
-                      widget.popupProps.searchFieldProps.contextMenuBuilder,
-                  showCursor: widget.popupProps.searchFieldProps.showCursor,
-                  obscuringCharacter:
-                      widget.popupProps.searchFieldProps.obscuringCharacter,
-                  obscureText: widget.popupProps.searchFieldProps.obscureText,
-                  autocorrect: widget.popupProps.searchFieldProps.autocorrect,
-                  smartDashesType:
-                      widget.popupProps.searchFieldProps.smartDashesType,
-                  smartQuotesType:
-                      widget.popupProps.searchFieldProps.smartQuotesType,
-                  enableSuggestions:
-                      widget.popupProps.searchFieldProps.enableSuggestions,
-                  maxLines: widget.popupProps.searchFieldProps.maxLines,
-                  minLines: widget.popupProps.searchFieldProps.minLines,
-                  expands: widget.popupProps.searchFieldProps.expands,
-                  maxLengthEnforcement:
-                      widget.popupProps.searchFieldProps.maxLengthEnforcement,
-                  maxLength: widget.popupProps.searchFieldProps.maxLength,
-                  onAppPrivateCommand:
-                      widget.popupProps.searchFieldProps.onAppPrivateCommand,
-                  inputFormatters:
-                      widget.popupProps.searchFieldProps.inputFormatters,
-                  enabled: widget.popupProps.searchFieldProps.enabled,
-                  cursorWidth: widget.popupProps.searchFieldProps.cursorWidth,
-                  cursorHeight: widget.popupProps.searchFieldProps.cursorHeight,
-                  cursorRadius: widget.popupProps.searchFieldProps.cursorRadius,
-                  cursorColor: widget.popupProps.searchFieldProps.cursorColor,
-                  selectionHeightStyle:
-                      widget.popupProps.searchFieldProps.selectionHeightStyle,
-                  selectionWidthStyle:
-                      widget.popupProps.searchFieldProps.selectionWidthStyle,
-                  keyboardAppearance:
-                      widget.popupProps.searchFieldProps.keyboardAppearance,
-                  scrollPadding:
-                      widget.popupProps.searchFieldProps.scrollPadding,
-                  dragStartBehavior:
-                      widget.popupProps.searchFieldProps.dragStartBehavior,
-                  enableInteractiveSelection: widget
-                      .popupProps.searchFieldProps.enableInteractiveSelection,
-                  selectionControls:
-                      widget.popupProps.searchFieldProps.selectionControls,
-                  onTap: widget.popupProps.searchFieldProps.onTap,
-                  mouseCursor: widget.popupProps.searchFieldProps.mouseCursor,
-                  buildCounter: widget.popupProps.searchFieldProps.buildCounter,
-                  scrollController:
-                      widget.popupProps.searchFieldProps.scrollController,
-                  scrollPhysics:
-                      widget.popupProps.searchFieldProps.scrollPhysics,
-                  autofillHints:
-                      widget.popupProps.searchFieldProps.autofillHints,
-                  restorationId:
-                      widget.popupProps.searchFieldProps.restorationId,
-                  canRequestFocus:
-                      widget.popupProps.searchFieldProps.canRequestFocus,
-                  statesController:
-                      widget.popupProps.searchFieldProps.statesController,
-                  contentInsertionConfiguration: widget.popupProps
-                      .searchFieldProps.contentInsertionConfiguration,
-                  cursorErrorColor:
-                      widget.popupProps.searchFieldProps.cursorErrorColor,
-                  cursorOpacityAnimates:
-                      widget.popupProps.searchFieldProps.cursorOpacityAnimates,
-                  ignorePointers:
-                      widget.popupProps.searchFieldProps.ignorePointers,
-                  magnifierConfiguration:
-                      widget.popupProps.searchFieldProps.magnifierConfiguration,
-                  onTapOutside: widget.popupProps.searchFieldProps.onTapOutside,
-                  scribbleEnabled:
-                      widget.popupProps.searchFieldProps.scribbleEnabled,
-                  undoController:
-                      widget.popupProps.searchFieldProps.undoController,
-                  spellCheckConfiguration: widget
-                      .popupProps.searchFieldProps.spellCheckConfiguration,
-                ),
+            child: Semantics(
+              textField: true,
+              child: TextField(
+                onChanged: widget.popupProps.searchFieldProps.onChanged,
+                onEditingComplete:
+                    widget.popupProps.searchFieldProps.onEditingComplete,
+                onSubmitted: widget.popupProps.searchFieldProps.onSubmitted,
+                onTapAlwaysCalled:
+                    widget.popupProps.searchFieldProps.onTapAlwaysCalled,
+                enableIMEPersonalizedLearning: widget
+                    .popupProps.searchFieldProps.enableIMEPersonalizedLearning,
+                clipBehavior: widget.popupProps.searchFieldProps.clipBehavior,
+                style: widget.popupProps.searchFieldProps.style,
+                controller: searchBoxController,
+                focusNode: widget.popupProps.searchFieldProps.focusNode,
+                autofocus: widget.popupProps.searchFieldProps.autofocus,
+                decoration: widget.popupProps.searchFieldProps.decoration,
+                keyboardType: widget.popupProps.searchFieldProps.keyboardType,
+                textInputAction:
+                    widget.popupProps.searchFieldProps.textInputAction,
+                textCapitalization:
+                    widget.popupProps.searchFieldProps.textCapitalization,
+                strutStyle: widget.popupProps.searchFieldProps.strutStyle,
+                textAlign: widget.popupProps.searchFieldProps.textAlign,
+                textAlignVertical:
+                    widget.popupProps.searchFieldProps.textAlignVertical,
+                textDirection: widget.popupProps.searchFieldProps.textDirection,
+                readOnly: widget.popupProps.searchFieldProps.readOnly,
+                contextMenuBuilder:
+                    widget.popupProps.searchFieldProps.contextMenuBuilder,
+                showCursor: widget.popupProps.searchFieldProps.showCursor,
+                obscuringCharacter:
+                    widget.popupProps.searchFieldProps.obscuringCharacter,
+                obscureText: widget.popupProps.searchFieldProps.obscureText,
+                autocorrect: widget.popupProps.searchFieldProps.autocorrect,
+                smartDashesType:
+                    widget.popupProps.searchFieldProps.smartDashesType,
+                smartQuotesType:
+                    widget.popupProps.searchFieldProps.smartQuotesType,
+                enableSuggestions:
+                    widget.popupProps.searchFieldProps.enableSuggestions,
+                maxLines: widget.popupProps.searchFieldProps.maxLines,
+                minLines: widget.popupProps.searchFieldProps.minLines,
+                expands: widget.popupProps.searchFieldProps.expands,
+                maxLengthEnforcement:
+                    widget.popupProps.searchFieldProps.maxLengthEnforcement,
+                maxLength: widget.popupProps.searchFieldProps.maxLength,
+                onAppPrivateCommand:
+                    widget.popupProps.searchFieldProps.onAppPrivateCommand,
+                inputFormatters:
+                    widget.popupProps.searchFieldProps.inputFormatters,
+                enabled: widget.popupProps.searchFieldProps.enabled,
+                cursorWidth: widget.popupProps.searchFieldProps.cursorWidth,
+                cursorHeight: widget.popupProps.searchFieldProps.cursorHeight,
+                cursorRadius: widget.popupProps.searchFieldProps.cursorRadius,
+                cursorColor: widget.popupProps.searchFieldProps.cursorColor,
+                selectionHeightStyle:
+                    widget.popupProps.searchFieldProps.selectionHeightStyle,
+                selectionWidthStyle:
+                    widget.popupProps.searchFieldProps.selectionWidthStyle,
+                keyboardAppearance:
+                    widget.popupProps.searchFieldProps.keyboardAppearance,
+                scrollPadding: widget.popupProps.searchFieldProps.scrollPadding,
+                dragStartBehavior:
+                    widget.popupProps.searchFieldProps.dragStartBehavior,
+                enableInteractiveSelection: widget
+                    .popupProps.searchFieldProps.enableInteractiveSelection,
+                selectionControls:
+                    widget.popupProps.searchFieldProps.selectionControls,
+                onTap: widget.popupProps.searchFieldProps.onTap,
+                mouseCursor: widget.popupProps.searchFieldProps.mouseCursor,
+                buildCounter: widget.popupProps.searchFieldProps.buildCounter,
+                scrollController:
+                    widget.popupProps.searchFieldProps.scrollController,
+                scrollPhysics: widget.popupProps.searchFieldProps.scrollPhysics,
+                autofillHints: widget.popupProps.searchFieldProps.autofillHints,
+                restorationId: widget.popupProps.searchFieldProps.restorationId,
+                canRequestFocus:
+                    widget.popupProps.searchFieldProps.canRequestFocus,
+                statesController:
+                    widget.popupProps.searchFieldProps.statesController,
+                contentInsertionConfiguration: widget
+                    .popupProps.searchFieldProps.contentInsertionConfiguration,
+                cursorErrorColor:
+                    widget.popupProps.searchFieldProps.cursorErrorColor,
+                cursorOpacityAnimates:
+                    widget.popupProps.searchFieldProps.cursorOpacityAnimates,
+                ignorePointers:
+                    widget.popupProps.searchFieldProps.ignorePointers,
+                magnifierConfiguration:
+                    widget.popupProps.searchFieldProps.magnifierConfiguration,
+                onTapOutside: widget.popupProps.searchFieldProps.onTapOutside,
+                scribbleEnabled:
+                    widget.popupProps.searchFieldProps.scribbleEnabled,
+                undoController:
+                    widget.popupProps.searchFieldProps.undoController,
+                spellCheckConfiguration:
+                    widget.popupProps.searchFieldProps.spellCheckConfiguration,
               ),
             ),
           )

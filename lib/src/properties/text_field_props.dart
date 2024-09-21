@@ -67,14 +67,12 @@ class TextFieldProps {
   final bool scribbleEnabled;
   final UndoHistoryController? undoController;
   final SpellCheckConfiguration? spellCheckConfiguration;
-  final Key? key;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onEditingComplete;
   final ValueChanged<String>? onSubmitted;
   final bool onTapAlwaysCalled;
 
   const TextFieldProps({
-    this.key,
     this.onSubmitted,
     this.onTapAlwaysCalled = false,
     this.onEditingComplete,

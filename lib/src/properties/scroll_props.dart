@@ -63,10 +63,7 @@ class ScrollProps {
   /// {@macro flutter.widgets.scroll_view.keyboardDismissBehavior}
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
-  final Key? key;
-
   const ScrollProps({
-    this.key,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.padding,

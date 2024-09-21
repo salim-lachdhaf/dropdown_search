@@ -54,7 +54,7 @@ typedef LoadingBuilder<T> = Widget Function(
 typedef BeforeChange<T> = Future<bool?> Function(T? prevItem, T? nextItem);
 typedef BeforePopupOpening<T> = Future<bool?> Function(T? selectedItem);
 typedef BeforePopupOpeningMultiSelection<T> = Future<bool?> Function(
-    List<T> selItems);
+    List<T> selectedItem);
 typedef BeforeChangeMultiSelection<T> = Future<bool?> Function(
     List<T> prevItems, List<T> nextItems);
 typedef FavoriteItemsBuilder<T> = Widget Function(
@@ -62,7 +62,7 @@ typedef FavoriteItemsBuilder<T> = Widget Function(
 typedef ValidationMultiSelectionBuilder<T> = Widget Function(
     BuildContext context, List<T> items);
 typedef PositionCallback = RelativeRect Function(
-    RenderBox popupButtonObject, RenderBox overlay);
+    RenderBox dropdownBox, RenderBox overlay);
 typedef OnItemAdded<T> = void Function(List<T> selectedItems, T addedItem);
 typedef OnItemRemoved<T> = void Function(List<T> selectedItems, T removedItem);
 typedef PopupBuilder<T> = Widget Function(
@@ -96,13 +96,15 @@ class DropdownSearch<T> extends StatefulWidget {
 
   /// scroll props for selected item on the dropdown.
   /// example :
-  ///          SizedBox(
-  ///               height: 50,
-  ///              child: DropdownSearch<int>.multiSelection(
-  ///                      items: (f, cs) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-  ///                      selectedItemsScrollProps: ScrollProps(),
-  ///                ),
-  ///           ),
+  /// ```dart
+  ///   SizedBox(
+  ///        height: 50,
+  ///       child: DropdownSearch<int>.multiSelection(
+  ///               items: (f, cs) => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+  ///               selectedItemsScrollProps: ScrollProps(),
+  ///         ),
+  ///    ),
+  ///```
   final ScrollProps? selectedItemsScrollProps;
 
   ///customize the fields the be shown
@@ -169,13 +171,10 @@ class DropdownSearch<T> extends StatefulWidget {
     super.key,
     T? selectedItem,
     this.mode = Mode.form,
-    this.onSaved,
-    this.validator,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.onChanged,
     this.items,
     this.dropdownBuilder,
-    this.decoratorProps = const DropDownDecoratorProps(),
     this.suffixProps = const DropdownSuffixProps(),
     this.clickProps = const ClickProps(),
     this.enabled = true,
@@ -185,8 +184,24 @@ class DropdownSearch<T> extends StatefulWidget {
     this.onBeforeChange,
     this.onBeforePopupOpening,
     PopupProps<T> popupProps = const PopupProps.menu(),
-  })  : assert(T == String || T == int || T == double || compareFn != null),
-        assert(mode != Mode.custom || dropdownBuilder != null),
+    //form properties
+    this.onSaved,
+    this.validator,
+    DropDownDecoratorProps? decoratorProps,
+  })  : assert(
+          T == String || T == int || T == double || compareFn != null,
+          '`compareFn` is required',
+        ),
+        assert(
+          mode != Mode.custom || dropdownBuilder != null,
+          'Please implement your `dropdownBuilder`',
+        ),
+        assert(
+          mode != Mode.custom ||
+              (decoratorProps == null && onSaved == null && validator == null),
+          'Custom mode has no form properties',
+        ),
+        decoratorProps = decoratorProps ?? const DropDownDecoratorProps(),
         selectedItems = _itemToList(selectedItem),
         popupProps = PopupPropsMultiSelection.from(popupProps),
         isMultiSelectionMode = false,
@@ -203,7 +218,6 @@ class DropdownSearch<T> extends StatefulWidget {
     this.mode = Mode.form,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.items,
-    this.decoratorProps = const DropDownDecoratorProps(),
     this.suffixProps = const DropdownSuffixProps(),
     this.clickProps = const ClickProps(),
     this.enabled = true,
@@ -213,14 +227,28 @@ class DropdownSearch<T> extends StatefulWidget {
     this.selectedItems = const [],
     this.popupProps = const PopupPropsMultiSelection.menu(),
     this.selectedItemsScrollProps,
-    FormFieldSetter<List<T>>? onSaved,
     ValueChanged<List<T>>? onChanged,
     BeforeChangeMultiSelection<T>? onBeforeChange,
     BeforePopupOpeningMultiSelection<T>? onBeforePopupOpening,
-    FormFieldValidator<List<T>>? validator,
     DropdownSearchBuilderMultiSelection<T>? dropdownBuilder,
-  })  : assert(T == String || T == int || T == double || compareFn != null),
-        assert(mode != Mode.custom || dropdownBuilder != null),
+    //form properties
+    FormFieldSetter<List<T>>? onSaved,
+    FormFieldValidator<List<T>>? validator,
+    DropDownDecoratorProps? decoratorProps,
+  })  : assert(
+          T == String || T == int || T == double || compareFn != null,
+          '`compareFn` is required',
+        ),
+        assert(
+          mode != Mode.custom || dropdownBuilder != null,
+          'Please implement your `dropdownBuilder`',
+        ),
+        assert(
+          mode != Mode.custom ||
+              (decoratorProps == null && onSaved == null && validator == null),
+          "Custom mode has no form properties",
+        ),
+        decoratorProps = decoratorProps ?? const DropDownDecoratorProps(),
         onChangedMultiSelection = onChanged,
         onBeforePopupOpeningMultiSelection = onBeforePopupOpening,
         onSavedMultiSelection = onSaved,
@@ -301,7 +329,6 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   Widget _defaultSelectedItemWidget() {
     Widget defaultItemMultiSelectionMode(T item) {
       return Container(
-        height: 32,
         padding: EdgeInsets.only(left: 8, right: 1),
         margin: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
         decoration: BoxDecoration(
@@ -312,24 +339,20 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Flexible(
-              child: Text(
-                _selectedItemAsString(item),
-                style: Theme.of(context).textTheme.titleSmall,
-                overflow: TextOverflow.ellipsis,
-              ),
+            Text(
+              _itemAsString(item),
+              style: Theme.of(context).textTheme.titleSmall,
+              overflow: TextOverflow.ellipsis,
             ),
-            MaterialButton(
-              height: 20,
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(0),
-              minWidth: 20,
-              onPressed: () {
-                removeItem(item);
-              },
-              child: Icon(
-                Icons.close_outlined,
-                size: 20,
+            Padding(padding: EdgeInsets.only(left: 8)),
+            SizedBox(
+              width: 32,
+              height: 32,
+              child: IconButton(
+                iconSize: 20,
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.close_outlined, size: 20),
+                onPressed: () => removeItem(item),
               ),
             )
           ],
@@ -346,13 +369,15 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
         return CustomSingleScrollView(
           scrollProps: widget.selectedItemsScrollProps ?? ScrollProps(),
           child: Wrap(
-              children: getSelectedItems
-                  .map((e) => defaultItemMultiSelectionMode(e))
-                  .toList()),
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: getSelectedItems
+                .map((e) => defaultItemMultiSelectionMode(e))
+                .toList(),
+          ),
         );
       }
       return Text(
-        _selectedItemAsString(getSelectedItem),
+        _itemAsString(getSelectedItem),
         style: _getBaseTextStyle(),
         textAlign: widget.decoratorProps.textAlign,
       );
@@ -398,8 +423,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 baseStyle: _getBaseTextStyle(),
                 textAlign: widget.decoratorProps.textAlign,
                 textAlignVertical: widget.decoratorProps.textAlignVertical,
-                isEmpty:
-                    getSelectedItem == null && widget.dropdownBuilder == null,
+                isEmpty: getSelectedItem == null,
                 isFocused: isFocused,
                 expands: widget.decoratorProps.expands,
                 isHovering: widget.decoratorProps.isHovering,
@@ -433,8 +457,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
                 baseStyle: _getBaseTextStyle(),
                 textAlign: widget.decoratorProps.textAlign,
                 textAlignVertical: widget.decoratorProps.textAlignVertical,
-                isEmpty: getSelectedItems.isEmpty &&
-                    widget.dropdownBuilderMultiSelection == null,
+                isEmpty: getSelectedItems.isEmpty,
                 expands: widget.decoratorProps.expands,
                 isHovering: widget.decoratorProps.isHovering,
                 isFocused: isFocused,
@@ -458,14 +481,14 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   }
 
   ///function that return the String value of an object
-  String _selectedItemAsString(T? data) {
+  String _itemAsString(T? data) {
     if (data == null) {
       return "";
     } else if (widget.itemAsString != null) {
       return widget.itemAsString!(data);
-    } else {
-      return data.toString();
     }
+
+    return data.toString();
   }
 
   ///function that manage Trailing icons(close, dropDown)
@@ -545,7 +568,6 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
       transitionBuilder: widget.popupProps.dialogProps.transitionBuilder,
       pageBuilder: (context, animation, secondaryAnimation) {
         return AlertDialog(
-          key: widget.popupProps.dialogProps.key,
           buttonPadding: widget.popupProps.dialogProps.buttonPadding,
           actionsOverflowButtonSpacing:
               widget.popupProps.dialogProps.actionsOverflowButtonSpacing,
@@ -720,6 +742,10 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   ///If we close the popup , or maybe we just selected
   ///another widget we should clear the focus
   Future<void> _selectSearchMode() async {
+    //fix Duplicate GlobalKey detected in widget tree.
+    //if the popup not yet disposed do nothing => solve issue fast click
+    if (_popupStateKey.currentState != null) return;
+
     //handle onBefore popupOpening
     if (widget.onBeforePopupOpening != null) {
       if (await widget.onBeforePopupOpening!(getSelectedItem) == false) return;
@@ -738,8 +764,7 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
     } else {
       await _openSelectDialog();
     }
-    //dismiss either by selecting items OR clicking outside the popup
-    widget.popupProps.onDismissed?.call();
+
     _handleFocus(false);
   }
 

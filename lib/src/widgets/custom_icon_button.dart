@@ -16,7 +16,6 @@ class CustomIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      key: props.key,
       style: props.style,
       isSelected: props.isSelected,
       selectedIcon: props.selectedIcon,

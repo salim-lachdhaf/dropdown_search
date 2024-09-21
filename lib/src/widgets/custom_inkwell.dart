@@ -16,7 +16,6 @@ class CustomInkWell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkResponse(
-      key: clickProps.key,
       autofocus: clickProps.autofocus,
       borderRadius: clickProps.borderRadius,
       customBorder: clickProps.customBorder,
