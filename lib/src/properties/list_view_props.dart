@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class ListViewProps {
+  final HitTestBehavior hitTestBehavior;
   final Axis scrollDirection;
   final bool reverse;
   final ScrollController? controller;
@@ -25,6 +26,7 @@ class ListViewProps {
   final ChildIndexGetter? findChildIndexCallback;
 
   const ListViewProps({
+    this.hitTestBehavior = HitTestBehavior.opaque,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,

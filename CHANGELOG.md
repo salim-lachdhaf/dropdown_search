@@ -1,3 +1,13 @@
+## [6.0.1] - 2024.09.21
+* #### New Feature:
+  * add `Semantics` to searchBox to support voiceOver/TalkBack ...
+ 
+* #### Fix bugs:
+  * duplicated GlobalKey issue [672](https://github.com/salim-lachdhaf/searchable_dropdown/issues/672)
+  * multiSelection chips height issue [602](https://github.com/salim-lachdhaf/searchable_dropdown/issues/602)
+  * hint and dropdownBuilder issue [515](https://github.com/salim-lachdhaf/searchable_dropdown/issues/515)
+
+
 ## [6.0.0] - 2024.09.14
 
 * #### New features:
@@ -5,20 +15,20 @@
     * add click properties to the dropdown
     * add custom mode
     * dropdown button can be changed depending on state (opened/closed)
-    * add property ```cacheItems``` for popupProps
-    * add property ```onItemLoaded```
+    * add property `cacheItems` for popupProps
+    * add property `onItemLoaded`
     * adding new properties for a lot of widget (scrollBar, modal, bottomSheet,...)
     * add to possibility to change position of ```clearButton``` and ```dropdownButton```
       using ```direction``` property
 
 * #### Breaking changes :
-    * ```AsyncItems``` and ```items``` are replaced by ```items:(filter, infiniteScrollProps)```
-    * Add ```isDisabled``` to ```itemBuilder``` params
-    * ```FavoriteItems``` renamed to ```SuggestedItems```
-    * ```isFilterOnline``` renamed to ```disableFilter```
-    * ```selectionWidget``` renamed to ```checkBoxBuilder```
-    * ```dropdownDecoratorProps``` renamed to ```decoratorProps```
-    * ```clearButtonProps``` and ```dropdownButtonProps``` are placed to ```suffixProps```
+    * `AsyncItems` and `items` are replaced by `items:(filter, infiniteScrollProps)`
+    * Add `isDisabled` to `itemBuilder` params
+    * `FavoriteItems` renamed to `SuggestedItems`
+    * `isFilterOnline` renamed to `disableFilter`
+    * `selectionWidget` renamed to `checkBoxBuilder`
+    * `dropdownDecoratorProps` renamed to `decoratorProps`
+    * `clearButtonProps` and `dropdownButtonProps` are placed to `suffixProps`
 * #### Fix bugs:
     * Search delay issue [542](https://github.com/salim-lachdhaf/searchable_dropdown/issues/542),
     * Multiselection triggers didChange
@@ -60,7 +70,7 @@
 
 ## [5.0.2] - 2022.06.04
 
-* add ```interceptCallBacks``` for popupProps
+* add `interceptCallBacks` for popupProps
 
 ## [5.0.1] - 2022.05.29
 
@@ -74,8 +84,8 @@
 * replace ``IconButtonProps`` with DropdownButtonProps and ``ClearButtonProps`` for ``clearButtonProps``
   and dropdownButtonProps
 * add a full custom container for the pop `containerBuilder` to ``popup_props``
-* add ```isVisible``` prop to `DropdownButtonProps`
-* change ``validationMultiSelectionWidget`` to ``validationWidgetBuilder``
+* add `isVisible` prop to `DropdownButtonProps`
+* change `validationMultiSelectionWidget` to `validationWidgetBuilder`
 
 ## [4.0.1] - 2022.05.17
 
@@ -103,11 +113,11 @@
 ## [3.0.1] - 2022.04.15
 
 * breaking changes:
-    - remove ``hint`` and ``label`` properties, use ``dropdownSearchDecoration`` instead
-    - remove ``showAsSuffixIcons`` property, now always are as suffixIcon
-    - replace '``clearButtonSplashRadius``' and '``clearButtonBuilder``' into one property '``IconButtonProps``'
-    - replace '``dropdownButtonSplashRadius``' and '``dropdownButtonBuilder``' into one property '
-      ``IconButtonProps``'
+    - remove `hint` and `label` properties, use `dropdownSearchDecoration` instead
+    - remove `showAsSuffixIcons` property, now always are as suffixIcon
+    - replace '`clearButtonSplashRadius`' and '`clearButtonBuilder`' into one property '`IconButtonProps`'
+    - replace '`dropdownButtonSplashRadius`' and '`dropdownButtonBuilder`' into one property '
+      `IconButtonProps`'
 * fix issue [380](https://github.com/salim-lachdhaf/searchable_dropdown/issues/380)
 
 ## [2.0.1] - 2021.11.15

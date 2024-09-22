@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+///check [TextField] properties
 class TextFieldProps {
   final FocusNode? focusNode;
   final bool enableIMEPersonalizedLearning;
@@ -66,8 +67,16 @@ class TextFieldProps {
   final bool scribbleEnabled;
   final UndoHistoryController? undoController;
   final SpellCheckConfiguration? spellCheckConfiguration;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onEditingComplete;
+  final ValueChanged<String>? onSubmitted;
+  final bool onTapAlwaysCalled;
 
   const TextFieldProps({
+    this.onSubmitted,
+    this.onTapAlwaysCalled = false,
+    this.onEditingComplete,
+    this.onChanged,
     this.controller,
     this.decoration = const InputDecoration(border: OutlineInputBorder()),
     this.keyboardType,
