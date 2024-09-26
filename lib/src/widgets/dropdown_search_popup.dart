@@ -107,11 +107,14 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: widget.popupProps.constraints,
-      child: widget.popupProps.containerBuilder == null
-          ? _defaultWidget()
-          : widget.popupProps.containerBuilder!(context, _defaultWidget()),
+    return TapRegion(
+      onTapOutside: (_) => closePopup(),
+      child: Container(
+        constraints: widget.popupProps.constraints,
+        child: widget.popupProps.containerBuilder == null
+            ? _defaultWidget()
+            : widget.popupProps.containerBuilder!(context, _defaultWidget()),
+      ),
     );
   }
 
