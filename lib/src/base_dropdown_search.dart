@@ -498,8 +498,14 @@ class DropdownSearchState<T> extends State<BaseDropdownSearch<T>> {
     } else if (isMultiSelectionMode) {
       return defaultSelectedItems(getSelectedItems);
     }
+    Widget? buildSelectedItemWidget() {
+      if (widget.decoratorProps.isFittedBox) {
+        return FittedBox(child: defaultSelectedItemWidget(getSelectedItem));
+      }
+      return defaultSelectedItemWidget(getSelectedItem);
+    }
 
-    return defaultSelectedItemWidget(getSelectedItem);
+    return buildSelectedItemWidget();
   }
 
   TextStyle? _getBaseTextStyle() {
