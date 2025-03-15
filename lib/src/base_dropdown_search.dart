@@ -52,6 +52,8 @@ typedef OnItemRemoved<T> = void Function(List<T> selectedItems, T removedItem);
 typedef ContainerBuilder<T> = Widget Function(
     BuildContext context, Widget child);
 
+typedef DropdownSearchPopupFooterBuilder = Widget Function(BuildContext);
+
 enum PopupMode { dialog, modalBottomSheet, menu, bottomSheet, autocomplete }
 
 enum Mode { form, custom }

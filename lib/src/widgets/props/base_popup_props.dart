@@ -109,6 +109,9 @@ abstract class BasePopupProps<T> {
   ///checkbox multi selection direction
   final TextDirection textDirection;
 
+  ///custom footer builder
+  final DropdownSearchPopupFooterBuilder? footerBuilder;
+
   const BasePopupProps({
     required this.mode,
     required this.constraints,
@@ -141,6 +144,7 @@ abstract class BasePopupProps<T> {
     this.checkBoxBuilder,
     this.validationBuilder,
     this.textDirection = TextDirection.ltr,
+    this.footerBuilder,
   }) : assert(
           !cacheItems || !disableFilter,
           'Caching items will be unuseful if the local filter disableFilter is disabled ',

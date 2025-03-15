@@ -159,12 +159,36 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
                           if (snapshot.hasError) {
                             if (_cachedItems.isNotEmpty &&
                                 !isInfiniteScrollEnded) {
+                              final footerBuilder = widget.props.footerBuilder;
+                              if (footerBuilder != null) {
+                                return Column(
+                                  children: [
+                                    Expanded(
+                                      child: _listItemWidget(
+                                          _cachedItems, snapshot.error),
+                                    ),
+                                    footerBuilder(context),
+                                  ],
+                                );
+                              }
                               return _listItemWidget(
                                   _cachedItems, snapshot.error);
                             }
                             return _errorWidget(snapshot.error);
                           } else if (snapshot.hasData) {
                             if (snapshot.data!.isEmpty) return _noDataWidget();
+                            final footerBuilder = widget.props.footerBuilder;
+                            if (footerBuilder != null) {
+                              return Column(
+                                children: [
+                                  Expanded(
+                                    child: _listItemWidget(
+                                        _cachedItems, snapshot.error),
+                                  ),
+                                  footerBuilder(context),
+                                ],
+                              );
+                            }
                             return _listItemWidget(snapshot.data!);
                           }
                           return _loadingWidget();
