@@ -140,6 +140,27 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       child: ValueListenableBuilder(
           valueListenable: _selectedItemsNotifier,
           builder: (ctx, value, w) {
+            final items = Stack(
+              children: <Widget>[
+                StreamBuilder<List<T>>(
+                  stream: _itemsStream.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      if (_cachedItems.isNotEmpty && !isInfiniteScrollEnded) {
+                        return _listItemWidget(_cachedItems, snapshot.error);
+                      }
+                      return _errorWidget(snapshot.error);
+                    } else if (snapshot.hasData) {
+                      if (snapshot.data!.isEmpty) return _noDataWidget();
+                      return _listItemWidget(snapshot.data!);
+                    }
+                    return _loadingWidget();
+                  },
+                ),
+                _loadingWidget()
+              ],
+            );
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
@@ -151,28 +172,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
                 _suggestedItemsWidget(),
                 Flexible(
                   fit: widget.props.fit,
-                  child: Stack(
-                    children: <Widget>[
-                      StreamBuilder<List<T>>(
-                        stream: _itemsStream.stream,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            if (_cachedItems.isNotEmpty &&
-                                !isInfiniteScrollEnded) {
-                              return _listItemWidget(
-                                  _cachedItems, snapshot.error);
-                            }
-                            return _errorWidget(snapshot.error);
-                          } else if (snapshot.hasData) {
-                            if (snapshot.data!.isEmpty) return _noDataWidget();
-                            return _listItemWidget(snapshot.data!);
-                          }
-                          return _loadingWidget();
-                        },
-                      ),
-                      _loadingWidget()
-                    ],
-                  ),
+                  child: widget.props.itemsContainerBuilder
+                          ?.call(context, items) ??
+                      items,
                 ),
                 _multiSelectionValidation(),
               ],

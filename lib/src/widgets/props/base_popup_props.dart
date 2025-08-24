@@ -77,6 +77,10 @@ abstract class BasePopupProps<T> {
   ///the popup widget is considered as a child
   final ContainerBuilder? containerBuilder;
 
+  ///used as container to the popup items list
+  ///this could be very useful if you want to add some specific decoration to the items container
+  final ContainerBuilder? itemsContainerBuilder;
+
   ///popup constraints
   final BoxConstraints constraints;
 
@@ -132,6 +136,7 @@ abstract class BasePopupProps<T> {
     this.disableFilter = false,
     this.cacheItems = false,
     this.containerBuilder,
+    this.itemsContainerBuilder,
     this.interceptCallBacks = false,
     this.infiniteScrollProps,
     this.onItemsLoaded,

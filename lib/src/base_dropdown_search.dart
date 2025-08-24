@@ -50,7 +50,7 @@ typedef PositionCallback = RelativeRect Function(
     RenderBox dropdownBox, RenderBox overlay);
 typedef OnItemAdded<T> = void Function(List<T> selectedItems, T addedItem);
 typedef OnItemRemoved<T> = void Function(List<T> selectedItems, T removedItem);
-typedef ContainerBuilder<T> = Widget Function(
+typedef ContainerBuilder = Widget Function(
     BuildContext context, Widget child);
 
 enum PopupMode { dialog, modalBottomSheet, menu, bottomSheet, autocomplete }
