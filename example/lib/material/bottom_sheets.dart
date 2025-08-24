@@ -287,7 +287,7 @@ class _MaterialBottomSheetExamplesPageState
                 popupProps: PopupProps.bottomSheet(
                   showSelectedItems: true,
                   interceptCallBacks: true, //important line
-                  itemBuilder: (ctx, item, isDisabled, isSelected) {
+                  itemBuilder: (ctx, item, isDisabled, isSelected, _) {
                     return ListTile(
                       selected: isSelected,
                       title: Text(item.level1),

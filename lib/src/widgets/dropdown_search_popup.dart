@@ -497,6 +497,7 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
         item,
         isDisabled,
         !widget.props.showSelectedItems ? false : _isSelectedItem(item),
+        _handleSelectedItem,
       );
 
       if (widget.props.interceptCallBacks) return w;
@@ -524,7 +525,13 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       return CheckBoxWidget(
         clickProps: widget.props.itemClickProps,
         checkBox: (cxt, checked) {
-          return widget.props.checkBoxBuilder!(cxt, item, isDisabled, checked);
+          return widget.props.checkBoxBuilder!(
+            cxt,
+            item,
+            isDisabled,
+            checked,
+            _handleSelectedItem,
+          );
         },
         interceptCallBacks: widget.props.interceptCallBacks,
         textDirection: widget.props.textDirection,

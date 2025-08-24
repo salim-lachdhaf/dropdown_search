@@ -71,7 +71,7 @@ class _MaterialAutocompleteExamplesPageState
                             groupId: UniqueKey()),
                         constraints: BoxConstraints(minWidth: 128),
                         fit: FlexFit.loose,
-                        itemBuilder: (context, item, isDisabled, isSelected) =>
+                        itemBuilder: (context, item, isDisabled, isSelected, _) =>
                             Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(item.$1,
@@ -157,7 +157,7 @@ class _MaterialAutocompleteExamplesPageState
                           groupId: UniqueKey(),
                         ),
                         showSelectedItems: true,
-                        itemBuilder: (ctx, item, isDisabled, isSelected) {
+                        itemBuilder: (ctx, item, isDisabled, isSelected, _) {
                           return ListTile(
                             leading: CircleAvatar(
                                 backgroundColor: Colors.blue,
@@ -233,7 +233,7 @@ class _MaterialAutocompleteExamplesPageState
                         ]);
                       },
                       popupProps: PopupProps.autocomplete(
-                        itemBuilder: (context, item, isDisabled, isSelected) {
+                        itemBuilder: (context, item, isDisabled, isSelected, _) {
                           return ListTile(
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 12),
@@ -326,7 +326,7 @@ class _MaterialAutocompleteExamplesPageState
                         );
                       },
                       popupProps: PopupProps.autocomplete(
-                        itemBuilder: (context, item, isDisabled, isSelected) {
+                        itemBuilder: (context, item, isDisabled, isSelected, _) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 12.0),
                             child: Text(

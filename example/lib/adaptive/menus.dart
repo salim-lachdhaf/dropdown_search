@@ -68,7 +68,7 @@ class _AdaptiveMenuExamplesPageState extends State<AdaptiveMenuExamplesPage> {
                       menuProps: MenuProps(align: MenuAlign.bottomCenter),
                       constraints: BoxConstraints(minWidth: 128),
                       fit: FlexFit.loose,
-                      itemBuilder: (context, item, isDisabled, isSelected) =>
+                      itemBuilder: (context, item, isDisabled, isSelected, _) =>
                           Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(item.$1,
@@ -189,7 +189,7 @@ class _AdaptiveMenuExamplesPageState extends State<AdaptiveMenuExamplesPage> {
                               true, //data will be filtered by the backend
                           showSearchBox: true,
                           showSelectedItems: true,
-                          itemBuilder: (ctx, item, isDisabled, isSelected) {
+                          itemBuilder: (ctx, item, isDisabled, isSelected, _) {
                             return ListTile(
                               leading: CircleAvatar(
                                   backgroundColor: Colors.blue,
@@ -264,7 +264,7 @@ class _AdaptiveMenuExamplesPageState extends State<AdaptiveMenuExamplesPage> {
                       },
                       popupProps: AdaptivePopupProps(
                         materialProps: PopupProps.menu(
-                          itemBuilder: (context, item, isDisabled, isSelected) {
+                          itemBuilder: (context, item, isDisabled, isSelected, _) {
                             return ListTile(
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 12),
@@ -351,7 +351,7 @@ class _AdaptiveMenuExamplesPageState extends State<AdaptiveMenuExamplesPage> {
                       ),
                       popupProps: AdaptivePopupProps(
                         materialProps: PopupProps.menu(
-                          itemBuilder: (context, item, isDisabled, isSelected) {
+                          itemBuilder: (context, item, isDisabled, isSelected, _) {
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 12.0),

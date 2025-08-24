@@ -275,7 +275,7 @@ class _CupertinoDialogExamplesPageState
                 popupProps: CupertinoPopupProps.dialog(
                   showSelectedItems: true,
                   interceptCallBacks: true, //important line
-                  itemBuilder: (ctx, item, isDisabled, isSelected) {
+                  itemBuilder: (ctx, item, isDisabled, isSelected, _) {
                     return ListTile(
                       selected: isSelected,
                       title: Text(item.level1),
@@ -486,7 +486,7 @@ Widget customDropDownExampleMultiSelection(
 }
 
 Widget userModelPopupItem(
-    BuildContext context, UserModel item, bool isDisabled, bool isSelected) {
+    BuildContext context, UserModel item, bool isDisabled, bool isSelected, _) {
   return Container(
     decoration: !isSelected
         ? null

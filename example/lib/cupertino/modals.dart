@@ -278,7 +278,7 @@ class _CupertinoModalsExamplesPageState
                 popupProps: CupertinoPopupProps.modalBottomSheet(
                   showSelectedItems: true,
                   interceptCallBacks: true, //important line
-                  itemBuilder: (ctx, item, isDisabled, isSelected) {
+                  itemBuilder: (ctx, item, isDisabled, isSelected, _) {
                     return ListTile(
                       selected: isSelected,
                       title: Text(item.level1),
