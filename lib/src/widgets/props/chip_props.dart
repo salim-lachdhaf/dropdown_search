@@ -38,6 +38,7 @@ class ChipProps {
   final BoxConstraints? deleteIconBoxConstraints;
   final ChipAnimationStyle? chipAnimationStyle;
   final WidgetStateProperty<Color?>? color;
+  final MouseCursor? mouseCursor;
 
   const ChipProps({
     this.avatar,
@@ -76,6 +77,7 @@ class ChipProps {
     this.avatarBoxConstraints,
     this.deleteIconBoxConstraints,
     this.chipAnimationStyle,
+    this.mouseCursor,
   });
 
   ChipProps copyWith({
@@ -115,6 +117,7 @@ class ChipProps {
     BoxConstraints? deleteIconBoxConstraints,
     ChipAnimationStyle? chipAnimationStyle,
     WidgetStateProperty<Color?>? color,
+    MouseCursor? mouseCursor,
   }) {
     return ChipProps(
       avatar: avatar ?? this.avatar,
@@ -126,8 +129,7 @@ class ChipProps {
       deleteIcon: deleteIcon ?? this.deleteIcon,
       onDeleted: onDeleted ?? this.onDeleted,
       deleteIconColor: deleteIconColor ?? this.deleteIconColor,
-      deleteButtonTooltipMessage:
-          deleteButtonTooltipMessage ?? this.deleteButtonTooltipMessage,
+      deleteButtonTooltipMessage: deleteButtonTooltipMessage ?? this.deleteButtonTooltipMessage,
       onPressed: onPressed ?? this.onPressed,
       pressElevation: pressElevation ?? this.pressElevation,
       disabledColor: disabledColor ?? this.disabledColor,
@@ -141,8 +143,7 @@ class ChipProps {
       backgroundColor: backgroundColor ?? this.backgroundColor,
       padding: padding ?? this.padding,
       visualDensity: visualDensity ?? this.visualDensity,
-      materialTapTargetSize:
-          materialTapTargetSize ?? this.materialTapTargetSize,
+      materialTapTargetSize: materialTapTargetSize ?? this.materialTapTargetSize,
       elevation: elevation ?? this.elevation,
       shadowColor: shadowColor ?? this.shadowColor,
       surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor,
@@ -152,10 +153,10 @@ class ChipProps {
       avatarBorder: avatarBorder ?? this.avatarBorder,
       iconTheme: iconTheme ?? this.iconTheme,
       avatarBoxConstraints: avatarBoxConstraints ?? this.avatarBoxConstraints,
-      deleteIconBoxConstraints:
-          deleteIconBoxConstraints ?? this.deleteIconBoxConstraints,
+      deleteIconBoxConstraints: deleteIconBoxConstraints ?? this.deleteIconBoxConstraints,
       chipAnimationStyle: chipAnimationStyle ?? this.chipAnimationStyle,
       color: color ?? this.color,
+      mouseCursor: mouseCursor ?? this.mouseCursor,
     );
   }
 
@@ -172,8 +173,7 @@ class ChipProps {
       deleteIcon: other.deleteIcon ?? deleteIcon,
       onDeleted: other.onDeleted ?? onDeleted,
       deleteIconColor: other.deleteIconColor ?? deleteIconColor,
-      deleteButtonTooltipMessage:
-          other.deleteButtonTooltipMessage ?? deleteButtonTooltipMessage,
+      deleteButtonTooltipMessage: other.deleteButtonTooltipMessage ?? deleteButtonTooltipMessage,
       onPressed: other.onPressed ?? onPressed,
       pressElevation: other.pressElevation ?? pressElevation,
       disabledColor: other.disabledColor ?? disabledColor,
@@ -187,8 +187,7 @@ class ChipProps {
       backgroundColor: other.backgroundColor ?? backgroundColor,
       padding: other.padding ?? padding,
       visualDensity: other.visualDensity ?? visualDensity,
-      materialTapTargetSize:
-          other.materialTapTargetSize ?? materialTapTargetSize,
+      materialTapTargetSize: other.materialTapTargetSize ?? materialTapTargetSize,
       elevation: other.elevation ?? elevation,
       shadowColor: other.shadowColor ?? shadowColor,
       surfaceTintColor: other.surfaceTintColor ?? surfaceTintColor,
@@ -198,10 +197,10 @@ class ChipProps {
       avatarBorder: other.avatarBorder,
       iconTheme: other.iconTheme ?? iconTheme,
       avatarBoxConstraints: other.avatarBoxConstraints ?? avatarBoxConstraints,
-      deleteIconBoxConstraints:
-          other.deleteIconBoxConstraints ?? deleteIconBoxConstraints,
+      deleteIconBoxConstraints: other.deleteIconBoxConstraints ?? deleteIconBoxConstraints,
       chipAnimationStyle: other.chipAnimationStyle ?? chipAnimationStyle,
       color: other.color ?? color,
+      mouseCursor: other.mouseCursor ?? mouseCursor,
     );
   }
 }

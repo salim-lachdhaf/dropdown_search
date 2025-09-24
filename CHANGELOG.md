@@ -1,4 +1,4 @@
-## [7.0.0-pre2] - 2024.12.12
+## [7.0.0-pre4] - 2024.02.16
 * #### New Feature:
   * Add adaptive platform Ui feature: `Material`, `Cupertino` and `Adaptive`
   * Add `autocomplete` new popup mode
@@ -86,7 +86,10 @@
   * add `errorBuilder` for `InfiniteScrollProps`
   * add possibility to reload item using `myGlobalKey.currentState?.reloadItems(String filter)` or `myGlobalKey.currentState?.loadMoreItems(String filter, int skip)`
   * add `textProps` to have an ability to pass default text props through the context to `selectedItem` 
-
+  * add new property for TextFieldProps
+  * add the ability to listen to focus changes using `onFocusChange`
+  * add new callbacks `onBeforeClear` and `onClear` to handle dropdown clear button action
+  
 * #### Breaking changes
   * change `onChanged` to `onSelected`
   * `PopupPropsMultiSelection` changed to `MultiSelectionPopupProps` 

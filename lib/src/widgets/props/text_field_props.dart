@@ -63,7 +63,7 @@ class TextFieldProps extends BaseTextFieldProps {
   final bool? ignorePointers;
   final TextMagnifierConfiguration? magnifierConfiguration;
   final TapRegionCallback? onTapOutside;
-  final bool scribbleEnabled;
+  final bool stylusHandwritingEnabled;
   final UndoHistoryController? undoController;
   final SpellCheckConfiguration? spellCheckConfiguration;
   final ValueChanged<String>? onSelected;
@@ -71,6 +71,9 @@ class TextFieldProps extends BaseTextFieldProps {
   final ValueChanged<String>? onSubmitted;
   final bool onTapAlwaysCalled;
   final Object groupId;
+  final TapRegionUpCallback? onTapUpOutside;
+  final bool? selectAllOnFocus;
+  final List<Locale>? hintLocales;
 
   const TextFieldProps({
     this.groupId = EditableText,
@@ -136,13 +139,15 @@ class TextFieldProps extends BaseTextFieldProps {
     this.ignorePointers,
     this.magnifierConfiguration,
     this.onTapOutside,
-    this.scribbleEnabled = true,
+    this.stylusHandwritingEnabled = EditableText.defaultStylusHandwritingEnabled,
     this.spellCheckConfiguration,
     this.undoController,
+    this.onTapUpOutside,
+    this.hintLocales,
+    this.selectAllOnFocus,
   });
 
-  static Widget _defaultContextMenuBuilder(
-      BuildContext context, EditableTextState editableTextState) {
+  static Widget _defaultContextMenuBuilder(BuildContext context, EditableTextState editableTextState) {
     return AdaptiveTextSelectionToolbar.editableText(
       editableTextState: editableTextState,
     );

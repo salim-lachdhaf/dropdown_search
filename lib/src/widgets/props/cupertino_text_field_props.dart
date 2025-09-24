@@ -71,7 +71,9 @@ class CupertinoTextFieldProps extends BaseTextFieldProps {
   final bool cursorOpacityAnimates;
   final TextMagnifierConfiguration? magnifierConfiguration;
   final TapRegionCallback? onTapOutside;
-  final bool scribbleEnabled;
+  final bool stylusHandwritingEnabled;
+  final TapRegionCallback? onTapUpOutside;
+  final CrossAxisAlignment crossAxisAlignment;
   final UndoHistoryController? undoController;
   final SpellCheckConfiguration? spellCheckConfiguration;
   final ValueChanged<String>? onSelected;
@@ -88,6 +90,7 @@ class CupertinoTextFieldProps extends BaseTextFieldProps {
   final OverlayVisibilityMode prefixMode;
   final Widget? suffix;
   final OverlayVisibilityMode suffixMode;
+  final bool? selectAllOnFocus;
 
   const CupertinoTextFieldProps({
     this.groupId = EditableText,
@@ -157,9 +160,13 @@ class CupertinoTextFieldProps extends BaseTextFieldProps {
     this.cursorOpacityAnimates = true,
     this.magnifierConfiguration,
     this.onTapOutside,
-    this.scribbleEnabled = true,
     this.spellCheckConfiguration,
     this.undoController,
+    this.stylusHandwritingEnabled =
+        EditableText.defaultStylusHandwritingEnabled,
+    this.onTapUpOutside,
+    this.crossAxisAlignment = CrossAxisAlignment.center,
+    this.selectAllOnFocus,
   });
 
   static Widget _defaultContextMenuBuilder(

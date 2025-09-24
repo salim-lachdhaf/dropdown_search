@@ -16,22 +16,29 @@ class AdaptiveDropdownSearch<T> extends BaseDropdownSearch<T> {
     super.dropdownBuilder,
     super.suffixProps,
     super.clickProps,
+    super.chipProps,
     super.enabled,
     super.filterFn,
     super.itemAsString,
     super.compareFn,
     super.onBeforeChange,
     super.onBeforePopupOpening,
+    super.onFocusChange,
+    super.onBeforeClear,
+    super.onClear,
     //form properties
     super.onSaved,
     super.validator,
     super.decoratorProps,
+    super.textProps,
   }) : super(
-          popupProps:
-              context.getUiToApply(UiMode.adaptive) == UiToApply.cupertino
-                  ? popupProps.cupertinoProps
-                  : popupProps.materialProps,
-          uiMode: UiMode.adaptive,
+          uiMode: context.getUiToApply(UiMode.adaptive),
+          popupProps: context.getUiToApply(UiMode.adaptive) == UiToApply.cupertino
+              ? popupProps.cupertinoProps
+              : popupProps.materialProps,
+          groupId: context.getUiToApply(UiMode.adaptive) == UiToApply.cupertino
+              ? popupProps.cupertinoProps.autoCompleteProps.groupId
+              : popupProps.materialProps.autoCompleteProps.groupId,
         );
 
   AdaptiveDropdownSearch.multiSelection({
@@ -44,6 +51,7 @@ class AdaptiveDropdownSearch<T> extends BaseDropdownSearch<T> {
     super.items,
     super.suffixProps,
     super.clickProps,
+    super.chipProps,
     super.enabled = true,
     super.filterFn,
     super.itemAsString,
@@ -53,16 +61,23 @@ class AdaptiveDropdownSearch<T> extends BaseDropdownSearch<T> {
     super.onSelected,
     super.onBeforeChange,
     super.onBeforePopupOpening,
+    super.onFocusChange,
     super.dropdownBuilder,
+    super.onBeforeClear,
+    super.onClear,
     //form properties
     super.onSaved,
     super.validator,
     super.decoratorProps,
+    super.selectedItemsWrapProps,
+    super.textProps,
   }) : super.multiSelection(
-          popupProps:
-              context.getUiToApply(UiMode.adaptive) == UiToApply.cupertino
-                  ? popupProps.cupertinoProps
-                  : popupProps.materialProps,
-          uiMode: UiMode.adaptive,
+          uiMode: context.getUiToApply(UiMode.adaptive),
+          popupProps: context.getUiToApply(UiMode.adaptive) == UiToApply.cupertino
+              ? popupProps.cupertinoProps
+              : popupProps.materialProps,
+          groupId: context.getUiToApply(UiMode.adaptive) == UiToApply.cupertino
+              ? popupProps.cupertinoProps.autoCompleteProps.groupId
+              : popupProps.materialProps.autoCompleteProps.groupId,
         );
 }

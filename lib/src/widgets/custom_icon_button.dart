@@ -39,6 +39,7 @@ class CustomIconButton extends StatelessWidget {
       mouseCursor: props.mouseCursor,
       tooltip: props.tooltip,
       visualDensity: props.visualDensity,
+      onHover: props.onHover,
     );
   }
 }

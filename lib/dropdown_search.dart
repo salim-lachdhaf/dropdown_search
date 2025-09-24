@@ -31,6 +31,7 @@ export 'src/widgets/props/chip_props.dart';
 export 'src/widgets/props/cupertino_popup_props.dart';
 export 'src/widgets/props/icon_button_props.dart';
 export 'src/widgets/props/text_field_props.dart';
+export 'src/widgets/props/text_props.dart';
 export 'src/widgets/props/wrap_props.dart';
 export 'src/widgets/props/suggestions_props.dart';
 export 'src/widgets/props/scroll_props.dart';

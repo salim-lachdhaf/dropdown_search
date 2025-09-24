@@ -64,7 +64,9 @@ class CustomCupertinoTextFields extends StatelessWidget {
       cursorOpacityAnimates: props.cursorOpacityAnimates,
       magnifierConfiguration: props.magnifierConfiguration,
       onTapOutside: props.onTapOutside,
-      scribbleEnabled: props.scribbleEnabled,
+      stylusHandwritingEnabled: props.stylusHandwritingEnabled,
+      onTapUpOutside: props.onTapUpOutside,
+      crossAxisAlignment: props.crossAxisAlignment,
       undoController: props.undoController,
       spellCheckConfiguration: props.spellCheckConfiguration,
       padding: props.padding,
@@ -77,6 +79,7 @@ class CustomCupertinoTextFields extends StatelessWidget {
       prefixMode: props.prefixMode,
       suffix: props.suffix,
       suffixMode: props.suffixMode,
+      selectAllOnFocus: props.selectAllOnFocus,
     );
   }
 }

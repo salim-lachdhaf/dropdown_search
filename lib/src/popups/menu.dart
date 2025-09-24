@@ -148,9 +148,9 @@ class _MaterialPopupMenuRoute<T> extends PopupRoute<T> {
 
       return CustomSingleChildLayout(
         delegate: menuProps.layoutDelegate?.call(
-          context,
-          position,
-        ) ??
+              context,
+              position,
+            ) ??
             _PopupMenuRouteLayout(context, position),
         child: InheritedTheme.capture(
                 from: context, to: Navigator.of(context).context)
@@ -231,9 +231,9 @@ class _CupertinoPopupMenuRoute<T> extends PopupRoute<T> {
       );
       return CustomSingleChildLayout(
         delegate: menuProps.layoutDelegate?.call(
-          context,
-          position,
-        ) ??
+              context,
+              position,
+            ) ??
             _PopupMenuRouteLayout(context, position),
         child: InheritedTheme.capture(
                 from: parentContext, to: Navigator.of(context).context)

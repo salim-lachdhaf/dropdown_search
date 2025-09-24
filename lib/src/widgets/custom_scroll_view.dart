@@ -24,6 +24,7 @@ class CustomSingleScrollView extends StatelessWidget {
       scrollDirection: Axis.vertical,
       reverse: scrollProps.reverse,
       primary: scrollProps.primary,
+      restorationId: scrollProps.restorationId,
       child: child,
     );
   }
