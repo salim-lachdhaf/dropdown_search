@@ -118,11 +118,9 @@ extension PlatformUi on BuildContext {
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
           case TargetPlatform.windows:
-          default:
             return UiToApply.material;
         }
       case UiMode.material:
-      default:
         return UiToApply.material;
     }
   }
