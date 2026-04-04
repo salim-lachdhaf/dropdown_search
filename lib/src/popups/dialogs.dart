@@ -62,7 +62,6 @@ Future openAdaptiveDialog(
     case TargetPlatform.fuchsia:
     case TargetPlatform.linux:
     case TargetPlatform.windows:
-    default:
       return openMaterialDialog(context, content, props.materialProps);
   }
 }

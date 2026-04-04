@@ -53,7 +53,6 @@ Future openAdaptiveModalBottomSheet(
     case TargetPlatform.fuchsia:
     case TargetPlatform.linux:
     case TargetPlatform.windows:
-    default:
       return openMaterialModalBottomSheet(
           context, content, props.materialProps);
   }
