@@ -38,15 +38,11 @@ typedef LoadingBuilder = Widget Function(
     BuildContext context, String searchEntry);
 typedef BeforeChange<T> = FutureOr<bool> Function(T? prevItem, T? nextItem);
 typedef BeforePopupOpening<T> = FutureOr<bool> Function(T? selectedItem);
-typedef BeforePopupOpeningMultiSelection<T> = FutureOr<bool> Function(
-    List<T> selectedItem);
-typedef BeforeChangeMultiSelection<T> = FutureOr<bool> Function(
-    List<T> prevItems, List<T> nextItems);
+typedef BeforePopupOpeningMultiSelection<T> = FutureOr<bool> Function(List<T> selectedItem);
+typedef BeforeChangeMultiSelection<T> = FutureOr<bool> Function(List<T> prevItems, List<T> nextItems);
 
-typedef ValidationMultiSelectionBuilder<T> = Widget Function(
-    BuildContext context, List<T> items);
-typedef PositionCallback = RelativeRect Function(
-    RenderBox dropdownBox, RenderBox overlay);
+typedef ValidationMultiSelectionBuilder<T> = Widget Function(BuildContext context, List<T> items, void Function() validate);
+typedef PositionCallback = RelativeRect Function(RenderBox dropdownBox, RenderBox overlay);
 typedef OnItemAdded<T> = void Function(List<T> selectedItems, T addedItem);
 typedef OnItemRemoved<T> = void Function(List<T> selectedItems, T removedItem);
 typedef OnClearMultiSelection<T> = void Function();
