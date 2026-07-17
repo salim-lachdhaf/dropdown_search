@@ -51,6 +51,35 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   final ValueNotifier<List<T>> _selectedItemsNotifier = ValueNotifier([]);
   final ScrollController scrollController = ScrollController();
   final List<T> _currentShowedItems = [];
+
+  /// GlobalKey placed on the selected item widget so [Scrollable.ensureVisible]
+  /// can locate its exact RenderObject position in Phase 2.
+  final GlobalKey _selectedItemKey = GlobalKey();
+
+  /// GlobalKey placed on the item at list-index 0 (when it is not the selected
+  /// item). Used in Phase 1 to measure the ACTUAL rendered item height.
+  final GlobalKey _measurementKey = GlobalKey();
+
+  /// Held so we can remove it in [dispose] if the popup closes before
+  /// the ListView has finished its first layout.
+  VoidCallback? _scrollPositionListener;
+
+  /// Returns the controller active on the ListView (custom or internal).
+  ScrollController get _effectiveScrollController =>
+      widget.props.listViewProps.controller ?? scrollController;
+
+  /// Cached item height to reuse across scrolling passes once measured.
+  double? _measuredItemHeight;
+
+  /// Counter to prevent infinite recursion if a scroll target is completely unreachable.
+  int _scrollRetryCount = 0;
+
+  /// Holds the modal route animation reference so we can check completion and remove listener.
+  Animation<double>? _routeAnimation;
+
+  /// Status listener to trigger scrolling only after the opening route transition is fully complete.
+  AnimationStatusListener? _routeAnimationListener;
+
   late TextEditingController searchBoxController;
   late bool isInfiniteScrollEnded;
 
@@ -85,14 +114,35 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
     Future.delayed(
       Duration.zero,
-      () => _manageLoadItems(searchBoxController.text, isFirstLoad: true),
+          () => _manageLoadItems(searchBoxController.text, isFirstLoad: true),
     );
 
     WidgetsBinding.instance.endOfFrame.then(
-      (_) {
+          (_) {
         if (mounted) widget.props.onDisplayed?.call();
       },
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null && route.animation != null) {
+      _routeAnimation = route.animation;
+      if (_routeAnimation!.isCompleted) {
+        _scheduleScrollToSelectedItem();
+      } else {
+        _routeAnimationListener = (status) {
+          if (status == AnimationStatus.completed) {
+            _routeAnimation?.removeStatusListener(_routeAnimationListener!);
+            _routeAnimationListener = null;
+            _scheduleScrollToSelectedItem();
+          }
+        };
+        _routeAnimation!.addStatusListener(_routeAnimationListener!);
+      }
+    }
   }
 
   @override
@@ -108,6 +158,18 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   void dispose() {
     _itemsStream.close();
     _debounce?.cancel();
+
+    // Remove any pending scroll listener before disposing
+    if (_scrollPositionListener != null) {
+      _effectiveScrollController.removeListener(_scrollPositionListener!);
+      _scrollPositionListener = null;
+    }
+
+    // Clean up route animation listener if popup disposes before completion
+    if (_routeAnimation != null && _routeAnimationListener != null) {
+      _routeAnimation!.removeStatusListener(_routeAnimationListener!);
+      _routeAnimationListener = null;
+    }
 
     if (widget.props.searchFieldProps.controller == null) {
       searchBoxController.dispose();
@@ -214,7 +276,7 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
           child: ListView.builder(
             hitTestBehavior: widget.props.listViewProps.hitTestBehavior,
             controller:
-                widget.props.listViewProps.controller ?? scrollController,
+            widget.props.listViewProps.controller ?? scrollController,
             shrinkWrap: widget.props.listViewProps.shrinkWrap,
             padding: widget.props.listViewProps.padding,
             scrollDirection: widget.props.listViewProps.scrollDirection,
@@ -223,28 +285,35 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
             physics: widget.props.listViewProps.physics,
             itemExtent: widget.props.listViewProps.itemExtent,
             addAutomaticKeepAlives:
-                widget.props.listViewProps.addAutomaticKeepAlives,
+            widget.props.listViewProps.addAutomaticKeepAlives,
             addRepaintBoundaries:
-                widget.props.listViewProps.addRepaintBoundaries,
+            widget.props.listViewProps.addRepaintBoundaries,
             addSemanticIndexes: widget.props.listViewProps.addSemanticIndexes,
             cacheExtent: widget.props.listViewProps.cacheExtent,
             semanticChildCount: widget.props.listViewProps.semanticChildCount,
             dragStartBehavior: widget.props.listViewProps.dragStartBehavior,
             keyboardDismissBehavior:
-                widget.props.listViewProps.keyboardDismissBehavior,
+            widget.props.listViewProps.keyboardDismissBehavior,
             restorationId: widget.props.listViewProps.restorationId,
             clipBehavior: widget.props.listViewProps.clipBehavior,
             prototypeItem: widget.props.listViewProps.prototypeItem,
             itemExtentBuilder: widget.props.listViewProps.itemExtentBuilder,
             findChildIndexCallback:
-                widget.props.listViewProps.findChildIndexCallback,
+            widget.props.listViewProps.findChildIndexCallback,
             itemCount: itemCount + (isInfiniteScrollEnded ? 0 : 1),
             itemBuilder: (context, index) {
               if (index < itemCount) {
                 var item = data[index];
-                return widget.isMultiSelectionMode
+                final w = widget.isMultiSelectionMode
                     ? _itemWidgetMultiSelection(item)
                     : _itemWidgetSingleSelection(item);
+                if (index == 0 && !_isSelectedItem(item)) {
+                  return KeyedSubtree(
+                    key: _measurementKey,
+                    child: w,
+                  );
+                }
+                return w;
               }
               if (pLoadingMoreError != null) {
                 return _loadMoreErrorWidget(pLoadingMoreError, itemCount);
@@ -328,7 +397,7 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
           border:
-              Border(top: BorderSide(width: 1, color: Colors.grey.shade300))),
+          Border(top: BorderSide(width: 1, color: Colors.grey.shade300))),
       child: TextButton(
         onPressed: onValidate,
         child: Text("DONE"),
@@ -413,9 +482,9 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   }
 
   Future<void> _manageLoadItems(
-    String filter, {
-    bool isFirstLoad = false,
-  }) async {
+      String filter, {
+        bool isFirstLoad = false,
+      }) async {
     //if the filter is not handled by user, we load full list once
     if (!widget.props.cacheItems || isFirstLoad) _cachedItems.clear();
 
@@ -432,10 +501,10 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   }
 
   Future<void> _manageLoadMoreItems(
-    String filter, {
-    int? skip,
-    bool showLoading = true,
-  }) async {
+      String filter, {
+        int? skip,
+        bool showLoading = true,
+      }) async {
     if (widget.items == null) return;
 
     final loadProps = widget.props.infiniteScrollProps?.loadProps;
@@ -446,7 +515,7 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
     try {
       final List<T> myItems =
-          await widget.items!(filter, loadProps?.copy(skip: skip));
+      await widget.items!(filter, loadProps?.copy(skip: skip));
 
       if (loadProps != null) {
         isInfiniteScrollEnded = myItems.length < loadProps.take;
@@ -470,6 +539,120 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
     }
   }
 
+  void _scheduleScrollToSelectedItem() {
+    if (widget.defaultSelectedItems.isEmpty) return;
+
+    _removePendingScrollListener();
+
+    if (_effectiveScrollController.hasClients) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _scrollToSelectedItem();
+      });
+    } else {
+      // If controller doesn't have clients yet, it means the ListView is not built/attached.
+      // We wait for the next frame and try again.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _scheduleScrollToSelectedItem();
+      });
+    }
+  }
+
+  void _removePendingScrollListener() {
+    if (_scrollPositionListener != null) {
+      _effectiveScrollController.removeListener(_scrollPositionListener!);
+      _scrollPositionListener = null;
+    }
+  }
+
+  void _scrollToSelectedItem() {
+    if (widget.defaultSelectedItems.isEmpty) return;
+
+    final selected = widget.defaultSelectedItems.first;
+    final index = _currentShowedItems.indexWhere(
+      (item) => widget.compareFn != null
+          ? widget.compareFn!(item, selected)
+          : item == selected,
+    );
+    if (index < 0) {
+      return;
+    }
+
+    // Phase 1: check if item is already rendered in the viewport.
+    final existingCtx = _selectedItemKey.currentContext;
+    if (existingCtx != null) {
+      Scrollable.ensureVisible(
+        existingCtx,
+        alignment: 0.5,
+        duration: Duration.zero,
+      );
+      _scrollRetryCount = 0;
+      return;
+    }
+
+    // Slow path: item is outside the viewport (lazy list hasn't built it).
+    if (!_effectiveScrollController.hasClients) return;
+
+    final pos = _effectiveScrollController.position;
+    final total = _currentShowedItems.length;
+    if (total <= 1) return;
+
+    // ── Compute item height ───────────────────────────────────────────────────
+    final configuredExtent = widget.props.listViewProps.itemExtent;
+    double itemHeight = 56.0; // Default fallback to 56.0 (standard ListTile height)
+
+    if (configuredExtent != null) {
+      itemHeight = configuredExtent;
+    } else if (_measuredItemHeight != null) {
+      itemHeight = _measuredItemHeight!;
+    } else {
+      // 1. Try to measure the height of the first item (always rendered initially)
+      final measureCtx = _measurementKey.currentContext;
+      if (measureCtx != null) {
+        final box = measureCtx.findRenderObject() as RenderBox?;
+        if (box != null && box.hasSize && box.size.height > 0) {
+          _measuredItemHeight = box.size.height;
+          itemHeight = box.size.height;
+        }
+      }
+    }
+
+    // Centre the target item in the viewport.
+    final centred = index * itemHeight - pos.viewportDimension / 2.0;
+
+    // Calculate estimated maximum scroll offset to prevent jumping past the end of the list.
+    final double estimatedMaxExtent = total * itemHeight - pos.viewportDimension;
+    final double maxScroll = estimatedMaxExtent > 0 ? estimatedMaxExtent : 0.0;
+    final targetOffset = centred.clamp(0.0, maxScroll);
+
+    // If the jump is negligible, we might be stuck or already there.
+    if ((_effectiveScrollController.offset - targetOffset).abs() < 1.0 &&
+        _scrollRetryCount > 0) {
+      // If we already tried jumping here and still don't see the item context,
+      // it might not be rendered yet or index is wrong.
+    } else {
+      _effectiveScrollController.jumpTo(targetOffset);
+    }
+
+    // Phase 2: after the jump, wait for layout and check if item is now built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final ctx = _selectedItemKey.currentContext;
+      if (ctx != null) {
+        Scrollable.ensureVisible(
+          ctx,
+          alignment: 0.5,
+          duration: Duration.zero,
+        );
+        _scrollRetryCount = 0;
+      } else {
+        if (_scrollRetryCount < 5) {
+          _scrollRetryCount++;
+          _scrollToSelectedItem();
+        }
+      }
+    });
+  }
+
   void _addDataToStream(List<T> data) {
     if (_itemsStream.isClosed) return;
     _itemsStream.add(data);
@@ -477,6 +660,11 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
     //update showed data list
     _currentShowedItems.clear();
     _currentShowedItems.addAll(data);
+
+    // Only trigger the scroll if the route animation is already complete.
+    if (_routeAnimation == null || _routeAnimation!.isCompleted) {
+      _scheduleScrollToSelectedItem();
+    }
 
     if (widget.props.onItemsLoaded != null) {
       widget.props.onItemsLoaded!(data);
@@ -490,28 +678,34 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
 
   Widget _itemWidgetSingleSelection(T item) {
     final isDisabled = _isDisabled(item);
+    final bool isSelected = _isSelectedItem(item);
+    final bool isFirstSelected = widget.defaultSelectedItems.isNotEmpty &&
+        _isEqual(item, widget.defaultSelectedItems.first);
+    final Key? itemKey = isFirstSelected ? _selectedItemKey : null;
 
     if (widget.props.itemBuilder != null) {
       var w = widget.props.itemBuilder!(
         context,
         item,
         isDisabled,
-        !widget.props.showSelectedItems ? false : _isSelectedItem(item),
+        !widget.props.showSelectedItems ? false : isSelected,
       );
 
       if (widget.props.interceptCallBacks) return w;
 
       return CustomInkWell(
+        key: itemKey,
         clickProps: widget.props.itemClickProps,
         onTap: isDisabled ? null : () => _handleSelectedItem(item),
         child: IgnorePointer(child: w),
       );
     } else {
       return ListTile(
+        key: itemKey,
         enabled: !isDisabled,
         title: Text(_itemAsString(item)),
         selected:
-            !widget.props.showSelectedItems ? false : _isSelectedItem(item),
+        !widget.props.showSelectedItems ? false : isSelected,
         onTap: isDisabled ? null : () => _handleSelectedItem(item),
       );
     }
@@ -571,13 +765,13 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
   Widget _searchField() {
     final textField = widget.uiMode == UiToApply.cupertino
         ? CustomCupertinoTextFields(
-            props: widget.props.searchFieldProps as CupertinoTextFieldProps,
-            controller: searchBoxController,
-          )
+      props: widget.props.searchFieldProps as CupertinoTextFieldProps,
+      controller: searchBoxController,
+    )
         : CustomTextFields(
-            props: widget.props.searchFieldProps as TextFieldProps,
-            controller: searchBoxController,
-          );
+      props: widget.props.searchFieldProps as TextFieldProps,
+      controller: searchBoxController,
+    );
 
     if (widget.props.searchFieldProps.containerBuilder != null) {
       return widget.props.searchFieldProps.containerBuilder!(
