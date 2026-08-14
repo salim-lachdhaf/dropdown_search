@@ -65,7 +65,7 @@ class MultiSelectionPopupProps<T> extends BasePopupProps<T> {
   const MultiSelectionPopupProps.autocomplete({
     this.autoCompleteProps = const AutocompleteProps(),
     TextFieldProps searchFieldProps = const TextFieldProps(),
-    super.fit,
+    super.fit = FlexFit.loose,
     super.suggestionsProps,
     super.scrollbarProps,
     super.listViewProps,
@@ -272,7 +272,7 @@ class PopupProps<T> extends BasePopupProps<T> {
   const PopupProps.autocomplete({
     this.autoCompleteProps = const AutocompleteProps(),
     TextFieldProps searchFieldProps = const TextFieldProps(),
-    super.fit,
+    super.fit = FlexFit.loose,
     super.suggestionsProps,
     super.scrollbarProps,
     super.listViewProps,
