@@ -4,6 +4,13 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:dropdown_search/src/utils.dart';
 import 'package:flutter/material.dart';
 
+class OverlayPosition {
+  const OverlayPosition(this.rect, this.isDown);
+
+  final RelativeRect rect;
+  final bool isDown;
+}
+
 abstract class CustomOverlayEntry {
   OverlayEntry? overlayEntry;
   Completer? completer;
@@ -35,7 +42,7 @@ abstract class CustomOverlayEntry {
   bool isOpen() => completer?.isCompleted == false;
 
   ///return overlay position based on different params such, constrains, alignment and screen size
-  RelativeRect getOverlayPosition(
+  OverlayPosition getOverlayPosition(
       BuildContext pContext, MenuAlign? pAlign, BoxConstraints pConstraints) {
     final dropdownBox = pContext.findRenderObject() as RenderBox;
     final overlayBox =
@@ -76,7 +83,10 @@ abstract class CustomOverlayEntry {
       }
     }
 
-    return getPosition(dropdownBox, overlayBox, popupSize, lAlign);
+    return OverlayPosition(
+      getPosition(dropdownBox, overlayBox, popupSize, lAlign),
+      lAlign.isDown,
+    );
   }
 }
 
@@ -107,13 +117,13 @@ class MaterialCustomOverlyEntry extends CustomOverlayEntry {
   @override
   getOverlayEntry(BuildContext context) {
     return OverlayEntry(builder: (ctx) {
-      final pos = getOverlayPosition(context, props.align, constraints)
-          .addMargin(props.margin);
+      final position = getOverlayPosition(context, props.align, constraints);
+      final pos = position.rect.addMargin(props.margin);
       return Positioned(
-        top: pos.top,
+        top: position.isDown ? pos.top : null,
         left: pos.left,
         right: pos.right,
-        bottom: pos.bottom,
+        bottom: position.isDown ? null : pos.bottom,
         child: Container(
           constraints: constraints,
           child: TapRegion(
@@ -156,13 +166,13 @@ class CupertinoCustomOverlyEntry extends CustomOverlayEntry {
   @override
   OverlayEntry getOverlayEntry(BuildContext context) {
     return OverlayEntry(builder: (ctx) {
-      final pos = getOverlayPosition(context, props.align, constraints)
-          .addMargin(props.margin);
+      final position = getOverlayPosition(context, props.align, constraints);
+      final pos = position.rect.addMargin(props.margin);
       return Positioned(
-        top: pos.top,
+        top: position.isDown ? pos.top : null,
         left: pos.left,
         right: pos.right,
-        bottom: pos.bottom,
+        bottom: position.isDown ? null : pos.bottom,
         child: Container(
           constraints: constraints,
           child: TapRegion(
