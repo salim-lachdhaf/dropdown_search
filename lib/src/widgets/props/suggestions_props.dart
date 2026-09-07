@@ -1,7 +1,7 @@
 import 'package:dropdown_search/src/base_dropdown_search.dart';
 import 'package:dropdown_search/src/widgets/props/scroll_props.dart';
 import 'package:dropdown_search/src/widgets/props/wrap_props.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'chip_props.dart';
 

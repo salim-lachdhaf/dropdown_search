@@ -1,5 +1,5 @@
 import 'package:dropdown_search/src/widgets/props/cupertino_text_field_props.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 class CustomCupertinoTextFields extends StatelessWidget {
   final CupertinoTextFieldProps props;

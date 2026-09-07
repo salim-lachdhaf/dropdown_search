@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 class SafeAreaProps {
   /// Whether to avoid system intrusions on the left.

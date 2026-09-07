@@ -1,6 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:dropdown_search/src/widgets/props/icon_button_props.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 typedef DropdownButtonAnimationBuilder = Widget Function(
     Widget child, bool isOpen);

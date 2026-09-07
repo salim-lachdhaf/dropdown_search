@@ -5,7 +5,7 @@ import 'package:dropdown_search/src/properties/list_view_props.dart';
 import 'package:dropdown_search/src/properties/scrollbar_props.dart';
 import 'package:dropdown_search/src/widgets/props/suggestions_props.dart';
 import 'package:dropdown_search/src/widgets/props/text_field_props.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'inkwell_props.dart';
 
