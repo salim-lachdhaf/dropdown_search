@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:dropdown_search/src/widgets/props/safe_area_props.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 class BottomSheetProps {
   final ShapeBorder? shape;

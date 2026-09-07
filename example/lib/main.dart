@@ -5,7 +5,7 @@ import 'package:example/material/autocomplete.dart';
 import 'package:example/material/bottom_sheets.dart';
 import 'package:example/material/modals.dart';
 import 'package:example/user_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'adaptive/autocomplete.dart';
 import 'adaptive/bottom_sheets.dart';

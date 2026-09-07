@@ -11,9 +11,9 @@ import 'package:dropdown_search/src/widgets/custom_icon_button.dart';
 import 'package:dropdown_search/src/widgets/custom_inkwell.dart';
 import 'package:dropdown_search/src/widgets/custom_wrap.dart';
 import 'package:dropdown_search/src/widgets/hover_builder.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 import 'widgets/custom_scroll_view.dart';

@@ -1,8 +1,8 @@
 import 'package:dropdown_search/src/widgets/props/inkwell_props.dart';
 import 'package:dropdown_search/src/utils.dart';
 import 'package:dropdown_search/src/widgets/custom_inkwell.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
 typedef WidgetCheckBox = Widget Function(BuildContext context, bool isChecked);
 
