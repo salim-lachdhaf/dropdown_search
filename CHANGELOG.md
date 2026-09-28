@@ -1,7 +1,11 @@
+## [8.1.0] - 2026.09.27
+
+* [Breaking] bump sdk to 3.5.0
+
 ## [8.0.0] - 2026.09.27
 
 * [Breaking] migrate material and cupertino widgets to material_ui, cupertino_ui
-* [Breaking] bump sdk to 3.4.0
+* [Breaking] bump sdk to 3.24.0
 * [Breaking] remove deprecated `cacheExtent` property
 * add `scrollCacheExtent` property to `ListViewProps`
 
