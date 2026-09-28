@@ -1,6 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
 Future openMaterialDialog(
     BuildContext context, Widget content, DialogProps props) {
@@ -62,7 +62,6 @@ Future openAdaptiveDialog(
     case TargetPlatform.fuchsia:
     case TargetPlatform.linux:
     case TargetPlatform.windows:
-    default:
       return openMaterialDialog(context, content, props.materialProps);
   }
 }

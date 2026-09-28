@@ -6,7 +6,7 @@ import 'package:dropdown_search/src/popups/props/menu_props.dart';
 import 'package:dropdown_search/src/popups/props/modal_bottom_sheet_props.dart';
 import 'package:dropdown_search/src/widgets/props/base_popup_props.dart';
 import 'package:dropdown_search/src/widgets/props/cupertino_text_field_props.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CupertinoMultiSelectionPopupProps<T> extends BasePopupProps<T> {
   ///dialog mode props

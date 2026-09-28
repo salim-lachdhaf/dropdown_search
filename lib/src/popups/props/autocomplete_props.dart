@@ -1,6 +1,6 @@
 import 'package:dropdown_search/src/base_dropdown_search.dart';
 import 'package:dropdown_search/src/popups/props/menu_props.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AutocompleteProps {
   final MenuAlign? align;

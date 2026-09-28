@@ -18,12 +18,14 @@ environment:
   sdk: ">=3.0.0 <=4.0.0"
 
 dependencies:
-  dio: ^5.9.2
+  dio: ^5.11.1
   dropdown_search:
     path: ../
   flutter:
     sdk: flutter
 
+  material_ui: ^1.4.0
+  cupertino_ui: ^1.1.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

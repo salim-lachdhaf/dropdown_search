@@ -5,7 +5,7 @@ import 'package:example/material/autocomplete.dart';
 import 'package:example/material/bottom_sheets.dart';
 import 'package:example/material/modals.dart';
 import 'package:example/user_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'adaptive/autocomplete.dart';
 import 'adaptive/bottom_sheets.dart';
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'dropdownSearch Demo',
       //enable this line if you want test Dark Mode
-      theme: ThemeData.dark(),
+      //theme: ThemeData.dark(),
       home: MyHomePage(),
     );
   }

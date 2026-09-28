@@ -1,5 +1,5 @@
 import 'package:dropdown_search/src/widgets/props/text_field_props.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CustomTextFields extends StatelessWidget {
   final TextFieldProps props;

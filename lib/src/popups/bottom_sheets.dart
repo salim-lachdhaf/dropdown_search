@@ -1,7 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:dropdown_search/src/widgets/custom_safe_area.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
 Future openMaterialBottomSheet(
     BuildContext context, Widget content, BottomSheetProps props) {
@@ -31,7 +31,6 @@ Future openAdaptiveBottomSheet(
     case TargetPlatform.fuchsia:
     case TargetPlatform.linux:
     case TargetPlatform.windows:
-    default:
       return openMaterialBottomSheet(context, content, props.materialProps);
   }
 }
@@ -42,7 +41,7 @@ Future openCupertinoBottomSheet(
     context: context,
     anchorPoint: props.anchorPoint,
     useRootNavigator: props.useRootNavigator,
-    barrierColor: props.barrierLabel,
+    barrierColor: props.barrierColor,
     barrierDismissible: props.barrierDismissible,
     filter: props.filter,
     semanticsDismissible: props.semanticsDismissible,

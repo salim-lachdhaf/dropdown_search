@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:dropdown_search/src/widgets/props/safe_area_props.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 class BottomSheetProps {
   final ShapeBorder? shape;
@@ -35,7 +35,7 @@ class CupertinoBottomSheetProps {
   final RouteSettings? routeSettings;
   final bool isSurfacePainted;
   final Offset? anchorPoint;
-  final Color barrierLabel;
+  final Color barrierColor;
   final SafeAreaProps safeAreaProps;
 
   const CupertinoBottomSheetProps({
@@ -46,7 +46,7 @@ class CupertinoBottomSheetProps {
     this.barrierDismissible = true,
     this.semanticsDismissible = false,
     this.useRootNavigator = false,
-    this.barrierLabel = kCupertinoModalBarrierColor,
+    this.barrierColor = kCupertinoModalBarrierColor,
     this.safeAreaProps = const SafeAreaProps(),
   });
 }

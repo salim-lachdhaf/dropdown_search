@@ -1,4 +1,4 @@
-library dropdown_search;
+library;
 
 //dropdowns
 export 'src/dropdown_search.dart';

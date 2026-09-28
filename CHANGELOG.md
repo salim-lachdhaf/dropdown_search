@@ -1,23 +1,31 @@
-## [7.0.0] - 2026.04.03
-* #### New Feature:
-  * Add adaptive platform Ui feature: `Material`, `Cupertino` and `Adaptive`
-  * Add `autocomplete` new popup mode
-  * add `transitionBuilder`, `transitionDuration`, `reverseTransitionDuration` to `menuProps`
+## [8.0.0] - 2026.09.27
 
-    ```dart
-      transitionDuration: Duration(milliseconds: 500),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(1, 0),
-            end: Offset.zero,
-          ).animate(animation),
-          child: child,
-        );
-      }
-    ```
-    
-  * add new property `animationBuilder` to `DropdownButtonProps`, examples of uses
+* [Breaking] migrate material and cupertino widgets to material_ui, cupertino_ui
+* [Breaking] bump sdk to 3.4.0
+* [Breaking] remove deprecated `cacheExtent` property
+* add `scrollCacheExtent` property to `ListViewProps`
+
+## [7.0.0] - 2026.04.03
+
+* #### New Feature:
+    * Add adaptive platform Ui feature: `Material`, `Cupertino` and `Adaptive`
+    * Add `autocomplete` new popup mode
+    * add `transitionBuilder`, `transitionDuration`, `reverseTransitionDuration` to `menuProps`
+
+      ```dart
+        transitionDuration: Duration(milliseconds: 500),
+        transitionBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        }
+      ```
+
+    * add new property `animationBuilder` to `DropdownButtonProps`, examples of uses
    ```dart
       /* Example 1: animation with only one icon ("iconClosed") like rotation */
       animationBuilder: (child, isOpen) {
@@ -44,70 +52,78 @@
         },
       )
     ```
-  * add new property `layoutDelegate` to `MenuProps` and `CupertinoMenuProps`, you can extend
-    [`SingleChildLayoutDelegate`](https://api.flutter.dev/flutter/rendering/SingleChildLayoutDelegate-class.html)
-    to create your own positioning strategy
-     
-    example of use
-    ```dart
-      layoutDelegate: (context, padding, position) => _PopupMenuRouteLayout(context, position)
-    
-      class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
-        final RelativeRect position;
-        final BuildContext context;
-    
-        const _PopupMenuRouteLayout(this.context, this.position);
-    
-      @override
-      BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-        // pick any properties from the context to calculate proper constraints
-        final mediaQuery = MediaQuery.of(context);
-        final keyBoardHeight = mediaQuery.viewInsets.bottom;
-        final safeArea = mediaQuery.padding;
-    
-        return BoxConstraints(/* calculate new constraints based on your needs */);
-      }
-    
+    * add new property `layoutDelegate` to `MenuProps` and `CupertinoMenuProps`, you can extend
+      [
+      `SingleChildLayoutDelegate`](https://api.flutter.dev/flutter/rendering/SingleChildLayoutDelegate-class.html)
+      to create your own positioning strategy
+
+      example of use
+      ```dart
+        layoutDelegate: (context, padding, position) => _PopupMenuRouteLayout(context, position)
+      
+        class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
+          final RelativeRect position;
+          final BuildContext context;
+      
+          const _PopupMenuRouteLayout(this.context, this.position);
+      
         @override
-        Offset getPositionForChild(Size size, Size childSize) {
-          // The position where the child should be placed.
+        BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
+          // pick any properties from the context to calculate proper constraints
+          final mediaQuery = MediaQuery.of(context);
+          final keyBoardHeight = mediaQuery.viewInsets.bottom;
+          final safeArea = mediaQuery.padding;
+      
+          return BoxConstraints(/* calculate new constraints based on your needs */);
         }
-    
-        @override
-        bool shouldRelayout(covariant SingleChildLayoutDelegate oldDelegate) => false;
-      }
-    ``` 
-  * add `SuggestionsProps` to `popupProps`
-  * add `builder` property for `SuggestionsProps` to override the hole suggestion widget
-  * add properties to `scrollView` and `wrap` widget for selected items in multiSelection mode
-  * `Chips` are fully customizable in multiSelection and suggestions
-  * replace `padding` in `searchFieldProps` with `containerBuilder`
-  * add `onDisplayed` callback to `popupProps`
-  * add `errorBuilder` for `InfiniteScrollProps`
-  * add possibility to reload item using `myGlobalKey.currentState?.reloadItems(String filter)` or `myGlobalKey.currentState?.loadMoreItems(String filter, int skip)`
-  * add `textProps` to have the ability to pass default text props through the context to `selectedItem` 
-  * add new property for `TextFieldProps`
-  * add the ability to listen to focus changes using `onFocusChange`
-  * add new callbacks `onBeforeClear` and `onClear` to handle dropdown clear button action
-  
+      
+          @override
+          Offset getPositionForChild(Size size, Size childSize) {
+            // The position where the child should be placed.
+          }
+      
+          @override
+          bool shouldRelayout(covariant SingleChildLayoutDelegate oldDelegate) => false;
+        }
+      ``` 
+    * add `SuggestionsProps` to `popupProps`
+    * add `builder` property for `SuggestionsProps` to override the hole suggestion widget
+    * add properties to `scrollView` and `wrap` widget for selected items in multiSelection mode
+    * `Chips` are fully customizable in multiSelection and suggestions
+    * replace `padding` in `searchFieldProps` with `containerBuilder`
+    * add `onDisplayed` callback to `popupProps`
+    * add `errorBuilder` for `InfiniteScrollProps`
+    * add possibility to reload item using `myGlobalKey.currentState?.reloadItems(String filter)` or
+      `myGlobalKey.currentState?.loadMoreItems(String filter, int skip)`
+    * add `textProps` to have the ability to pass default text props through the context to
+      `selectedItem`
+    * add new property for `TextFieldProps`
+    * add the ability to listen to focus changes using `onFocusChange`
+    * add new callbacks `onBeforeClear` and `onClear` to handle dropdown clear button action
+
 * #### Breaking changes
-  * change `onChanged` to `onSelected`
-  * `PopupPropsMultiSelection` changed to `MultiSelectionPopupProps` 
-  * `suggestedItemsProps` is placed inside `SuggestionsProps`
-  * `Semantics` is removed from searchBox, to add it use `containerBuilder` like this you have full access to Semantic properties.
+    * change `onChanged` to `onSelected`
+    * `PopupPropsMultiSelection` changed to `MultiSelectionPopupProps`
+    * `suggestedItemsProps` is placed inside `SuggestionsProps`
+    * `Semantics` is removed from searchBox, to add it use `containerBuilder` like this you have
+      full access to Semantic properties.
 
 * #### Fix bugs:
-  * `BottomSheet` background color [726](https://github.com/salim-lachdhaf/searchable_dropdown/issues/726)
+    * `BottomSheet` background
+      color [726](https://github.com/salim-lachdhaf/searchable_dropdown/issues/726)
 
 ## [6.0.1] - 2024.09.21
-* #### New Feature:
-  * add `Semantics` to searchBox to support voiceOver/TalkBack ...
- 
-* #### Fix bugs:
-  * duplicated GlobalKey issue [672](https://github.com/salim-lachdhaf/searchable_dropdown/issues/672)
-  * multiSelection chips height issue [602](https://github.com/salim-lachdhaf/searchable_dropdown/issues/602)
-  * hint and dropdownBuilder issue [515](https://github.com/salim-lachdhaf/searchable_dropdown/issues/515)
 
+* #### New Feature:
+    * add `Semantics` to searchBox to support voiceOver/TalkBack ...
+
+* #### Fix bugs:
+    * duplicated GlobalKey
+      issue [672](https://github.com/salim-lachdhaf/searchable_dropdown/issues/672)
+    * multiSelection chips height
+      issue [602](https://github.com/salim-lachdhaf/searchable_dropdown/issues/602)
+    * hint and dropdownBuilder
+      issue [515](https://github.com/salim-lachdhaf/searchable_dropdown/issues/515)
 
 ## [6.0.0] - 2024.09.14
 
@@ -182,7 +198,8 @@
 * Replace ScrollBar with RawScrollBar (adding new properties)
 * move ``showClearButton`` into ``ClearButtonProps``
 * move all dropdownDecoration props into ``dropdownDecoratorProps``
-* replace ``IconButtonProps`` with DropdownButtonProps and ``ClearButtonProps`` for ``clearButtonProps``
+* replace ``IconButtonProps`` with DropdownButtonProps and ``ClearButtonProps`` for
+  ``clearButtonProps``
   and dropdownButtonProps
 * add a full custom container for the pop `containerBuilder` to ``popup_props``
 * add `isVisible` prop to `DropdownButtonProps`
@@ -216,7 +233,8 @@
 * breaking changes:
     - remove `hint` and `label` properties, use `dropdownSearchDecoration` instead
     - remove `showAsSuffixIcons` property, now always are as suffixIcon
-    - replace '`clearButtonSplashRadius`' and '`clearButtonBuilder`' into one property '`IconButtonProps`'
+    - replace '`clearButtonSplashRadius`' and '`clearButtonBuilder`' into one property '
+      `IconButtonProps`'
     - replace '`dropdownButtonSplashRadius`' and '`dropdownButtonBuilder`' into one property '
       `IconButtonProps`'
 * fix issue [380](https://github.com/salim-lachdhaf/searchable_dropdown/issues/380)
