@@ -348,8 +348,9 @@ class DropdownSearchState<T> extends State<BaseDropdownSearch<T>> {
   bool _handleAutoCompleteBackPressKeyPress(KeyEvent event) {
     if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.backspace) {
-      if (_popupStateKey.currentState?.searchBoxController.text.isEmpty ==
-          true) {
+      if (getSelectedItems.isNotEmpty &&
+          _popupStateKey.currentState?.searchBoxController.text.isEmpty ==
+              true) {
         final item = getSelectedItems.last;
         removeItem(item);
         _popupStateKey.currentState?.deselectItems([item]);

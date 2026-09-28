@@ -65,7 +65,7 @@ class CupertinoMultiSelectionPopupProps<T> extends BasePopupProps<T> {
   const CupertinoMultiSelectionPopupProps.autocomplete({
     this.autoCompleteProps = const CupertinoAutocompleteProps(),
     CupertinoTextFieldProps searchFieldProps = const CupertinoTextFieldProps(),
-    super.fit,
+    super.fit = FlexFit.loose,
     super.suggestionsProps,
     super.scrollbarProps,
     super.listViewProps,
@@ -264,7 +264,7 @@ class CupertinoPopupProps<T> extends BasePopupProps<T> {
   const CupertinoPopupProps.autocomplete({
     this.autoCompleteProps = const CupertinoAutocompleteProps(),
     CupertinoTextFieldProps searchFieldProps = const CupertinoTextFieldProps(),
-    super.fit,
+    super.fit = FlexFit.loose,
     super.suggestionsProps,
     super.scrollbarProps,
     super.listViewProps,
