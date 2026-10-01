@@ -313,7 +313,7 @@ class DropdownSearchPopupState<T> extends State<DropdownSearchPopup<T>> {
     if (!widget.isMultiSelectionMode) return SizedBox.shrink();
 
     if (widget.props.validationBuilder != null) {
-      return widget.props.validationBuilder!(context, _selectedItems);
+      return widget.props.validationBuilder!(context, _selectedItems, onValidate);
     }
 
     //for cupertino modal and dialog we used already "actions" as Validation method

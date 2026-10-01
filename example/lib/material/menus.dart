@@ -42,9 +42,14 @@ class _MaterialMenuExamplesPageState extends State<MaterialMenuExamplesPage> {
                       'Sunday'
                     ],
                     popupProps: MultiSelectionPopupProps.menu(
-                        disabledItemFn: (item) => item == 'Tuesday',
-                        constraints: BoxConstraints(minWidth: 250),
-                        fit: FlexFit.loose),
+                      disabledItemFn: (item) => item == 'Tuesday',
+                      constraints: BoxConstraints(minWidth: 250),
+                      fit: FlexFit.loose,
+                      validationBuilder: (context, items, validate) => MaterialButton(
+                        onPressed: validate,
+                        child: Text("Done"),
+                      ),
+                    ),
                     dropdownBuilder: (ctx, selectedItem) =>
                         Icon(Icons.calendar_month_outlined, size: 54),
                   ),
